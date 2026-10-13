@@ -1,0 +1,36 @@
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-block-end: var(--space-8);
+}
+
+.fchip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: var(--space-4);
+  border-radius: var(--rp);
+  border: 1px solid var(--c-border);
+  background: var(--c-surface);
+  color: var(--c-text);
+  font-size: 0.88rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all var(--dur-1);
+}
+
+/* --brand text/background is only 3.4:1 against white/white text — under the 4.5:1 AA
+   minimum for this text size. --brand-700 on white (4.86:1) and white on --brand-900
+   (6.64:1) both pass. */
+.fchip:hover {
+  border-color: var(--c-accent);
+  color: var(--c-link);
+}
+
+.fchip.on {
+  background: var(--c-brand-deep);
+  border-color: var(--c-accent-strong);
+  color: var(--c-on-brand);
+}

@@ -1,0 +1,1341 @@
+<title>Ta3lom Store Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+:root{
+  --brand:#1A96C1; --brand-700:#137AA0; --brand-900:#136578; --gold:#A58E36; --gold-700:#8C7729; --gold-200:#C3AF72;
+  --ink:#232123; --ink-2:#3A3D3E; --muted:#6E7476;
+  --bg:#FFFFFF; --gray:#F4F7F8; --gray-2:#E9EFF1; --line:#DCE4E7; --tint:#EEF6FA; --tint-2:#D6ECF5;
+  --indigo:#0E3D4C; --black:#0F262E; --green:#1E8E5A; --danger:#C8413B; --warn:#B4661A;
+  --grad:linear-gradient(-87deg,#C3AF72 0%,#1A96C1 52%,#5CC4E6 108%);
+  --r:12px; --rc:16px; --rp:999px;
+  --fa:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif;
+  --fe:"IBM Plex Sans","Segoe UI",Helvetica,Arial,sans-serif;
+  --fm:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --ease:cubic-bezier(.4,0,.2,1);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--fa);font-size:16px;line-height:1.85;-webkit-font-smoothing:antialiased}
+html[dir=ltr] body{font-family:var(--fe);line-height:1.55}
+h1,h2,h3,h4{margin:0;font-weight:400;line-height:1.15;text-wrap:balance}
+h3,h4{font-weight:500}
+p{margin:0;max-width:66ch}
+a{color:var(--brand)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+img,svg,video{max-width:100%}
+.mono{font-family:var(--fm)}
+[hidden],.hidden{display:none!important}
+.wrap{max-width:1200px;margin:0 auto;padding-inline:24px}
+.grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+
+.proto{background:var(--black);color:#9FB4BC;font-family:var(--fm);font-size:11px;letter-spacing:.05em;padding:6px 0;text-align:center}
+.proto b{color:var(--gold-200);font-weight:500}
+.proto a{color:#fff;margin-inline-start:12px;text-decoration:none;border-bottom:1px solid var(--gold-200)}
+
+.hdr{background:rgba(255,255,255,.9);backdrop-filter:blur(14px);position:sticky;top:0;z-index:50;transition:box-shadow .25s}
+.hdr.scrolled{box-shadow:0 1px 0 var(--line),0 8px 30px rgba(19,101,120,.07)}
+.hdr .wrap{display:flex;align-items:center;gap:20px;min-height:68px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);flex:none}
+.brand .mark{width:46px;height:40px;flex:none;transition:transform .4s var(--ease)}
+.brand:hover .mark{transform:translateY(-2px) scale(1.05)}
+.brand .nm{font-weight:600;font-size:1rem;line-height:1.2}
+.brand .sub{display:block;font-size:.7rem;color:var(--muted);font-weight:400}
+.nav{display:none;gap:2px;margin-inline-start:auto}
+@media(min-width:1080px){.nav{display:flex}}
+.nav a,.nav button{font:inherit;font-size:.9rem;color:var(--ink);text-decoration:none;padding:8px 12px;border-radius:var(--rp);background:none;border:0;cursor:pointer;line-height:1.3;transition:background .2s}
+.nav a:hover,.nav button:hover,.nav a.on,.nav button.on{background:var(--gray-2)}
+.nav a.on{font-weight:500}
+.nav .dd{position:relative}
+.nav .dd .car{display:inline-block;width:6px;height:6px;border-inline-end:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg);margin-inline-start:8px;position:relative;top:-3px;transition:transform .2s}
+.nav .dd:hover .car{transform:rotate(225deg);top:0}
+.nav .menu{position:absolute;top:calc(100% + 8px);inset-inline-start:0;background:#fff;border:1px solid var(--line);border-radius:16px;padding:8px;min-width:250px;opacity:0;visibility:hidden;transform:translateY(8px);transition:all .25s var(--ease);box-shadow:0 20px 50px rgba(19,101,120,.14)}
+.nav .dd:hover .menu,.nav .dd:focus-within .menu{opacity:1;visibility:visible;transform:none}
+.nav .menu a{display:block;padding:9px 12px;border-radius:10px}
+.nav .menu a:hover{background:var(--tint);color:var(--brand)}
+.acts{display:flex;align-items:center;gap:8px;margin-inline-start:auto}
+@media(min-width:1080px){.acts{margin-inline-start:0}}
+.lang{font:inherit;font-size:.85rem;font-weight:500;background:none;border:1px solid var(--line);color:var(--ink);padding:7px 12px;border-radius:var(--rp);cursor:pointer;font-family:var(--fe)}
+.lang:hover{border-color:var(--ink)}
+.burger{display:inline-flex;flex-direction:column;gap:4px;background:none;border:0;padding:10px;cursor:pointer}
+.burger span{width:20px;height:2px;background:var(--ink)}
+@media(min-width:1080px){.burger{display:none}}
+.mnav{display:none;background:#fff;border-bottom:1px solid var(--line);padding:10px 24px 18px}
+.mnav.open{display:block}
+.mnav a{display:block;padding:10px 0;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink);font-weight:500}
+.mnav .grp{font-size:.75rem;color:var(--muted);padding-top:14px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-weight:600;font-size:.95rem;padding:11px 20px;border-radius:var(--r);border:1px solid transparent;text-decoration:none;cursor:pointer;line-height:1.3;transition:all .2s var(--ease)}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:var(--brand);color:#fff}
+.btn-primary:hover{background:var(--brand-700);box-shadow:0 10px 26px rgba(26,150,193,.3)}
+.btn-cta{background:var(--gold);color:#fff}
+.btn-cta:hover{background:var(--gold-700);box-shadow:0 10px 26px rgba(165,142,54,.35)}
+.btn-white{background:#fff;color:var(--ink)}
+.btn-ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn-ghost:hover{border-color:var(--ink)}
+.btn-hero{background:transparent;color:#fff;border-color:rgba(255,255,255,.35)}
+.btn-hero:hover{background:rgba(255,255,255,.12);border-color:#fff}
+.btn-lite{background:var(--gray-2);color:var(--ink)}
+.btn-danger{background:transparent;color:var(--danger)}
+.btn-danger:hover{background:#FBEAEA}
+.btn.sm{padding:8px 14px;font-size:.88rem}
+.btn.xs{padding:4px 10px;font-size:.8rem;border-radius:8px}
+.btn .arr{display:inline-block;transition:transform .2s var(--ease)}
+html[dir=rtl] .btn .arr{transform:scaleX(-1)}
+.btn:hover .arr{transform:translateX(4px)}
+html[dir=rtl] .btn:hover .arr{transform:scaleX(-1) translateX(4px)}
+
+section{padding:72px 0}
+@media(min-width:900px){section{padding:100px 0}}
+.eyebrow{display:inline-block;font-size:.8rem;font-weight:500;color:var(--brand);margin-bottom:12px;padding:4px 12px;border-radius:var(--rp);background:var(--tint)}
+.sec-title{font-size:clamp(1.9rem,4vw,3rem);line-height:1.12;margin-bottom:14px}
+.sec-lede{color:var(--muted);font-size:1.1rem;max-width:60ch}
+.sec-head{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:16px 32px;margin-bottom:40px}
+.sec-head.center{flex-direction:column;align-items:center;text-align:center}
+.grid{display:grid;gap:20px}
+.g2{grid-template-columns:1fr}.g3{grid-template-columns:1fr}.g4{grid-template-columns:repeat(2,1fr)}
+@media(min-width:700px){.g2,.g3{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1000px){.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}}
+.card{background:var(--gray);border-radius:var(--rc);padding:22px;display:flex;flex-direction:column;gap:10px;transition:all .35s var(--ease)}
+.card h3{font-size:1.12rem}
+.card p{font-size:.94rem;color:var(--muted)}
+.card .more{margin-top:auto;font-weight:500;font-size:.92rem;color:var(--brand);text-decoration:none}
+.card.link{cursor:pointer;text-decoration:none;color:inherit}
+.card.link:hover{background:#fff;transform:translateY(-6px);box-shadow:0 24px 50px rgba(19,101,120,.12)}
+.card.white{background:#fff;border:1px solid var(--line)}
+.tag{display:inline-block;font-size:.74rem;font-weight:500;padding:4px 11px;border-radius:var(--rp);background:var(--tint);color:var(--brand)}
+.tag.gold{background:#F6F1E2;color:var(--gold-700)}
+.date{font-family:var(--fm);font-size:.76rem;color:var(--muted)}
+
+.hero{background:var(--indigo);color:#fff;position:relative;overflow:hidden;padding:0}
+.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(900px 520px at 50% -10%,rgba(26,150,193,.6),transparent 60%),radial-gradient(700px 400px at 85% 70%,rgba(195,175,114,.22),transparent 60%);animation:glow 14s ease-in-out infinite alternate}
+@keyframes glow{to{transform:translate3d(0,-30px,0) scale(1.06)}}
+.hero-logo{position:absolute;inset-inline-end:-6%;top:8%;width:min(46vw,560px);opacity:.07;animation:float 9s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-16px) rotate(-1deg)}}
+.hero .wrap{position:relative;z-index:1;padding-block:72px 0;display:flex;flex-direction:column;align-items:center;text-align:center}
+.hero h1{font-size:clamp(2.3rem,6.4vw,4.4rem);line-height:1.1;color:#fff;max-width:16ch}
+.hero h1 em{font-style:normal;color:var(--gold-200)}
+.hero p{color:rgba(255,255,255,.78);font-size:1.1rem;margin:22px auto 30px;max-width:56ch}
+.hero .cta{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.hero .guar{margin-top:18px;font-size:.85rem;color:rgba(255,255,255,.7);display:flex;gap:8px;align-items:center}
+.search{display:flex;align-items:center;background:#fff;border-radius:var(--rp);padding:6px 6px 6px 22px;width:min(640px,100%);margin:34px auto 0;box-shadow:0 10px 40px rgba(0,0,0,.25)}
+html[dir=rtl] .search{padding:6px 22px 6px 6px}
+.search input{border:0;background:none;flex:1;font:inherit;font-size:.95rem;padding:8px 0;box-shadow:none}
+.search input:focus{outline:none;box-shadow:none}
+.h-in{opacity:0;transform:translateY(22px);animation:up .9s var(--ease) forwards}
+.h-in:nth-child(2){animation-delay:.08s}.h-in:nth-child(3){animation-delay:.16s}.h-in:nth-child(4){animation-delay:.24s}.h-in:nth-child(5){animation-delay:.32s}.h-in:nth-child(6){animation-delay:.4s}.h-in:nth-child(7){animation-delay:.5s}
+@keyframes up{to{opacity:1;transform:none}}
+
+.acc{display:flex;gap:10px;width:100%;height:300px;margin-top:50px;align-items:stretch}
+@media(min-width:900px){.acc{height:380px;gap:12px}}
+.acc .ac{flex:1;min-width:0;border-radius:16px 16px 0 0;background:rgba(0,0,0,.22);position:relative;overflow:hidden;cursor:pointer;transition:flex-grow .55s var(--ease),background .4s;display:flex;flex-direction:column;justify-content:flex-end;text-decoration:none;color:#fff}
+.acc .ac.on{flex-grow:3.2;background:rgba(0,0,0,.35)}
+.acc .ac .art{position:absolute;inset:0;opacity:.9}
+.acc .ac .art svg,.acc .ac .art img{width:100%;height:100%;object-fit:cover;display:block}
+.acc .ac .lbl{position:relative;padding:18px;background:linear-gradient(transparent,rgba(15,38,46,.88))}
+.acc .ac .lbl b{display:block;font-weight:500;font-size:1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.acc .ac .lbl span{display:block;font-size:.85rem;color:rgba(255,255,255,.7);max-height:0;opacity:0;overflow:hidden;transition:max-height .5s var(--ease),opacity .4s .1s}
+.acc .ac.on .lbl span{max-height:60px;opacity:1}
+.acc .ac .num{position:absolute;top:14px;inset-inline-start:14px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.14);display:grid;place-items:center;font-family:var(--fm);font-size:.75rem}
+.acc .ac.on .num{background:var(--brand)}
+@media(max-width:700px){.acc .ac:not(.on) .lbl b{writing-mode:vertical-rl;transform:rotate(180deg);max-height:180px}}
+
+.pillars{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:32px 0}
+@media(min-width:900px){.pillars{grid-template-columns:repeat(4,1fr)}}
+.pillar{background:var(--gray);border-radius:var(--rc);padding:22px;text-decoration:none;color:inherit;display:flex;gap:14px;align-items:center;transition:all .3s var(--ease)}
+.pillar:hover{background:var(--tint);transform:translateY(-3px)}
+.pillar .ic{width:40px;height:40px;flex:none;color:var(--brand);background:#fff;border-radius:12px;padding:8px}
+.pillar b{display:block;font-size:.98rem;font-weight:500}
+.pillar span{font-size:.84rem;color:var(--muted)}
+
+.stat{padding:28px 26px;background:var(--gray);border-radius:var(--rc)}
+.stat .n{font-size:2.8rem;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.stat .l{display:block;font-weight:500;margin-top:10px}
+.stat .s{display:block;color:var(--muted);font-size:.85rem}
+
+.tile{aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:var(--tint);position:relative}
+.tile svg,.tile img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s var(--ease)}
+.card.link:hover .tile svg,.card.link:hover .tile img{transform:scale(1.06)}
+.tile .play{position:absolute;inset:0;display:grid;place-items:center}
+.tile .play span{width:56px;height:56px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:transform .3s var(--ease)}
+.card.link:hover .play span{transform:scale(1.12)}
+.tile .dur{position:absolute;bottom:8px;inset-inline-end:8px;background:rgba(0,0,0,.65);color:#fff;font-family:var(--fm);font-size:.72rem;padding:2px 7px;border-radius:6px}
+
+.dark{background:var(--black);color:#fff}
+.dark .sec-title{color:#fff}
+.dark .sec-lede{color:rgba(255,255,255,.65)}
+.dark .card{background:#16303A}
+.dark .card p{color:rgba(255,255,255,.6)}
+.dark .card.link:hover{background:#1D3F4B;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.dark .tag,.dark .eyebrow{background:rgba(195,175,114,.16);color:var(--gold-200)}
+
+.ph{background:var(--gray);padding:52px 0 44px}
+.ph h1{font-size:clamp(2rem,4.6vw,3.2rem)}
+.ph p{color:var(--muted);margin-top:12px;font-size:1.05rem}
+.crumbs{font-size:.82rem;color:var(--muted);margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap}
+.crumbs a{color:var(--muted);text-decoration:none}
+.subnav{display:flex;gap:6px;overflow-x:auto;padding-block:14px;background:#fff;border-bottom:1px solid var(--line);scrollbar-width:none}
+.subnav a{white-space:nowrap;text-decoration:none;color:var(--ink);font-size:.9rem;padding:7px 14px;border-radius:var(--rp)}
+.subnav a.on{background:var(--ink);color:#fff;font-weight:500}
+.subnav a:hover:not(.on){background:var(--gray-2)}
+
+.prose{max-width:70ch}
+.prose h2{font-size:1.6rem;margin:34px 0 12px}
+.prose h2:first-child{margin-top:0}
+.prose h3{font-size:1.2rem;margin:26px 0 10px}
+.prose p{margin-bottom:14px;color:var(--ink-2)}
+.prose ul,.prose ol{padding-inline-start:1.3em;color:var(--ink-2)}
+.prose li{margin-bottom:6px}
+.prose blockquote{border-inline-start:3px solid var(--brand);padding-inline-start:16px;margin:16px 0;color:var(--muted)}
+.prose code{background:var(--gray-2);padding:2px 6px;border-radius:5px;font-size:.88em}
+.prose img{border-radius:12px;margin:16px 0}
+.prose a{text-decoration:underline}
+.prose table{width:100%;border-collapse:collapse;font-size:.92rem;margin:16px 0}
+.prose th,.prose td{padding:8px 12px;border:1px solid var(--line);text-align:start}
+.split{display:grid;grid-template-columns:1fr;gap:40px}
+@media(min-width:960px){.split{grid-template-columns:minmax(0,1fr) 340px;align-items:start}}
+.aside{background:var(--gray);border-radius:var(--rc);padding:24px;position:sticky;top:88px}
+.aside h4{margin-bottom:8px;font-size:1.02rem}
+.aside p{font-size:.92rem;color:var(--muted);margin-bottom:12px}
+
+.doc{display:flex;align-items:center;gap:16px;padding:16px 18px;margin-bottom:10px;border-radius:14px;background:var(--gray);text-decoration:none;color:inherit;transition:all .25s var(--ease)}
+.doc:hover{background:var(--tint)}
+.doc .ic{width:36px;height:42px;flex:none;color:var(--brand)}
+.doc .t{font-weight:500;display:block}
+.doc .m{font-size:.8rem;color:var(--muted);font-family:var(--fm)}
+.doc .dl{margin-inline-start:auto;font-size:.85rem;font-weight:500;color:var(--brand);white-space:nowrap}
+
+.person{display:flex;gap:16px;align-items:flex-start;background:var(--gray);border-radius:var(--rc);padding:18px}
+.avatar{width:64px;height:64px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;font-weight:600;font-size:1.2rem;flex:none;overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.person b{display:block;font-weight:500}
+.person .ti{font-size:.88rem;color:var(--muted)}
+.person .br{font-size:.88rem;color:var(--ink-2);margin-top:6px}
+.person .ct{font-family:var(--fm);font-size:.8rem;color:var(--brand);margin-top:6px;display:block}
+.orgchart{display:flex;flex-direction:column;align-items:center;margin-top:30px}
+.orgchart .lvl{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.orgchart .box{background:var(--gray);border-radius:12px;padding:10px 18px;font-weight:500;font-size:.92rem;text-align:center;min-width:150px}
+.orgchart .box.top{background:var(--brand);color:#fff}
+.orgchart .v{width:1px;height:26px;background:var(--line)}
+
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:32px}
+.filters button{font:inherit;font-size:.9rem;padding:7px 16px;border-radius:var(--rp);border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;transition:all .15s}
+.filters button:hover{border-color:var(--ink)}
+.filters button.on{background:var(--ink);border-color:var(--ink);color:#fff;font-weight:500}
+
+.form{display:grid;gap:18px;max-width:640px}
+.field{display:grid;gap:6px}
+.field label{font-weight:500;font-size:.9rem}
+.field .hint{font-size:.8rem;color:var(--muted)}
+.field .warn{font-size:.8rem;color:var(--warn);background:#FBF3E9;border-radius:8px;padding:8px 12px;display:flex;gap:8px;align-items:flex-start}
+input,select,textarea{font:inherit;padding:11px 14px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);width:100%;transition:all .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--brand);box-shadow:0 0 0 4px rgba(26,150,193,.12);outline:none}
+textarea{min-height:120px;resize:vertical}
+.row2{display:grid;gap:16px;grid-template-columns:1fr}
+@media(min-width:600px){.row2{grid-template-columns:1fr 1fr}}
+.edgrid{display:grid;gap:16px;grid-template-columns:1fr}
+@media(min-width:760px){.edgrid{grid-template-columns:1fr 1fr}}
+.edgrid .full,.form .full{grid-column:1/-1}
+.chk{display:flex;align-items:center;gap:9px;font-size:.92rem;font-weight:500;cursor:pointer;background:var(--gray);border-radius:10px;padding:11px 14px;align-self:end}
+.chk input{width:18px;height:18px;flex:none;accent-color:var(--brand);padding:0}
+.edbox{background:#fff;border-radius:var(--rc);padding:22px;margin-bottom:20px;border:2px solid var(--brand);box-shadow:0 20px 50px rgba(19,101,120,.12)}
+.edbox h3{font-size:1.05rem;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.toast{position:fixed;bottom:24px;inset-inline-start:50%;transform:translateX(-50%) translateY(10px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:12px;font-size:.92rem;box-shadow:0 10px 30px rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:all .25s var(--ease);z-index:200;max-width:90vw}
+.toast.show{opacity:1;transform:translateX(-50%)}
+.toast.bad{background:var(--danger)}
+.drop{border:2px dashed var(--line);border-radius:14px;padding:26px;text-align:center;color:var(--muted);cursor:pointer;transition:all .2s;background:#fff}
+.drop:hover,.drop.over{border-color:var(--brand);background:var(--tint);color:var(--ink)}
+.drop input{display:none}
+.drop b{display:block;color:var(--brand);font-size:1rem;font-weight:500}
+
+.donate-box{background:#fff;border:1px solid var(--line);border-radius:20px;padding:28px;max-width:640px;box-shadow:0 30px 70px rgba(19,101,120,.08)}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:var(--gray-2);padding:4px;border-radius:var(--rp);margin-bottom:22px}
+.seg button{font:inherit;font-size:.88rem;font-weight:500;padding:9px 4px;border:0;border-radius:var(--rp);background:transparent;color:var(--muted);cursor:pointer;transition:all .2s}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.amts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.amts button{font:inherit;font-size:1rem;font-weight:500;padding:14px;border:1px solid var(--line);border-radius:10px;background:#fff;cursor:pointer;transition:all .15s}
+.amts button.on{border-color:var(--gold);background:#F6F1E2;color:var(--gold-700);transform:scale(1.03)}
+.pay{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 22px}
+.pay span{font-family:var(--fe);font-size:.78rem;font-weight:600;border:1px solid var(--line);border-radius:8px;padding:5px 10px;color:var(--ink-2)}
+.impact{background:var(--tint);border-radius:12px;padding:14px 16px;font-size:.92rem;color:var(--brand-900);margin-bottom:18px}
+
+.logos{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media(min-width:800px){.logos{grid-template-columns:repeat(4,1fr)}}
+.logo{background:var(--gray);border-radius:var(--rc);padding:22px 18px;display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center;min-height:120px;justify-content:center;transition:all .25s var(--ease)}
+.logo:hover{background:var(--tint);transform:translateY(-3px)}
+.logo .lg{width:64px;height:64px;border-radius:12px;background:#fff;display:grid;place-items:center;overflow:hidden;flex:none}
+.logo .lg img{width:100%;height:100%;object-fit:contain;padding:6px}
+.logo b{font-weight:500;font-size:.95rem}
+.logo p{font-size:.82rem;color:var(--muted);max-width:none}
+.marquee{overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
+.marquee .track{display:flex;gap:14px;width:max-content;animation:marq 30s linear infinite}
+html[dir=rtl] .marquee .track{animation-name:marqr}
+.marquee:hover .track{animation-play-state:paused}
+.marquee .logo{min-width:220px}
+@keyframes marq{to{transform:translateX(-50%)}}
+@keyframes marqr{to{transform:translateX(50%)}}
+
+.band{background:linear-gradient(120deg,var(--brand-900),#0A2E3A);color:#fff;border-radius:28px;margin:0 24px;overflow:hidden}
+.band .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px}
+.band h2{font-size:clamp(1.6rem,3vw,2.3rem);color:#fff}
+.band p{color:rgba(255,255,255,.72);margin-top:6px}
+.band-wrap{padding:0 0 88px;background:#fff}
+footer{background:var(--black);color:#9FB4BC;padding:64px 0 28px}
+footer .grid{grid-template-columns:1fr;gap:34px}
+@media(min-width:800px){footer .grid{grid-template-columns:1.4fr 1fr 1fr 1fr}}
+footer h4{color:#fff;font-size:.95rem;margin-bottom:12px;font-weight:500}
+footer a{color:#9FB4BC;text-decoration:none;display:block;padding:3px 0;font-size:.92rem}
+footer a:hover{color:#fff}
+footer p{font-size:.92rem;max-width:40ch}
+.foot-logo{background:#fff;border-radius:16px;padding:16px 18px;display:inline-block;margin-bottom:16px}
+.foot-logo svg{width:170px;height:auto;display:block}
+.foot-bottom{border-top:1px solid rgba(255,255,255,.1);margin-top:44px;padding-top:20px;display:flex;flex-wrap:wrap;gap:10px 30px;font-size:.8rem;color:#6E8A93;font-family:var(--fm);align-items:center}
+.foot-bottom a{display:inline;padding:0;font-size:.8rem;margin-inline-start:auto}
+/* R2: social media row — footer (dark) and contact-page aside (light, .sm) */
+.soc{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.soc a{display:grid;place-items:center;width:36px;height:36px;flex:none;border-radius:50%;background:rgba(255,255,255,.08);color:#fff;text-decoration:none;font-weight:600;font-size:.85rem;overflow:hidden;padding:0;transition:all .2s var(--ease)}
+.soc a:hover{background:var(--brand);transform:translateY(-2px)}
+.soc a img{width:100%;height:100%;object-fit:cover}
+.soc.sm{margin-top:16px}
+.soc.sm a{width:34px;height:34px;background:var(--gray-2);color:var(--ink)}
+.soc.sm a:hover{background:var(--brand);color:#fff}
+
+.modal{position:fixed;inset:0;background:rgba(15,38,46,.8);backdrop-filter:blur(8px);display:grid;place-items:center;z-index:150;padding:20px;opacity:0;visibility:hidden;transition:all .25s;overflow-y:auto}
+.modal.open{opacity:1;visibility:visible}
+.modal .box{background:#fff;border-radius:20px;width:min(960px,100%);overflow:hidden;transform:scale(.96);transition:transform .3s var(--ease);box-shadow:0 40px 100px rgba(0,0,0,.5);margin:auto}
+.modal.open .box{transform:none}
+.modal .player{aspect-ratio:16/9;background:var(--indigo);display:grid;place-items:center;color:#fff;text-align:center;padding:24px;position:relative}
+.modal .player iframe,.modal .player video{width:100%;height:100%;position:absolute;inset:0;border:0;background:#000}
+.modal .cap{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid var(--line)}
+.modal .x{background:none;border:0;font-size:1.4rem;cursor:pointer;color:var(--muted);line-height:1}
+.modal .body{padding:24px;max-height:70vh;overflow-y:auto}
+.modal .hd{padding:18px 24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}
+.modal .hd h3{font-size:1.1rem}
+.modal .ft{padding:16px 24px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-end;background:var(--gray)}
+
+.rv{opacity:0;transform:translateY(28px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.rv.in{opacity:1;transform:none}
+.rv-stagger>*{opacity:0;transform:translateY(24px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.rv-stagger.in>*{opacity:1;transform:none}
+.rv-stagger.in>*:nth-child(1){transition-delay:.05s}.rv-stagger.in>*:nth-child(2){transition-delay:.13s}.rv-stagger.in>*:nth-child(3){transition-delay:.21s}.rv-stagger.in>*:nth-child(4){transition-delay:.29s}.rv-stagger.in>*:nth-child(5){transition-delay:.37s}.rv-stagger.in>*:nth-child(6){transition-delay:.45s}.rv-stagger.in>*:nth-child(n+7){transition-delay:.5s}
+.fade{animation:fadein .35s var(--ease)}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.progress{position:fixed;top:0;inset-inline-start:0;height:3px;background:var(--grad);width:0;z-index:60;transition:width .1s linear}
+
+.adm{display:grid;grid-template-columns:1fr;min-height:70vh;background:var(--gray)}
+@media(min-width:900px){.adm{grid-template-columns:250px minmax(0,1fr)}}
+.adm-side{background:var(--black);color:#9FB4BC;padding:22px 14px}
+.adm-side .who{padding:10px 12px 18px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:12px;font-size:.85rem}
+.adm-side .who b{display:block;color:#fff;font-size:.95rem;font-weight:500}
+.adm-side .grp{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:#4E6D77;padding:14px 12px 6px}
+.adm-side a{display:flex;align-items:center;gap:10px;color:#9FB4BC;text-decoration:none;padding:9px 12px;border-radius:10px;font-size:.92rem;transition:all .15s}
+.adm-side a:hover{background:rgba(255,255,255,.06);color:#fff}
+.adm-side a.on{background:var(--brand);color:#fff;font-weight:500}
+.adm-side a .n{margin-inline-start:auto;font-family:var(--fm);font-size:.72rem;background:rgba(255,255,255,.12);padding:1px 7px;border-radius:999px}
+.adm-main{padding:28px 24px 60px}
+@media(min-width:900px){.adm-main{padding:34px 40px 80px}}
+.adm-h{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px}
+.adm-h h1{font-size:1.6rem}
+.adm-h p{color:var(--muted);font-size:.9rem;margin-top:4px}
+.panel{background:#fff;border-radius:var(--rc);padding:22px;margin-bottom:20px}
+.panel h3{font-size:1.05rem;margin-bottom:14px}
+.tbl{width:100%;border-collapse:collapse;font-size:.92rem}
+.tbl th{text-align:start;font-size:.75rem;color:var(--muted);font-weight:500;padding:8px 10px;border-bottom:1px solid var(--line)}
+.tbl td{padding:10px;border-bottom:1px solid var(--gray-2);vertical-align:middle}
+.tbl tr:hover td{background:var(--tint)}
+.tbl .acts{display:flex;gap:4px;margin:0}
+.tbl .th{width:56px;height:38px;border-radius:8px;object-fit:cover;background:var(--gray-2);display:block}
+.tblw{overflow-x:auto}
+.kcards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:22px}
+@media(min-width:900px){.kcards{grid-template-columns:repeat(4,1fr)}}
+.kc{background:#fff;border-radius:var(--rc);padding:18px}
+.kc b{display:block;font-size:1.9rem;font-weight:400;letter-spacing:-.02em}
+.kc span{font-size:.85rem;color:var(--muted)}
+.pill{display:inline-block;font-size:.72rem;font-weight:500;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.pill.ok{background:#E3F2EA;color:var(--green)}
+.pill.draft{background:var(--gray-2);color:var(--muted)}
+.pill.warn{background:#FBF3E9;color:var(--warn)}
+.edit-row{display:grid;gap:14px;grid-template-columns:1fr}
+@media(min-width:820px){.edit-row{grid-template-columns:1fr 1fr}.edit-row .full{grid-column:1/-1}}
+.inline-edit{background:var(--gray);border-radius:14px;padding:18px;margin-bottom:18px;display:grid;gap:14px}
+.login{min-height:70vh;display:grid;place-items:center;padding:40px 20px;background:var(--gray)}
+.login .box{background:#fff;border-radius:20px;padding:36px;width:min(420px,100%);box-shadow:0 30px 70px rgba(19,101,120,.1)}
+.login h1{font-size:1.5rem;margin-bottom:6px}
+.login p{font-size:.9rem;color:var(--muted);margin-bottom:22px}
+.adm-note{background:var(--tint);border-radius:12px;padding:12px 16px;font-size:.85rem;color:var(--brand-900);margin-bottom:20px}
+.adm-note.warn{background:#FBF3E9;color:var(--warn)}
+.actlog div{display:flex;gap:12px;padding:8px 0;border-bottom:1px solid var(--gray-2);font-size:.88rem}
+.actlog .when{font-family:var(--fm);font-size:.75rem;color:var(--muted);white-space:nowrap}
+
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+.masset{border:2px solid transparent;border-radius:12px;overflow:hidden;background:var(--gray);cursor:pointer;transition:all .2s;position:relative;text-align:start}
+.masset:hover{border-color:var(--brand)}
+.masset.sel{border-color:var(--brand);box-shadow:0 0 0 3px rgba(26,150,193,.2)}
+.masset .pv{aspect-ratio:4/3;background:var(--gray-2);display:grid;place-items:center;overflow:hidden}
+.masset .pv img{width:100%;height:100%;object-fit:cover}
+.masset .mt{padding:8px 10px;font-size:.78rem;line-height:1.4}
+.masset .mt b{display:block;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.masset .mt span{color:var(--muted);font-family:var(--fm);font-size:.7rem}
+.masset .kb{position:absolute;top:6px;inset-inline-start:6px;background:rgba(15,38,46,.8);color:#fff;font-size:.65rem;padding:2px 7px;border-radius:6px;font-family:var(--fm)}
+.masset .noalt{position:absolute;top:6px;inset-inline-end:6px;background:var(--danger);color:#fff;font-size:.65rem;padding:2px 6px;border-radius:6px}
+
+.md-wrap{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+.md-bar{display:flex;flex-wrap:wrap;gap:2px;padding:6px;background:var(--gray);border-bottom:1px solid var(--line)}
+.md-bar button{font:inherit;font-size:.82rem;font-weight:500;padding:5px 9px;border:0;background:none;border-radius:7px;cursor:pointer;color:var(--ink-2)}
+.md-bar button:hover{background:var(--gray-2)}
+.md-bar .sp{width:1px;background:var(--line);margin:4px 4px}
+.md-split{display:grid;grid-template-columns:1fr}
+@media(min-width:820px){.md-split{grid-template-columns:1fr 1fr}}
+.md-split textarea{border:0;border-radius:0;min-height:280px;font-family:var(--fm);font-size:.86rem;line-height:1.7;resize:vertical}
+.md-split textarea:focus{box-shadow:none}
+.md-prev{padding:16px 18px;border-inline-start:1px solid var(--line);max-height:420px;overflow-y:auto;font-size:.92rem}
+@media(max-width:819px){.md-prev{border-inline-start:0;border-top:1px solid var(--line)}}
+.md-prev :is(h2,h3){margin:14px 0 8px}
+.md-prev p{margin-bottom:10px}
+.md-foot{padding:6px 12px;background:var(--gray);border-top:1px solid var(--line);font-family:var(--fm);font-size:.72rem;color:var(--muted);display:flex;justify-content:space-between}
+
+.atts{display:flex;flex-direction:column;gap:8px}
+.att{display:flex;align-items:center;gap:12px;background:var(--gray);border-radius:10px;padding:10px 12px}
+.att .pv{width:52px;height:40px;border-radius:8px;background:var(--gray-2);overflow:hidden;flex:none;display:grid;place-items:center}
+.att .pv img{width:100%;height:100%;object-fit:cover}
+.att .in{flex:1;min-width:0}
+.att .in b{display:block;font-weight:500;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.att .in span{font-size:.76rem;color:var(--muted);font-family:var(--fm)}
+.att .mv{display:flex;gap:2px}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin:20px 0}
+.gallery figure{margin:0}
+.gallery img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px;cursor:pointer}
+.gallery figcaption{font-size:.82rem;color:var(--muted);margin-top:6px}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+  .rv,.rv-stagger>*,.h-in{opacity:1;transform:none}
+}
+</style>
+
+<div class="progress" id="progress"></div>
+<div class="proto" id="protobar"></div>
+<header class="hdr" id="hdr"></header>
+<div class="mnav" id="mnav"></div>
+<main id="app"></main>
+<footer id="foot"></footer>
+<div class="toast" id="toast"></div>
+<div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div class="box" id="modalBox"></div></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="hg" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#C3AF72"/><stop offset=".5" stop-color="#1A96C1"/><stop offset="1" stop-color="#136578"/></linearGradient>
+    <pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.4" fill="#fff"/></pattern>
+  </defs>
+  <style>.lg1{fill:#a58e36}.lg2{fill:#1a96c1}.lg3{fill:#a58e31}.lg4{fill:#1596c1}.lg5{fill:#1b98c2}.lg6{fill:#0d8bb5}.lg7{fill:#136578}.lg8{fill:#50585a}.lg9{fill:#232123}.lg10{fill:#4b5454}.lg11{fill:#b09d44}.lg12{fill:#1c97c2}.lg13{fill:#c3af72}</style>
+  <g id="logo-src">
+  <path class="lg4" d="M1392.73,1055.91h-124.25c.79-2.47,5.31-10.7,13.14-13.41l34.79-11.95c10.44-3.63,18.6-13.61,18.6-24.96,0-4.08-2.72-6.65-6.5-6.81-2.72-.15-6.2,1.81-6.66,5.45-.76,6.35-4.54,11.49-11.04,13.91l-39.63,14.67c-10.72,3.93-14.81,12.68-16.48,23.09h-123.97c-16.59,0-30.09,13.49-30.09,30.08v74.67c0,16.59,13.5,30.08,30.09,30.08h262c16.59,0,30.08-13.49,30.08-30.08v-74.67c0-16.59-13.49-30.08-30.08-30.08ZM1410.01,1160.65c0,9.53-7.75,17.28-17.28,17.28h-262c-9.54,0-17.28-7.76-17.28-17.28v-74.67c0-9.53,7.75-17.28,17.28-17.28h262c9.53,0,17.28,7.76,17.28,17.28v74.67Z"/>
+  <path class="lg1" d="M1607.04,1184.08c0,7.8-8,12.62-14.15,12.79-6.24.17-14.67-4.9-14.67-12.44l-.09-395.6c0-4.58,3.37-7.09,6.1-10.32,4.01-2.69,9.06-3.24,13.67-1.47,3.91,2.39,9.13,5.72,9.13,11.19v395.84Z"/>
+  <path class="lg7" d="M1571.27,1590.3c.16-10.78-.94-18.96-11.54-21.15-6.72-1.39-13.26,1.78-18.12,6.85l-8.46-9.22c7.45-8.28,12.82-11.02,23.65-11.2,7.66-.13,15.15,1.33,21.07,6.78,7.12,6.55,8.85,16.23,8.67,25.8-.13,6.72-.28,13.33-5.29,18.42-2.38,2.42-6.48,4.16-10.24,4.17l-48.65.05c-4.95,0-9.03-3.18-12.03-6.71l-5.34,4.04c-10.3,5.62-27.53,4.95-34.85-4.15-2.34,3.89-6.45,6.61-11.05,6.63l-31.8.1c-4.2.01-7.99-1.78-11.48-3.76-3.99,2.01-8.34,3.75-13.12,3.74l-27.68-.05c-4.12,0-7.63-2.42-9.68-5.99-2.01,3.62-5.79,6.02-10.38,6.02l-32.54.05c-8.71.01-11.58-10.05-10.88-9.55-.36-.25-6.19,6.83-19.84,4.49-10.05-1.72-16.93-9.21-18.14-19.29-1.76-14.74,4.12-28.78,18.49-30.41l18.45-.3c.02-2.18-.31-4.34.33-6.65l14.84-.16-.04,42.12c0,1.94.7,5.82,2.98,5.86l19.1.31c1.55.02,3.38-1.03,3.69-2.49l1.08-5.16.07-31.5h15.04s.34,34.28.34,34.28c.02,2.4,3.97,4.56,6.29,4.58l25.25.26c1.93.02,3.98-.65,5.81-1.14-1.77-7.56-6.65-13.43-12.9-17.23-3.67-2.23-5.34-4.71-5.46-9.27-.09-3.37.43-6.82,3.91-8.65,8.14-4.3,17.28-5.3,26.54-5.18,7.31.1,14.48.82,20.16,5.43,5.54,4.48,8.01,11.45,6.28,18.28-1.87,7.37-5.9,13.23-12.27,17.72l25.67-.12c3.82-.02,6.05-3.62,6.2-6.94l.55-12.52c.86-13.78,12.17-23.5,25.86-21.57,14.18-1.94,25.96,8.32,26.17,22.67,1.07,3.33.69,6.46.54,9.89-.18,4,1.97,8.6,6.44,8.59l42.33-.14c3.9-.01,5.91-3.39,5.96-6.61ZM1299.81,1592.39c6.05-.02,10.62-3.99,10.64-9.76l.04-13.78-12.94.15c-5.79.07-9.72,4.97-9.28,10.74-.7,2.88.03,6.54,1.67,8.87,2.21,3.13,5.83,3.8,9.87,3.79ZM1427.04,1572.26c-3.37-3.01-8.75-4.36-13.08-3.39l-11.53,2.58c8.18,5.74,13.26,13.25,15.39,22.49,8.93-5.08,14.68-16.82,9.23-21.68ZM1490.27,1597.92c3.22-.13,6.46-.68,8.36-3.02,4.41-5.4,4.33-19.47-1.42-23.8-4.5-3.39-11.18-2.96-15.4.73-2.43,2.13-2.55,5.69-3.28,8.46-.73,2.74-.13,4.7.07,7.24.51,6.28,4.62,10.67,11.67,10.39Z"/>
+  <path class="lg7" d="M1157.77,1604.7c-1.92,3.68-5.86,5.96-10.49,5.97l-40.76.05c-4.21,0-8.01-1.83-11.5-3.77-3.99,2.02-8.34,3.74-13.12,3.73l-26.32-.03c-4.37,0-8.18-2.06-10.34-6.03-1.92,3.45-5.37,5.99-9.69,6.01l-20.81.08c-4.64.02-8.61-2.39-11.51-6.01-8.46,8.26-24.99,9-35.62,3.47-1.48-.77-2.42-2.13-3.75-3.5-3.02,3.73-7.92,4.38-7.94,8.33l-.15,23.26h-15s.19-26.49.19-26.49c.07-10.11,11.42-12.41,15.19-18.57l.72-14.27c1.52-13.33,11.28-21.77,24.67-21.33,6.1.2,12.19.25,17.46,3.96,6.87,4.84,9.95,12.64,10.22,20.97.09,2.62.87,4.39.04,7.29-.76,2.67.91,7.06,2.59,8.81,2.51,2.6,4.46,1.5,6.9.77,4.18-1.26,13.57,1.98,13.59-4.81l.16-68.57,13.77.05c.96,0,1.35,1.8,1.35,2.75l.15,65.43c.66,2.66,4.87,4.77,7.43,4.77h24.13c1.7,0,3.58-.59,5.19-1.08-1.79-7.75-6.9-13.65-13.3-17.5-3.78-2.28-5.22-5.13-5.11-9.69.07-3.13.71-6.24,3.96-7.96,8.13-4.29,17.28-5.3,26.53-5.17,7.16.1,14.1.78,19.8,5.13,5.57,4.34,8.32,11.16,6.76,18.03-1.73,7.59-5.87,13.67-12.4,18.27l30.7-.08c2.08,0,3.33-3.62,3.33-5.51l.13-33.5h15.03s.33,33.58.33,33.58c.03,2.97,4.08,5.38,6.79,5.37l14.98-.05c1.48,0,2.79-3.12,2.79-4.77l.08-67.91h15.14s-.02,71.44-.02,71.44l-.99,5.36c-1,5.42-5.24,9.72-10.9,9.72l-19.58.02c-4.44,0-7.69-2.08-10.81-6.04ZM983.21,1599.29c4.32-.18,8.23-1.93,9.68-5.92,2.37-6.54,2.84-14.82-1.56-20.74-3.8-5.12-12.71-5.04-16.7-.38-4.2,4.9-3.93,11.55-3.13,17.45.8,5.92,5.19,9.86,11.71,9.59ZM1107.45,1582.2c2.2-5.47.18-10.57-5.1-12.22-6.81-2.14-13.75-1.07-20.68,1.5,8.05,5.86,13.34,13.18,15.34,22.47,4.8-3.06,8.42-6.73,10.43-11.75Z"/>
+  <path class="lg3" d="M633.74,1607.56l-.49,8.28c-.32,5.36-1.76,10.65-5.27,14.89-5.03,6.05-14.61,7.11-23.04,6.13l.05-12.68c0-1.9,6.68.75,10.51-2.82,1.61-1.5,2.99-4.15,3-7.1l.15-56.25,14.96-.02.33,33.57c.03,2.95,4.07,5.37,6.8,5.37h16.46c2.08.01,3.32-3.5,3.32-5.47l.13-33.49h15.03s.33,33.6.33,33.6c.03,2.84,4.04,5.38,6.85,5.39l38.54.19c2.1.01,6.13-.32,7.19-2.39,2.44-4.77,1.93-10.68,1.35-15.85-.58-5.16-4.5-8.38-9.64-8.46l-24.95-.4-.07-11.24,30.65-35.85,10.37,8.73-21.11,25.15c8.29.38,16.2.22,22.78,5.06,3.86,2.84,6.47,7.86,6.58,12.61l.42,17.03c.08,3.09,3.87,5.35,6.82,5.4l12.34.2c1.48.02,2.97-.52,3.82-1.41.77-.81,1.53-2.85,1.53-4.48l.16-67.22h14.46s.03,71.67.03,71.67c0,4.74-1.2,9.43-4.89,12.45-2.46,2.02-6.36,2.79-9.56,2.74l-16.97-.27c-4.67-.07-8.33-2.59-10.96-6.88-1.82,4.38-8.55,7.13-12.22,7.12l-45.21-.11c-4.63-.01-8.04-2.48-10.84-6.12-1.94,3.77-5.97,5.97-10.43,6.01l-20.98.17c-3.04.02-5.49-1.44-8.36-3.26Z"/>
+  <path class="lg1" d="M1272.37,630.69c-7.32,4.04-15.37.05-18.82-6.21-3.58-6.5-1.89-15.48,5.2-19.42l95.26-52.96c7.87-4.37,17-4.13,21.92,3.84,4.57,7.38,1.81,16.55-6.2,20.98l-97.35,53.78Z"/>
+  <path class="lg1" d="M690.38,606.33c6.41,3.69,9.33,14.06,2.99,21.57-3.86,4.57-11.3,7.22-17.29,3.76l-98.52-57.05c-7.11-4.12-7.65-13.53-4.21-19.22,4.21-6.97,12.85-9.11,20.03-4.97l97,55.91Z"/>
+  <path class="lg1" d="M989,470.11c-1.88,7.75-7.75,11.76-14.92,12.26-5.97-.78-13.86-5.07-13.87-12.54l-.09-115.68c0-5.7,5.14-9.58,9.46-11.94,8.97-2.67,17.71,2.6,19.43,11.94l-.03,115.97Z"/>
+  <path class="lg3" d="M433.26,1586.97c-5.11,8.9-9.76,21.18-3.79,28.93,3.04,3.94,8.21,6.46,13.4,6.5l32.15.25,4.44-1.11c2.22-.56,3.68-2.15,4.3-3.77,2.22-5.78-5.64-9.1-12.2-11.62l-13.65-5.23,3.42-10.63c.23-.72.76-1.5,1.3-1.77,1.66-.83,15.31,7.31,26.31,8.31l25.94.07c2.29,0,2.98-4.24,2.99-5.88l.06-33.24,15.07.25-.24,40.12c-.04,6.8-4.91,12.49-11.67,12.58l-24.26.31c3.25,5.4,3.23,11.75-.88,17-4.01,5.11-11.41,8.17-18.33,8.16l-38.05-.06c-6.25-.01-12.31-1.93-17.31-5.58-15.38-11.24-12.28-34.42-1.7-49.98l12.7,6.42Z"/>
+  <path class="lg3" d="M820.01,1597.14l-.05-52.44c0-1.47.51-3.36,2.2-3.35l12.95.11.07,55.67,15.09-.11c1.57-.01,3.47-1.69,3.47-3.51l.11-69.31,15.18-.17-.28,74.92c-.02,6.27-5.54,11.72-11.74,11.74l-60.26.24-.02-13.68,23.27-.12Z"/>
+  <path class="lg1" d="M1155.69,505.72c-4.98,6.59-13.85,7.34-19.82,3.24-5.78-3.97-8.97-12.85-4.14-19.3l45.01-60.21c5.02-6.72,14.11-7.69,20.43-3.16,6.53,4.67,7.87,14.1,2.8,20.82l-44.27,58.61Z"/>
+  <path class="lg1" d="M817.02,496.47c-.23,9.02-8.22,15.69-16.51,14.48-3.6-.53-6.92-2.02-9.14-4.98l-45.96-61.31c-4.68-6.25-1.15-15.2,4.34-19.02,6.33-4.4,14.85-3.43,19.8,3.14l45.84,60.84c1.16,1.54,1.7,4.79,1.64,6.85Z"/>
+  <path class="lg3" d="M555.36,1637.12l-.08-13.61,15.06-.16c2.91-.03,6.71.03,8.98-1.99,2.84-2.52,3.66-6.74,3.34-10.4l-17.56-.28c-9.28-.15-16.52-5.99-18.9-15.05-2.05-7.76-1.99-15.87.4-23.46,3.57-11.3,13.59-16.98,25.08-16.65,8,.23,15.53,1.8,20.53,8.86,2.52,3.56,4.8,8.67,4.79,13.52l-.02,41.09c0,4.31-2.13,8.67-4.86,11.68-3.75,4.14-9.04,5.34-14.43,6.38l-22.32.08ZM569.1,1597.01l13.63.12-.3-18.3c-.06-3.77-2.63-7.1-5.12-8.52-5.72-3.28-14.02-1.05-16.49,5.73-2.09,5.74-2.58,12.45,1.1,17.79,1.26,1.83,4.79,3.16,7.17,3.18Z"/>
+  <rect class="lg7" x="1215.97" y="1524.01" width="14.49" height="86.92"/><rect class="lg3" x="884.84" y="1524.01" width="14.49" height="86.92"/>
+  <path class="lg3" d="M841.87,1639.21c.4,2.23.43,4.37-.19,6.82h-28.22c-.61-2.47-.44-4.5-.29-6.76l4.94-.24c-2.44-4.95-2.4-11.17,1.49-15.47,5.8-6.44,16.06-5.64,22.08.35-1.02,2.52-2.89,4.1-5.1,5.3-1.85-2.13-3.54-3.25-5.9-3.19-2.19.05-4.89,1.03-5.66,3.62-1.02,3.44.33,8.38,4.08,9.27l12.78.3Z"/>
+  <path class="lg7" d="M1566.18,1635.7l-14.8-.13c-.15-4.99-.53-9.57.23-14.26l14.61.13-.05,14.25Z"/>
+  <path class="lg3" d="M532.95,1545.19h-15.35c-.71-4.64-.72-8.77,0-13.4l15.22-.05.12,13.45Z"/>
+  <polygon class="lg7" points="1358.01 1635.52 1344.46 1635.58 1344.28 1621.27 1357.89 1621.46 1358.01 1635.52"/>
+  <path class="lg7" d="M1374.35,1635.43l-13.33.15-.19-14.32,13.36.24c.73,4.66.58,8.72.15,13.93Z"/>
+  <rect class="lg7" x="1137.33" y="1531.59" width="13.8" height="13.8"/>
+  <polygon class="lg3" points="666.78 1545.15 653.06 1545.39 653.06 1531.59 666.85 1531.59 666.78 1545.15"/><polygon class="lg7" points="1167.61 1545.15 1153.88 1545.39 1153.88 1531.59 1167.68 1531.59 1167.61 1545.15"/><polygon class="lg3" points="683.34 1545.15 669.61 1545.39 669.61 1531.59 683.41 1531.59 683.34 1545.15"/><polygon class="lg7" points="1315.25 1540.58 1301.69 1540.36 1301.51 1526.77 1315.31 1526.76 1315.25 1540.58"/><polygon class="lg7" points="1298.77 1540.53 1285.13 1540.37 1285.14 1526.96 1298.74 1526.76 1298.77 1540.53"/><polygon class="lg3" points="454.41 1658.49 440.77 1658.33 440.77 1644.92 454.38 1644.72 454.41 1658.49"/><polygon class="lg3" points="470.96 1658.49 457.33 1658.33 457.33 1644.92 470.94 1644.72 470.96 1658.49"/>
+  <path class="lg6" d="M527.3,712.87l-6.06.62c-3.21.33-7.78-.45-10.27,1.99-1.68,1.79-1.4,5.05-1.4,7.86v572.76s1.38,7.04,1.38,7.04l5.55.67,19.09-.36,343.33-.36,82.73.03c24.62,1.05,47.69,9.52,68.04,23.51,20.05-14.09,43.88-22.83,69.4-23.64h77.91s155.32.36,155.32.36c7.1,1.66,11.68,7.4,12.01,14.06-.02,7.02-4.72,12.92-12.06,14.82l-236.68.1c-23.01,2.24-43.59,11.33-59.87,27.25-1.2,1.18-2.88,1.55-3.76,3.27-.48.94-2.17,1.45-3.08.67l-4.16-3.56c-18.4-17.37-41.89-26.51-67-28.22l-19.58.36-391.4.26-34.72.42c-19.97-2.01-29.27-12.83-31.16-32.39l-.94-9.76v-569.8c1.19-6.72,1.59-12.8,4.56-18.7,3.25-6.46,8.78-11.36,15.4-14.2,6.64-2.85,13.15-2.86,20.54-4.17l270.11.42,120.03.17c37.48-3.04,73.51,3.23,95.21,36.01,7.55-11.76,18.47-20.56,31.54-26.19,12.56-6.09,25.7-7.79,39.72-9.62l89.79-.38,330.76-.42c9.16,1.53,16.92,3.23,23.97,9.17,5.96,6.57,10.21,15.42,10.22,25.16l.16,426.19c-2.03,8.35-8.73,13.55-17.06,12.58-6.51-1.8-12.56-7.06-12.56-14.67l-.1-405.12c1.24-5.47.21-10.05.03-15.32l-.19-5.35c-.05-1.36-1.08-2.54-2.67-2.78l-5.64-.86-173.92.37-239.95.67c-10.97.03-21.41,3.08-30.97,7.01-10.62,4.37-17.98,12.24-22.44,22.54-3.75,8.64-4.43,17.55-5.67,27.15l-.13,470.5c0,6.98-7.29,11.64-13.6,12.23-6.67.62-15.88-5.04-15.89-12.89l-.16-465.7c-1.77-21.45-5.6-41.58-24.67-53.08-9.12-5.5-19.45-7.3-30.04-8.56l-22.31.4-303.3-.25-83.39-.28Z"/>
+  <path class="lg1" d="M393.68,913.51l-.04-86.82c0-.59-.37-.81-.61-.8l.32-53.59c.04-7.31,8.14-12.18,14.48-12.02,6.27.15,13.8,5.23,13.84,12.78l.58,106.42.75,177.79.73,176.68.61,123.93c.03,6.8.58,13.54,3.84,19.34,1.22,2.16,6.53,3.28,9.45,3.28l477.77-.13,33.21-.32c15.02,1.22,27.16,9.09,33.33,22.8l6.45,18.31c1.96,7.46,5.51,14.41,11.57,19.5,18.26,15.31,49.09,13.12,62.84-4.98,3.87-5.09,5.09-11.26,5.98-17.46,2.33-16.24,12.31-29.18,27.4-35.41,7.83-3.23,16.07-4.75,24.63-5.22,5.23-.29,9.83-1.25,15.25.18l205.89-.02c7.61,1.97,11.94,8,11.38,15.62-.43,6.09-5.85,13.23-13.37,13.24l-220.94.27c-5.48,0-11.2,2.28-15.1,4.82-3.86,2.5-5.84,6.23-6.33,10.51-1.53,13.38-6.28,25.54-15.48,35.71-26.18,28.92-77.98,30.01-105.85.28-17.49-18.66-15.4-37.31-23.05-46.69-3.76-4.61-23.24-2.12-31.63-2.12l-487.41.11c-10.37-1.72-20.14-4.43-27.02-11.97-8.44-9.24-11.74-24.28-11.82-36.72l-.57-93.09-.71-177.21-.38-176.99Z"/>
+  <path class="lg2" d="M1415.69,1182.38c-5.35,5.11-11.86,7.57-19.23,8.31l-42.62.08-6.75-13.72,50.98-.02c1.2,0,2.07-.27,3.11-.97l14.5,6.32Z"/>
+  <path class="lg9" d="M1283.83,1057.16l3.26,5.96c-6.19-.21-13.94-.2-15.78,3.4-.69,1.35-.16,2.48.23,3.6.5,1.44,1.15,1.85,2.5,2.37.75.29,7.38-.64,9.81-2.27,2.37-1.6,5.45-3.29,8.82-3.12.66.47.31,2.19.18,2.88l-1.35,7.25c-.4,2.13-1.67,2.49-3.07,3.18-6.04,2.96-11.31,7.31-15.4,12.91-3.71,5.09-2.69,11.59,2.56,15.22,4.6,3.19,10.19,4.37,15.9,4.36-1.86,3.36-2.62,7.82-.97,11.39-11.88,2.62-24.12,2.27-26.25-10.12-1.76-10.26.32-19.88,6.05-28.94-2.38-1.59-4.03-3.01-5.29-5-.77-1.22-1.24-3.33-1.07-5.04l.48-5.04c1.27-4.63,3.12-8.96,5.49-13.12.85-1.5,2.23-3.07,3.91-4.32,2.88-2.13,8.04.89,9.99,4.45Z"/>
+  <path class="lg11" d="M1290.52,1124.28l5.52,11.91c-2.04,1.08-4.18.8-6.25.81l-26.93.04c-3.51,0-7.42.03-10.44-2.82-1.73-1.64-3.16-5.07-3.16-7.73v-34.13c.01-3.32,1.5-7.18,4.18-8.83,4.52-2.78,9.81-1.58,11.59-3.31,1.26,1.99,2.91,3.41,5.29,5-5.73,9.07-7.81,18.68-6.05,28.94,2.13,12.38,14.37,12.74,26.25,10.12Z"/>
+  <path class="lg11" d="M1304.24,1105.67c-5.13-.53-10.18,2.59-12.75,7.22-5.71,0-11.3-1.18-15.9-4.36-5.25-3.63-6.26-10.13-2.56-15.22,4.09-5.61,9.36-9.95,15.4-12.91,2.49,1.5,7.27.31,11.61,3.55,4.57,3.41,4.33,14.43,4.19,21.71Z"/>
+  <rect class="lg12" x="1189.18" y="1143.92" width="19.26" height="19.57" rx="3.8"/><rect class="lg12" x="1158.14" y="1143.92" width="19.26" height="19.57" rx="3.8"/><rect class="lg12" x="1127.09" y="1143.92" width="19.26" height="19.57" rx="3.8"/><rect class="lg12" x="1189.18" y="1113.9" width="19.26" height="19.57" rx="3.8"/><rect class="lg12" x="1158.14" y="1113.9" width="19.26" height="19.57" rx="3.8"/><rect class="lg12" x="1127.09" y="1113.9" width="19.26" height="19.57" rx="3.8"/><rect class="lg12" x="1189.18" y="1083.89" width="19.26" height="19.57" rx="3.8"/><rect class="lg12" x="1219.53" y="1083.89" width="19.26" height="19.57" rx="3.8"/><rect class="lg12" x="1313.42" y="1083.89" width="19.26" height="19.57" rx="3.8"/><rect class="lg12" x="1352.62" y="1083.89" width="37.91" height="19.57" rx="3.82"/><rect class="lg12" x="1219.84" y="1143.95" width="77.64" height="19.57" rx="3.82"/><rect class="lg12" x="1219.53" y="1113.62" width="19.26" height="19.57" rx="3.8"/><rect class="lg12" x="1346.74" y="1113.62" width="19.26" height="19.57" rx="3.8"/><rect class="lg12" x="1346.74" y="1143.62" width="19.26" height="19.57" rx="3.8"/><rect class="lg12" x="1377.73" y="1113.62" width="19.26" height="19.57" rx="3.8"/><rect class="lg12" x="1158.14" y="1083.89" width="19.26" height="19.57" rx="3.8"/><rect class="lg12" x="1127.09" y="1083.89" width="19.26" height="19.57" rx="3.8"/>
+  <path class="lg8" d="M1304.24,1105.67l4.04.41,18.11,7.64,6.27,2.64,13.79,5.7,20,8.36,42.75,17.99,13.23,5.41,126.38,53.06c4.61,1.94,7.03,5.84,8.18,9.83,1.27,4.42.19,9.57-2.94,12.79l-17.33,17.87-19.72,20.39,57.64,63.76c3.68,4.07,7.15,8.01,6.82,13.68-.35,6-4.45,9.82-8.57,13.53l-7.26,6.54-6.2,5.49-6.25,5.53c-3.41,3.01-6.56,6.84-11.04,7.99-6.52,1.67-12.16-.59-16.33-5.27l-5.24-5.86-36.89-37.47-19.88-20.21-45.04,35.29c-4.14,3.25-8.84,5.1-13.93,3.58-4.35-1.29-7.62-4.08-9.89-8.88l-73.32-154.78-6.35-13.16.03-.78-12.48-26.56-6.79-14.02-5.52-11.91c-1.65-3.57-.89-8.03.97-11.39,2.57-4.63,7.62-7.75,12.75-7.22ZM1347.1,1177.06l6.75,13.72,60.06,126.79,42.89-33.45c5.35-4.17,12.03-3.47,17.41.36l23.92,24.32,30.96,31.67,9.77,10.02c2.61-2.63,4.78-5.07,7.52-6.83l-50.98-56.24-7.93-8.66c-6-6.55-7.34-15.57-.53-21.94l10.52-10.83,20.15-20.61-101.93-42.99-14.5-6.32-35.52-14.95-18.29-7.72-14.01-5.59,9.39,20.29,4.34,8.96Z"/>
+  </g>
+</svg>
+
+<style>
+/* ============ STORE additions — built only from the main prototype's tokens ============ */
+.cartbtn{position:relative;display:inline-grid;place-items:center;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;text-decoration:none;transition:all .2s}
+.cartbtn:hover{border-color:var(--ink)}
+.cartbtn svg{width:19px;height:19px}
+.cartbtn .n{position:absolute;top:-4px;inset-inline-end:-4px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:var(--gold);color:#fff;font-family:var(--fm);font-size:.68rem;display:grid;place-items:center;line-height:1}
+.cartbtn .n:empty{display:none}
+.cartbtn.bump{animation:bump .45s var(--ease)}
+@keyframes bump{40%{transform:scale(1.18)}}
+.backsite{font-size:.82rem;color:var(--muted);text-decoration:none;white-space:nowrap;display:none}
+@media(min-width:1200px){.backsite{display:inline}}
+.backsite:hover{color:var(--ink)}
+
+.price{font-weight:600;font-size:1.08rem;color:var(--ink);font-variant-numeric:tabular-nums}
+.price small{font-weight:400;font-size:.78rem;color:var(--muted)}
+.price s{color:var(--muted);font-weight:400;font-size:.85rem;margin-inline-start:6px}
+.cur{font-size:.78em;font-weight:500;color:var(--muted)}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.82rem;color:var(--muted)}
+.meta span{display:inline-flex;align-items:center;gap:5px}
+.pcard{background:#fff;border:1px solid var(--line);border-radius:var(--rc);padding:14px;display:flex;flex-direction:column;gap:10px;transition:all .35s var(--ease);color:inherit;text-decoration:none;position:relative}
+.pcard:hover{transform:translateY(-6px);box-shadow:0 24px 50px rgba(19,101,120,.12);border-color:transparent}
+.pcard h3{font-size:1.04rem;line-height:1.4}
+.pcard .tile{aspect-ratio:16/10}
+.pcard:hover .tile svg{transform:scale(1.05)}
+.pcard .foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:6px}
+.pcard .ribbon{position:absolute;top:22px;inset-inline-start:22px;z-index:2}
+.tag.green{background:#E6F4EC;color:var(--green)}
+.tag.dark{background:var(--ink);color:#fff}
+.bookcov{aspect-ratio:3/4;border-radius:12px;overflow:hidden;background:var(--tint);display:grid;place-items:center;padding:18px 0}
+.bookcov svg{height:100%;width:auto;filter:drop-shadow(0 16px 22px rgba(19,101,120,.25));transition:transform .5s var(--ease)}
+.pcard:hover .bookcov svg{transform:translateY(-4px) rotate(-1.5deg)}
+
+@media(max-width:560px){.acts .btn-cta{display:none}.brand .sub{display:none}.hdr .wrap{gap:10px}}
+/* progress (Kafeef-style collected / target) */
+.goal{display:grid;gap:6px}
+.goal .nums{display:flex;justify-content:space-between;gap:8px;font-size:.84rem;font-variant-numeric:tabular-nums}
+.goal .nums b{font-weight:600;color:var(--ink)}
+.goal .nums span{color:var(--muted)}
+.bar{height:10px;border-radius:999px;background:var(--gray-2);overflow:hidden;position:relative}
+.bar i{display:block;height:100%;border-radius:inherit;background:var(--grad);width:0;transition:width 1.2s var(--ease)}
+.goal .sub{display:flex;justify-content:space-between;font-size:.76rem;color:var(--muted)}
+.goal .sub .end{color:var(--danger)}
+.goal.lg .bar{height:14px}
+.goal.lg .nums{font-size:.95rem}
+.pct{font-family:var(--fm);font-size:.78rem;color:var(--brand);font-weight:500}
+
+.dcard{background:#fff;border:1px solid var(--line);border-radius:var(--rc);overflow:hidden;display:flex;flex-direction:column;transition:all .35s var(--ease)}
+.dcard:hover{box-shadow:0 24px 50px rgba(19,101,120,.12);border-color:transparent;transform:translateY(-4px)}
+.dcard .tile{border-radius:0;aspect-ratio:16/9}
+.dcard .in{padding:16px;display:flex;flex-direction:column;gap:12px;flex:1}
+.dcard h3{font-size:1.04rem;line-height:1.4}
+.dcard h3 a{color:inherit;text-decoration:none}
+.dcard .unit{font-size:.82rem;color:var(--brand-900);background:var(--tint);border-radius:10px;padding:8px 12px}
+.qamt{display:flex;gap:8px;margin-top:auto}
+.qamt input{flex:1;min-width:0;padding:10px 12px}
+.qamt .btn{flex:none}
+.share{position:absolute;top:10px;inset-inline-end:10px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.92);border:0;display:grid;place-items:center;cursor:pointer;color:var(--ink);z-index:2}
+.share svg{width:16px;height:16px}
+
+/* product page */
+.pgrid{display:grid;grid-template-columns:1fr;gap:36px}
+@media(min-width:980px){.pgrid{grid-template-columns:minmax(0,1fr) 420px;align-items:start}}
+.buybox{background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:0 30px 70px rgba(19,101,120,.08);position:sticky;top:88px}
+.buybox h4{font-size:.92rem;font-weight:500;margin-bottom:8px}
+.buybox .seg{grid-template-columns:repeat(var(--n,2),1fr);margin-bottom:18px}
+.buybox .blk{display:grid;gap:10px;margin-bottom:16px}
+.stepper{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+.stepper button{font:inherit;width:42px;height:44px;border:0;background:var(--gray);cursor:pointer;font-size:1.2rem;color:var(--ink)}
+.stepper button:hover{background:var(--gray-2)}
+.stepper input{width:64px;border:0;border-radius:0;text-align:center;font-weight:600;padding:0;height:44px;box-shadow:none!important}
+.stepper.sm button{width:32px;height:34px;font-size:1rem}
+.stepper.sm input{width:44px;height:34px;font-size:.9rem}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{font:inherit;font-size:.9rem;font-weight:500;padding:9px 14px;border:1px solid var(--line);border-radius:10px;background:#fff;cursor:pointer;transition:all .15s;color:var(--ink)}
+.chips button:hover{border-color:var(--ink)}
+.chips button.on{border-color:var(--gold);background:#F6F1E2;color:var(--gold-700)}
+.opt{display:flex;gap:12px;align-items:center;padding:12px 14px;border:1px solid var(--line);border-radius:12px;cursor:pointer;transition:all .15s;background:#fff}
+.opt:hover{border-color:var(--ink)}
+.opt.on{border-color:var(--brand);background:var(--tint)}
+.opt input{width:18px;height:18px;flex:none;accent-color:var(--brand);padding:0}
+.opt b{font-weight:500;display:block;font-size:.94rem}
+.opt span{font-size:.8rem;color:var(--muted)}
+.opt .p{margin-inline-start:auto;font-weight:600;white-space:nowrap}
+.total{display:flex;justify-content:space-between;align-items:baseline;padding:14px 0;border-top:1px solid var(--line);margin-top:4px}
+.total b{font-size:1.5rem;font-weight:600;font-variant-numeric:tabular-nums}
+.calc{font-size:.88rem;color:var(--brand-900);background:var(--tint);border-radius:12px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start}
+.calc svg{flex:none;width:18px;height:18px;margin-top:3px}
+.dedic{border:1px dashed var(--gold-200);border-radius:14px;padding:14px;background:#FCFAF3}
+.dedic .chk{background:transparent;padding:0;align-self:auto}
+.dedic .form{margin-top:12px;gap:12px}
+.kv{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:22px 0}
+@media(min-width:700px){.kv{grid-template-columns:repeat(4,1fr)}}
+.kv div{background:var(--gray);border-radius:12px;padding:14px}
+.kv b{display:block;font-size:1.25rem;font-weight:500;font-variant-numeric:tabular-nums}
+.kv span{font-size:.8rem;color:var(--muted)}
+.curric{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:12px}
+.curric div{display:flex;gap:12px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);font-size:.93rem}
+.curric div:last-child{border-bottom:0}
+.curric .no{font-family:var(--fm);font-size:.75rem;color:var(--brand);width:26px;flex:none}
+.curric .d{margin-inline-start:auto;font-family:var(--fm);font-size:.75rem;color:var(--muted)}
+.hero-media{border-radius:20px;overflow:hidden;background:var(--tint)}
+.hero-media .tile{border-radius:0}
+.feed{display:grid;gap:0;border-inline-start:2px solid var(--line);padding-inline-start:18px;margin-top:10px}
+.feed div{position:relative;padding:8px 0;font-size:.9rem}
+.feed div::before{content:"";position:absolute;inset-inline-start:-24px;top:16px;width:10px;height:10px;border-radius:50%;background:var(--brand);box-shadow:0 0 0 3px #fff}
+.feed .w{font-family:var(--fm);font-size:.74rem;color:var(--muted);display:block}
+
+/* cart */
+.cgrid{display:grid;grid-template-columns:1fr;gap:28px}
+@media(min-width:980px){.cgrid{grid-template-columns:minmax(0,1fr) 360px;align-items:start}}
+.cgroup{background:#fff;border:1px solid var(--line);border-radius:var(--rc);margin-bottom:20px;overflow:hidden}
+.cgroup>h3{font-size:1rem;padding:14px 18px;background:var(--gray);display:flex;align-items:center;gap:10px}
+.cgroup>h3 .tag{margin-inline-start:auto}
+.cline{display:grid;grid-template-columns:72px minmax(0,1fr);gap:14px;padding:16px 18px;border-top:1px solid var(--line)}
+.cline:first-of-type{border-top:0}
+.cline .th{width:72px;height:72px;border-radius:12px;overflow:hidden;background:var(--tint)}
+.cline .th svg{width:100%;height:100%;object-fit:cover;display:block}
+.cline .bd{display:flex;flex-direction:column;gap:6px;min-width:0}
+.cline .top{display:flex;gap:10px;justify-content:space-between;align-items:flex-start}
+.cline .top b{font-weight:500;line-height:1.4}
+.cline .lp{font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.cline .row{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:.84rem;color:var(--muted)}
+.cline .rm{background:none;border:0;color:var(--danger);font:inherit;font-size:.82rem;cursor:pointer;padding:0;margin-inline-start:auto}
+.sumbox{background:var(--gray);border-radius:var(--rc);padding:22px;position:sticky;top:88px}
+.sumbox .r{display:flex;justify-content:space-between;padding:7px 0;font-size:.93rem}
+.sumbox .r span{color:var(--muted)}
+.sumbox .r.t{border-top:1px solid var(--line);margin-top:8px;padding-top:14px;font-size:1.15rem;font-weight:600}
+.sumbox .r.t span{color:var(--ink)}
+.empty{text-align:center;padding:60px 20px;background:var(--gray);border-radius:20px}
+.empty svg{width:64px;height:64px;color:var(--brand);margin-bottom:12px}
+.empty p{margin:8px auto 20px;color:var(--muted)}
+
+.steps{display:flex;gap:8px;align-items:center;margin-bottom:26px;font-size:.85rem;color:var(--muted);flex-wrap:wrap}
+.steps span{display:inline-flex;align-items:center;gap:8px}
+.steps i{font-style:normal;width:24px;height:24px;border-radius:50%;background:var(--gray-2);display:grid;place-items:center;font-family:var(--fm);font-size:.75rem}
+.steps .on{color:var(--ink);font-weight:500}
+.steps .on i{background:var(--brand);color:#fff}
+.steps .done i{background:var(--green);color:#fff}
+.steps .ln{width:28px;height:1px;background:var(--line)}
+.paygrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(min-width:600px){.paygrid{grid-template-columns:repeat(3,1fr)}}
+.paygrid .opt{justify-content:center;font-family:var(--fe);font-weight:600;font-size:.9rem}
+
+.success{max-width:760px;margin:0 auto;text-align:center}
+.success .ok{width:78px;height:78px;border-radius:50%;background:#E6F4EC;color:var(--green);display:grid;place-items:center;margin:0 auto 18px}
+.success .ok svg{width:38px;height:38px}
+.receipt{background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;text-align:start;margin-top:28px}
+.receipt .hd{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-bottom:12px;border-bottom:1px dashed var(--line);margin-bottom:8px}
+.receipt .ln{display:flex;justify-content:space-between;gap:12px;padding:8px 0;font-size:.92rem;border-bottom:1px solid var(--gray-2)}
+.receipt .ln small{display:block;color:var(--muted);font-size:.8rem}
+.gcard{border-radius:18px;padding:26px;color:#fff;background:linear-gradient(135deg,var(--indigo),var(--brand-900));position:relative;overflow:hidden;text-align:start;margin-top:18px}
+.gcard::after{content:"";position:absolute;inset:0;background:radial-gradient(400px 200px at 90% 0%,rgba(195,175,114,.35),transparent 60%)}
+.gcard>*{position:relative;z-index:1}
+.gcard .l{color:var(--gold-200);font-size:.8rem}
+.gcard h4{font-size:1.3rem;margin:6px 0 10px;font-weight:500}
+.gcard p{color:rgba(255,255,255,.8);font-size:.92rem}
+.gcard .mk{position:absolute;inset-inline-end:18px;bottom:14px;width:70px;opacity:.25}
+
+/* account */
+.acct{display:grid;grid-template-columns:1fr;gap:28px}
+@media(min-width:960px){.acct{grid-template-columns:250px minmax(0,1fr);align-items:start}}
+.acct-side{background:var(--gray);border-radius:var(--rc);padding:18px;display:grid;gap:4px}
+.acct-side .who{display:flex;gap:12px;align-items:center;padding-bottom:14px;margin-bottom:8px;border-bottom:1px solid var(--line)}
+.acct-side .who .avatar{width:44px;height:44px;font-size:1rem}
+.acct-side .who b{display:block;font-weight:500}
+.acct-side .who span{font-size:.8rem;color:var(--muted)}
+.acct-side a{display:flex;justify-content:space-between;text-decoration:none;color:var(--ink);padding:9px 12px;border-radius:10px;font-size:.93rem}
+.acct-side a:hover{background:#fff}
+.acct-side a.on{background:#fff;font-weight:500;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.acct-side a .c{font-family:var(--fm);font-size:.75rem;color:var(--muted)}
+.lib{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:760px){.lib{grid-template-columns:1fr 1fr}}
+.libi{display:flex;gap:14px;background:#fff;border:1px solid var(--line);border-radius:var(--rc);padding:14px;align-items:center}
+.libi .th{width:84px;height:62px;border-radius:10px;overflow:hidden;flex:none;background:var(--tint)}
+.libi .th svg{width:100%;height:100%}
+.libi b{font-weight:500;display:block;line-height:1.35;font-size:.95rem}
+.libi .bar{height:6px;margin:8px 0 4px}
+.libi small{font-size:.78rem;color:var(--muted)}
+.tbl{width:100%;border-collapse:collapse;font-size:.9rem;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.tbl th{background:var(--gray);text-align:start;font-weight:500;font-size:.8rem;color:var(--muted);padding:10px 14px}
+.tbl td{padding:12px 14px;border-top:1px solid var(--line);vertical-align:top}
+.tblwrap{overflow-x:auto}
+.seatmap{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.seatmap i{width:14px;height:14px;border-radius:4px;background:var(--gray-2)}
+.seatmap i.a{background:var(--green)}
+.seatmap i.p{background:var(--gold-200)}
+.legend{display:flex;gap:14px;font-size:.76rem;color:var(--muted);margin-top:6px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-inline-end:5px;vertical-align:middle}
+
+.howto{counter-reset:h}
+.howto .card{position:relative;padding-top:54px}
+.howto .card::before{counter-increment:h;content:counter(h);position:absolute;top:20px;inset-inline-start:22px;width:28px;height:28px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-family:var(--fm);font-size:.8rem}
+.stickybar{position:fixed;bottom:0;inset-inline:0;background:#fff;border-top:1px solid var(--line);padding:10px 16px;display:flex;gap:12px;align-items:center;justify-content:space-between;z-index:40;box-shadow:0 -10px 30px rgba(19,101,120,.08)}
+@media(min-width:980px){.stickybar{display:none}}
+.note{font-size:.8rem;color:var(--muted)}
+</style>
+
+<script>
+/* =====================================================================
+   ta3lom.sa — STORE prototype (R0)
+   Courses · Books · Seat sponsorship · Donation products (Kafeef-style)
+   Visual system is copied verbatim from design/ta3lom-prototype.html.
+   Data lives in memory + localStorage (prototype only).
+   ===================================================================== */
+let lang=(()=>{try{return localStorage.getItem('t3s-lang')||'ar'}catch(e){return 'ar'}})();
+const L=(a,e)=>lang==='ar'?a:e;
+const pick=(ar,en)=>lang==='en'?((en||'').trim()||ar):ar;
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const href=p=>`#/${lang}/${p}`;
+const arrow=()=>'<span class="arr">→</span>';
+const uid=()=>Math.random().toString(36).slice(2,9);
+const num=n=>Math.round(n).toLocaleString('en');
+const money=n=>`${(Math.round(n*100)/100).toLocaleString('en')} <span class="cur">${L('ر.س','SAR')}</span>`;
+const moneyTxt=n=>`${(Math.round(n*100)/100).toLocaleString('en')} ${L('ر.س','SAR')}`;
+const TODAY=new Date();
+const fmtDate=d=>new Date(d).toLocaleDateString(lang==='ar'?'ar-SA-u-ca-gregory-nu-latn':'en-GB',{day:'numeric',month:'long',year:'numeric'});
+const daysLeft=d=>Math.max(0,Math.ceil((new Date(d)-TODAY)/864e5));
+
+/* ===================== CATALOG (seed) ===================== */
+const CATS=[
+ {id:'tech',ar:'التقنية في التعليم',en:'EdTech'},
+ {id:'teach',ar:'مهارات المعلم',en:'Teacher skills'},
+ {id:'study',ar:'مهارات الدراسة',en:'Study skills'},
+ {id:'kids',ar:'الطفولة المبكرة',en:'Early childhood'},
+ {id:'family',ar:'الأسرة',en:'Family'},
+];
+const SEED_PRODUCTS=[
+ /* ---------- COURSES ---------- */
+ {id:'p1',slug:'digital-teacher',type:'course',cat:'teach',seed:1,badge:'best',
+  titleAr:'المعلّم الرقمي: أدوات التعليم الإلكتروني',titleEn:'The Digital Teacher: e-learning tools',
+  sumAr:'دورة عملية تمكّن المعلم من تصميم درس تفاعلي كامل باستخدام أدوات مجانية، مع تقييم تكويني ومتابعة للطلاب.',sumEn:'A hands-on course that takes a teacher from zero to a complete interactive lesson using free tools.',
+  price:350,old:450,hours:18,lessons:24,levelAr:'مبتدئ – متوسط',levelEn:'Beginner – intermediate',instAr:'أ. ريم السبيعي',instEn:'Reem Al-Subaie',students:1240,
+  cur:[['أساسيات الفصل الافتراضي','Virtual classroom basics','42:00'],['تصميم درس تفاعلي في 10 دقائق','An interactive lesson in 10 minutes','58:00'],['التقييم التكويني الرقمي','Digital formative assessment','1:10:00'],['إدارة الصف عن بُعد','Remote classroom management','49:00'],['مشروع التخرج وشهادة الإتمام','Capstone and certificate','35:00']],
+  sponsor:{seat:350,target:300,funded:184,donors:96,end:'2026-12-31',grpAr:'معلمات المدارس الأهلية الناشئة في القرى والهجر',grpEn:'Teachers at small rural private schools'}},
+ {id:'p2',slug:'smart-study',type:'course',cat:'study',seed:2,
+  titleAr:'مهارات المذاكرة الذكية',titleEn:'Smart study skills',
+  sumAr:'تقنيات مثبتة علمياً لتنظيم الوقت والتركيز والحفظ طويل المدى، مصمّمة لطلاب المرحلتين المتوسطة والثانوية.',sumEn:'Evidence-based techniques for time, focus and long-term memory, for middle and high school students.',
+  price:120,hours:6,lessons:12,levelAr:'جميع المستويات',levelEn:'All levels',instAr:'د. خالد الزهراني',instEn:'Dr. Khalid Al-Zahrani',students:3100,
+  cur:[['كيف يعمل الدماغ عند التعلّم','How the brain learns','25:00'],['جدول مذاكرة واقعي','A realistic study plan','31:00'],['تقنية الاسترجاع النشط','Active recall','28:00'],['قبل الاختبار بأسبوع','One week before the exam','22:00']],
+  sponsor:{seat:120,target:500,funded:342,donors:210,end:'2026-11-30',grpAr:'طلاب الأسر المستفيدة من الضمان الاجتماعي',grpEn:'Students from social-security families'}},
+ {id:'p3',slug:'python-kids',type:'course',cat:'tech',seed:3,badge:'new',
+  titleAr:'البرمجة للناشئين بلغة بايثون',titleEn:'Python for young coders',
+  sumAr:'رحلة ممتعة من أول سطر برمجي إلى لعبة كاملة، للأعمار 10–15 سنة، بمشاريع أسبوعية قصيرة.',sumEn:'From the first line of code to a finished game, ages 10–15, with short weekly projects.',
+  price:450,hours:24,lessons:30,levelAr:'مبتدئ',levelEn:'Beginner',instAr:'م. فيصل القحطاني',instEn:'Faisal Al-Qahtani',students:640,
+  cur:[['مرحباً بايثون','Hello Python','30:00'],['المتغيرات والقرارات','Variables and decisions','45:00'],['الحلقات والرسم','Loops and drawing','50:00'],['لعبتي الأولى','My first game','1:20:00']],
+  sponsor:{seat:450,target:150,funded:41,donors:23,end:'2027-01-31',grpAr:'طلاب دور الأيتام الشريكة',grpEn:'Students at partner orphan-care homes'}},
+ {id:'p4',slug:'early-childhood',type:'course',cat:'kids',seed:4,
+  titleAr:'أساسيات التعليم في الطفولة المبكرة',titleEn:'Early-childhood teaching essentials',
+  sumAr:'للمعلمات والأمهات: كيف نبني المهارات الأساسية الاثنتي عشرة من خلال اللعب والأنشطة اليومية.',sumEn:'For teachers and mothers: building twelve core skills through play and daily routines.',
+  price:280,hours:10,lessons:16,levelAr:'جميع المستويات',levelEn:'All levels',instAr:'أ. هيا الدوسري',instEn:'Haya Al-Dosari',students:870,
+  cur:[['المهارات الاثنتا عشرة','The twelve core skills','35:00'],['التعلّم باللعب','Learning through play','40:00'],['ركن القراءة في المنزل','A reading corner at home','26:00']],
+  sponsor:{seat:280,target:200,funded:77,donors:41,end:'2026-12-31',grpAr:'أمهات مستفيدات من برامج الأسرة',grpEn:'Mothers enrolled in family programs'}},
+ {id:'p5',slug:'qudrat-prep',type:'course',cat:'study',seed:5,
+  titleAr:'الاستعداد لاختبار القدرات العامة',titleEn:'General aptitude test prep',
+  sumAr:'شرح مبسّط للقسمين الكمي واللفظي مع ثلاثة اختبارات تجريبية كاملة وتحليل للأداء.',sumEn:'Quantitative and verbal sections with three full mock tests and performance analysis.',
+  price:199,old:249,hours:14,lessons:28,levelAr:'متوسط',levelEn:'Intermediate',instAr:'أ. عبدالرحمن الشهري',instEn:'Abdulrahman Al-Shehri',students:2150,
+  cur:[['القسم الكمي','Quantitative','3:10:00'],['القسم اللفظي','Verbal','2:40:00'],['الاختبارات التجريبية','Mock tests','4:00:00']],
+  sponsor:null},
+ {id:'p6',slug:'family-remote',type:'course',cat:'family',seed:6,
+  titleAr:'دليل الأسرة للتعلّم عن بُعد',titleEn:'The family guide to remote learning',
+  sumAr:'كيف تهيّئ الأسرة بيئة تعلّم منزلية صحية، وتتابع أبناءها دون ضغط.',sumEn:'Setting up a healthy home-learning environment and following up without pressure.',
+  price:90,hours:4,lessons:8,levelAr:'جميع المستويات',levelEn:'All levels',instAr:'د. منى العنزي',instEn:'Dr. Mona Al-Anazi',students:1520,
+  cur:[['بيئة التعلّم المنزلية','The home learning space','20:00'],['الروتين اليومي','Daily routine','24:00'],['المتابعة دون ضغط','Following up without pressure','30:00']],
+  sponsor:{seat:90,target:400,funded:388,donors:150,end:'2026-10-31',grpAr:'أسر الطلاب المستفيدين',grpEn:'Families of enrolled students'}},
+
+ /* ---------- BOOKS ---------- */
+ {id:'b1',slug:'science-stars-book',type:'book',cat:'kids',seed:0,badge:'best',coverAr:'نجوم العلوم',coverEn:'Science Stars',
+  titleAr:'نجوم العلوم — كتاب التجارب المنزلية',titleEn:'Science Stars — home experiments book',
+  sumAr:'48 تجربة علمية آمنة بأدوات المنزل، ملوّنة ومصوّرة خطوة بخطوة للمرحلة الابتدائية.',sumEn:'48 safe experiments with household items, illustrated step by step for primary pupils.',
+  authorAr:'فريق جمعية التعلم الإلكتروني',authorEn:'E-Learning Association team',pages:132,
+  formats:[{k:'print',price:65,old:80},{k:'digital',price:35}],
+  sponsor:{seat:40,target:1000,funded:612,donors:188,end:'2026-12-31',grpAr:'مكتبات المدارس الابتدائية الحكومية',grpEn:'Public primary-school libraries',unitAr:'نسخة',unitEn:'copy'}},
+ {id:'b2',slug:'formative-guide',type:'book',cat:'teach',seed:2,coverAr:'التقويم التكويني',coverEn:'Formative Assessment',
+  titleAr:'دليل المعلم للتقويم التكويني',titleEn:'The teacher\'s guide to formative assessment',
+  sumAr:'أكثر من 60 أداة تقويم سريعة تُطبّق داخل الحصة، مع نماذج جاهزة للطباعة.',sumEn:'60+ quick in-class assessment tools with printable templates.',
+  authorAr:'د. سلمان المطيري',authorEn:'Dr. Salman Al-Mutairi',pages:210,
+  formats:[{k:'print',price:85},{k:'digital',price:45}],sponsor:null},
+ {id:'b3',slug:'letters-tales',type:'book',cat:'kids',seed:4,badge:'new',coverAr:'حكايات الحروف',coverEn:'Letter Tales',
+  titleAr:'حكايات الحروف',titleEn:'Letter Tales',
+  sumAr:'28 قصة قصيرة، لكل حرف حكاية، تساعد الطفل على القراءة الأولى بمتعة.',sumEn:'28 short stories, one per letter, for joyful first reading.',
+  authorAr:'أ. نوف الحربي',authorEn:'Nouf Al-Harbi',pages:96,
+  formats:[{k:'print',price:55},{k:'digital',price:25}],
+  sponsor:{seat:30,target:600,funded:215,donors:74,end:'2026-12-31',grpAr:'أطفال الأسر المستفيدة (3–7 سنوات)',grpEn:'Children of beneficiary families (3–7)',unitAr:'نسخة',unitEn:'copy'}},
+ {id:'b4',slug:'study-planner',type:'book',cat:'study',seed:1,coverAr:'مخطط المذاكرة',coverEn:'Study Planner',
+  titleAr:'مخطط المذاكرة السنوي 2027',titleEn:'2027 annual study planner',
+  sumAr:'مخطط أسبوعي وشهري مبني على تقنيات دورة المذاكرة الذكية، مع ملصقات تحفيزية.',sumEn:'Weekly and monthly planner built on the Smart Study method, with motivational stickers.',
+  authorAr:'فريق الجمعية',authorEn:'Association team',pages:180,
+  formats:[{k:'print',price:40}],sponsor:null},
+
+ /* ---------- DONATION PRODUCTS ---------- */
+ {id:'d1',slug:'water-for-schools',type:'cause',seed:0,icon:'water',badge:'urgent',
+  titleAr:'سقيا الطلاب — برادات مياه للمدارس',titleEn:'Water for pupils — school water coolers',
+  sumAr:'برّاد مياه مُفلتر لمدرسة في منطقة نائية يخدم قرابة 300 طالب لسنوات.',sumEn:'A filtered water cooler for a remote school, serving around 300 pupils for years.',
+  bodyAr:'تفتقر مدارس كثيرة في القرى والهجر إلى مياه شرب نظيفة وباردة، خصوصاً في أشهر الصيف. يُركّب البرّاد ويُصان لمدة عامين، ويُرسل لك تقرير بالصور عند التركيب.',bodyEn:'Many village schools lack clean, cool drinking water, especially in summer. Each cooler is installed and maintained for two years, and you receive a photo report on installation.',
+  cause:{unit:1500,unitAr:'برّاد',unitEn:'cooler',target:90000,collected:61250,donors:318,end:'2026-12-31',zakat:false,benAr:'60 مدرسة',benEn:'60 schools'}},
+ {id:'d2',slug:'tablet-for-student',type:'cause',seed:1,icon:'tablet',
+  titleAr:'جهاز لوحي لطالب محتاج',titleEn:'A tablet for a student in need',
+  sumAr:'جهاز لوحي محمّل بالمحتوى التعليمي للجمعية، يُسلّم للطالب مع باقة بيانات لفصل دراسي.',sumEn:'A tablet preloaded with the association\'s content, handed over with one term of data.',
+  bodyAr:'يُختار الطلاب وفق معايير الأهلية المنشورة في صفحة المستفيدين. يُسجّل كل جهاز باسم المستفيد ويُتابَع استخدامه التعليمي.',bodyEn:'Students are selected against the published eligibility criteria. Each device is registered to the beneficiary and its learning use is followed up.',
+  cause:{unit:950,unitAr:'جهاز',unitEn:'tablet',target:190000,collected:72400,donors:402,end:'2027-02-28',zakat:true,benAr:'200 طالب',benEn:'200 students'}},
+ {id:'d3',slug:'learning-data',type:'cause',seed:2,icon:'wifi',
+  titleAr:'باقة إنترنت تعليمية لفصل دراسي',titleEn:'One term of learning data',
+  sumAr:'باقة بيانات مخصّصة للمنصات التعليمية لطالب من أسرة محدودة الدخل.',sumEn:'A data bundle, restricted to learning platforms, for a student from a low-income family.',
+  bodyAr:'تُفعَّل الباقة على شريحة باسم ولي الأمر وتقتصر على المنصات التعليمية المعتمدة.',bodyEn:'Activated on a SIM in the guardian\'s name and restricted to approved learning platforms.',
+  cause:{unit:120,unitAr:'باقة',unitEn:'bundle',target:60000,collected:51800,donors:733,end:'2026-11-15',zakat:true,benAr:'500 طالب',benEn:'500 students'}},
+ {id:'d4',slug:'school-bag',type:'cause',seed:3,icon:'bag',
+  titleAr:'الحقيبة المدرسية المتكاملة',titleEn:'The complete school bag',
+  sumAr:'حقيبة بكامل أدواتها وقرطاسيتها مع قصة من إصدارات الجمعية.',sumEn:'A fully stocked school bag with stationery and one of our story books.',
+  bodyAr:'تُوزّع الحقائب قبل بداية كل فصل دراسي عبر المدارس الشريكة.',bodyEn:'Distributed before each term through partner schools.',
+  cause:{unit:180,unitAr:'حقيبة',unitEn:'bag',target:54000,collected:17820,donors:129,end:'2027-01-15',zakat:true,benAr:'300 طالب',benEn:'300 students'}},
+ {id:'d5',slug:'education-fund',type:'cause',seed:4,icon:'heart',
+  titleAr:'صندوق دعم التعليم (تبرع عام)',titleEn:'Education support fund (general)',
+  sumAr:'تبرع بأي مبلغ، وتوجّهه الجمعية إلى البرنامج الأكثر احتياجاً.',sumEn:'Give any amount; the association directs it to the most urgent program.',
+  bodyAr:'يُصرف الصندوق وفق خطة الجمعية المعتمدة من مجلس الإدارة، ويُفصح عنه في التقرير المالي السنوي.',bodyEn:'Spent under the board-approved plan and disclosed in the annual financial report.',
+  cause:{unit:0,target:500000,collected:143900,donors:1120,end:'2026-12-31',zakat:false,benAr:'جميع البرامج',benEn:'All programs'}},
+];
+
+/* ===================== STATE ===================== */
+const KEY='t3-store-r1';
+function load(){try{const r=localStorage.getItem(KEY);if(r){const d=JSON.parse(r);if(d&&d.cart&&d.orders)return d}}catch(e){}return {cart:[],orders:[],delta:{}}}
+let DB=load();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(DB))}catch(e){}}
+const P=id=>SEED_PRODUCTS.find(p=>p.id===id);
+const PS=slug=>SEED_PRODUCTS.find(p=>p.slug===slug);
+const cat=id=>CATS.find(c=>c.id===id);
+/* progress with the session's own orders applied */
+function goalOf(p){
+  const d=DB.delta[p.id]||0;
+  if(p.type==='cause'){const c=p.cause;return {got:c.collected+d,target:c.target,donors:c.donors+(DB.deltaD?.[p.id]||0),end:c.end,unit:'money'}}
+  const s=p.sponsor;if(!s)return null;
+  return {got:s.funded+d,target:s.target,donors:s.donors+(DB.deltaD?.[p.id]||0),end:s.end,unit:'seat'};
+}
+const pct=g=>Math.min(100,Math.round(g.got/g.target*100));
+const seatWord=(p,n)=>{
+  if(p.type==='book'){const s=p.sponsor;return lang==='ar'?(n===1?'نسخة':'نسخ'):(n===1?s.unitEn:s.unitEn+'s')}
+  return lang==='ar'?(n===1?'مقعد':n<=10&&n>2?'مقاعد':'مقعداً'):(n===1?'seat':'seats');
+};
+const unitWord=p=>pick(p.cause.unitAr,p.cause.unitEn);
+
+/* ===================== ART ===================== */
+const PAL=['#1A96C1','#136578','#A58E36','#0E3D4C','#5CC4E6','#C3AF72'];
+function artSVG(seed,face){
+  const s=seed||1,a=PAL[s%PAL.length],b=PAL[(s+2)%PAL.length];
+  return `<svg viewBox="0 0 320 180" aria-hidden="true"><rect width="320" height="180" fill="${a}" opacity=".12"/><rect width="320" height="180" fill="url(#dots)" opacity=".35"/><circle cx="${70+s*9%80}" cy="${100-s*3%40}" r="52" fill="url(#hg)" opacity=".9"/><rect x="${150+s*5%40}" y="${44+s%20}" width="108" height="98" rx="20" fill="none" stroke="${b}" stroke-width="3" opacity=".65"/><rect x="${172+s*5%40}" y="${66+s%20}" width="58" height="54" rx="13" fill="${b}" opacity=".85"/></svg>`;
+}
+const ICONS={
+ water:'<path d="M12 2.5s-6.5 7.2-6.5 11.6a6.5 6.5 0 0 0 13 0C18.5 9.7 12 2.5 12 2.5z"/><path d="M9 14.5a3 3 0 0 0 3 3"/>',
+ tablet:'<rect x="5" y="2.5" width="14" height="19" rx="2.5"/><path d="M10.5 18.5h3"/>',
+ wifi:'<path d="M2.5 9a14 14 0 0 1 19 0M5.5 12.5a9.5 9.5 0 0 1 13 0M8.8 15.8a5 5 0 0 1 6.4 0"/><circle cx="12" cy="19" r="1.2"/>',
+ bag:'<path d="M6 8h12l1 13H5z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/><path d="M5.5 13h13"/>',
+ heart:'<path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.3a4.3 4.3 0 0 1 7.5 2.5C19.5 15.4 12 20 12 20z"/>',
+ seat:'<path d="M7 11V6a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v5"/><path d="M5 11h14v4H5zM7 15v5M17 15v5"/>',
+ book:'<path d="M4 4.5h6a2 2 0 0 1 2 2V20a2 2 0 0 0-2-2H4zM20 4.5h-6a2 2 0 0 0-2 2V20a2 2 0 0 1 2-2h6z"/>',
+ play:'<rect x="3" y="4.5" width="18" height="15" rx="2.5"/><path d="M10 9v6l5-3z"/>',
+};
+const ic=(k,sz)=>`<svg width="${sz||18}" height="${sz||18}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[k]}</svg>`;
+function causeArt(p){
+  const s=p.seed||0,a=PAL[s%PAL.length];
+  return `<svg viewBox="0 0 320 180" aria-hidden="true"><rect width="320" height="180" fill="${a}" opacity=".14"/><rect width="320" height="180" fill="url(#dots)" opacity=".4"/><circle cx="${s%2?250:70}" cy="${s%2?40:150}" r="90" fill="url(#hg)" opacity=".28"/><circle cx="160" cy="90" r="48" fill="#fff"/><g transform="translate(130 60) scale(2.5)" fill="none" stroke="${a==='#C3AF72'||a==='#5CC4E6'?'#136578':a}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${ICONS[p.icon]||ICONS.heart}</g></svg>`;
+}
+function coverSVG(p){
+  const s=p.seed||0,a=PAL[(s+1)%PAL.length],b=PAL[(s+3)%PAL.length],t=pick(p.coverAr,p.coverEn);
+  return `<svg viewBox="0 0 150 200" aria-hidden="true"><rect x="6" y="4" width="140" height="192" rx="6" fill="#0F262E" opacity=".18"/><rect width="140" height="192" rx="6" fill="${a}"/><rect width="140" height="192" rx="6" fill="url(#dots)" opacity=".25"/><rect x="0" width="10" height="192" fill="#000" opacity=".15"/><circle cx="${40+s*17%60}" cy="120" r="${34+s%3*6}" fill="${b}" opacity=".9"/><circle cx="${100-s*9%40}" cy="140" r="22" fill="url(#hg)"/><text x="75" y="44" text-anchor="middle" fill="#fff" font-family="IBM Plex Sans Arabic, IBM Plex Sans, sans-serif" font-size="${t.length>12?13:16}" font-weight="600">${esc(t)}</text><rect x="45" y="56" width="60" height="2" fill="#fff" opacity=".55"/><text x="75" y="182" text-anchor="middle" fill="#fff" opacity=".8" font-family="IBM Plex Mono, monospace" font-size="7" letter-spacing="1">TA3LOM.SA</text></svg>`;
+}
+function thumb(p){return p.type==='cause'?causeArt(p):p.type==='book'?`<div style="display:grid;place-items:center;height:100%;padding:10px">${coverSVG(p)}</div>`:artSVG(p.seed)}
+
+const logoMark='<svg class="mark" viewBox="380 320 1250 1060" aria-hidden="true"><use href="#logo-src"/></svg>';
+const logoFull='<svg viewBox="380 320 1250 1350" role="img" aria-label="Logo"><use href="#logo-src"/></svg>';
+const cartIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6.2"/><circle cx="10" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/></svg>';
+const shareIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.2 10.8l7.6-4.4M8.2 13.2l7.6 4.4"/></svg>';
+const infoIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>';
+const pillarIcons=[ic('play',24),ic('book',24),ic('seat',24),ic('heart',24)].map(s=>s.replace('<svg ','<svg class="ic" '));
+
+/* ===================== STRINGS ===================== */
+const T={
+ name:()=>L('جمعية التعلم الإلكتروني','E-Learning Association'),
+ sub:()=>L('المتجر · تعلّم وأهدِ غيرك التعلّم','Store · learn, and give learning'),
+ nav:()=>({home:L('الرئيسية','Home'),courses:L('الدورات','Courses'),books:L('الكتب','Books'),sponsor:L('اكفل مقعداً','Sponsor a seat'),causes:L('فرص التبرع','Give'),account:L('حسابي','My account')}),
+ proto:()=>L('<b>نموذج أولي</b> · متجر تعلّم — لا عمليات دفع حقيقية، البيانات محفوظة في متصفحك فقط','<b>PROTOTYPE</b> · ta3lom store — no real payments, data stays in your browser'),
+};
+const typeName=t=>({course:L('دورة','Course'),book:L('كتاب','Book'),cause:L('فرصة تبرع','Donation')}[t]);
+const fmtName=k=>({print:L('نسخة مطبوعة','Printed'),digital:L('نسخة رقمية PDF','Digital PDF')}[k]);
+const badgeTag=b=>b?({best:`<span class="tag gold">${L('الأكثر طلباً','Best seller')}</span>`,new:`<span class="tag green">${L('جديد','New')}</span>`,urgent:`<span class="tag" style="background:#FBEAEA;color:var(--danger)">${L('عاجل','Urgent')}</span>`}[b]||''):'';
+
+/* ===================== CART ===================== */
+const cartCount=()=>DB.cart.length;
+const isGift=l=>l.kind!=='buy';
+function bumpCart(){renderCartBadge();const b=document.getElementById('cartBtn');if(b){b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump')}}
+function renderCartBadge(){const n=document.querySelector('#cartBtn .n');if(n)n.textContent=cartCount()||''}
+function addLine(line){
+  const p=P(line.pid);
+  if(line.kind==='buy'&&p.type==='course'&&DB.cart.some(l=>l.pid===p.id&&l.kind==='buy')){toast(L('الدورة موجودة في السلة بالفعل','This course is already in your cart'),true);return false}
+  /* merge identical, undedicated lines */
+  const mergeable=line.mode==='units'&&!line.ded&&line.format!=='digital'&&!(p.type==='course'&&line.kind==='buy');
+  const same=mergeable&&DB.cart.find(l=>l.pid===line.pid&&l.kind===line.kind&&l.mode==='units'&&l.format===line.format&&l.intent===line.intent&&!l.ded);
+  if(same){same.qty+=line.qty;same.amount=same.qty*same.unit}
+  else DB.cart.push(Object.assign({id:uid()},line));
+  save();bumpCart();
+  toast(`${line.kind==='buy'?L('أُضيف إلى السلة','Added to cart'):L('أُضيف إلى سلة التبرعات','Added to your giving')} · <a href="${href('cart')}" style="color:var(--gold-200)">${L('عرض السلة','View cart')}</a>`);
+  return true;
+}
+window.cartQty=(id,d)=>{const l=DB.cart.find(x=>x.id===id);if(!l)return;l.qty=Math.max(1,Math.min(999,l.qty+d));l.amount=l.qty*l.unit;save();route()};
+window.cartRm=id=>{DB.cart=DB.cart.filter(x=>x.id!==id);save();route();toast(L('حُذف من السلة','Removed'))};
+function totals(lines){
+  const buy=lines.filter(l=>l.kind==='buy').reduce((s,l)=>s+l.amount,0);
+  const give=lines.filter(isGift).reduce((s,l)=>s+l.amount,0);
+  const ship=lines.some(l=>l.format==='print')?25:0;
+  return {buy,give,ship,all:buy+give+ship};
+}
+function lineDesc(l){
+  const p=P(l.pid);
+  if(l.kind==='buy'){
+    if(p.type==='course')return L('اشتراك شخصي · وصول دائم','Personal enrolment · lifetime access');
+    return `${fmtName(l.format)} · ${l.qty} × ${moneyTxt(l.unit)}`;
+  }
+  if(l.kind==='sponsor'){
+    if(l.mode==='amount')return L(`مساهمة في كفالة ${p.type==='book'?'النسخ':'المقاعد'} · تعادل ${(l.amount/l.unit).toFixed(2)} ${seatWord(p,2)}`,`Share toward ${p.type==='book'?'copies':'seats'} · equals ${(l.amount/l.unit).toFixed(2)} ${seatWord(p,2)}`);
+    return L(`كفالة ${l.qty} ${seatWord(p,l.qty)} × ${moneyTxt(l.unit)}`,`Sponsoring ${l.qty} ${seatWord(p,l.qty)} × ${moneyTxt(l.unit)}`);
+  }
+  const intent=l.intent==='zakat'?L(' · زكاة',' · Zakat'):'';
+  if(l.mode==='units')return `${l.qty} ${unitWord(p)} × ${moneyTxt(l.unit)}${intent}`;
+  return L('مبلغ مفتوح','Open amount')+intent;
+}
+
+/* ===================== CHROME ===================== */
+function renderHeader(r){
+  const n=T.nav();
+  const links=[['',n.home],['shop/course',n.courses],['shop/book',n.books],['shop/sponsor',n.sponsor],['shop/cause',n.causes]];
+  document.getElementById('hdr').innerHTML=`<div class="wrap">
+    <a class="brand" href="${href('')}">${logoMark}<span class="nm">${T.name()}<span class="sub">${T.sub()}</span></span></a>
+    <nav class="nav" aria-label="Store">${links.map(([p,t])=>`<a href="${href(p)}" data-r="${p}">${t}</a>`).join('')}<a href="${href('account')}" data-r="account">${n.account}</a></nav>
+    <div class="acts">
+      <a class="backsite" href="#" onclick="toast('${L('ينتقل إلى ta3lom.sa','Goes to ta3lom.sa')}');return false">${L('← الموقع الرئيسي','Main site →')}</a>
+      <button class="lang" id="langBtn" type="button">${lang==='ar'?'EN':'عربي'}</button>
+      <a class="cartbtn" id="cartBtn" href="${href('cart')}" aria-label="${L('السلة','Cart')}">${cartIcon}<span class="n">${cartCount()||''}</span></a>
+      <a class="btn btn-cta sm" href="${href('shop/cause')}">${L('تبرع الآن','Donate now')}</a>
+      <button class="burger" id="burger" type="button" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div></div>`;
+  document.getElementById('mnav').innerHTML=links.map(([p,t])=>`<a href="${href(p)}">${t}</a>`).join('')+`<a href="${href('account')}">${n.account}</a><a href="${href('cart')}">${L('السلة','Cart')} (${cartCount()})</a>`;
+  document.getElementById('langBtn').onclick=()=>{lang=lang==='ar'?'en':'ar';try{localStorage.setItem('t3s-lang',lang)}catch(e){}location.hash=`#/${lang}/`+location.hash.replace(/^#\/(ar|en)\/?/,'')};
+  document.getElementById('burger').onclick=()=>document.getElementById('mnav').classList.toggle('open');
+  document.getElementById('protobar').innerHTML=T.proto()+` <a href="#" onclick="resetDemo();return false">${L('إعادة ضبط النموذج','Reset demo')}</a>`;
+  document.querySelectorAll('.nav [data-r]').forEach(el=>{const d=el.dataset.r;el.classList.toggle('on',d===''?r==='':r.startsWith(d))});
+}
+function renderFooter(){
+  const n=T.nav();
+  document.getElementById('foot').innerHTML=`<div class="wrap"><div class="grid">
+    <div><div class="foot-logo">${logoFull}</div><p>${L('متجر جمعية التعلم الإلكتروني: كل ريال يُنفق هنا يعود إلى برامج الجمعية التعليمية، وكل كفالة تصل إلى مستفيد حقيقي بإشعار موثّق.','The E-Learning Association store: every riyal spent here returns to our learning programs, and every sponsorship reaches a real beneficiary with a documented notice.')}</p></div>
+    <div><h4>${L('المتجر','Store')}</h4><a href="${href('shop/course')}">${n.courses}</a><a href="${href('shop/book')}">${n.books}</a><a href="${href('shop/sponsor')}">${n.sponsor}</a><a href="${href('shop/cause')}">${n.causes}</a></div>
+    <div><h4>${L('الشفافية','Transparency')}</h4><a href="#" onclick="return false">${L('سياسة الاسترجاع','Refund policy')}</a><a href="#" onclick="return false">${L('آلية توزيع الكفالات','How sponsorships are allocated')}</a><a href="#" onclick="return false">${L('التقارير المالية','Financial reports')}</a><a href="#" onclick="return false">${L('الشروط والأحكام','Terms')}</a></div>
+    <div><h4>${L('تواصل','Contact')}</h4><a class="mono" style="font-size:.85rem" href="#">store@ta3lom.sa</a><a class="mono" style="font-size:.85rem" dir="ltr" href="#">+966 11 000 0000</a>
+      <div class="pay" style="margin:14px 0 0"><span style="color:#9FB4BC;border-color:rgba(255,255,255,.15)">mada</span><span style="color:#9FB4BC;border-color:rgba(255,255,255,.15)">Apple Pay</span><span style="color:#9FB4BC;border-color:rgba(255,255,255,.15)">VISA</span><span style="color:#9FB4BC;border-color:rgba(255,255,255,.15)">STC Pay</span></div></div>
+  </div><div class="foot-bottom"><span>© 2026 ${L('جمعية التعلم الإلكتروني','E-Learning Association')}</span><span>${L('ترخيص رقم','Licence no.')} 1234</span><span>${L('الرقم الضريبي','VAT no.')} 3000000000003</span></div></div>`;
+}
+
+/* ===================== SHARED BLOCKS ===================== */
+function pageHead(title,lede,crumbs){
+  const c=[[T.nav().home,'']].concat(crumbs||[]).map(([n,p],i,a)=>i===a.length-1?`<span>${n}</span>`:`<a href="${href(p)}">${n}</a><span>/</span>`).join('');
+  return `<div class="ph"><div class="wrap"><div class="crumbs">${c}</div><h1 class="h-in">${title}</h1>${lede?`<p class="h-in">${lede}</p>`:''}</div></div>`;
+}
+function goalBlock(p,lg){
+  const g=goalOf(p);if(!g)return '';
+  const pc=pct(g);
+  const got=g.unit==='money'?money(g.got):`${num(g.got)} ${seatWord(p,g.got)}`;
+  const tg=g.unit==='money'?money(g.target):`${num(g.target)} ${seatWord(p,g.target)}`;
+  const d=daysLeft(g.end);
+  return `<div class="goal ${lg?'lg':''}"><div class="nums"><span><b>${got}</b> ${L('من','of')} ${tg}</span><span class="pct">${pc}%</span></div>
+   <div class="bar"><i data-w="${pc}"></i></div>
+   <div class="sub"><span>${num(g.donors)} ${L('متبرع','donors')}</span><span class="end">${pc>=100?L('اكتمل الهدف 🎉','Goal reached'):d?L(`تنتهي الحملة في ${fmtDate(g.end)}`,`Ends ${fmtDate(g.end)}`):L('انتهت الحملة','Campaign ended')}</span></div></div>`;
+}
+function courseCard(p){
+  const c=cat(p.cat);
+  return `<a class="pcard" href="${href('p/'+p.slug)}"><span class="ribbon">${badgeTag(p.badge)}</span><div class="tile">${artSVG(p.seed)}</div>
+   <div style="display:flex;gap:6px;flex-wrap:wrap">${c?`<span class="tag">${esc(pick(c.ar,c.en))}</span>`:''}${p.sponsor?`<span class="tag gold">${ic('seat',12)} ${L('قابلة للكفالة','Sponsorable')}</span>`:''}</div>
+   <h3>${esc(pick(p.titleAr,p.titleEn))}</h3>
+   <div class="meta"><span>${ic('play',14)} ${p.lessons} ${L('درساً','lessons')}</span><span>${p.hours} ${L('ساعة','hrs')}</span><span>${num(p.students)} ${L('متعلّم','learners')}</span></div>
+   <div class="foot"><span class="price">${money(p.price)}${p.old?`<s>${num(p.old)}</s>`:''}</span><span class="more" style="color:var(--brand);font-weight:500;font-size:.9rem">${L('التفاصيل','Details')} ${arrow()}</span></div></a>`;
+}
+function bookCard(p){
+  const min=Math.min(...p.formats.map(f=>f.price));
+  return `<a class="pcard" href="${href('p/'+p.slug)}"><span class="ribbon">${badgeTag(p.badge)}</span><div class="bookcov">${coverSVG(p)}</div>
+   <h3>${esc(pick(p.titleAr,p.titleEn))}</h3><div class="meta"><span>${esc(pick(p.authorAr,p.authorEn))}</span></div>
+   <div class="meta">${p.formats.map(f=>`<span class="tag" style="background:var(--gray-2);color:var(--ink-2)">${fmtName(f.k)}</span>`).join('')}</div>
+   <div class="foot"><span class="price"><small>${p.formats.length>1?L('يبدأ من ','from '):''}</small>${money(min)}</span>${p.sponsor?`<span class="tag gold">${ic('seat',12)} ${L('اكفل نسخاً','Sponsor copies')}</span>`:''}</div></a>`;
+}
+/* Kafeef-style donation card: goal bar + inline amount + add to giving cart */
+function donCard(p){
+  const u=p.cause.unit;
+  return `<div class="dcard" style="position:relative"><button class="share" onclick="shareP('${p.slug}')" aria-label="share">${shareIcon}</button>
+   <a href="${href('p/'+p.slug)}" class="tile" style="display:block">${causeArt(p)}</a>
+   <div class="in"><div style="display:flex;gap:6px;flex-wrap:wrap">${badgeTag(p.badge)}${p.cause.zakat?`<span class="tag">${L('يقبل الزكاة','Zakat eligible')}</span>`:''}</div>
+    <h3><a href="${href('p/'+p.slug)}">${esc(pick(p.titleAr,p.titleEn))}</a></h3>
+    ${goalBlock(p)}
+    ${u?`<div class="unit">${L('قيمة ال','One ')}${unitWord(p)}${L(': ',': ')}<b>${money(u)}</b> · ${L('ساهم بأي مبلغ','any amount welcome')}</div>`:`<div class="unit">${L('تبرع بأي مبلغ تختاره','Give any amount you choose')}</div>`}
+    <form class="qamt" onsubmit="event.preventDefault();quickGive('${p.id}',this.a.value)"><input name="a" type="number" min="10" inputmode="numeric" dir="ltr" placeholder="${L('أدخل مبلغ التبرع','Enter amount')}" aria-label="${L('مبلغ التبرع','Amount')}"><button class="btn btn-cta sm" type="submit">${ic('heart',15)} ${L('أضف','Add')}</button></form>
+   </div></div>`;
+}
+function sponsorCard(p){
+  const s=p.sponsor;
+  return `<div class="dcard"><a href="${href('p/'+p.slug+'?m=sponsor')}" class="tile" style="display:block">${p.type==='book'?`<div style="display:grid;place-items:center;height:100%;padding:12px;background:var(--tint)">${coverSVG(p)}</div>`:artSVG(p.seed)}</a>
+   <div class="in"><div style="display:flex;gap:6px;flex-wrap:wrap"><span class="tag">${typeName(p.type)}</span><span class="tag gold">${L('كفالة','Sponsorship')}</span></div>
+    <h3><a href="${href('p/'+p.slug+'?m=sponsor')}">${esc(pick(p.titleAr,p.titleEn))}</a></h3>
+    <p style="font-size:.86rem;color:var(--muted)">${L('المستفيدون: ','For: ')}${esc(pick(s.grpAr,s.grpEn))}</p>
+    ${goalBlock(p)}
+    <div class="unit">${L('قيمة ','One ')}${seatWord(p,1)}${L(': ',': ')}<b>${money(s.seat)}</b></div>
+    <div class="qamt"><a class="btn btn-cta sm" style="flex:1" href="${href('p/'+p.slug+'?m=sponsor')}">${ic('seat',15)} ${p.type==='book'?L('اكفل نسخاً','Sponsor copies'):L('اكفل مقاعد','Sponsor seats')}</a></div>
+   </div></div>`;
+}
+window.quickGive=(pid,v)=>{
+  const a=+v;if(!a||a<10){toast(L('أدخل مبلغاً لا يقل عن 10 ر.س','Enter at least 10 SAR'),true);return}
+  const p=P(pid);addLine({pid,kind:'donate',mode:'amount',qty:1,unit:a,amount:a,intent:'sadaqa'});
+};
+window.shareP=slug=>{
+  const url=`https://store.ta3lom.sa/${lang}/p/${slug}`;
+  try{navigator.clipboard&&navigator.clipboard.writeText(url)}catch(e){}
+  openModal(`<div class="hd"><h3>${L('شارك الأجر','Share')}</h3><button class="x" onclick="closeModal()">×</button></div><div class="body"><p style="color:var(--muted);margin-bottom:14px">${L('شارك الفرصة مع أهلك وأصدقائك، فالدال على الخير كفاعله.','Share this with family and friends.')}</p><input readonly dir="ltr" value="${url}" onclick="this.select()"><div class="chips" style="margin-top:14px">${['WhatsApp','X','Telegram','Email'].map(x=>`<button type="button" onclick="toast('${x} — prototype')">${x}</button>`).join('')}<button type="button" onclick="toast('${L('نُسخ الرابط','Link copied')}')">${L('نسخ الرابط','Copy link')}</button></div></div>`);
+};
+function band(){return `<div class="band-wrap"><section class="band" style="padding:56px 0"><div class="wrap"><div class="rv"><h2>${L('لا تعرف من أين تبدأ؟','Not sure where to start?')}</h2><p>${L('تبرعك لصندوق دعم التعليم يذهب إلى الاحتياج الأكثر إلحاحاً.','A gift to the education fund goes where the need is greatest.')}</p></div><a class="btn btn-white rv" href="${href('p/education-fund')}">${L('تبرع للصندوق العام','Give to the general fund')} ${arrow()}</a></div></section></div>`}
+
+/* ===================== PAGES ===================== */
+const byType=t=>SEED_PRODUCTS.filter(p=>p.type===t);
+const sponsorable=()=>SEED_PRODUCTS.filter(p=>p.sponsor);
+const PAGES={
+home(){
+  const feat=[P('d1'),P('p1'),P('d2'),P('b1'),P('p3')];
+  const stats=[[1840,L('مقعداً مكفولاً','seats sponsored'),L('منذ إطلاق المتجر','since launch')],[6210,L('نسخة وُزّعت','books delivered'),L('على 140 مكتبة مدرسية','to 140 school libraries')],[3902,L('متبرعاً وكافلاً','donors & sponsors'),L('من 11 منطقة','from 11 regions')],[97,L('٪ من التبرعات','% of gifts'),L('تصل مباشرة للبرامج','reach programs directly')]];
+  return `<section class="hero"><svg class="hero-logo" viewBox="380 320 1250 1060" aria-hidden="true"><use href="#logo-src"/></svg><div class="wrap">
+   <span class="eyebrow h-in" style="background:rgba(195,175,114,.18);color:var(--gold-200)">${L('متجر جمعية التعلم الإلكتروني','The E-Learning Association store')}</span>
+   <h1 class="h-in">${L('تعلّم لنفسك.<br><em>واكفل</em> من يتعلّم.','Learn for yourself.<br><em>Sponsor</em> someone who can’t.')}</h1>
+   <p class="h-in">${L('دورات وكتب تعليمية من إنتاج الجمعية — ويمكنك بدلاً من الشراء لنفسك أن تكفل مقاعد لطلاب ومعلمين، أو تتبرع بما يحتاجه الطالب ليتعلّم: ماء، جهاز، باقة إنترنت.','Courses and books produced by the association — or, instead of buying for yourself, sponsor seats for students and teachers, or give what a pupil needs to learn: water, a device, a data bundle.')}</p>
+   <div class="cta h-in"><a class="btn btn-white" href="${href('shop/course')}">${L('تصفّح الدورات','Browse courses')} ${arrow()}</a><a class="btn btn-hero" href="${href('shop/sponsor')}">${L('اكفل مقعداً','Sponsor a seat')}</a></div>
+   <div class="guar h-in"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg>${L('جمعية مرخّصة رقم 1234 · إيصال رسمي لكل تبرع · دفع آمن بمدى وApple Pay','Licensed non-profit no. 1234 · official receipt for every gift · mada & Apple Pay')}</div>
+   <form class="search h-in" onsubmit="event.preventDefault();location.hash='${href('shop')}?q='+encodeURIComponent(this.q.value)"><input name="q" placeholder="${L('ابحث عن دورة أو كتاب أو فرصة تبرع…','Search courses, books or causes…')}" aria-label="search"><button class="btn btn-primary sm" type="submit" style="border-radius:999px">${L('بحث','Search')}</button></form>
+   <div class="acc h-in" id="acc">${feat.map((p,i)=>`<a class="ac ${i===0?'on':''}" href="${href('p/'+p.slug)}" onmouseenter="accSel(${i})" onfocus="accSel(${i})"><div class="art">${p.type==='cause'?causeArt(p):artSVG(p.seed+20)}</div><span class="num">0${i+1}</span><div class="lbl"><b>${esc(pick(p.titleAr,p.titleEn))}</b><span>${typeName(p.type)} · ${esc(pick(p.sumAr,p.sumEn))}</span></div></a>`).join('')}</div>
+  </div></section>
+  <div class="wrap"><div class="pillars rv-stagger">${[[T.nav().courses,L('تعلّم بالسرعة التي تناسبك','Learn at your own pace'),'shop/course'],[T.nav().books,L('مطبوعة أو رقمية','Print or digital'),'shop/book'],[T.nav().sponsor,L('ادفع مقعد طالب أو معلم','Pay for a learner’s seat'),'shop/sponsor'],[T.nav().causes,L('ماء، أجهزة، إنترنت، حقائب','Water, devices, data, bags'),'shop/cause']].map((p,i)=>`<a class="pillar" href="${href(p[2])}">${pillarIcons[i]}<div><b>${p[0]}</b><span>${p[1]}</span></div></a>`).join('')}</div></div>
+
+  <section style="padding-top:24px"><div class="wrap"><div class="sec-head rv"><div><span class="eyebrow">${L('تبرع بأمان · صدقتك وزكاتك','Give safely · sadaqah and zakat')}</span><h2 class="sec-title">${L('ساهم في إحدى الفرص.','Pick an opportunity.')}</h2><p class="sec-lede">${L('كل فرصة لها هدف واضح وتاريخ انتهاء. ساهم بقيمة وحدة كاملة أو بأي مبلغ.','Each has a clear goal and end date. Give a full unit or any amount.')}</p></div><a class="btn btn-ghost" href="${href('shop/cause')}">${L('المزيد من الفرص','More opportunities')} ${arrow()}</a></div>
+   <div class="grid g4 rv-stagger">${byType('cause').slice(0,4).map(donCard).join('')}</div></div></section>
+
+  <section style="padding-top:0"><div class="wrap"><div class="sec-head rv"><div><span class="eyebrow">${T.nav().courses}</span><h2 class="sec-title">${L('دورات تصنع فرقاً.','Courses that make a difference.')}</h2><p class="sec-lede">${L('اشترك لنفسك، أو اكفل مقاعد في الدورة نفسها لمن لا يستطيع.','Enrol yourself, or sponsor seats in the same course for someone who can’t.')}</p></div><a class="btn btn-ghost" href="${href('shop/course')}">${L('جميع الدورات','All courses')} ${arrow()}</a></div>
+   <div class="grid g3 rv-stagger">${byType('course').slice(0,6).map(courseCard).join('')}</div></div></section>
+
+  <section class="dark"><div class="wrap"><div class="sec-head center rv"><span class="eyebrow">${L('كيف تعمل الكفالة؟','How sponsorship works')}</span><h2 class="sec-title"><span class="grad-text">${L('مقعدك يصل. وتعرف إلى من.','Your seat arrives. And you know where.')}</span></h2><p class="sec-lede">${L('لا تحتاج أن تعرف المستفيد بنفسك — الجمعية تختاره وفق معايير أهلية منشورة وتبلغك.','You don’t need to know the beneficiary — the association selects against published criteria and tells you.')}</p></div>
+   <div class="grid g4 howto rv-stagger">${[[L('اختر دورة أو كتاباً','Pick a course or book'),L('كل منتج قابل للكفالة يعرض الفئة المستفيدة وعدد المقاعد المتبقية.','Each sponsorable product shows who benefits and seats left.')],[L('حدّد عدد المقاعد','Choose how many'),L('مقعد واحد أو مئة، أو ساهم بأي مبلغ ويُجمع مع غيرك حتى يكتمل المقعد.','One seat or a hundred — or any amount, pooled until a seat is complete.')],[L('أهدِ الأجر إن شئت','Dedicate it if you like'),L('تبرع عن والديك أو صديق، وتصلهم بطاقة إهداء برسالة نصية.','Give on behalf of a parent or friend; they get a dedication card by SMS.')],[L('تابع التخصيص','Follow allocation'),L('في حسابك ترى كل مقعد: متى خُصص، ولأي فئة، ومتى أتم المستفيد الدورة.','Your account shows each seat: when allocated, to which group, and completion.')]].map(([h,p])=>`<div class="card"><h3>${h}</h3><p>${p}</p></div>`).join('')}</div>
+   <div class="grid g3 rv-stagger" style="margin-top:34px">${sponsorable().filter(p=>p.type==='course').slice(0,3).map(p=>`<a class="card link" href="${href('p/'+p.slug+'?m=sponsor')}"><h3>${esc(pick(p.titleAr,p.titleEn))}</h3><p>${esc(pick(p.sponsor.grpAr,p.sponsor.grpEn))}</p>${goalBlock(p)}</a>`).join('')}</div>
+   <div style="text-align:center;margin-top:34px" class="rv"><a class="btn btn-white" href="${href('shop/sponsor')}">${L('كل فرص الكفالة','All sponsorships')} ${arrow()}</a></div></div></section>
+
+  <section><div class="wrap"><div class="sec-head rv"><div><span class="eyebrow">${T.nav().books}</span><h2 class="sec-title">${L('من إصدارات الجمعية.','Published by the association.')}</h2></div><a class="btn btn-ghost" href="${href('shop/book')}">${L('جميع الكتب','All books')} ${arrow()}</a></div>
+   <div class="grid g4 rv-stagger">${byType('book').map(bookCard).join('')}</div></div></section>
+
+  <section style="padding-top:0"><div class="wrap"><div class="sec-head rv"><div><span class="eyebrow">${L('حتى سبتمبر 2026','To September 2026')}</span><h2 class="sec-title">${L('أثر المتجر بالأرقام','Store impact in numbers')}</h2></div></div>
+   <div class="grid g4 rv-stagger">${stats.map(([n,l,s])=>`<div class="stat"><span class="n" data-count="${n}">0</span><span class="l">${l}</span><span class="s">${s}</span></div>`).join('')}</div></div></section>
+  ${band()}`;
+},
+
+shop(type,q){
+  const n=T.nav(),query=(q.get('q')||'').trim().toLowerCase(),cf=q.get('cat')||'';
+  const tabs=[['',L('الكل','All')],['course',n.courses],['book',n.books],['sponsor',n.sponsor],['cause',n.causes]];
+  let items=type==='sponsor'?sponsorable():type?byType(type):SEED_PRODUCTS.slice();
+  if(cf)items=items.filter(p=>p.cat===cf);
+  if(query)items=items.filter(p=>(p.titleAr+' '+p.titleEn+' '+p.sumAr+' '+p.sumEn).toLowerCase().includes(query));
+  const title={'':L('المتجر','Store'),course:n.courses,book:n.books,sponsor:L('كفالة المقاعد والنسخ','Sponsor seats and copies'),cause:n.causes}[type||''];
+  const lede={'':L('كل ما يقدّمه المتجر في مكان واحد.','Everything in the store, in one place.'),course:L('اشترك لنفسك أو اكفل مقاعد لغيرك.','Enrol yourself or sponsor seats for others.'),book:L('نسخ مطبوعة تُشحن داخل المملكة، ونسخ رقمية فورية.','Printed copies shipped within KSA, instant digital copies.'),sponsor:L('ادفع قيمة مقعد أو نسخة، وتختار الجمعية المستفيد وفق معايير منشورة.','Pay for a seat or a copy; the association selects the beneficiary against published criteria.'),cause:L('فرص تبرع بأهداف واضحة: ماء، أجهزة، إنترنت، وحقائب مدرسية.','Clear-goal giving: water, devices, data and school bags.')}[type||''];
+  const showCats=type==='course'||type==='book'||type==='';
+  const card=p=>type==='sponsor'?sponsorCard(p):p.type==='course'?courseCard(p):p.type==='book'?bookCard(p):donCard(p);
+  const cols=type==='course'?'g3':type==='cause'||type==='sponsor'?'g3':'g4';
+  return pageHead(title,lede,[[L('المتجر','Store'),'shop'],...(type?[[title,'shop/'+type]]:[])])+
+  `<div class="subnav"><div class="wrap" style="display:flex;gap:6px">${tabs.map(([k,t])=>`<a href="${href('shop'+(k?'/'+k:''))}" class="${(type||'')===k?'on':''}">${t}</a>`).join('')}</div></div>
+  <section style="padding-top:36px"><div class="wrap">
+   ${showCats?`<div class="filters">${[['',L('كل التصنيفات','All categories')]].concat(CATS.map(c=>[c.id,pick(c.ar,c.en)])).map(([k,t])=>`<button type="button" class="${cf===k?'on':''}" onclick="location.hash='${href('shop'+(type?'/'+type:''))}${k?'?cat='+k:''}'">${t}</button>`).join('')}</div>`:''}
+   ${query?`<p class="note" style="margin-bottom:18px">${L('نتائج البحث عن','Results for')} “${esc(query)}” · ${items.length}</p>`:''}
+   ${items.length?`<div class="grid ${cols} rv-stagger">${items.map(card).join('')}</div>`:`<div class="empty">${ic('book',64)}<h3>${L('لا توجد نتائج','No results')}</h3><p>${L('جرّب كلمة أخرى أو تصنيفاً آخر.','Try another word or category.')}</p><a class="btn btn-primary" href="${href('shop')}">${L('عرض الكل','Show all')}</a></div>`}
+  </div></section>${type!=='cause'?band():''}`;
+},
+
+product(slug,q){
+  const p=PS(slug);if(!p)return PAGES.notFound();
+  const c=cat(p.cat),T0=pick(p.titleAr,p.titleEn);
+  const tl={course:['shop/course',T.nav().courses],book:['shop/book',T.nav().books],cause:['shop/cause',T.nav().causes]}[p.type];
+  initPB(p,q.get('m'));
+  let body='';
+  if(p.type==='course'){
+    body=`<div class="kv"><div><b>${p.lessons}</b><span>${L('درساً','lessons')}</span></div><div><b>${p.hours}</b><span>${L('ساعة تعليمية','hours')}</span></div><div><b>${num(p.students)}</b><span>${L('متعلّم','learners')}</span></div><div><b style="font-size:1rem">${esc(pick(p.levelAr,p.levelEn))}</b><span>${L('المستوى','Level')}</span></div></div>
+    <div class="prose"><h2>${L('عن الدورة','About the course')}</h2><p>${esc(pick(p.sumAr,p.sumEn))}</p>
+    <ul><li>${L('وصول دائم للمحتوى والتحديثات','Lifetime access, including updates')}</li><li>${L('شهادة إتمام إلكترونية موثّقة برمز تحقق','Verifiable completion certificate')}</li><li>${L('اختبار قصير بعد كل وحدة','Short quiz after each unit')}</li></ul>
+    <h2>${L('المحتوى','Curriculum')}</h2></div>
+    <div class="curric">${p.cur.map((x,i)=>`<div><span class="no">${String(i+1).padStart(2,'0')}</span><span>${esc(pick(x[0],x[1]))}</span><span class="d">${x[2]}</span></div>`).join('')}</div>
+    <div class="person" style="margin-top:26px"><div class="avatar">${esc(pick(p.instAr,p.instEn).replace(/^(أ\.|د\.|م\.|Dr\.)\s*/,'').slice(0,1))}</div><div><span class="ti">${L('المدرّب','Instructor')}</span><b>${esc(pick(p.instAr,p.instEn))}</b><p class="br">${L('مدرّب معتمد لدى الجمعية، خبرة تزيد على عشر سنوات في المجال.','Association-accredited trainer with 10+ years in the field.')}</p></div></div>`;
+  } else if(p.type==='book'){
+    body=`<div class="kv"><div><b>${p.pages}</b><span>${L('صفحة','pages')}</span></div><div><b>${p.formats.length}</b><span>${L('صيغة متاحة','formats')}</span></div><div><b style="font-size:1rem">${esc(pick(p.authorAr,p.authorEn))}</b><span>${L('المؤلف','Author')}</span></div><div><b>2026</b><span>${L('سنة النشر','Published')}</span></div></div>
+    <div class="prose"><h2>${L('عن الكتاب','About the book')}</h2><p>${esc(pick(p.sumAr,p.sumEn))}</p><ul><li>${L('النسخة المطبوعة: شحن داخل المملكة خلال 3–5 أيام عمل (25 ر.س)','Print: shipped within KSA in 3–5 working days (25 SAR)')}</li><li>${L('النسخة الرقمية: تحميل فوري من حسابك، بعلامة مائية باسم المشتري','Digital: instant download from your account, watermarked')}</li></ul></div>`;
+  } else {
+    body=`<div class="kv"><div><b>${p.cause.unit?num(p.cause.unit):'—'}</b><span>${p.cause.unit?L('ر.س قيمة ال','SAR per ')+unitWord(p):L('بلا حد أدنى','no minimum')}</span></div><div><b>${esc(pick(p.cause.benAr,p.cause.benEn))}</b><span>${L('المستفيدون','Beneficiaries')}</span></div><div><b>${num(goalOf(p).donors)}</b><span>${L('متبرع','donors')}</span></div><div><b>${daysLeft(p.cause.end)}</b><span>${L('يوماً متبقياً','days left')}</span></div></div>
+    <div class="prose"><h2>${L('كيف يصل تبرعك؟','Where your gift goes')}</h2><p>${esc(pick(p.bodyAr,p.bodyEn))}</p></div>`;
+  }
+  const g=goalOf(p);
+  const feed=g?`<h2 style="font-size:1.4rem;margin-top:36px">${L('آخر المساهمات','Latest gifts')}</h2><div class="feed">${[[L('فاعل خير','Anonymous'),p.type==='cause'?500:3,L('قبل 12 دقيقة','12 min ago')],[L('عن والدتي — رحمها الله','For my late mother'),p.type==='cause'?1500:10,L('قبل ساعة','1 hr ago')],[L('نورة ع.','Noura A.'),p.type==='cause'?100:1,L('أمس','Yesterday')]].map(([w,a,t])=>`<div><b style="font-weight:500">${w}</b> — ${p.type==='cause'?money(a):`${a} ${seatWord(p,a)}`}<span class="w">${t}</span></div>`).join('')}</div>`:'';
+  const rel=SEED_PRODUCTS.filter(x=>x.type===p.type&&x.id!==p.id).slice(0,3);
+  return `<div class="ph" style="padding:28px 0 0;background:#fff"><div class="wrap"><div class="crumbs"><a href="${href('')}">${T.nav().home}</a><span>/</span><a href="${href(tl[0])}">${tl[1]}</a><span>/</span><span>${esc(T0)}</span></div></div></div>
+  <section style="padding-top:12px"><div class="wrap"><div class="pgrid">
+   <div>
+    <div class="hero-media rv">${p.type==='book'?`<div class="bookcov" style="aspect-ratio:16/9">${coverSVG(p)}</div>`:`<div class="tile" style="aspect-ratio:16/8">${p.type==='cause'?causeArt(p):artSVG(p.seed)}</div>`}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 10px">${badgeTag(p.badge)}<span class="tag">${typeName(p.type)}</span>${c?`<span class="tag" style="background:var(--gray-2);color:var(--ink-2)">${esc(pick(c.ar,c.en))}</span>`:''}${p.type==='cause'&&p.cause.zakat?`<span class="tag green">${L('يقبل الزكاة','Zakat eligible')}</span>`:''}
+      <button class="btn btn-ghost xs" style="margin-inline-start:auto" onclick="shareP('${p.slug}')">${L('مشاركة','Share')}</button></div>
+    <h1 style="font-size:clamp(1.8rem,3.6vw,2.6rem)">${esc(T0)}</h1>
+    ${p.type==='cause'?`<div style="margin-top:22px">${goalBlock(p,true)}</div>`:''}
+    ${p.sponsor?`<div class="calc" style="margin-top:22px;background:#F6F1E2;color:var(--gold-700)">${ic('seat')}<div><b style="font-weight:600">${p.type==='book'?L('يمكنك كفالة نسخ من هذا الكتاب','You can sponsor copies of this book'):L('يمكنك كفالة مقاعد في هذه الدورة','You can sponsor seats in this course')}</b><br>${L('المستفيدون: ','For: ')}${esc(pick(p.sponsor.grpAr,p.sponsor.grpEn))} — <a href="#" onclick="bbMode('sponsor');document.getElementById('bb').scrollIntoView({behavior:'smooth',block:'center'});return false">${L('اكفل الآن','Sponsor now')}</a></div></div>`:''}
+    ${body}${feed}
+   </div>
+   <aside id="bb" class="buybox">${buyBox()}</aside>
+  </div></div></section>
+  ${rel.length?`<section style="padding-top:0"><div class="wrap"><div class="sec-head rv"><h2 class="sec-title" style="font-size:1.8rem">${L('قد يهمّك أيضاً','You may also like')}</h2></div><div class="grid g3 rv-stagger">${rel.map(x=>x.type==='course'?courseCard(x):x.type==='book'?bookCard(x):donCard(x)).join('')}</div></div></section>`:''}
+  <div class="stickybar"><div><div class="note">${L('الإجمالي','Total')}</div><b id="sbTotal" class="price">${money(pbTotal())}</b></div><button class="btn ${PB.mode==='buy'?'btn-primary':'btn-cta'}" onclick="bbAdd()">${PB.mode==='buy'?L('أضف إلى السلة','Add to cart'):L('أضف لسلة التبرعات','Add to giving')}</button></div>`;
+},
+
+cart(){
+  const lines=DB.cart,buy=lines.filter(l=>l.kind==='buy'),give=lines.filter(isGift),t=totals(lines);
+  if(!lines.length)return pageHead(L('السلة','Cart'),'',[[L('السلة','Cart'),'cart']])+`<section><div class="wrap"><div class="empty rv">${cartIcon.replace('<svg','<svg width="64" height="64"')}<h3>${L('سلتك فارغة','Your cart is empty')}</h3><p>${L('ابدأ بدورة، أو اكفل مقعداً لطالب، أو ساهم في فرصة تبرع.','Start with a course, sponsor a seat, or join a cause.')}</p><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><a class="btn btn-primary" href="${href('shop/course')}">${T.nav().courses}</a><a class="btn btn-cta" href="${href('shop/cause')}">${T.nav().causes}</a></div></div></div></section>`;
+  const lineHtml=l=>{
+    const p=P(l.pid),editable=l.kind==='buy'?(p.type==='book'&&l.format==='print'):l.mode==='units';
+    return `<div class="cline"><a class="th" href="${href('p/'+p.slug)}">${p.type==='cause'?causeArt(p):p.type==='book'?coverSVG(p):artSVG(p.seed)}</a><div class="bd">
+      <div class="top"><b>${esc(pick(p.titleAr,p.titleEn))}</b><span class="lp">${money(l.amount)}</span></div>
+      <div class="row"><span>${lineDesc(l)}</span></div>
+      ${l.ded?`<div class="row" style="color:var(--gold-700)">${ic('heart',14)} ${L('إهداء إلى','On behalf of')} <b style="font-weight:500">${esc(l.ded.to)}</b> · ${L('بطاقة إلى','card to')} <span dir="ltr">${esc(l.ded.phone)}</span></div>`:''}
+      <div class="row">${editable?`<div class="stepper sm"><button type="button" onclick="cartQty('${l.id}',-1)">−</button><input value="${l.qty}" readonly aria-label="qty"><button type="button" onclick="cartQty('${l.id}',1)">+</button></div>`:''}<button class="rm" onclick="cartRm('${l.id}')">${L('حذف','Remove')}</button></div>
+    </div></div>`;
+  };
+  return pageHead(L('السلة','Cart'),'',[[L('السلة','Cart'),'cart']])+
+  `<section style="padding-top:36px"><div class="wrap">${steps(1)}<div class="cgrid"><div>
+   ${buy.length?`<div class="cgroup rv"><h3>${cartIcon.replace('<svg','<svg width="18" height="18"')} ${L('مشترياتك','Your purchases')}<span class="tag">${buy.length}</span></h3>${buy.map(lineHtml).join('')}</div>`:''}
+   ${give.length?`<div class="cgroup rv"><h3 style="background:#F6F1E2;color:var(--gold-700)">${ic('heart')} ${L('سلة التبرعات والكفالات','Your giving')}<span class="tag gold">${give.length}</span></h3>${give.map(lineHtml).join('')}</div>`:''}
+   <a href="${href('shop')}" class="btn btn-ghost sm">${L('متابعة التسوق','Continue shopping')}</a>
+  </div>${summary(t,true)}</div></div></section>`;
+},
+
+checkout(){
+  if(!DB.cart.length){location.hash=href('cart');return ''}
+  const t=totals(DB.cart),hasGive=DB.cart.some(isGift),hasPrint=DB.cart.some(l=>l.format==='print');
+  return pageHead(L('إتمام الطلب','Checkout'),'',[[L('السلة','Cart'),'cart'],[L('إتمام الطلب','Checkout'),'checkout']])+
+  `<section style="padding-top:36px"><div class="wrap">${steps(2)}<div class="cgrid"><form class="form rv" style="max-width:none" id="coForm" onsubmit="placeOrder(event)">
+   <div class="cgroup" style="margin:0"><h3>${L('بياناتك','Your details')}</h3><div style="padding:18px;display:grid;gap:16px">
+    <div class="row2"><div class="field"><label for="coN">${L('الاسم الكامل','Full name')}</label><input id="coN" required value="${esc(DB.me?.name||'')}"></div><div class="field"><label for="coM">${L('رقم الجوال','Mobile')}</label><input id="coM" required dir="ltr" placeholder="05XXXXXXXX" pattern="05[0-9]{8}" value="${esc(DB.me?.mobile||'')}"><span class="hint">${L('نرسل رمز تحقق وإيصال الطلب إلى هذا الرقم','We send a verification code and the receipt here')}</span></div></div>
+    <div class="field"><label for="coE">${L('البريد الإلكتروني','Email')}</label><input id="coE" type="email" dir="ltr" required value="${esc(DB.me?.email||'')}"></div>
+    ${hasGive?`<label class="chk" style="align-self:start"><input type="checkbox" id="coAnon"> ${L('أخفِ اسمي في قائمة المساهمين (فاعل خير)','Hide my name in the donor list (anonymous)')}</label>`:''}
+   </div></div>
+   ${hasPrint?`<div class="cgroup" style="margin:0"><h3>${L('عنوان الشحن','Shipping address')}</h3><div style="padding:18px;display:grid;gap:16px"><div class="row2"><div class="field"><label for="coC">${L('المدينة','City')}</label><select id="coC">${[L('الرياض','Riyadh'),L('جدة','Jeddah'),L('الدمام','Dammam'),L('مكة المكرمة','Makkah'),L('المدينة المنورة','Madinah')].map(x=>`<option>${x}</option>`).join('')}</select></div><div class="field"><label for="coA">${L('العنوان الوطني المختصر','Short national address')}</label><input id="coA" dir="ltr" placeholder="RRRD2929" required></div></div></div></div>`:''}
+   <div class="cgroup" style="margin:0"><h3>${L('طريقة الدفع','Payment')}</h3><div style="padding:18px"><div class="paygrid">${['mada','Apple Pay','VISA / Mastercard','STC Pay','Tabby','SADAD'].map((x,i)=>`<label class="opt ${i===0?'on':''}"><input type="radio" name="pay" value="${x}" ${i===0?'checked':''} onchange="document.querySelectorAll('.paygrid .opt').forEach(o=>o.classList.toggle('on',o.contains(this)))">${x}</label>`).join('')}</div>
+    <p class="note" style="margin-top:12px">${L('التقسيط (Tabby) متاح للمشتريات فقط ولا يشمل التبرعات. في النسخة الفعلية تُحوَّل إلى بوابة الدفع.','Instalments (Tabby) apply to purchases only, never donations. The live site redirects to the payment gateway.')}</p></div></div>
+   <label class="chk" style="align-self:start;background:transparent;padding:0"><input type="checkbox" required> ${L('أوافق على الشروط والأحكام وسياسة الاسترجاع','I accept the terms and refund policy')}</label>
+   <button class="btn btn-cta" style="font-size:1.05rem;padding:14px" type="submit">🔒 ${L('ادفع','Pay')} ${moneyTxt(t.all)}</button>
+  </form>${summary(t,false)}</div></div></section>`;
+},
+
+done(id){
+  const o=DB.orders.find(x=>x.id===id);if(!o)return PAGES.notFound();
+  const hasGive=o.lines.some(isGift),ded=o.lines.filter(l=>l.ded);
+  return `<section><div class="wrap">${steps(3)}<div class="success rv">
+   <div class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+   <h1 style="font-size:clamp(1.8rem,4vw,2.6rem)">${hasGive?L('تقبّل الله منك، ','May it be accepted, '):L('شكراً لك، ','Thank you, ')}${esc(o.buyer.name.split(' ')[0])}</h1>
+   <p style="margin:12px auto 0;color:var(--muted)">${L('أُرسل الإيصال إلى ','Receipt sent to ')}<span dir="ltr">${esc(o.buyer.mobile)}</span>${L(' وبريدك الإلكتروني.',' and your email.')} ${o.lines.some(l=>l.kind==='buy'&&P(l.pid).type==='course')?L('دوراتك متاحة الآن في حسابك.','Your courses are ready in your account.'):''}</p>
+   <div class="receipt"><div class="hd"><div><span class="note">${L('رقم الطلب','Order no.')}</span><b class="mono" style="display:block">${o.id}</b></div><div><span class="note">${L('التاريخ','Date')}</span><b style="display:block;font-weight:500">${fmtDate(o.at)}</b></div><div><span class="note">${L('الدفع','Payment')}</span><b style="display:block;font-weight:500">${esc(o.pay)}</b></div></div>
+    ${o.lines.map(l=>{const p=P(l.pid);return `<div class="ln"><div>${esc(pick(p.titleAr,p.titleEn))}<small>${lineDesc(l)}${l.ded?' · '+L('إهداء إلى ','for ')+esc(l.ded.to):''}</small></div><b style="font-weight:600;white-space:nowrap">${money(l.amount)}</b></div>`}).join('')}
+    ${o.t.ship?`<div class="ln"><span>${L('الشحن','Shipping')}</span><b style="font-weight:600">${money(o.t.ship)}</b></div>`:''}
+    <div class="ln" style="border:0;font-size:1.1rem"><b>${L('الإجمالي','Total')}</b><b>${money(o.t.all)}</b></div>
+    ${hasGive?`<p class="note" style="margin-top:8px">${L('يصدر إيصال تبرع رسمي منفصل باسم الجمعية للتبرعات والكفالات.','A separate official donation receipt is issued for gifts and sponsorships.')}</p>`:''}</div>
+   ${ded.map(l=>{const p=P(l.pid);return `<div class="gcard"><span class="l">${L('بطاقة إهداء · أُرسلت برسالة نصية إلى ','Dedication card · sent by SMS to ')}<span dir="ltr">${esc(l.ded.phone)}</span></span><h4>${L('إلى ','To ')}${esc(l.ded.to)}</h4><p>${esc(l.ded.msg)}</p><p style="margin-top:10px">${L('تبرّع ','')}${esc(l.ded.from||L('محبّ','someone who loves you'))}${L(' عنك في ',' gave on your behalf to ')}«${esc(pick(p.titleAr,p.titleEn))}»</p><svg class="mk" viewBox="380 320 1250 1060" aria-hidden="true"><use href="#logo-src"/></svg></div>`}).join('')}
+   <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:26px"><a class="btn btn-primary" href="${href('account')}">${L('اذهب إلى حسابي','Go to my account')}</a><button class="btn btn-ghost" onclick="toast('PDF — prototype')">${L('تحميل الإيصال PDF','Download receipt PDF')}</button><button class="btn btn-ghost" onclick="shareP('${P(o.lines[0].pid).slug}')">${L('شارك الأجر','Share')}</button></div>
+  </div></div></section>`;
+},
+
+account(tab){
+  tab=tab||'courses';
+  const me=DB.me||{name:L('سارة الأحمد','Sara Al-Ahmad'),mobile:'0550000000'};
+  const orders=DB.orders.concat(DEMO_ORDERS());
+  const lines=orders.flatMap(o=>o.lines.map(l=>Object.assign({},l,{at:o.at,oid:o.id,demo:o.demo})));
+  const courses=lines.filter(l=>l.kind==='buy'&&P(l.pid).type==='course');
+  const books=lines.filter(l=>l.kind==='buy'&&P(l.pid).type==='book');
+  const give=lines.filter(isGift);
+  const tabs=[['courses',L('دوراتي','My courses'),courses.length],['books',L('كتبي','My books'),books.length],['giving',L('تبرعاتي وكفالاتي','My giving'),give.length],['orders',L('الطلبات والإيصالات','Orders & receipts'),orders.length]];
+  let main='';
+  if(tab==='courses')main=courses.length?`<div class="lib">${courses.map((l,i)=>{const p=P(l.pid),pr=l.demo?40:0;return `<div class="libi"><div class="th">${artSVG(p.seed)}</div><div style="flex:1;min-width:0"><b>${esc(pick(p.titleAr,p.titleEn))}</b><div class="bar"><i style="width:${pr}%"></i></div><small>${pr}% ${L('مكتمل','complete')}</small></div><button class="btn btn-primary xs" onclick="toast('${L('يفتح مشغّل الدورة — نموذج','Opens the course player — prototype')}')">${pr?L('تابع','Resume'):L('ابدأ','Start')}</button></div>`}).join('')}</div>`:emptyAcct();
+  if(tab==='books')main=books.length?`<div class="lib">${books.map(l=>{const p=P(l.pid);return `<div class="libi"><div class="th" style="display:grid;place-items:center;padding:4px">${coverSVG(p)}</div><div style="flex:1"><b>${esc(pick(p.titleAr,p.titleEn))}</b><small>${fmtName(l.format)} · ${l.qty}×</small><br>${l.format==='digital'?`<button class="btn btn-lite xs" style="margin-top:6px" onclick="toast('PDF — prototype')">${L('تحميل','Download')} ↓</button>`:`<span class="tag ${l.demo?'green':'gold'}" style="margin-top:6px">${l.demo?L('تم التسليم','Delivered'):L('قيد التجهيز','Preparing')}</span>`}</div></div>`}).join('')}</div>`:emptyAcct();
+  if(tab==='giving'){
+    const sum=give.reduce((s,l)=>s+l.amount,0);
+    main=`<div class="grid g3" style="margin-bottom:22px"><div class="stat"><span class="n">${num(sum)}</span><span class="l">${L('ر.س إجمالي عطائك','SAR given in total')}</span></div><div class="stat"><span class="n">${num(give.filter(l=>l.kind==='sponsor'&&l.mode==='units').reduce((s,l)=>s+l.qty,0))}</span><span class="l">${L('مقعداً ونسخة مكفولة','seats & copies sponsored')}</span></div><div class="stat"><span class="n">${give.filter(l=>l.ded).length}</span><span class="l">${L('إهداءات أرسلتها','dedications sent')}</span></div></div>`+
+    (give.length?give.map(l=>{const p=P(l.pid);
+      let st='';
+      if(l.kind==='sponsor'&&l.mode==='units'){const a=l.demo?Math.min(l.qty,l.alloc||0):0,done=l.demo?(l.done||0):0;
+        st=`<div class="seatmap">${Array.from({length:Math.min(l.qty,60)},(_,i)=>`<i class="${i<done?'a':i<a?'p':''}"></i>`).join('')}</div><div class="legend"><span><i style="background:var(--green)"></i>${L('أتمّ الدورة','Completed')} ${done}</span><span><i style="background:var(--gold-200)"></i>${L('خُصّص ويتعلّم','Allocated')} ${a-done}</span><span><i style="background:var(--gray-2)"></i>${L('بانتظار التخصيص','Awaiting allocation')} ${l.qty-a}</span></div>`}
+      else if(p.type==='cause')st=`<div class="feed" style="margin-top:6px">${(l.demo?[[L('تم تركيب البرّاد في مدرسة الهجرة الابتدائية — القصيم','Cooler installed at Al-Hijra Primary — Qassim'),'2026-09-02'],[L('تم استلام تبرعك وإصدار الإيصال','Gift received and receipt issued'),'2026-08-14']]:[[L('تم استلام تبرعك وإصدار الإيصال','Gift received and receipt issued'),l.at]]).map(([m,d])=>`<div>${m}<span class="w">${fmtDate(d)}</span></div>`).join('')}</div>`;
+      else st=`<p class="note" style="margin-top:6px">${L('مساهمتك مجمّعة مع غيرك، وستصلك رسالة عند اكتمال المقعد وتخصيصه.','Your share is pooled; you will be notified when the seat is complete and allocated.')}</p>`;
+      return `<div class="cgroup"><h3 style="background:#fff;border-bottom:1px solid var(--line)"><span style="flex:1">${esc(pick(p.titleAr,p.titleEn))}</span><b style="font-weight:600">${money(l.amount)}</b></h3><div style="padding:14px 18px"><div class="row" style="font-size:.85rem;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap"><span>${lineDesc(l)}</span><span class="mono">${l.oid}</span>${l.ded?`<span style="color:var(--gold-700)">${L('إهداء إلى ','for ')}${esc(l.ded.to)}</span>`:''}</div>${st}</div></div>`}).join(''):emptyAcct());
+  }
+  if(tab==='orders')main=`<div class="tblwrap"><table class="tbl"><thead><tr><th>${L('رقم الطلب','Order')}</th><th>${L('التاريخ','Date')}</th><th>${L('البنود','Items')}</th><th>${L('الإجمالي','Total')}</th><th></th></tr></thead><tbody>${orders.map(o=>`<tr><td class="mono">${o.id}</td><td>${fmtDate(o.at)}</td><td>${o.lines.length}</td><td><b style="font-weight:600">${money(o.t.all)}</b></td><td><button class="btn btn-lite xs" onclick="toast('PDF — prototype')">${L('الإيصال','Receipt')}</button></td></tr>`).join('')}</tbody></table></div>`;
+  return pageHead(L('حسابي','My account'),'',[[L('حسابي','My account'),'account']])+
+  `<section style="padding-top:36px"><div class="wrap"><div class="acct"><aside class="acct-side"><div class="who"><div class="avatar">${esc(me.name.slice(0,1))}</div><div><b>${esc(me.name)}</b><span dir="ltr">${esc(me.mobile)}</span></div></div>${tabs.map(([k,t,n])=>`<a href="${href('account/'+k)}" class="${tab===k?'on':''}">${t}<span class="c">${n}</span></a>`).join('')}</aside><div class="rv">${main}</div></div></div></section>`;
+},
+notFound(){return pageHead(L('الصفحة غير موجودة','Page not found'),L('ربما نُقلت هذه الصفحة.','This page may have moved.'))+`<section><div class="wrap"><a class="btn btn-primary" href="${href('')}">${T.nav().home}</a></div></section>`}
+};
+const emptyAcct=()=>`<div class="empty">${ic('book',64)}<h3>${L('لا شيء هنا بعد','Nothing here yet')}</h3><p>${L('ما تشتريه أو تتبرع به يظهر هنا.','What you buy or give appears here.')}</p><a class="btn btn-primary" href="${href('shop')}">${L('تصفّح المتجر','Browse the store')}</a></div>`;
+/* demo history so the account page is never empty on first visit */
+const DEMO_ORDERS=()=>[{id:'T3-26-004187',at:'2026-08-14',demo:true,pay:'mada',t:{all:1985,ship:25},buyer:{name:'',mobile:''},lines:[
+  {pid:'p2',kind:'buy',qty:1,unit:120,amount:120},
+  {pid:'b1',kind:'buy',format:'digital',qty:1,unit:35,amount:35},
+  {pid:'p1',kind:'sponsor',mode:'units',qty:5,unit:350,amount:1750-0,alloc:5,done:2,ded:{to:L('والدي','My father'),phone:'0551234567',msg:L('اللهم اجعله في ميزان حسناتك','May it weigh in your good deeds'),from:L('سارة','Sara')}},
+  {pid:'d1',kind:'donate',mode:'amount',qty:1,unit:55,amount:55,intent:'sadaqa'}]}];
+function steps(n){const s=[L('السلة','Cart'),L('البيانات والدفع','Details & payment'),L('التأكيد','Confirmation')];return `<div class="steps">${s.map((x,i)=>`${i?'<span class="ln"></span>':''}<span class="${i+1===n?'on':i+1<n?'done':''}"><i>${i+1<n?'✓':i+1}</i>${x}</span>`).join('')}</div>`}
+function summary(t,cta){
+  return `<aside class="sumbox rv"><h4 style="margin-bottom:10px">${L('ملخص الطلب','Summary')}</h4>
+   ${t.buy?`<div class="r"><span>${L('المشتريات (شاملة الضريبة)','Purchases (VAT incl.)')}</span><b>${money(t.buy)}</b></div>`:''}
+   ${t.ship?`<div class="r"><span>${L('الشحن','Shipping')}</span><b>${money(t.ship)}</b></div>`:''}
+   ${t.give?`<div class="r"><span>${L('التبرعات والكفالات','Gifts & sponsorships')}</span><b>${money(t.give)}</b></div>`:''}
+   <div class="r t"><span>${L('الإجمالي','Total')}</span><b>${money(t.all)}</b></div>
+   ${t.give?`<div class="calc" style="margin-top:12px">${infoIcon}<span>${L('يصدر إيصال تبرع رسمي منفصل للتبرعات، ويُرسل إشعار عند تخصيص كل مقعد.','Gifts get a separate official receipt; you’re notified as each seat is allocated.')}</span></div>`:''}
+   ${cta?`<a class="btn btn-cta" style="width:100%;margin-top:16px;padding:14px" href="${href('checkout')}">${L('إتمام الطلب','Checkout')} ${arrow()}</a>`:''}
+   <div class="pay" style="margin:14px 0 0;justify-content:center"><span>mada</span><span>Apple Pay</span><span>VISA</span><span>STC Pay</span></div></aside>`;
+}
+
+/* ===================== BUY BOX (product page) ===================== */
+let PB=null;
+function initPB(p,m){
+  if(PB&&PB.pid===p.id&&!m)return;
+  PB={pid:p.id,mode:p.type==='cause'?'donate':(m==='sponsor'&&p.sponsor?'sponsor':'buy'),by:p.type==='cause'&&!p.cause.unit?'amount':'units',qty:1,amount:p.type==='cause'?100:(p.sponsor?Math.round(p.sponsor.seat/3):50),format:p.formats?p.formats[0].k:null,intent:'sadaqa',ded:false,d:{to:'',phone:'',from:'',msg:L('اللهم اجعله في ميزان حسناتك','May it weigh in your good deeds')}};
+  if(PB.mode==='sponsor')PB.qty=5;
+}
+function pbUnit(){const p=P(PB.pid);
+  if(PB.mode==='buy')return p.type==='course'?p.price:p.formats.find(f=>f.k===PB.format).price;
+  if(PB.mode==='sponsor')return p.sponsor.seat;
+  return p.cause.unit;}
+function pbTotal(){return PB.by==='amount'&&PB.mode!=='buy'?(+PB.amount||0):pbUnit()*PB.qty}
+function stepper(){return `<div class="stepper"><button type="button" onclick="bbSet('qty',PB.qty-1)" aria-label="-">−</button><input type="number" min="1" value="${PB.qty}" onchange="bbSet('qty',+this.value)" aria-label="qty"><button type="button" onclick="bbSet('qty',PB.qty+1)" aria-label="+">+</button></div>`}
+function dedBlock(){
+  const d=PB.d;
+  return `<div class="dedic blk"><label class="chk"><input type="checkbox" ${PB.ded?'checked':''} onchange="bbSet('ded',this.checked)"> ${ic('heart',16)} ${L('تبرع عن غيرك — أهدِ الأجر','Give on behalf of someone')}</label>
+   <span class="note">${L('تبرع عن أهلك وأصدقائك ومن تحب، وتصلهم بطاقة إهداء برسالة نصية.','For family or friends — they receive a dedication card by SMS.')}</span>
+   ${PB.ded?`<div class="form"><div class="row2"><div class="field"><label for="dTo">${L('اسم المُهدى إليه','Recipient name')}</label><input id="dTo" value="${esc(d.to)}" oninput="PB.d.to=this.value"></div><div class="field"><label for="dPh">${L('جواله (لإرسال البطاقة)','Their mobile')}</label><input id="dPh" dir="ltr" placeholder="05XXXXXXXX" value="${esc(d.phone)}" oninput="PB.d.phone=this.value"></div></div>
+    <div class="field"><label for="dFr">${L('اسمك كما يظهر في البطاقة','Your name on the card')}</label><input id="dFr" value="${esc(d.from)}" oninput="PB.d.from=this.value" placeholder="${L('اختياري','Optional')}"></div>
+    <div class="field"><label for="dMs">${L('نص البطاقة','Card message')}</label><select id="dMs" onchange="PB.d.msg=this.value">${[L('اللهم اجعله في ميزان حسناتك','May it weigh in your good deeds'),L('صدقة جارية عن روح الفقيد','A lasting charity for the departed'),L('هدية بمناسبة نجاحك','A gift for your success'),L('عيدكم مبارك','Eid Mubarak')].map(x=>`<option ${x===d.msg?'selected':''}>${x}</option>`).join('')}</select></div></div>`:''}</div>`;
+}
+function buyBox(){
+  const p=P(PB.pid),tot=pbTotal();
+  const tabs=p.type!=='cause'&&p.sponsor?`<div class="seg" style="--n:2"><button type="button" class="${PB.mode==='buy'?'on':''}" onclick="bbMode('buy')">${p.type==='course'?L('اشترك لنفسك','Enrol myself'):L('اشترِ نسخة','Buy a copy')}</button><button type="button" class="${PB.mode==='sponsor'?'on':''}" onclick="bbMode('sponsor')">${p.type==='course'?L('اكفل مقاعد','Sponsor seats'):L('اكفل نسخاً','Sponsor copies')}</button></div>`:'';
+  let h=tabs;
+  if(PB.mode==='buy'&&p.type==='course'){
+    h+=`<div class="blk"><div class="price" style="font-size:1.9rem">${money(p.price)}${p.old?`<s>${num(p.old)}</s>`:''}</div>
+     ${['وصول دائم إلى '+p.lessons+' درساً|Lifetime access to '+p.lessons+' lessons','شهادة إتمام موثّقة|Verifiable certificate','ضمان استرجاع خلال 7 أيام قبل إتمام 20٪|7-day refund before 20% progress'].map(x=>{const [a,e]=x.split('|');return `<div style="display:flex;gap:8px;font-size:.9rem;color:var(--ink-2)"><span style="color:var(--green)">✓</span>${L(a,e)}</div>`}).join('')}</div>`;
+  } else if(PB.mode==='buy'){
+    h+=`<div class="blk"><h4>${L('اختر الصيغة','Format')}</h4>${p.formats.map(f=>`<label class="opt ${PB.format===f.k?'on':''}"><input type="radio" name="fmt" ${PB.format===f.k?'checked':''} onchange="bbSet('format','${f.k}')"><div><b>${fmtName(f.k)}</b><span>${f.k==='print'?L('شحن 3–5 أيام عمل','Ships in 3–5 working days'):L('تحميل فوري من حسابك','Instant download')}</span></div><span class="p">${money(f.price)}${f.old?`<s class="note" style="margin-inline-start:4px">${f.old}</s>`:''}</span></label>`).join('')}</div>
+     ${PB.format==='print'?`<div class="blk"><h4>${L('الكمية','Quantity')}</h4>${stepper()}</div>`:''}`;
+  } else {
+    /* sponsor or donate */
+    const isS=PB.mode==='sponsor',unit=isS?p.sponsor.seat:p.cause.unit,uw=isS?seatWord(p,2):unitWord(p);
+    if(isS)h+=`<div class="blk"><div class="calc" style="margin:0">${ic('seat')}<span>${L('المستفيدون: ','For: ')}<b style="font-weight:600">${esc(pick(p.sponsor.grpAr,p.sponsor.grpEn))}</b>. ${L('تختار الجمعية المستفيدين وفق معايير الأهلية المنشورة، ويصلك إشعار عند تخصيص كل '+seatWord(p,1)+'.','The association selects beneficiaries against published criteria and notifies you as each is allocated.')}</span></div>${goalBlock(p)}</div>`;
+    if(unit){
+      h+=`<div class="seg" style="--n:2;margin-bottom:14px"><button type="button" class="${PB.by==='units'?'on':''}" onclick="bbSet('by','units')">${isS?(p.type==='book'?L('عدد النسخ','Number of copies'):L('عدد المقاعد','Number of seats')):L('بعدد ال','By ')+unitWord(p)}</button><button type="button" class="${PB.by==='amount'?'on':''}" onclick="bbSet('by','amount')">${L('ساهم بمبلغ','Give an amount')}</button></div>`;
+    }
+    if(PB.by==='units'&&unit){
+      const presets=isS?(p.type==='book'?[10,25,50,100]:[1,5,10,25]):[1,2,5,10];
+      h+=`<div class="blk"><div class="chips">${presets.map(n=>`<button type="button" class="${PB.qty===n?'on':''}" onclick="bbSet('qty',${n})">${n}</button>`).join('')}</div>${stepper()}
+       <div class="calc">${infoIcon}<span>${PB.qty} ${isS?seatWord(p,PB.qty):unitWord(p)} × ${moneyTxt(unit)} — ${isS?(p.type==='book'?L(`تصل إلى ${PB.qty} ${PB.qty===1?'مكتبة/طفل':'مستفيداً'}`,`reaches ${PB.qty} beneficiaries`):L(`${PB.qty} ${PB.qty===1?'مستفيد يتعلّم':'مستفيدين يتعلّمون'} على حسابك`,`${PB.qty} learners on you`)):L('يُبلَّغ عن كل وحدة عند تسليمها','each unit is reported on delivery')}</span></div></div>`;
+    } else {
+      h+=`<div class="blk"><div class="chips">${[50,100,250,500].map(n=>`<button type="button" class="${+PB.amount===n?'on':''}" onclick="bbSet('amount',${n})">${n} ${L('ر.س','SAR')}</button>`).join('')}</div>
+       <input type="number" min="10" dir="ltr" inputmode="numeric" value="${PB.amount}" oninput="PB.amount=+this.value;bbTotals()" aria-label="amount" placeholder="${L('أدخل مبلغ التبرع','Enter amount')}">
+       ${unit?`<div class="calc" id="bbCalc">${infoIcon}<span>${L('مساهمتك تعادل','Your share equals')} <b>${(PB.amount/unit).toFixed(2)}</b> ${uw}. ${L('تُجمع المساهمات حتى تكتمل قيمة ال'+(isS?seatWord(p,1):unitWord(p))+' ثم تُخصَّص.','Shares are pooled until a full unit is funded, then allocated.')}</span></div>`:''}</div>`;
+    }
+    if(!isS&&p.cause.zakat)h+=`<div class="blk"><h4>${L('نوع التبرع','Type of gift')}</h4><div class="seg" style="--n:2;margin:0"><button type="button" class="${PB.intent==='sadaqa'?'on':''}" onclick="bbSet('intent','sadaqa')">${L('صدقة','Sadaqah')}</button><button type="button" class="${PB.intent==='zakat'?'on':''}" onclick="bbSet('intent','zakat')">${L('زكاة','Zakat')}</button></div>${PB.intent==='zakat'?`<div class="field"><span class="warn">${L('تُصرف الزكاة لمستحقيها من الطلاب المؤهلين فقط، ولا تُخلط بالتبرعات العامة.','Zakat is spent only on eligible students and kept separate from general gifts.')}</span></div>`:''}</div>`;
+    h+=dedBlock();
+  }
+  h+=`<div class="total"><span>${L('الإجمالي','Total')}</span><b id="bbTotal">${money(tot)}</b></div>
+   <div style="display:grid;gap:8px"><button class="btn ${PB.mode==='buy'?'btn-primary':'btn-cta'}" style="padding:14px;font-size:1rem" onclick="bbAdd()">${PB.mode==='buy'?`${cartIcon.replace('<svg','<svg width="18" height="18"')} ${L('أضف إلى السلة','Add to cart')}`:`${ic('heart')} ${L('أضف لسلة التبرعات','Add to giving')}`}</button>
+   <button class="btn btn-ghost" onclick="if(bbAdd())location.hash='${href('checkout')}'">${PB.mode==='buy'?L('اشترِ الآن','Buy now'):L('تبرع مباشرة','Give now')}</button></div>
+   <p class="mono" style="font-size:.72rem;color:var(--muted);margin-top:12px;text-align:center">🔒 ${L('دفع آمن · mada · Apple Pay · VISA','Secure payment · mada · Apple Pay · VISA')}</p>`;
+  return h;
+}
+function rerenderBB(){const el=document.getElementById('bb');if(el){el.innerHTML=buyBox();el.querySelectorAll('.bar i').forEach(i=>i.style.width=i.dataset.w+'%')}bbTotals()}
+function bbTotals(){const t=pbTotal(),a=document.getElementById('bbTotal'),b=document.getElementById('sbTotal'),c=document.querySelector('#bbCalc b');if(a)a.innerHTML=money(t);if(b)b.innerHTML=money(t);if(c){const p=P(PB.pid),u=PB.mode==='sponsor'?p.sponsor.seat:p.cause.unit;c.textContent=((+PB.amount||0)/u).toFixed(2)}}
+window.bbMode=m=>{const p=P(PB.pid);PB.mode=m;PB.by='units';PB.qty=m==='sponsor'?(p.type==='book'?10:5):1;PB.amount=m==='sponsor'?Math.round(p.sponsor.seat/3):50;rerenderBB();const sb=document.querySelector('.stickybar .btn');if(sb){sb.className='btn '+(m==='buy'?'btn-primary':'btn-cta');sb.textContent=m==='buy'?L('أضف إلى السلة','Add to cart'):L('أضف لسلة التبرعات','Add to giving')}};
+window.bbSet=(k,v)=>{if(k==='qty')v=Math.max(1,Math.min(999,Math.round(v)||1));PB[k]=v;rerenderBB()};
+window.bbAdd=()=>{
+  const p=P(PB.pid),tot=pbTotal();
+  if(PB.mode!=='buy'&&PB.by==='amount'&&tot<10){toast(L('أدخل مبلغاً لا يقل عن 10 ر.س','Enter at least 10 SAR'),true);return false}
+  let ded=null;
+  if(PB.mode!=='buy'&&PB.ded){
+    if(!PB.d.to.trim()||!/^05\d{8}$/.test(PB.d.phone.trim())){toast(L('أكمل اسم المُهدى إليه ورقم جواله (05XXXXXXXX)','Enter the recipient name and a valid mobile (05XXXXXXXX)'),true);return false}
+    ded=Object.assign({},PB.d);
+  }
+  const line={pid:p.id,kind:PB.mode,mode:PB.mode==='buy'?'units':PB.by,qty:PB.by==='amount'&&PB.mode!=='buy'?1:PB.qty,unit:PB.by==='amount'&&PB.mode!=='buy'?(PB.mode==='sponsor'?p.sponsor.seat:(p.cause.unit||tot)):pbUnit(),amount:tot,format:PB.mode==='buy'&&p.type==='book'?PB.format:undefined,intent:PB.mode==='donate'?PB.intent:undefined,ded};
+  if(line.kind==='buy'&&line.format==='digital')line.qty=1,line.amount=line.unit;
+  if(p.type==='cause'&&!p.cause.unit){line.mode='amount'}
+  const ok=addLine(line);
+  if(ok&&PB.ded){PB.ded=false;PB.d.to='';PB.d.phone='';rerenderBB()}
+  return ok;
+};
+
+/* ===================== CHECKOUT ===================== */
+window.placeOrder=e=>{
+  e.preventDefault();
+  const f=e.target,name=f.querySelector('#coN').value.trim(),mobile=f.querySelector('#coM').value.trim(),email=f.querySelector('#coE').value.trim();
+  const pay=f.querySelector('input[name=pay]:checked').value;
+  if(pay==='Tabby'&&DB.cart.some(isGift)){toast(L('التقسيط غير متاح للتبرعات — اختر طريقة دفع أخرى','Instalments are not available for gifts — choose another method'),true);return}
+  const btn=f.querySelector('button[type=submit]');btn.disabled=true;btn.textContent=L('جارٍ التحويل إلى بوابة الدفع…','Redirecting to the gateway…');
+  setTimeout(()=>{
+    const n=4188+DB.orders.length,id='T3-26-'+String(n).padStart(6,'0');
+    const lines=DB.cart.map(l=>Object.assign({},l));
+    DB.orders.unshift({id,at:new Date().toISOString(),pay,buyer:{name,mobile,email,anon:!!f.querySelector('#coAnon')?.checked},lines,t:totals(lines)});
+    DB.me={name,mobile,email};
+    DB.deltaD=DB.deltaD||{};
+    lines.filter(isGift).forEach(l=>{const p=P(l.pid);const add=p.type==='cause'?l.amount:(l.mode==='units'?l.qty:0);DB.delta[p.id]=(DB.delta[p.id]||0)+add;DB.deltaD[p.id]=(DB.deltaD[p.id]||0)+1});
+    DB.cart=[];save();location.hash=href('done/'+id);
+  },900);
+};
+window.resetDemo=()=>{DB={cart:[],orders:[],delta:{}};save();PB=null;toast(L('أُعيد ضبط النموذج','Demo reset'));route()};
+
+/* ===================== UI plumbing (same behaviour as the main prototype) ===================== */
+let toastTimer;
+window.toast=(msg,bad)=>{const el=document.getElementById('toast');if(!el)return;el.innerHTML=msg;el.className='toast show'+(bad?' bad':'');el.style.pointerEvents='auto';clearTimeout(toastTimer);toastTimer=setTimeout(()=>{el.className='toast'+(bad?' bad':'');el.style.pointerEvents='none'},bad?4200:2800)};
+window.openModal=html=>{document.getElementById('modalBox').innerHTML=html;document.getElementById('modal').classList.add('open');document.body.style.overflow='hidden'};
+window.closeModal=()=>{document.getElementById('modal').classList.remove('open');document.body.style.overflow=''};
+addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+window.accSel=i=>{const acc=document.getElementById('acc');if(!acc)return;[...acc.children].forEach((el,j)=>el.classList.toggle('on',i===j))};
+const reduced=()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let accTimer=null;
+function accAuto(){clearInterval(accTimer);const acc=document.getElementById('acc');if(!acc||reduced())return;let i=0,hover=false;const n=acc.children.length;acc.onmouseenter=()=>hover=true;acc.onmouseleave=()=>hover=false;accTimer=setInterval(()=>{if(hover||document.hidden)return;i=(i+1)%n;accSel(i)},3800)}
+function countUp(el){const target=+el.dataset.count||0;if(reduced()){el.textContent=target.toLocaleString('en');return}const dur=1300,t0=performance.now();const step=now=>{const k=Math.min(1,(now-t0)/dur),e=1-Math.pow(1-k,3);el.textContent=Math.round(target*e).toLocaleString('en');if(k<1)requestAnimationFrame(step)};requestAnimationFrame(step)}
+let io=null;
+function reveal(){
+  if(io)io.disconnect();
+  const els=document.querySelectorAll('.rv,.rv-stagger');
+  const show=el=>{el.classList.add('in');el.querySelectorAll('[data-count]').forEach(n=>{if(!n.dataset.done){n.dataset.done='1';countUp(n)}});el.querySelectorAll('.bar i[data-w]').forEach(i=>i.style.width=i.dataset.w+'%')};
+  document.querySelectorAll('.bar i[data-w]').forEach(i=>{if(!i.closest('.rv,.rv-stagger'))requestAnimationFrame(()=>i.style.width=i.dataset.w+'%')});
+  if(!('IntersectionObserver' in window)||reduced()){els.forEach(show);return}
+  io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){show(en.target);io.unobserve(en.target)}}),{rootMargin:'0px 0px -8% 0px',threshold:.08});
+  els.forEach(el=>io.observe(el));
+  const sweep=()=>document.querySelectorAll('.rv:not(.in),.rv-stagger:not(.in)').forEach(el=>{const r=el.getBoundingClientRect();if(r.top<innerHeight&&r.bottom>0)show(el)});
+  requestAnimationFrame(sweep);setTimeout(sweep,1500);
+}
+addEventListener('scroll',()=>{const h=document.documentElement,max=h.scrollHeight-h.clientHeight,bar=document.getElementById('progress');if(bar)bar.style.width=(max>0?(h.scrollTop/max)*100:0)+'%';const hd=document.getElementById('hdr');if(hd)hd.classList.toggle('scrolled',h.scrollTop>8)},{passive:true});
+
+/* ===================== ROUTER ===================== */
+let lastPath='';
+function route(){
+  const raw=location.hash.replace(/^#\/?/,''),qi=raw.indexOf('?');
+  const pathPart=qi<0?raw:raw.slice(0,qi),q=new URLSearchParams(qi<0?'':raw.slice(qi+1));
+  const segs=pathPart.split('/').filter(Boolean);
+  if(segs[0]!=='ar'&&segs[0]!=='en'){location.replace('#/'+lang+'/');return}
+  if(segs[0]!==lang){lang=segs[0];try{localStorage.setItem('t3s-lang',lang)}catch(e){}}
+  const p=segs.slice(1),r=p[0]||'';
+  document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+  renderHeader(r+(p[1]?'/'+p[1]:''));renderFooter();
+  let html;
+  switch(r){
+    case '':html=PAGES.home();break;
+    case 'shop':html=PAGES.shop(p[1]||'',q);break;
+    case 'p':html=PAGES.product(p[1],q);break;
+    case 'cart':html=PAGES.cart();break;
+    case 'checkout':html=PAGES.checkout();break;
+    case 'done':html=PAGES.done(p[1]);break;
+    case 'account':html=PAGES.account(p[1]);break;
+    default:html=PAGES.notFound();
+  }
+  if(r!=='p')PB=null;
+  const app=document.getElementById('app');app.innerHTML=html;
+  document.getElementById('mnav').classList.remove('open');closeModal();
+  if(pathPart!==lastPath){lastPath=pathPart;window.scrollTo({top:0,behavior:'auto'})}
+  document.title=(r===''?L('متجر تعلّم','Ta3lom Store'):(app.querySelector('h1')?app.querySelector('h1').textContent.trim():L('متجر تعلّم','Ta3lom Store')))+' · store.ta3lom.sa';
+  reveal();accAuto();
+}
+addEventListener('hashchange',route);
+if(!location.hash)location.replace('#/'+lang+'/');
+route();
+</script>
+

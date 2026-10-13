@@ -1,0 +1,20 @@
+.chip {
+  display: inline-block;
+  font-size: 0.74rem;
+  font-weight: 500;
+  padding-block: 4px;
+  padding-inline: 11px;
+  border-radius: var(--rp);
+  background: var(--c-tint);
+
+  /* --brand text here is 3.11:1 on --tint — under the 4.5:1 AA minimum. --brand-900 is 6.07:1. */
+  color: var(--c-accent-strong);
+}
+
+/* --gold-700 text here is 3.89:1 on --gold-tint — under the 4.5:1 AA minimum, and no darker
+   gold token exists that would pass on a light background. --ink keeps the amber background
+   as the "gold" cue while meeting contrast (14.2:1). */
+.chip.gold {
+  background: var(--c-gold-tint);
+  color: var(--c-text);
+}

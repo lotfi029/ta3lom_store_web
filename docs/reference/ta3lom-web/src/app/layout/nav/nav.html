@@ -1,0 +1,43 @@
+<nav class="nav" aria-label="التنقل الرئيسي" i18n-aria-label="Main navigation landmark label@@navMainLabel">
+  @for (group of groups; track group.id) {
+    @if (group.links) {
+      <div
+        #dd
+        class="dd"
+        tabindex="-1"
+        (mouseenter)="onEnter(group.id)"
+        (mouseleave)="onLeave()"
+        (focusin)="onFocusIn(group.id)"
+        (keydown.escape)="closeAndFocus(trigger)"
+        (focusout)="onFocusOut($event, dd)"
+      >
+        <button
+          #trigger
+          type="button"
+          (click)="open(group.id)"
+          [attr.aria-expanded]="expanded(group.id)"
+          [attr.aria-controls]="group.id"
+        >
+          {{ group.label }}<span class="car"></span>
+        </button>
+        <!-- One class for one state. Hover, focus and click all resolve through expanded(), so
+             this cannot disagree with aria-expanded above and no second menu can be open at the
+             same time. Not [hidden]: the panel animates, and `visibility` in nav.css is what keeps
+             the links out of the tab order while closed. -->
+        <div class="menu" [id]="group.id" [class.open]="expanded(group.id)">
+          @for (link of group.links; track link.path) {
+            <a [routerLink]="link.path" routerLinkActive="on" (click)="closeNow()">{{ link.label }}</a>
+          }
+        </div>
+      </div>
+    } @else {
+      <a
+        [routerLink]="group.path"
+        routerLinkActive="on"
+        [routerLinkActiveOptions]="{ exact: group.path === '/' }"
+      >
+        {{ group.label }}
+      </a>
+    }
+  }
+</nav>

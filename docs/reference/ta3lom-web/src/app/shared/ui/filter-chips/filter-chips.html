@@ -1,0 +1,24 @@
+<div class="filter-chips" role="group" [attr.aria-label]="ariaLabel()">
+  @if (allLabel(); as all) {
+    <button
+      type="button"
+      class="fchip"
+      [class.on]="active() === 'all'"
+      [attr.aria-pressed]="active() === 'all'"
+      (click)="categorySelected.emit('all')"
+    >
+      {{ all }}
+    </button>
+  }
+  @for (opt of options(); track opt.value) {
+    <button
+      type="button"
+      class="fchip"
+      [class.on]="active() === opt.value"
+      [attr.aria-pressed]="active() === opt.value"
+      (click)="categorySelected.emit(opt.value)"
+    >
+      {{ opt.label }}
+    </button>
+  }
+</div>

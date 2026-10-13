@@ -1,0 +1,53 @@
+@if (data().items.length > 0) {
+  <!-- A wrapper div, NOT `display:block; overflow-x:auto` on the table itself the way
+       base.css's `.prose table` does it. An element's implicit ARIA role comes from its COMPUTED
+       display, so forcing a <table> off `display:table` strips its `table` role and its rows'/
+       cells' semantics with it. That is an acceptable trade for occasional prose tables; it is
+       not for the admin's primary data surface. Wrapping leaves the table's own display — and so
+       its semantics — untouched.
+
+       tabindex/role/aria-label: a scrollable region has to be reachable by keyboard, or someone
+       who cannot use a pointer simply cannot reach the overflowing columns. The label reuses the
+       caption rather than inventing a second string for the same thing. -->
+  <div class="data-table-scroll" tabindex="0" role="region" [attr.aria-label]="caption()">
+    <table class="data-table">
+      <caption class="visually-hidden">{{ caption() }}</caption>
+      @if (headerTemplate(); as header) {
+        <thead>
+          <ng-container [ngTemplateOutlet]="header" />
+        </thead>
+      }
+      <tbody>
+        @for (item of data().items; track item.id) {
+          <tr>
+            <ng-container [ngTemplateOutlet]="rowTemplate()" [ngTemplateOutletContext]="{ $implicit: item }" />
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <nav class="pager" aria-label="ترقيم الصفحات" i18n-aria-label="Pagination nav landmark label@@dataTablePagerLabel">
+    <button
+      type="button"
+      class="pager-btn"
+      (click)="pageChange.emit(data().page - 1)"
+      [disabled]="data().page <= 1"
+      i18n="Previous page button@@dataTablePrev"
+    >
+      السابق
+    </button>
+    <span class="pager-status mono" aria-live="polite">{{ data().page }} / {{ totalPages() }}</span>
+    <button
+      type="button"
+      class="pager-btn"
+      (click)="pageChange.emit(data().page + 1)"
+      [disabled]="data().page >= totalPages()"
+      i18n="Next page button@@dataTableNext"
+    >
+      التالي
+    </button>
+  </nav>
+} @else {
+  <p class="empty">{{ emptyMessage() }}</p>
+}

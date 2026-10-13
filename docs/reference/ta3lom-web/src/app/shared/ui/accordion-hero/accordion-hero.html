@@ -1,0 +1,26 @@
+<div class="acc" (mouseleave)="resume()" (focusout)="resume()">
+  @for (item of items(); track item.id; let i = $index) {
+    <a
+      class="ac"
+      [class.on]="activeIndex() === i"
+      [routerLink]="item.href"
+      (mouseenter)="pause(); select(i)"
+      (focus)="pause(); select(i)"
+    >
+      <ta-image
+        class="art"
+        [src]="item.imageSrc"
+        [alt]="item.imageAlt"
+        [width]="400"
+        [height]="500"
+        [priority]="i === 0"
+        imgClass="img-cover"
+      />
+      <span class="num mono">0{{ i + 1 }}</span>
+      <span class="lbl">
+        <b>{{ item.label }}</b>
+        <span>{{ item.summary }}</span>
+      </span>
+    </a>
+  }
+</div>

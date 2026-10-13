@@ -1,0 +1,11 @@
+<div class="stat" [class.start]="align() === 'start'">
+  @if (text(); as text) {
+    <!-- <bdi dir="ltr"> isolates the editor's string, so "1,240" or "43K" keeps its order on an
+         Arabic page, while the span keeps the page's alignment (dir on the span itself would turn
+         its `text-align: start` into left). -->
+    <span class="num mono"><bdi dir="ltr">{{ text }}</bdi></span>
+  } @else {
+    <span class="num mono">{{ display() }}{{ suffix() }}</span>
+  }
+  <span class="label">{{ label() }}</span>
+</div>

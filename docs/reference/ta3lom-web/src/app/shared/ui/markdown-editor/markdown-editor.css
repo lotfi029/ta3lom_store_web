@@ -1,0 +1,85 @@
+.md-label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-block-end: var(--space-1);
+}
+
+.field-hint {
+  margin-block-end: var(--space-3);
+}
+
+/* Prototype .md-wrap (line 386): one bordered card holding toolbar, split and footer.
+   The GRID is what puts the prototype's layout back together out of two DOM trees that Angular
+   and Toast UI each own half of: Toast UI's toolbar and writing area are children of #editorHost
+   and cannot be reparented (moving nodes behind the library's back is what threw NotFoundError
+   out of teardown before), so base.css flattens #editorHost and the editor root with
+   `display: contents` and places their children into THIS grid by column and row. Read the two
+   files together — the row/column assignments for the Toast UI side live there. */
+.md-wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+
+  /* Containing block for Toast UI's Insert Link / Insert Table popups. `display: contents` on
+     the editor root removes the box those popups were positioned against, so this element has to
+     take over the role — it occupies the same area, so they land where they always did. */
+  position: relative;
+  border: 1px solid var(--c-border);
+  border-radius: var(--r);
+  overflow: hidden;
+  background: var(--c-surface);
+}
+
+/* Prototype: the split is one column until 820px, two above it (line 391-392). Below that the
+   preview would be too narrow to tell you anything, so it stacks under the writing area. */
+@media (width >= 820px) {
+  .md-wrap {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+/* Prototype .md-prev (line 395). */
+.md-prev {
+  grid-column: 1;
+  grid-row: 3;
+  padding: var(--space-4);
+  max-block-size: 480px;
+  overflow-y: auto;
+  border-block-start: 1px solid var(--c-border);
+  font-size: 0.92rem;
+}
+
+@media (width >= 820px) {
+  .md-prev {
+    grid-column: 2;
+    grid-row: 2;
+    border-block-start: 0;
+    border-inline-start: 1px solid var(--c-border);
+  }
+}
+
+/* Prototype .md-foot (line 399): character count on one end, the word "معاينة" labelling the
+   preview column on the other. */
+.md-foot {
+  grid-column: 1 / -1;
+  grid-row: 4;
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  background: var(--c-surface-2);
+  border-block-start: 1px solid var(--c-border);
+  font-size: 0.74rem;
+  color: var(--c-muted);
+}
+
+@media (width >= 820px) {
+  .md-foot {
+    grid-row: 3;
+  }
+}
+
+.md-foot .over {
+  color: var(--c-danger);
+  font-weight: 600;
+}

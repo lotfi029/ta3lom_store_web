@@ -1,0 +1,315 @@
+/* Matches the approved prototype's media library treatment
+   (ta3lom-prototype.html:250-253, 374-384), expressed through tokens.css and logical properties —
+   the prototype's `top:6px` badge offsets become inset-block-start; #fff becomes var(--bg). */
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-block-end: var(--space-4);
+}
+
+/* Wraps: four chips plus the toolbar's other controls overflowed a phone-width admin screen. */
+.kind-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.kind-filter button {
+  min-block-size: 44px;
+  padding-inline: var(--space-4);
+  border: 1px solid var(--c-border);
+  border-radius: var(--rp);
+  background: var(--c-surface);
+  color: var(--c-text);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+/* --c-brand-deep, not --c-brand: --c-on-brand on --c-brand is 3.4:1, under the 4.5:1 AA minimum;
+   on --c-brand-deep it is 6.64:1 — the same "on" fill the public filter chips use. */
+.kind-filter button.on {
+  background: var(--c-brand-deep);
+  border-color: var(--c-brand-deep);
+  color: var(--c-on-brand);
+}
+
+.missing-alt-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.85rem;
+  color: var(--c-muted);
+  min-block-size: 44px;
+}
+
+.dropzone {
+  display: block;
+  border: 2px dashed var(--c-border);
+  border-radius: var(--rc);
+  padding: var(--space-6);
+  text-align: center;
+  color: var(--c-muted);
+  cursor: pointer;
+  background: var(--c-surface);
+  margin-block-end: var(--space-4);
+}
+
+.dropzone:hover,
+.dropzone.over {
+  border-color: var(--c-accent);
+  background: var(--c-tint);
+  color: var(--c-text);
+}
+
+.dropzone input {
+  /* NOT display:none — that removes it from the tab order and the accessibility tree
+     entirely, making the whole "upload a file" action mouse/touch-only. A native
+     <input type="file"> already opens the file picker on Enter/Space once it can receive
+     focus; this keeps it focusable while staying visually hidden. */
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The input itself is visually a 1px box (see above) — the focus ring goes on the visible
+   label container instead, the standard pattern for a hidden-input-inside-a-visible-label. */
+.dropzone:has(input:focus-visible) {
+  outline: 2px solid var(--c-focus);
+  outline-offset: 2px;
+}
+
+.dropzone b {
+  display: block;
+  color: var(--c-accent);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.dropzone .hint {
+  display: block;
+  font-size: 0.8rem;
+  margin-block-start: var(--space-2);
+}
+
+.dropzone .progress {
+  display: block;
+  margin-block-start: var(--space-3);
+  font-family: var(--fm);
+  font-size: 0.8rem;
+  color: var(--c-accent-strong);
+}
+
+.youtube-add {
+  margin-block-end: var(--space-5);
+}
+
+.youtube-add label {
+  display: block;
+  font-size: 0.85rem;
+  margin-block-end: var(--space-2);
+}
+
+.yt-row {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.yt-row input {
+  flex: 1;
+
+  /* A flex item defaults to min-width: auto, so the input refused to shrink below its intrinsic
+     size and pushed the Add button out of a phone-width row. */
+  min-width: 0;
+  min-block-size: 44px;
+  padding-inline: var(--space-3);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--space-3);
+}
+
+/* asset-tile, not tile: base.css's global .tile (16:9 + overflow: hidden, for public posters)
+   was clipping this grid's caption and Delete/Alt-text row. Keep the whole family renamed. */
+.asset-tile {
+  border-radius: var(--r);
+  overflow: hidden;
+  background: var(--c-surface-2);
+  position: relative;
+}
+
+.asset-tile-main {
+  /* A real <button> in both modes — picker mode selects, library mode opens the preview — so
+     the cursor/hover affordance below applies unconditionally, not gated behind a picker-only
+     modifier class the way it used to be. */
+  display: block;
+  width: 100%;
+  margin: 0;
+  border: 2px solid transparent;
+  border-radius: var(--r);
+  background: transparent;
+  padding: 0;
+  text-align: start;
+  position: relative;
+  cursor: pointer;
+}
+
+.asset-tile-main:disabled {
+  cursor: default;
+}
+
+.asset-tile-main:hover {
+  border-color: var(--c-accent);
+}
+
+.preview {
+  aspect-ratio: 4 / 3;
+  background: var(--c-surface-3);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pdf-icon {
+  font-family: var(--fm);
+  font-size: 0.85rem;
+  color: var(--c-muted);
+}
+
+.meta {
+  display: block;
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--c-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.badge {
+  position: absolute;
+  inset-block-start: var(--space-2);
+  font-size: 0.65rem;
+  padding: 2px var(--space-2);
+  border-radius: var(--r);
+  font-family: var(--fm);
+}
+
+.badge.kind {
+  inset-inline-start: var(--space-2);
+  background: color-mix(in srgb, var(--c-surface-dark) 80%, transparent);
+  color: var(--c-on-brand);
+}
+
+.badge.no-alt {
+  inset-inline-end: var(--space-2);
+  background: var(--c-danger-fill);
+  color: var(--c-on-brand);
+}
+
+.asset-tile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-block-start: 1px solid var(--c-border-2);
+}
+
+.link-btn {
+  min-block-size: 44px;
+  padding-inline: var(--space-2);
+  border: none;
+  background: transparent;
+  color: var(--c-accent-strong);
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.link-btn.danger {
+  color: var(--c-danger);
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  margin-block-start: var(--space-5);
+  font-size: 0.85rem;
+}
+
+.pager button {
+  min-block-size: 44px;
+  padding-inline: var(--space-4);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r);
+  background: var(--c-surface);
+  cursor: pointer;
+}
+
+.pager button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.state {
+  color: var(--c-muted);
+  padding-block: var(--space-6);
+  text-align: center;
+}
+
+.state.error {
+  color: var(--c-danger);
+}
+
+.alt-dialog,
+.refs-dialog {
+  padding: var(--space-6);
+  max-inline-size: 420px;
+}
+
+.alt-preview {
+  max-inline-size: 100%;
+  border-radius: var(--r);
+  margin-block-end: var(--space-4);
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-block-start: var(--space-5);
+}
+
+.refs-list {
+  list-style: none;
+  padding: 0;
+  margin: var(--space-4) 0 0;
+}
+
+.refs-list li {
+  padding-block: var(--space-2);
+  border-block-end: 1px solid var(--c-border-2);
+  font-size: 0.9rem;
+}
+
+.field-hint.error {
+  color: var(--c-danger);
+}

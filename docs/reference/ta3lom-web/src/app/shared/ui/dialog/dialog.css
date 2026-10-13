@@ -1,0 +1,36 @@
+/* No `position` here — the native <dialog> UA stylesheet already sets
+   `position: fixed; inset-block: 0; margin: auto;` on `:modal`, which is what centers it in the
+   viewport. Overriding that to `position: relative` (the previous rule) drops the dialog out of
+   that fixed-position/auto-margin centering entirely, so it renders at its default in-flow
+   position instead — pinned near the top of the viewport rather than centered. `max-block-size`
+   keeps a safe margin below `100vh`, the same `- 40px` gutter the width formula already uses, so
+   there is always room left for the auto margins to center it even when content is tall. */
+.ta-dialog {
+  border: none;
+  border-radius: var(--r-lg);
+  padding: 0;
+  width: min(960px, calc(100vw - 40px));
+  max-block-size: calc(100vh - 40px);
+
+  /* dvh where supported: on iOS `vh` is measured with the browser toolbars hidden, so a
+     vh-sized dialog runs under the bottom toolbar. The vh line above is the fallback. */
+  max-block-size: calc(100dvh - 40px);
+  box-shadow: var(--shadow-lg);
+  transform: scale(0.96);
+  transition: transform var(--dur-2) var(--ease);
+}
+
+.ta-dialog[open] {
+  transform: none;
+}
+
+.ta-dialog::backdrop {
+  background: var(--c-scrim-80);
+  backdrop-filter: blur(8px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ta-dialog {
+    transition: none;
+  }
+}

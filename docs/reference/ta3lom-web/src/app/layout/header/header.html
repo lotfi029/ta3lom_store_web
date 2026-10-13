@@ -1,0 +1,59 @@
+<header class="hdr" [class.scrolled]="scrolled()">
+  <div class="wrap">
+    <a class="brand" routerLink="/">
+      <svg class="mark" viewBox="380 320 1250 1060" [attr.aria-label]="logoAlt" role="img">
+        <use href="logo.svg#logo-src" />
+      </svg>
+      <span class="nm">
+        {{ siteName }}
+        <span class="sub">{{ siteSubtitle }}</span>
+      </span>
+    </a>
+
+    <ta-nav />
+
+    <div class="acts">
+      <ta-lang-switch />
+      <ta-theme-toggle />
+      <!-- The real /donate route (app.routes.ts), not `/` + a #donate fragment. The fragment form
+           went to the HOME page and scrolled to its donate band, so this button never reached
+           /ar/donate — and pressed from any other page it navigated the visitor away entirely.
+           The home page's own two donate buttons already link here correctly. -->
+      <ta-button variant="cta" size="sm" routerLink="/donate">{{ donateLabel }}</ta-button>
+      <button
+        #burger
+        type="button"
+        class="burger"
+        [attr.aria-expanded]="mobileOpen()"
+        aria-controls="mobile-nav"
+        [attr.aria-label]="menuLabel"
+        (click)="toggleMobile()"
+      >
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <nav
+    id="mobile-nav"
+    class="mnav"
+    [hidden]="!mobileOpen()"
+    aria-label="القائمة على الجوال"
+    i18n-aria-label="Mobile navigation landmark label@@headerMobileNavLabel"
+  >
+    @for (group of groups; track group.id) {
+      @if (group.links) {
+        <!-- One box per group so the two-column tablet layout (header.css) never strands a
+             group label at the bottom of one column with its links in the next. -->
+        <div class="mgrp">
+          <div class="grp">{{ group.label }}</div>
+          @for (link of group.links; track link.path) {
+            <a [routerLink]="link.path" (click)="closeMobile()">{{ link.label }}</a>
+          }
+        </div>
+      } @else {
+        <a [routerLink]="group.path" (click)="closeMobile()">{{ group.label }}</a>
+      }
+    }
+  </nav>
+</header>

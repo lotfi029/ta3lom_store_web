@@ -1,0 +1,293 @@
+.hdr {
+  background: var(--c-header-glass);
+  backdrop-filter: blur(14px);
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 50;
+  transition: box-shadow 0.25s;
+}
+
+.hdr.scrolled {
+  box-shadow:
+    0 1px 0 var(--c-border),
+    0 8px 30px var(--c-header-shadow);
+}
+
+.wrap {
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: var(--space-6);
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  min-height: 68px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  text-decoration: none;
+  color: var(--c-text);
+
+  /* Shrinkable, with min-width: 0 — it used to be `flex: none`, so on a 390–480px phone the
+     wordmark refused to give way and pushed the header (and with it every page) up to 74px wider
+     than the screen. It is now the one item in the row that yields: the text clips (see .nm)
+     before anything overflows. .acts never shrinks — every control there must survive. */
+  flex: 0 1 auto;
+  min-width: 0;
+
+  /* The mark is 46x40, so once the wordmark is hidden on small screens the home link would
+     be 4px short of the 44px minimum target — on every page. The header row is 68px tall,
+     so this changes the hit area, not the layout. */
+  min-height: 44px;
+}
+
+.mark {
+  width: 46px;
+  height: 40px;
+  flex: none;
+  transition: transform 0.4s var(--ease);
+}
+
+.brand:hover .mark {
+  transform: translateY(-2px) scale(1.05);
+}
+
+/* Non-negotiable #8 — the logo's hover lift is motion like any other. */
+@media (prefers-reduced-motion: reduce) {
+  .brand:hover .mark {
+    transform: none;
+  }
+}
+
+.nm {
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.2;
+  min-width: 0;
+}
+
+.nm,
+.sub {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sub {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--c-muted);
+  font-weight: 400;
+}
+
+/* A 16px gutter on phones, matching base.css's .wrap. */
+@media (width < 600px) {
+  .wrap {
+    padding-inline: var(--space-4);
+    gap: var(--space-4);
+  }
+}
+
+/* Below 480px the subtitle gives way and the short name stays beside the logo. The full name is
+   still the logo's accessible name (its aria-label) and is spelled out in the footer. */
+@media (width < 480px) {
+  .sub {
+    display: none;
+  }
+}
+
+.acts {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-2);
+  margin-inline-start: auto;
+}
+
+/**
+ * At 320px the brand (`flex: none`, so it never shrinks) plus .acts plus the gap overflowed
+ * the content box and pushed the whole document wider — every route scrolled horizontally,
+ * not just this header, in both locales (English is the tighter one: its .acts is 193px).
+ * Below 380px the wordmark gives way to the logo mark alone; the link keeps its accessible
+ * name from the svg's aria-label, and every control — language switch, donate, menu —
+ * survives, which hiding the donate CTA instead would not have done.
+ */
+@media (width < 380px) {
+  .wrap {
+    padding-inline: var(--space-4);
+    gap: var(--space-3);
+  }
+
+  .nm {
+    display: none;
+  }
+
+  /* CR-01 FE-1: this override used to sit ABOVE the base .acts rule, which (same specificity,
+     later in the file) silently won — the gap never actually tightened. With the theme toggle in
+     .acts the English row needs it: 3px over at 320px without it. */
+  .acts {
+    gap: var(--space-1);
+  }
+}
+
+/* CR-01 FE-1 — English only, desktop header. Readex Pro's Latin is a touch wider than IBM Plex
+   Sans (the nine English labels grew ~40px) and the theme toggle adds 52px, so at 1280px the row
+   ran 41px past the viewport. Measured (not guessed): 16px between the three groups and 4px
+   inside .acts clears it at every width ≥ 1280 with nothing overlapping and no label wrapping;
+   the nav's own item padding is trimmed in nav.css. Arabic still fits with the original spacing,
+   so it keeps it. :host-context, because an html[dir] ancestor in a component stylesheet never
+   matches under emulated encapsulation (see base.css .rtl-mirror). */
+@media (width >= 1280px) {
+  :host-context([dir='ltr']) .wrap {
+    gap: var(--space-4);
+  }
+
+  :host-context([dir='ltr']) .acts {
+    gap: var(--space-1);
+  }
+}
+
+@media (width >= 1280px) {
+  .acts {
+    margin-inline-start: 0;
+  }
+
+  /* With the desktop nav showing, the row is laid out by the measured spacing above, and the
+     brand keeps its full natural width as it always did — shrinking it here only clipped the
+     subtitle to an ellipsis. The shrinkable brand is for the burger layout below 1280px. */
+  .brand {
+    flex: none;
+  }
+}
+
+.burger {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+  background: none;
+  border: 0;
+  border-radius: var(--r);
+  padding: 10px;
+  cursor: pointer;
+  min-height: 44px;
+  min-width: 44px;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background-color var(--dur-1) var(--ease),
+    transform var(--dur-1) var(--ease);
+  touch-action: manipulation;
+}
+
+.burger:hover {
+  background-color: var(--c-surface-3);
+}
+
+.burger:active {
+  transform: scale(0.97);
+}
+
+.burger span {
+  width: 20px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--c-text);
+  transition:
+    transform var(--dur-2) var(--ease),
+    opacity var(--dur-1) var(--ease);
+}
+
+/* Open, the three bars fold into a close "×" — keyed on aria-expanded, the same state a screen
+   reader hears. 6px = the 4px gap + the 2px bar, so the outer bars meet on the middle one. */
+.burger[aria-expanded='true'] span:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.burger[aria-expanded='true'] span:nth-child(2) {
+  opacity: 0;
+}
+
+.burger[aria-expanded='true'] span:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .burger:active {
+    transform: none;
+  }
+}
+
+@media (width >= 1280px) {
+  .burger {
+    display: none;
+  }
+}
+
+/**
+ * The drawer lives inside the sticky header, so it has to scroll INSIDE the viewport: with every
+ * link listed it is ~1100px tall, and without a height limit the bottom links on a 667px phone were
+ * reachable only by scrolling the whole page to its end. `dvh` tracks the visible viewport on
+ * mobile browsers whose toolbars come and go (the `vh` line is the fallback); 68px is the header
+ * row above it. overscroll-behavior stops a flick at the end of the list from scrolling the page.
+ */
+.mnav {
+  background: var(--c-surface);
+  border-block-end: 1px solid var(--c-border);
+  padding-block: 10px 18px;
+  padding-inline: var(--space-6);
+  max-block-size: calc(100vh - 68px);
+  max-block-size: calc(100dvh - 68px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+@media (width < 600px) {
+  .mnav {
+    padding-inline: var(--space-4);
+  }
+}
+
+/* Tablets and small laptops (700–1279px) get the drawer too — the desktop nav needs ~900px — so
+   there it lays the groups out in two columns, halving its height. A group never splits across
+   the columns, so a label always sits above its own links. */
+@media (width >= 700px) {
+  .mnav {
+    columns: 2;
+    column-gap: var(--space-8);
+  }
+}
+
+.mgrp {
+  break-inside: avoid;
+}
+
+.mnav a {
+  display: flex;
+  align-items: center;
+  padding-block: 10px;
+  border-block-end: 1px solid var(--c-border);
+  text-decoration: none;
+  color: var(--c-text);
+  font-weight: 500;
+  min-height: 44px;
+  break-inside: avoid;
+  transition: color var(--dur-1) var(--ease);
+}
+
+.mnav a:hover {
+  color: var(--c-link);
+}
+
+.mnav .grp {
+  font-size: 0.75rem;
+  color: var(--c-muted);
+  padding-block-start: 14px;
+}
+
+@media (width >= 1280px) {
+  .mnav {
+    display: none;
+  }
+}

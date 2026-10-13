@@ -1,0 +1,170 @@
+/**
+ * The host sits in the hero's column flex container, so it defaults to `min-width: auto` and
+ * refuses to shrink below its own min-content — which the cards' `white-space: nowrap` labels
+ * push to ~880px. That overflowed the document at 320px and, because the hero is on the
+ * landing route, took the whole page's horizontal scroll with it. `min-width: 0` lets the flex
+ * item shrink; the cards already carry their own `min-width: 0` and `overflow: hidden`.
+ */
+:host {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.acc {
+  display: flex;
+  gap: var(--space-3);
+  width: 100%;
+  height: 300px;
+  align-items: stretch;
+
+  /* The prototype's `.acc { margin-top: 50px }` (ta3lom-prototype.html:133), which this rule was
+     missing — without it the strip sits flush against the search field above it. */
+  margin-block-start: 50px;
+}
+
+/* Tighter gutter on small screens so five cards can each still clear 44px — see .ac below. */
+@media (width < 480px) {
+  .acc {
+    gap: var(--space-2);
+  }
+}
+
+@media (width >= 900px) {
+  .acc {
+    height: 380px;
+    gap: var(--space-3);
+  }
+}
+
+.ac {
+  flex: 1;
+
+  /*
+   * 44px, not 0: with the collapsed cards free to shrink to nothing, the expanded one took
+   * enough of a 375px row to squeeze its four neighbours to 39px — under the 44px minimum
+   * tap target, on the one control a phone visitor meets first. Five cards at 44px plus the
+   * gaps still fit inside 320px, so this holds at the narrowest supported width too.
+   */
+  min-width: 44px;
+  border-radius: var(--rc) var(--rc) 0 0;
+  background: var(--c-media-shade-22);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition:
+    flex-grow var(--dur-3) var(--ease),
+    background var(--dur-2);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  text-decoration: none;
+  color: var(--c-on-brand);
+}
+
+.ac.on {
+  flex-grow: 3.2;
+  background: var(--c-media-shade-35);
+}
+
+.art {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.num {
+  position: relative;
+  padding-inline-start: var(--space-4);
+  padding-block-start: var(--space-4);
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.lbl {
+  position: relative;
+  padding: var(--space-4);
+  background: linear-gradient(transparent, var(--c-scrim-88));
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lbl b {
+  font-weight: 500;
+  font-size: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lbl span {
+  font-size: 0.82rem;
+  opacity: 0;
+  max-height: 0;
+  transition: opacity var(--dur-2);
+}
+
+.ac.on .lbl span {
+  opacity: 0.85;
+  max-height: 3em;
+}
+
+/**
+ * Phones: a vertical stack instead of a row of slivers. Five cards across 375px left the active
+ * one ~119px wide next to four 44px strips, with its title cut to an ellipsis. Stacked, every card
+ * is the full width, so every title reads in full.
+ *
+ * The container keeps a FIXED height, exactly as the row does: the same flex-grow that widened the
+ * active card now makes it taller, and the auto-advance only redistributes space inside a box that
+ * never changes size — so nothing below the hero moves (CLS). With five cards the collapsed rows
+ * land at ~57px and the active one at ~180px.
+ */
+@media (width < 600px) {
+  .acc {
+    flex-direction: column;
+    height: 440px;
+    gap: var(--space-2);
+    margin-block-start: var(--space-8);
+  }
+
+  .ac {
+    min-width: 0;
+    min-height: 52px;
+
+    /* All four corners: the row version rounds only the top because it sits flush on the hero's
+       bottom edge; the stack is a free-standing block (home.css gives the hero bottom padding). */
+    border-radius: var(--r);
+  }
+
+  /* A collapsed row has room for its title only. */
+  .ac:not(.on) .num {
+    display: none;
+  }
+
+  .ac:not(.on) .lbl {
+    padding-block: var(--space-3);
+  }
+
+  .lbl b {
+    line-height: 1.4;
+  }
+
+  /* The strip shows the latest one to five videos, so the stack is sized by how many cards it has
+     (still a fixed height for any given page, so still no layout shift). Without :has() support
+     every stack simply keeps the five-card 440px above. */
+  .acc:not(:has(> .ac:nth-child(3))) {
+    height: 300px;
+  }
+
+  .acc:has(> .ac:nth-child(3)):not(:has(> .ac:nth-child(5))) {
+    height: 380px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ac {
+    transition: none;
+  }
+}

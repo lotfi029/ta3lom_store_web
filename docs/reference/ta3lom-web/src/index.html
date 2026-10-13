@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>جمعية التعلم الإلكتروني</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--
+      Theme before first paint (CR-01 FE-1, ADR-011). Prerendered pages would otherwise paint light
+      and flip to dark once the bundle booted. Same rules as core/theme.service.ts: a stored
+      'light'/'dark' wins, anything else follows the OS. Storage can throw (private mode) — then
+      the OS decides.
+
+      ⚠️ deploy/.htaccess allows this script by its sha256 HASH in script-src (never
+      'unsafe-inline'). Changing ONE byte of the script element's text — even whitespace —
+      changes the hash: `npm run build` then fails in scripts/check-csp.mjs, which prints the new
+      hash to paste into .htaccess.
+    -->
+    <script>(function(){var t;try{t=localStorage.getItem('ta-theme')}catch(e){}if(t!=='light'&&t!=='dark'){t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}document.documentElement.setAttribute('data-theme',t)})()</script>
+    <!--
+      ?v= is a cache-buster, and it is load-bearing here.
+
+      Angular fingerprints its own JS and CSS (main-KJLLRVXE.js), but files in public/ are copied to
+      the output verbatim — so favicon.ico's URL never changes when its CONTENT does. Browsers cache
+      favicons far more aggressively than ordinary assets: a hard refresh does not clear them and an
+      entry can survive for weeks.
+
+      The symptom that prompted this: Angular's default icon kept showing on /ar/ while the real logo
+      showed on /en/. Nothing locale-specific was wrong — both index.html files carry the same
+      relative href, and all four favicon.ico copies in the build are byte-identical. But `<base
+      href>` resolves those hrefs to /ar/favicon.ico and /en/favicon.ico, which are two different
+      URLs with two SEPARATE cache entries. /ar/ had been visited while it still served Angular's
+      icon; /en/ was first visited afterwards. One file, two ages of cache.
+
+      BUMP THIS NUMBER whenever public/favicon.* changes. Forgetting is the only way this regresses,
+      and the failure is invisible to whoever made the change — their own browser refetched it.
+    -->
+    <link rel="icon" href="favicon.ico?v=3" sizes="16x16 32x32 48x48" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=3" />
+  </head>
+  <body>
+    <ta-root></ta-root>
+  </body>
+</html>

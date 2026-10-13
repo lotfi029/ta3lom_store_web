@@ -1,0 +1,16 @@
+@if (current(); as toast) {
+  <div
+    class="toast"
+    role="status"
+    aria-live="polite"
+    (mouseenter)="pauseTimer()"
+    (mouseleave)="resumeTimer()"
+    (focusin)="pauseTimer()"
+    (focusout)="resumeTimer()"
+  >
+    <p>{{ toast.message }}</p>
+    <button type="button" class="close" (click)="onDismiss()" [attr.aria-label]="dismissLabel">
+      <span aria-hidden="true">×</span>
+    </button>
+  </div>
+}

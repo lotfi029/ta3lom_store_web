@@ -1,0 +1,260 @@
+<div class="toolbar">
+  @if (!fixedKindFilter()) {
+    <div class="kind-filter" role="group" [attr.aria-label]="i18n.pick('تصفية حسب النوع', 'Filter by kind')">
+      <button type="button" [class.on]="!data.kindFilter()" [attr.aria-pressed]="!data.kindFilter()" (click)="setKindFilter('all')">
+        {{ i18n.pick('الكل', 'All') }}
+      </button>
+      <button
+        type="button"
+        [class.on]="data.kindFilter() === 'image'"
+        [attr.aria-pressed]="data.kindFilter() === 'image'"
+        (click)="setKindFilter('image')"
+      >
+        {{ kindLabels.image }}
+      </button>
+      <button type="button" [class.on]="data.kindFilter() === 'pdf'" [attr.aria-pressed]="data.kindFilter() === 'pdf'" (click)="setKindFilter('pdf')">
+        PDF
+      </button>
+      <button
+        type="button"
+        [class.on]="data.kindFilter() === 'youtube'"
+        [attr.aria-pressed]="data.kindFilter() === 'youtube'"
+        (click)="setKindFilter('youtube')"
+      >
+        YouTube
+      </button>
+    </div>
+  }
+
+  <label class="missing-alt-toggle">
+    <input type="checkbox" [checked]="data.missingAltOnly()" (change)="toggleMissingAlt($any($event.target).checked)" />
+    {{ i18n.pick('بدون نص بديل فقط', 'Missing alt text only') }}
+  </label>
+</div>
+
+@if (fixedKindFilter() !== 'youtube') {
+  <label
+    class="dropzone"
+    [class.over]="dropOver()"
+    (dragover)="onDropOver($event)"
+    (dragleave)="onDropLeave()"
+    (drop)="onDrop($event)"
+  >
+    <input #fileInput type="file" accept="image/*,application/pdf" (change)="onFileSelected($event)" />
+    <b>{{ i18n.pick('اسحب صورة أو ملف PDF هنا، أو انقر للاختيار', 'Drag an image or PDF here, or click to choose') }}</b>
+    <span class="hint">{{ dropHint }}</span>
+    @if (uploadProgress(); as percent) {
+      <span class="progress" role="status">{{ i18n.pick('جارٍ الرفع', 'Uploading') }}… {{ percent }}%</span>
+    }
+  </label>
+  @if (uploadError()) {
+    <p class="form-banner" role="alert">{{ uploadError() }}</p>
+  }
+}
+
+@if (!fixedKindFilter() || fixedKindFilter() === 'youtube') {
+  <div class="youtube-add">
+    <label for="yt-input">{{ i18n.pick('إضافة مقطع YouTube', 'Add a YouTube video') }}</label>
+    <div class="yt-row">
+      <input
+        id="yt-input"
+        type="text"
+        dir="ltr"
+        [placeholder]="i18n.pick('الصق معرّف المقطع أو رابطه', 'Paste the video id or URL')"
+        [value]="youtubeInput()"
+        [attr.aria-describedby]="youtubeError() ? 'yt-error' : null"
+        (input)="youtubeInput.set($any($event.target).value)"
+      />
+      <ta-button type="button" variant="lite" size="sm" [loading]="youtubeAdding()" (click)="addYoutube()">
+        {{ i18n.pick('إضافة', 'Add') }}
+      </ta-button>
+    </div>
+    @if (youtubeError()) {
+      <p class="field-hint error" id="yt-error" role="alert">{{ youtubeError() }}</p>
+    }
+  </div>
+}
+
+@if (data.list.isLoading()) {
+  <p class="state">{{ i18n.pick('جارٍ التحميل…', 'Loading…') }}</p>
+} @else if (data.list.error()) {
+  <p class="state error">{{ i18n.pick('تعذّر تحميل المكتبة.', 'Could not load the library.') }}</p>
+} @else if ((data.list.value()?.items.length ?? 0) === 0) {
+  <p class="state">{{ i18n.pick('لا توجد ملفات مطابقة.', 'No matching files.') }}</p>
+} @else {
+  <div class="grid">
+    @for (asset of data.list.value()!.items; track asset.id) {
+      <div class="asset-tile">
+        <ng-template #tileContent>
+          <span class="badge kind">{{ kindLabels[asset.kind] }}</span>
+          @if (asset.kind === 'image' && !asset.altAr?.trim()) {
+            <span class="badge no-alt">{{ i18n.pick('بدون نص بديل', 'No alt text') }}</span>
+          }
+          <span class="preview">
+            @if (asset.kind === 'image' && asset.url) {
+              <img [src]="asset.url" [alt]="assetLabel(asset)" loading="lazy" />
+            } @else if (asset.kind === 'youtube' && asset.externalId) {
+              <img [src]="youtubeThumbnail(asset.externalId)" alt="" loading="lazy" />
+            } @else {
+              <span class="pdf-icon" aria-hidden="true">PDF</span>
+            }
+          </span>
+          @if (asset.altAr) {
+            <span class="meta">{{ i18n.pick(asset.altAr, asset.altEn) }}</span>
+          } @else if (asset.originalName) {
+            <!-- dir="auto", not "ltr": unlike the id/externalId fallback below, an uploaded
+                 file's real name can be Arabic. -->
+            <span class="meta" dir="auto">{{ asset.originalName }}</span>
+          } @else {
+            <span class="meta" dir="ltr">{{ asset.externalId || asset.id.slice(0, 8) }}</span>
+          }
+        </ng-template>
+
+        <!-- Both modes render a real, interactive button now — picker mode selects the asset
+             (or opens the alt dialog first, via onTileClick), library mode opens the read-only
+             preview directly via openPreview. Each aria-label names the action, not just the
+             asset, since clicking the tile now does something either way. -->
+        @if (pickerMode()) {
+          <button type="button" class="asset-tile-main" (click)="onTileClick(asset)" [attr.aria-label]="assetLabel(asset)">
+            <ng-container [ngTemplateOutlet]="tileContent" />
+          </button>
+        } @else {
+          <button
+            type="button"
+            class="asset-tile-main"
+            (click)="openPreview(asset)"
+            [attr.aria-label]="i18n.pick('عرض ' + assetLabel(asset), 'View ' + assetLabel(asset))"
+          >
+            <ng-container [ngTemplateOutlet]="tileContent" />
+          </button>
+        }
+        @if (!pickerMode()) {
+          <div class="asset-tile-actions">
+            @if (asset.kind === 'image') {
+              <button
+                type="button"
+                class="link-btn"
+                (click)="previewAsset.set(null); pendingAltAsset.set(asset); altAr.set(asset.altAr || ''); altEn.set(asset.altEn || '')"
+              >
+                {{ i18n.pick('النص البديل', 'Alt text') }}
+              </button>
+            }
+            <button type="button" class="link-btn danger" (click)="requestDelete(asset)">
+              {{ i18n.pick('حذف', 'Delete') }}
+            </button>
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  <nav class="pager" [attr.aria-label]="i18n.pick('ترقيم الصفحات', 'Pagination')">
+    <button type="button" [disabled]="data.page() <= 1" (click)="data.page.set(data.page() - 1)">
+      {{ i18n.pick('السابق', 'Previous') }}
+    </button>
+    <span aria-live="polite">{{ data.page() }} / {{ Math.max(1, Math.ceil((data.list.value()?.total ?? 0) / pageSize)) }}</span>
+    <button
+      type="button"
+      [disabled]="data.page() >= Math.max(1, Math.ceil((data.list.value()?.total ?? 0) / pageSize))"
+      (click)="data.page.set(data.page() + 1)"
+    >
+      {{ i18n.pick('التالي', 'Next') }}
+    </button>
+  </nav>
+}
+
+<!-- The one dialog in the app that opts out of backdrop dismissal: it holds typed alt text, and
+     losing that to a stray click would be a worse bug than the one light-dismiss fixes. Escape and
+     Cancel still close it. -->
+<ta-dialog
+  [open]="pendingAltAsset() !== null"
+  [lightDismiss]="false"
+  labelledBy="alt-dialog-title"
+  (closed)="cancelAlt()"
+>
+  @if (pendingAltAsset(); as asset) {
+    <div class="alt-dialog">
+      <h2 id="alt-dialog-title">{{ i18n.pick('النص البديل للصورة', 'Image alt text') }}</h2>
+      @if (asset.url) {
+        <img class="alt-preview" [src]="asset.url" alt="" />
+      }
+      <p class="field-hint" [class.error]="altTouched() && !altAr().trim()" id="alt-required-hint">{{ altRequiredHint }}</p>
+      <div class="field">
+        <label for="alt-ar">{{ i18n.pick('النص البديل (عربي)', 'Alt text (Arabic)') }} <span class="req" aria-hidden="true">*</span></label>
+        <input
+          id="alt-ar"
+          type="text"
+          required
+          aria-required="true"
+          aria-describedby="alt-required-hint"
+          [value]="altAr()"
+          (input)="altAr.set($any($event.target).value)"
+        />
+      </div>
+      <div class="field">
+        <label for="alt-en">{{ i18n.pick('النص البديل (English)', 'Alt text (English)') }}</label>
+        <input id="alt-en" type="text" dir="ltr" [value]="altEn()" (input)="altEn.set($any($event.target).value)" />
+      </div>
+      <div class="dialog-actions">
+        <ta-button type="button" variant="ghost" size="sm" (click)="cancelAlt()">{{ i18n.pick('إلغاء', 'Cancel') }}</ta-button>
+        <ta-button type="button" variant="primary" size="sm" [disabled]="!altAr().trim()" [loading]="altSaving()" (click)="saveAlt()">
+          {{ i18n.pick('حفظ', 'Save') }}
+        </ta-button>
+      </div>
+    </div>
+  }
+</ta-dialog>
+
+<!-- Confirm before deleting an UNREFERENCED asset. A referenced one never reaches here — it opens
+     the dialog below instead, which offers no delete at all. Light dismiss stays on (ta-dialog's
+     default): a mis-click on the backdrop cancels, which is the safe outcome for a destructive
+     confirm, and there is no typed input here to lose. -->
+<ta-dialog [open]="deleteTarget() !== null" labelledBy="del-media-title" (closed)="cancelDelete()">
+  @if (deleteTarget(); as target) {
+    <div class="modal-box">
+      <h2 id="del-media-title">{{ i18n.pick('حذف هذا الملف؟', 'Delete this file?') }}</h2>
+      <p>
+        {{ i18n.pick('سيُحذف "' + assetLabel(target) + '" نهائيًا من المكتبة ومن القرص. لا يمكن التراجع عن هذا الإجراء.',
+                      'This will permanently delete "' + assetLabel(target) + '" from the library and from disk. This cannot be undone.') }}
+      </p>
+      @if (deleteError(); as message) {
+        <p class="field-hint error" role="alert">{{ message }}</p>
+      }
+      <div class="dialog-actions">
+        <ta-button type="button" variant="ghost" size="sm" [disabled]="deleting()" (click)="cancelDelete()">
+          {{ i18n.pick('إلغاء', 'Cancel') }}
+        </ta-button>
+        <ta-button type="button" variant="primary" size="sm" [loading]="deleting()" (click)="confirmDelete()">
+          {{ deleting() ? i18n.pick('جارٍ الحذف…', 'Deleting…') : i18n.pick('حذف', 'Delete') }}
+        </ta-button>
+      </div>
+    </div>
+  }
+</ta-dialog>
+
+<ta-dialog [open]="deleteReferences() !== null" labelledBy="refs-dialog-title" (closed)="closeReferences()">
+  @if (deleteReferences(); as info) {
+    <div class="refs-dialog">
+      <h2 id="refs-dialog-title">
+        {{ i18n.pick('لا يمكن الحذف — الملف مستخدم في:', 'Cannot delete — this file is used in:') }}
+      </h2>
+      <ul class="refs-list">
+        @for (ref of info.references; track ref.id) {
+          <li>{{ ref.titleAr }} — {{ relationLabel(ref.relation) }}</li>
+        }
+      </ul>
+      <div class="dialog-actions">
+        <ta-button type="button" variant="ghost" size="sm" (click)="closeReferences()">
+          {{ i18n.pick('إغلاق', 'Close') }}
+        </ta-button>
+      </div>
+    </div>
+  }
+</ta-dialog>
+
+<ta-asset-preview
+  [asset]="previewAsset()"
+  [fileUrl]="previewFileUrl()"
+  [downloadUrl]="previewDownloadUrl()"
+  (closed)="closePreview()"
+/>

@@ -1,0 +1,9 @@
+/* Part 0 — spec files were excluded from tsconfig.app.json and therefore typecheck-exempt.
+   This project keeps them in the typecheck loop: `npm run typecheck` runs both configs. */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["node", "vitest/globals"]
+  },
+  "include": ["src/**/*.ts"]
+}
