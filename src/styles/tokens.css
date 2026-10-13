@@ -1,0 +1,288 @@
+/**
+ * Design tokens — copied from the approved prototype
+ * (D:\Freelance\ELAMS\design\ta3lom-prototype.html).
+ * This file is the ONLY permitted source of colour, spacing, radius, type and
+ * motion values. No component may hardcode a hex, px gap, or duration.
+ */
+:root {
+  /* Colour */
+  --brand: #1a96c1;
+  --brand-700: #137aa0;
+  --brand-900: #136578;
+  --gold: #a58e36;
+  --gold-700: #8c7729;
+  --gold-200: #c3af72;
+  --gold-tint: #f6f1e2;
+  --ink: #232123;
+  --ink-2: #3a3d3e;
+  --muted: #6e7476;
+
+  /* --muted on --gray is 4.41:1, under the 4.5:1 AA text minimum (passes fine on plain
+     white/tint backgrounds). Use this instead for secondary text sitting on --gray — 5.75:1. */
+  --muted-on-gray: #5b6163;
+  --bg: #fff;
+  --gray: #f4f7f8;
+  --gray-2: #e9eff1;
+  --line: #dce4e7;
+  --tint: #eef6fa;
+  --tint-2: #d6ecf5;
+  --indigo: #0e3d4c;
+  --black: #0f262e;
+  --green: #1e8e5a;
+  --danger: #c8413b;
+  --warn: #b4661a;
+
+  /* --warn on --gold-tint is 3.83:1, under the 4.5:1 AA text minimum (passes fine as a plain
+     icon/border accent). Use this instead for warning TEXT sitting on --gold-tint — 6.33:1.
+     Same derivation as --muted-on-gray above. */
+  --warn-on-tint: #824a12;
+  --grad: linear-gradient(-87deg, #c3af72 0%, #1a96c1 52%, #5cc4e6 108%);
+
+  /* Horizontal mirror of --grad (angle negated) — for start-aligned text under dir="rtl",
+     so the colour sweep still tracks reading direction instead of physical left-to-right. */
+  --grad-rtl: linear-gradient(87deg, #c3af72 0%, #1a96c1 52%, #5cc4e6 108%);
+  --footer-text: #9fb4bc;
+
+  /* Lightened from the prototype's #6e8a93 — that value is 4.28:1 on --black, under the
+     4.5:1 AA text minimum; this is 5.24:1. */
+  --footer-muted: #7f99a3;
+
+  /* Session 2, Part 1 — the admin sidebar's dark surface. Aliases onto the same values the
+     footer already uses (--black / --footer-text / --footer-muted), named for what they are
+     rather than where they first appeared, so admin CSS never references a "footer" token. */
+  --surface-dark: var(--black);
+  --on-surface-dark: var(--footer-text);
+  --on-surface-dark-muted: var(--footer-muted);
+
+  /*
+   * ── SEMANTIC LAYER (CR-01 FE-1, ADR-011) ─────────────────────────────────────────────────────
+   * Components use ONLY these `--c-*` / `--chart-*` names — never the palette above, never a
+   * literal (Stylelint enforces it for src/app). In light mode every one of them is an alias of
+   * today's palette value, so introducing the layer changed no pixel; the dark block below
+   * re-points them. Ratios are WCAG 2.x contrast, measured by scripts/contrast-check.mjs, which
+   * `npm run lint` runs — a pair that drifts under its minimum fails the lint gate.
+   */
+
+  /* Surfaces */
+  --c-bg: var(--bg); /* the page itself */
+  --c-surface: var(--bg); /* cards, inputs, panels, dialogs */
+  --c-surface-2: var(--gray); /* recessed panels, asides, .card default */
+  --c-surface-3: var(--gray-2); /* hover on surface-2, dividers */
+  --c-tint: var(--tint);
+  --c-tint-2: var(--tint-2);
+  --c-gold-tint: var(--gold-tint);
+
+  /* Text — --c-text on --c-bg 15.99:1 · --c-text-2 on --c-bg 10.95:1 · --c-muted on --c-bg
+     4.75:1 (4.41:1 on --c-surface-2, hence --c-muted-2: 5.85:1 there) */
+  --c-text: var(--ink);
+  --c-text-2: var(--ink-2);
+  --c-muted: var(--muted);
+  --c-muted-2: var(--muted-on-gray);
+
+  /* Lines */
+  --c-border: var(--line);
+  --c-border-2: var(--gray-2);
+
+  /* Accent TEXT and rings — these lighten in dark mode. --c-link on --c-bg 4.86:1 ·
+     --c-accent-strong on --c-tint 6.07:1 · --c-accent is for large text, icons, rules and the
+     focus ring only (3.40:1 on --c-bg) */
+  --c-link: var(--brand-700);
+  --c-accent: var(--brand);
+  --c-accent-strong: var(--brand-900);
+  --c-focus: var(--brand);
+  --c-danger: var(--danger);
+  --c-success: var(--green);
+  --c-warn-text: var(--warn-on-tint);
+
+  /* Brand FILLS — identical in both themes; they always carry --c-on-brand text.
+     --c-on-brand on --c-brand-strong 4.86:1 · on --c-brand-deep 6.64:1 · --c-on-gold on --c-gold
+     4.97:1 */
+  --c-brand: var(--brand);
+  --c-brand-strong: var(--brand-700);
+  --c-brand-deep: var(--brand-900);
+  --c-gold: var(--gold);
+  --c-success-fill: var(--green);
+  --c-danger-fill: var(--danger);
+  --c-on-brand: #fff;
+  --c-on-gold: var(--ink);
+
+  /* Inverse pair — a dark chip on a light page (toast, active subnav pill) and the reverse in
+     dark mode. --c-on-inverse on --c-inverse 15.99:1 */
+  --c-inverse: var(--ink);
+  --c-on-inverse: #fff;
+
+  /* Permanently dark surfaces — footer, admin sidebar, hero, .band, section.dark. These do not
+     change with the theme (the prototype already draws them dark). --c-on-dark on
+     --c-surface-dark 7.28:1 · --c-on-dark-muted 5.23:1 · white 15.71:1 */
+  --c-surface-dark: var(--black);
+  --c-surface-indigo: var(--indigo);
+  --c-on-dark: var(--footer-text);
+  --c-on-dark-muted: var(--footer-muted);
+  --c-gold-on-dark: var(--gold-200);
+  --c-band-end: #0a2e3a;
+  --c-on-dark-65: rgb(255 255 255 / 65%);
+  --c-on-dark-70: rgb(255 255 255 / 70%);
+  --c-on-dark-72: rgb(255 255 255 / 72%);
+  --c-on-dark-78: rgb(255 255 255 / 78%);
+  --c-on-dark-hover: rgb(255 255 255 / 8%);
+  --c-border-on-dark: rgb(255 255 255 / 12%);
+  --c-border-on-dark-soft: rgb(255 255 255 / 10%);
+  --c-border-on-dark-strong: rgb(255 255 255 / 45%);
+
+  /* The edge between a permanently-dark surface (footer, admin sidebar) and the page. Invisible in
+     light mode — dark against white needs no line — and drawn in dark mode, where the two would
+     otherwise run together. */
+  --c-dark-surface-edge: transparent;
+
+  /* Overlays on imagery (thumbnails, video tiles) and modal scrims — theme-independent */
+  --c-media-shade-22: rgb(0 0 0 / 22%);
+  --c-media-shade-25: rgb(0 0 0 / 25%);
+  --c-media-shade-30: rgb(0 0 0 / 30%);
+  --c-media-shade-35: rgb(0 0 0 / 35%);
+  --c-media-shade-45: rgb(0 0 0 / 45%);
+  --c-media-shade-65: rgb(0 0 0 / 65%);
+  --c-scrim-70: rgb(15 38 46 / 70%);
+  --c-scrim-80: rgb(15 38 46 / 80%);
+  --c-scrim-88: rgb(15 38 46 / 88%);
+  --c-scrim-90: rgb(15 38 46 / 90%);
+
+  /* One-offs, named for where they are drawn */
+  --c-header-glass: rgb(255 255 255 / 90%);
+  --c-header-shadow: rgb(19 101 120 / 7%);
+  --c-hero-glow-brand: rgb(26 150 193 / 60%);
+  --c-hero-glow-gold: rgb(195 175 114 / 22%);
+  --c-gold-glass: rgb(195 175 114 / 18%);
+  --c-mask-solid: #000; /* mask-image alpha only — never painted */
+  --c-shine: rgb(255 255 255 / 35%); /* the button hover sweep (shared/ui/button) */
+
+  /* A logo needs its own light ground in BOTH themes: a dark mark disappears on a dark card and a
+     white-on-transparent one disappears on a light card. */
+  --c-logo-chip: #fff;
+
+  /* Org chart (FE-5) — box fills, all with --chart-on text (bold 0.95rem, so the 4.5:1 body-text
+     minimum applies). On white text: neutral 5.58:1 · sky 4.57:1 · green 5.11:1 · brand 6.64:1 */
+  --chart-neutral: #5d6a70;
+  --chart-sky: #1f7ea6;
+  --chart-green: #1f7d52;
+  --chart-brand: var(--brand-900);
+  --chart-on: #fff;
+  --chart-line: #7a8d94; /* connectors carry the hierarchy: 3.46:1 on --c-bg (1.4.11) */
+
+  color-scheme: light;
+
+  /* Radius */
+  --r: 12px;
+  --rc: 16px;
+  --r-lg: 20px;
+  --rp: 999px;
+
+  /* Type */
+  --fa: 'Readex Pro', 'Segoe UI', tahoma, sans-serif;
+  --fe: 'Readex Pro', 'Segoe UI', helvetica, arial, sans-serif;
+  --fm: 'IBM Plex Mono', ui-monospace, menlo, monospace;
+
+  /* Motion */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-1: 0.2s;
+  --dur-2: 0.35s;
+  --dur-3: 0.55s;
+
+  /* Shadow */
+  --shadow-sm: 0 8px 24px rgb(0 0 0 / 25%);
+  --shadow-md: 0 20px 50px rgb(19 101 120 / 14%);
+  --shadow-lg: 0 40px 100px rgb(0 0 0 / 50%);
+  --shadow-brand: 0 10px 26px rgb(26 150 193 / 30%);
+  --shadow-gold: 0 10px 26px rgb(165 142 54 / 35%);
+
+  /* Spacing — 4px base scale, matches the increments used across the prototype */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 40px;
+  --space-9: 50px;
+  --space-10: 72px;
+  --space-11: 100px;
+
+  /*
+   * Breakpoints — CSS custom properties cannot appear inside @media conditions,
+   * so these are documented here for consistent reuse; hardcode the literal
+   * px value in each component's @media rule.
+   * sm 600 · sm-md 700 · md 760 · md-lg 800 · lg 820 · xl 900 · xl-2 960 ·
+   * xxl 1000 · nav 1280
+   */
+}
+
+/*
+ * ── DARK THEME (CR-01 FE-1, ADR-011) ────────────────────────────────────────────────────────────
+ * Set on <html> by the pre-paint script in src/index.html and by core/theme.service.ts. Only the
+ * semantic layer is re-pointed; the palette, the brand fills and the permanently-dark surfaces
+ * keep their values. Every text/background pair listed in scripts/contrast-check.mjs must reach
+ * 4.5:1 (3:1 for large text and UI) — the measured ratios are written next to each pair below.
+ */
+:root[data-theme='dark'] {
+  /* Surfaces */
+  --c-bg: #0b1a20;
+  --c-surface: #10242c;
+  --c-surface-2: #16303a;
+  --c-surface-3: #1d3a45;
+  --c-tint: #12303b;
+  --c-tint-2: #1a4150;
+  --c-gold-tint: #2b2716;
+
+  /* Text — --c-text 15.12 / 13.65 / 11.78:1 on --c-bg / --c-surface / --c-surface-2 ·
+     --c-text-2 11.35 / 10.24 / 8.85:1 · --c-muted 8.07 / 7.28:1 on bg / surface ·
+     --c-muted-2 6.96:1 on --c-surface-2 */
+  --c-text: #e7eef0;
+  --c-text-2: #c4d1d5;
+  --c-muted: #9fb2b9;
+  --c-muted-2: #a9bbc1;
+
+  /* Lines — decorative dividers and card edges (1.4.11 does not apply to them) */
+  --c-border: #2a4953;
+  --c-border-2: #365964;
+
+  /* Accent text and rings — --c-link 9.65:1 on --c-bg, 7.52:1 on --c-surface-2 ·
+     --c-accent-strong 8.64:1 on --c-tint · --c-focus ≥ 7.52:1 on every surface ·
+     --c-danger 7.27:1 on --c-surface · --c-success 8.60:1 · --c-warn-text 8.27:1 on its tint */
+  --c-link: #6fcbeb;
+  --c-accent: #5cc4e6;
+  --c-accent-strong: #8ad7f0;
+  --c-focus: #6fcbeb;
+  --c-danger: #ff8f86;
+  --c-success: #5fd39b;
+  --c-warn-text: #f2b56e;
+
+  /* Inverse pair — 15.12:1 */
+  --c-inverse: #e7eef0;
+  --c-on-inverse: #0b1a20;
+
+  /* The permanently dark surfaces sit next to a dark page now — keep them apart with an edge */
+  --c-border-on-dark: rgb(255 255 255 / 16%);
+  --c-border-on-dark-soft: rgb(255 255 255 / 14%);
+  --c-dark-surface-edge: rgb(255 255 255 / 14%);
+  --c-header-glass: rgb(11 26 32 / 90%);
+  --c-header-shadow: rgb(0 0 0 / 35%);
+  --chart-line: #4a6a75;
+
+  /* Chart tones tuned for a dark page: same hue family, white text still ≥ 4.5:1 —
+     neutral 6.13 · sky 5.17 · green 5.66 · brand 6.87:1 · connectors 3.05:1 on --c-bg */
+  --chart-neutral: #56646a;
+  --chart-sky: #1d759a;
+  --chart-green: #1c7550;
+  --chart-brand: #14627a;
+
+  /* public/logo.svg's dark "ink" and teal parts read these (falling back to their printed colours
+     when unset, i.e. in light mode) — so the header mark stays legible on the dark header. */
+  --logo-ink: #e7eef0;
+  --logo-ink-2: #c4d1d5;
+  --logo-teal: #6fcbeb;
+  --shadow-sm: 0 8px 24px rgb(0 0 0 / 45%);
+  --shadow-md: 0 20px 50px rgb(0 0 0 / 45%);
+  --shadow-lg: 0 40px 100px rgb(0 0 0 / 65%);
+
+  color-scheme: dark;
+}

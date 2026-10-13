@@ -1,0 +1,5 @@
+dist
+docs
+src/app/core/api/store-api.types.ts
+src/app/prerender-manifest.ts
+src/locales

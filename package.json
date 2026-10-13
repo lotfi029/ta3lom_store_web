@@ -1,0 +1,75 @@
+{
+  "name": "ta3lom-store-web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.15.0"
+  },
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "start:en": "ng serve --configuration en --port 4201",
+    "prebuild": "node scripts/routes.mjs",
+    "build": "ng build --configuration production,local && npm run postbuild:checks",
+    "build:ci": "node scripts/routes.mjs && ng build --configuration production,ci && npm run postbuild:checks",
+    "build:prod": "node scripts/routes.mjs && ng build --configuration production && npm run postbuild:checks",
+    "postbuild:checks": "node scripts/postbuild.mjs && node scripts/check-deploy-output.mjs && node scripts/check-csp.mjs && node scripts/check-bundle-budget.mjs",
+    "watch": "ng build --watch --configuration development",
+    "typecheck": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.spec.json --noEmit",
+    "lint": "eslint . && stylelint \"src/**/*.css\" && node scripts/contrast-check.mjs && node scripts/check-no-giving.mjs && node scripts/i18n-merge.mjs --check",
+    "format": "prettier --write \"src/**/*.{ts,html,css}\"",
+    "test": "ng test --watch=false",
+    "e2e": "playwright test",
+    "a11y": "node scripts/a11y.mjs && A11Y_THEME=dark node scripts/a11y.mjs",
+    "i18n:extract": "ng extract-i18n --output-path src/locales --format xlf && node scripts/i18n-merge.mjs",
+    "types:gen": "openapi-typescript docs/openapi/store-api.v1.json -o src/app/core/api/store-api.types.ts",
+    "types:check": "node scripts/types-check.mjs",
+    "stub-api": "node scripts/stub-api.mjs",
+    "api:up": "bash scripts/api-up.sh",
+    "api:seed": "bash scripts/api-seed-e2e.sh",
+    "lhci": "lhci autorun",
+    "screenshots": "node scripts/screenshots.mjs"
+  },
+  "dependencies": {
+    "@angular/aria": "^22.2.0",
+    "@angular/common": "^22.2.0",
+    "@angular/compiler": "^22.2.0",
+    "@angular/core": "^22.2.0",
+    "@angular/forms": "^22.2.0",
+    "@angular/localize": "^22.2.0",
+    "@angular/platform-browser": "^22.2.0",
+    "@angular/platform-server": "^22.2.0",
+    "@angular/router": "^22.2.0",
+    "@angular/ssr": "^22.2.2",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^22.2.2",
+    "@angular/cli": "^22.2.2",
+    "@angular/compiler-cli": "^22.2.0",
+    "@axe-core/playwright": "^4.13.0",
+    "@eslint/js": "^10.0.1",
+    "@lhci/cli": "^0.15.0",
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^24.0.0",
+    "angular-eslint": "22.5.0",
+    "axe-core": "^4.13.0",
+    "eslint": "^10.9.1",
+    "eslint-plugin-boundaries": "^7.2.0",
+    "jsdom": "^30.0.0",
+    "openapi-typescript": "^7.9.0",
+    "prettier": "^3.8.1",
+    "stylelint": "^17.15.0",
+    "stylelint-config-standard": "^40.0.0",
+    "typescript": "~6.0.2",
+    "typescript-eslint": "8.69.0",
+    "vitest": "^5.0.0"
+  },
+  "overrides": {
+    "openapi-typescript": {
+      "typescript": "$typescript"
+    }
+  }
+}

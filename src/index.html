@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <title>متجر جمعية التعلم الإلكتروني</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <!--
+      Theme before first paint (ta3lom-web ADR-011): a stored 'light'/'dark' wins, otherwise the OS decides.
+      deploy/caddy-headers.conf allows this script by its sha256 HASH (never 'unsafe-inline'). Changing one byte
+      changes the hash: `npm run build` then fails in scripts/check-csp.mjs, which prints the new token.
+    -->
+    <script>(function(){var t;try{t=localStorage.getItem('ta-theme')}catch(e){}if(t!=='light'&&t!=='dark'){t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}document.documentElement.setAttribute('data-theme',t)})()</script>
+    <link rel="icon" href="favicon.ico?v=1" sizes="16x16 32x32 48x48" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=1" />
+  </head>
+  <body>
+    <ta-root></ta-root>
+  </body>
+</html>

@@ -1,0 +1,2691 @@
+{
+ "/catalog/home": {
+  "featured": [
+   {
+    "id": "e2df8c4e-a3b7-4666-bf44-065d8edfbcb0",
+    "type": "course",
+    "slug": "digital-teacher",
+    "titleAr": "المعلّم الرقمي: أدوات التعليم الإلكتروني",
+    "titleEn": "The Digital Teacher: e-learning tools",
+    "summaryAr": "دورة عملية تمكّن المعلم من تصميم درس تفاعلي كامل باستخدام أدوات مجانية، مع تقييم تكويني ومتابعة للطلاب.",
+    "summaryEn": "A hands-on course that takes a teacher from zero to a complete interactive lesson using free tools.",
+    "badge": "best",
+    "category": {
+     "slug": "teach",
+     "nameAr": "مهارات المعلم",
+     "nameEn": "Teacher skills"
+    },
+    "cover": null,
+    "price": "350.00",
+    "compareAtPrice": "450.00",
+    "formats": null,
+    "sponsorship": {
+     "offerId": "7415370a-585a-4340-a6ef-7fdb0b310a7e",
+     "seatPrice": "350.00",
+     "unitLabelAr": "مقعد",
+     "unitLabelEn": "seat",
+     "targetUnits": 300,
+     "fundedUnits": 184,
+     "percent": 61,
+     "donorCount": 96,
+     "endsAt": "2026-12-31T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "id": "53aa8ed7-573c-4186-a74f-265939ac1363",
+    "type": "course",
+    "slug": "python-kids",
+    "titleAr": "البرمجة للناشئين بلغة بايثون",
+    "titleEn": "Python for young coders",
+    "summaryAr": "رحلة ممتعة من أول سطر برمجي إلى لعبة كاملة، للأعمار 10–15 سنة، بمشاريع أسبوعية قصيرة.",
+    "summaryEn": "From the first line of code to a finished game, ages 10–15, with short weekly projects.",
+    "badge": "new",
+    "category": {
+     "slug": "tech",
+     "nameAr": "التقنية في التعليم",
+     "nameEn": "EdTech"
+    },
+    "cover": null,
+    "price": "450.00",
+    "compareAtPrice": null,
+    "formats": null,
+    "sponsorship": {
+     "offerId": "cace5f1c-52b5-4219-807d-a26df856fda2",
+     "seatPrice": "450.00",
+     "unitLabelAr": "مقعد",
+     "unitLabelEn": "seat",
+     "targetUnits": 150,
+     "fundedUnits": 41,
+     "percent": 27,
+     "donorCount": 23,
+     "endsAt": "2027-01-31T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "id": "8b2f682c-f67e-4856-8b7e-8b5081ac09e5",
+    "type": "book",
+    "slug": "science-stars-book",
+    "titleAr": "نجوم العلوم — كتاب التجارب المنزلية",
+    "titleEn": "Science Stars — home experiments book",
+    "summaryAr": "48 تجربة علمية آمنة بأدوات المنزل، ملوّنة ومصوّرة خطوة بخطوة للمرحلة الابتدائية.",
+    "summaryEn": "48 safe experiments with household items, illustrated step by step for primary pupils.",
+    "badge": "best",
+    "category": {
+     "slug": "kids",
+     "nameAr": "الطفولة المبكرة",
+     "nameEn": "Early childhood"
+    },
+    "cover": null,
+    "price": "35.00",
+    "compareAtPrice": null,
+    "formats": [
+     {
+      "kind": "digital",
+      "price": "35.00"
+     },
+     {
+      "kind": "print",
+      "price": "65.00"
+     }
+    ],
+    "sponsorship": {
+     "offerId": "e0fb194c-1dfc-47dd-9836-4d42fc2d9919",
+     "seatPrice": "40.00",
+     "unitLabelAr": "نسخة",
+     "unitLabelEn": "copy",
+     "targetUnits": 1000,
+     "fundedUnits": 612,
+     "percent": 61,
+     "donorCount": 188,
+     "endsAt": "2026-12-31T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "id": "13561563-d4d6-46d4-a48a-3aaec3cb35bf",
+    "type": "book",
+    "slug": "letters-tales",
+    "titleAr": "حكايات الحروف",
+    "titleEn": "Letter Tales",
+    "summaryAr": "28 قصة قصيرة، لكل حرف حكاية، تساعد الطفل على القراءة الأولى بمتعة.",
+    "summaryEn": "28 short stories, one per letter, for joyful first reading.",
+    "badge": "new",
+    "category": {
+     "slug": "kids",
+     "nameAr": "الطفولة المبكرة",
+     "nameEn": "Early childhood"
+    },
+    "cover": null,
+    "price": "25.00",
+    "compareAtPrice": null,
+    "formats": [
+     {
+      "kind": "digital",
+      "price": "25.00"
+     },
+     {
+      "kind": "print",
+      "price": "55.00"
+     }
+    ],
+    "sponsorship": {
+     "offerId": "3ac1c663-05bb-4b6c-a323-65cdc934f969",
+     "seatPrice": "30.00",
+     "unitLabelAr": "نسخة",
+     "unitLabelEn": "copy",
+     "targetUnits": 600,
+     "fundedUnits": 215,
+     "percent": 35,
+     "donorCount": 74,
+     "endsAt": "2026-12-31T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   }
+  ],
+  "causes": [],
+  "courses": [
+   {
+    "id": "e2df8c4e-a3b7-4666-bf44-065d8edfbcb0",
+    "type": "course",
+    "slug": "digital-teacher",
+    "titleAr": "المعلّم الرقمي: أدوات التعليم الإلكتروني",
+    "titleEn": "The Digital Teacher: e-learning tools",
+    "summaryAr": "دورة عملية تمكّن المعلم من تصميم درس تفاعلي كامل باستخدام أدوات مجانية، مع تقييم تكويني ومتابعة للطلاب.",
+    "summaryEn": "A hands-on course that takes a teacher from zero to a complete interactive lesson using free tools.",
+    "badge": "best",
+    "category": {
+     "slug": "teach",
+     "nameAr": "مهارات المعلم",
+     "nameEn": "Teacher skills"
+    },
+    "cover": null,
+    "price": "350.00",
+    "compareAtPrice": "450.00",
+    "formats": null,
+    "sponsorship": {
+     "offerId": "7415370a-585a-4340-a6ef-7fdb0b310a7e",
+     "seatPrice": "350.00",
+     "unitLabelAr": "مقعد",
+     "unitLabelEn": "seat",
+     "targetUnits": 300,
+     "fundedUnits": 184,
+     "percent": 61,
+     "donorCount": 96,
+     "endsAt": "2026-12-31T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "id": "a2d75118-ab8d-49fa-bf49-2c7453fb2336",
+    "type": "course",
+    "slug": "smart-study",
+    "titleAr": "مهارات المذاكرة الذكية",
+    "titleEn": "Smart study skills",
+    "summaryAr": "تقنيات مثبتة علمياً لتنظيم الوقت والتركيز والحفظ طويل المدى، مصمّمة لطلاب المرحلتين المتوسطة والثانوية.",
+    "summaryEn": "Evidence-based techniques for time, focus and long-term memory, for middle and high school students.",
+    "badge": null,
+    "category": {
+     "slug": "study",
+     "nameAr": "مهارات الدراسة",
+     "nameEn": "Study skills"
+    },
+    "cover": null,
+    "price": "120.00",
+    "compareAtPrice": null,
+    "formats": null,
+    "sponsorship": {
+     "offerId": "fdbd1342-894b-42dc-816b-75bf67f497c8",
+     "seatPrice": "120.00",
+     "unitLabelAr": "مقعد",
+     "unitLabelEn": "seat",
+     "targetUnits": 500,
+     "fundedUnits": 342,
+     "percent": 68,
+     "donorCount": 210,
+     "endsAt": "2026-11-30T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "id": "53aa8ed7-573c-4186-a74f-265939ac1363",
+    "type": "course",
+    "slug": "python-kids",
+    "titleAr": "البرمجة للناشئين بلغة بايثون",
+    "titleEn": "Python for young coders",
+    "summaryAr": "رحلة ممتعة من أول سطر برمجي إلى لعبة كاملة، للأعمار 10–15 سنة، بمشاريع أسبوعية قصيرة.",
+    "summaryEn": "From the first line of code to a finished game, ages 10–15, with short weekly projects.",
+    "badge": "new",
+    "category": {
+     "slug": "tech",
+     "nameAr": "التقنية في التعليم",
+     "nameEn": "EdTech"
+    },
+    "cover": null,
+    "price": "450.00",
+    "compareAtPrice": null,
+    "formats": null,
+    "sponsorship": {
+     "offerId": "cace5f1c-52b5-4219-807d-a26df856fda2",
+     "seatPrice": "450.00",
+     "unitLabelAr": "مقعد",
+     "unitLabelEn": "seat",
+     "targetUnits": 150,
+     "fundedUnits": 41,
+     "percent": 27,
+     "donorCount": 23,
+     "endsAt": "2027-01-31T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "id": "332487ce-e4a5-48b8-84fe-f4dd3422924b",
+    "type": "course",
+    "slug": "early-childhood",
+    "titleAr": "أساسيات التعليم في الطفولة المبكرة",
+    "titleEn": "Early-childhood teaching essentials",
+    "summaryAr": "للمعلمات والأمهات: كيف نبني المهارات الأساسية الاثنتي عشرة من خلال اللعب والأنشطة اليومية.",
+    "summaryEn": "For teachers and mothers: building twelve core skills through play and daily routines.",
+    "badge": null,
+    "category": {
+     "slug": "kids",
+     "nameAr": "الطفولة المبكرة",
+     "nameEn": "Early childhood"
+    },
+    "cover": null,
+    "price": "280.00",
+    "compareAtPrice": null,
+    "formats": null,
+    "sponsorship": {
+     "offerId": "4aa86c23-f7df-4c64-a176-5deaca15ef93",
+     "seatPrice": "280.00",
+     "unitLabelAr": "مقعد",
+     "unitLabelEn": "seat",
+     "targetUnits": 200,
+     "fundedUnits": 77,
+     "percent": 38,
+     "donorCount": 41,
+     "endsAt": "2026-12-31T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "id": "2bcb544b-7d8a-4ab2-98ca-47ca789f115e",
+    "type": "course",
+    "slug": "qudrat-prep",
+    "titleAr": "الاستعداد لاختبار القدرات العامة",
+    "titleEn": "General aptitude test prep",
+    "summaryAr": "شرح مبسّط للقسمين الكمي واللفظي مع ثلاثة اختبارات تجريبية كاملة وتحليل للأداء.",
+    "summaryEn": "Quantitative and verbal sections with three full mock tests and performance analysis.",
+    "badge": null,
+    "category": {
+     "slug": "study",
+     "nameAr": "مهارات الدراسة",
+     "nameEn": "Study skills"
+    },
+    "cover": null,
+    "price": "199.00",
+    "compareAtPrice": "249.00",
+    "formats": null,
+    "sponsorship": null,
+    "goal": null
+   },
+   {
+    "id": "bd3960f9-3731-45f2-b84f-9c0540fea9f5",
+    "type": "course",
+    "slug": "family-remote",
+    "titleAr": "دليل الأسرة للتعلّم عن بُعد",
+    "titleEn": "The family guide to remote learning",
+    "summaryAr": "كيف تهيّئ الأسرة بيئة تعلّم منزلية صحية، وتتابع أبناءها دون ضغط.",
+    "summaryEn": "Setting up a healthy home-learning environment and following up without pressure.",
+    "badge": null,
+    "category": {
+     "slug": "family",
+     "nameAr": "الأسرة",
+     "nameEn": "Family"
+    },
+    "cover": null,
+    "price": "90.00",
+    "compareAtPrice": null,
+    "formats": null,
+    "sponsorship": {
+     "offerId": "26a55978-d8bf-44f9-a484-4ffb24ff6967",
+     "seatPrice": "90.00",
+     "unitLabelAr": "مقعد",
+     "unitLabelEn": "seat",
+     "targetUnits": 400,
+     "fundedUnits": 388,
+     "percent": 97,
+     "donorCount": 150,
+     "endsAt": "2026-10-31T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   }
+  ],
+  "sponsorable": [
+   {
+    "id": "e2df8c4e-a3b7-4666-bf44-065d8edfbcb0",
+    "type": "course",
+    "slug": "digital-teacher",
+    "titleAr": "المعلّم الرقمي: أدوات التعليم الإلكتروني",
+    "titleEn": "The Digital Teacher: e-learning tools",
+    "summaryAr": "دورة عملية تمكّن المعلم من تصميم درس تفاعلي كامل باستخدام أدوات مجانية، مع تقييم تكويني ومتابعة للطلاب.",
+    "summaryEn": "A hands-on course that takes a teacher from zero to a complete interactive lesson using free tools.",
+    "badge": "best",
+    "category": {
+     "slug": "teach",
+     "nameAr": "مهارات المعلم",
+     "nameEn": "Teacher skills"
+    },
+    "cover": null,
+    "price": "350.00",
+    "compareAtPrice": "450.00",
+    "formats": null,
+    "sponsorship": {
+     "offerId": "7415370a-585a-4340-a6ef-7fdb0b310a7e",
+     "seatPrice": "350.00",
+     "unitLabelAr": "مقعد",
+     "unitLabelEn": "seat",
+     "targetUnits": 300,
+     "fundedUnits": 184,
+     "percent": 61,
+     "donorCount": 96,
+     "endsAt": "2026-12-31T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "id": "a2d75118-ab8d-49fa-bf49-2c7453fb2336",
+    "type": "course",
+    "slug": "smart-study",
+    "titleAr": "مهارات المذاكرة الذكية",
+    "titleEn": "Smart study skills",
+    "summaryAr": "تقنيات مثبتة علمياً لتنظيم الوقت والتركيز والحفظ طويل المدى، مصمّمة لطلاب المرحلتين المتوسطة والثانوية.",
+    "summaryEn": "Evidence-based techniques for time, focus and long-term memory, for middle and high school students.",
+    "badge": null,
+    "category": {
+     "slug": "study",
+     "nameAr": "مهارات الدراسة",
+     "nameEn": "Study skills"
+    },
+    "cover": null,
+    "price": "120.00",
+    "compareAtPrice": null,
+    "formats": null,
+    "sponsorship": {
+     "offerId": "fdbd1342-894b-42dc-816b-75bf67f497c8",
+     "seatPrice": "120.00",
+     "unitLabelAr": "مقعد",
+     "unitLabelEn": "seat",
+     "targetUnits": 500,
+     "fundedUnits": 342,
+     "percent": 68,
+     "donorCount": 210,
+     "endsAt": "2026-11-30T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "id": "53aa8ed7-573c-4186-a74f-265939ac1363",
+    "type": "course",
+    "slug": "python-kids",
+    "titleAr": "البرمجة للناشئين بلغة بايثون",
+    "titleEn": "Python for young coders",
+    "summaryAr": "رحلة ممتعة من أول سطر برمجي إلى لعبة كاملة، للأعمار 10–15 سنة، بمشاريع أسبوعية قصيرة.",
+    "summaryEn": "From the first line of code to a finished game, ages 10–15, with short weekly projects.",
+    "badge": "new",
+    "category": {
+     "slug": "tech",
+     "nameAr": "التقنية في التعليم",
+     "nameEn": "EdTech"
+    },
+    "cover": null,
+    "price": "450.00",
+    "compareAtPrice": null,
+    "formats": null,
+    "sponsorship": {
+     "offerId": "cace5f1c-52b5-4219-807d-a26df856fda2",
+     "seatPrice": "450.00",
+     "unitLabelAr": "مقعد",
+     "unitLabelEn": "seat",
+     "targetUnits": 150,
+     "fundedUnits": 41,
+     "percent": 27,
+     "donorCount": 23,
+     "endsAt": "2027-01-31T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "id": "332487ce-e4a5-48b8-84fe-f4dd3422924b",
+    "type": "course",
+    "slug": "early-childhood",
+    "titleAr": "أساسيات التعليم في الطفولة المبكرة",
+    "titleEn": "Early-childhood teaching essentials",
+    "summaryAr": "للمعلمات والأمهات: كيف نبني المهارات الأساسية الاثنتي عشرة من خلال اللعب والأنشطة اليومية.",
+    "summaryEn": "For teachers and mothers: building twelve core skills through play and daily routines.",
+    "badge": null,
+    "category": {
+     "slug": "kids",
+     "nameAr": "الطفولة المبكرة",
+     "nameEn": "Early childhood"
+    },
+    "cover": null,
+    "price": "280.00",
+    "compareAtPrice": null,
+    "formats": null,
+    "sponsorship": {
+     "offerId": "4aa86c23-f7df-4c64-a176-5deaca15ef93",
+     "seatPrice": "280.00",
+     "unitLabelAr": "مقعد",
+     "unitLabelEn": "seat",
+     "targetUnits": 200,
+     "fundedUnits": 77,
+     "percent": 38,
+     "donorCount": 41,
+     "endsAt": "2026-12-31T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "id": "bd3960f9-3731-45f2-b84f-9c0540fea9f5",
+    "type": "course",
+    "slug": "family-remote",
+    "titleAr": "دليل الأسرة للتعلّم عن بُعد",
+    "titleEn": "The family guide to remote learning",
+    "summaryAr": "كيف تهيّئ الأسرة بيئة تعلّم منزلية صحية، وتتابع أبناءها دون ضغط.",
+    "summaryEn": "Setting up a healthy home-learning environment and following up without pressure.",
+    "badge": null,
+    "category": {
+     "slug": "family",
+     "nameAr": "الأسرة",
+     "nameEn": "Family"
+    },
+    "cover": null,
+    "price": "90.00",
+    "compareAtPrice": null,
+    "formats": null,
+    "sponsorship": {
+     "offerId": "26a55978-d8bf-44f9-a484-4ffb24ff6967",
+     "seatPrice": "90.00",
+     "unitLabelAr": "مقعد",
+     "unitLabelEn": "seat",
+     "targetUnits": 400,
+     "fundedUnits": 388,
+     "percent": 97,
+     "donorCount": 150,
+     "endsAt": "2026-10-31T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "id": "8b2f682c-f67e-4856-8b7e-8b5081ac09e5",
+    "type": "book",
+    "slug": "science-stars-book",
+    "titleAr": "نجوم العلوم — كتاب التجارب المنزلية",
+    "titleEn": "Science Stars — home experiments book",
+    "summaryAr": "48 تجربة علمية آمنة بأدوات المنزل، ملوّنة ومصوّرة خطوة بخطوة للمرحلة الابتدائية.",
+    "summaryEn": "48 safe experiments with household items, illustrated step by step for primary pupils.",
+    "badge": "best",
+    "category": {
+     "slug": "kids",
+     "nameAr": "الطفولة المبكرة",
+     "nameEn": "Early childhood"
+    },
+    "cover": null,
+    "price": "35.00",
+    "compareAtPrice": null,
+    "formats": [
+     {
+      "kind": "digital",
+      "price": "35.00"
+     },
+     {
+      "kind": "print",
+      "price": "65.00"
+     }
+    ],
+    "sponsorship": {
+     "offerId": "e0fb194c-1dfc-47dd-9836-4d42fc2d9919",
+     "seatPrice": "40.00",
+     "unitLabelAr": "نسخة",
+     "unitLabelEn": "copy",
+     "targetUnits": 1000,
+     "fundedUnits": 612,
+     "percent": 61,
+     "donorCount": 188,
+     "endsAt": "2026-12-31T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "id": "13561563-d4d6-46d4-a48a-3aaec3cb35bf",
+    "type": "book",
+    "slug": "letters-tales",
+    "titleAr": "حكايات الحروف",
+    "titleEn": "Letter Tales",
+    "summaryAr": "28 قصة قصيرة، لكل حرف حكاية، تساعد الطفل على القراءة الأولى بمتعة.",
+    "summaryEn": "28 short stories, one per letter, for joyful first reading.",
+    "badge": "new",
+    "category": {
+     "slug": "kids",
+     "nameAr": "الطفولة المبكرة",
+     "nameEn": "Early childhood"
+    },
+    "cover": null,
+    "price": "25.00",
+    "compareAtPrice": null,
+    "formats": [
+     {
+      "kind": "digital",
+      "price": "25.00"
+     },
+     {
+      "kind": "print",
+      "price": "55.00"
+     }
+    ],
+    "sponsorship": {
+     "offerId": "3ac1c663-05bb-4b6c-a323-65cdc934f969",
+     "seatPrice": "30.00",
+     "unitLabelAr": "نسخة",
+     "unitLabelEn": "copy",
+     "targetUnits": 600,
+     "fundedUnits": 215,
+     "percent": 35,
+     "donorCount": 74,
+     "endsAt": "2026-12-31T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   }
+  ],
+  "books": [
+   {
+    "id": "8b2f682c-f67e-4856-8b7e-8b5081ac09e5",
+    "type": "book",
+    "slug": "science-stars-book",
+    "titleAr": "نجوم العلوم — كتاب التجارب المنزلية",
+    "titleEn": "Science Stars — home experiments book",
+    "summaryAr": "48 تجربة علمية آمنة بأدوات المنزل، ملوّنة ومصوّرة خطوة بخطوة للمرحلة الابتدائية.",
+    "summaryEn": "48 safe experiments with household items, illustrated step by step for primary pupils.",
+    "badge": "best",
+    "category": {
+     "slug": "kids",
+     "nameAr": "الطفولة المبكرة",
+     "nameEn": "Early childhood"
+    },
+    "cover": null,
+    "price": "35.00",
+    "compareAtPrice": null,
+    "formats": [
+     {
+      "kind": "digital",
+      "price": "35.00"
+     },
+     {
+      "kind": "print",
+      "price": "65.00"
+     }
+    ],
+    "sponsorship": {
+     "offerId": "e0fb194c-1dfc-47dd-9836-4d42fc2d9919",
+     "seatPrice": "40.00",
+     "unitLabelAr": "نسخة",
+     "unitLabelEn": "copy",
+     "targetUnits": 1000,
+     "fundedUnits": 612,
+     "percent": 61,
+     "donorCount": 188,
+     "endsAt": "2026-12-31T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "id": "bd7dcf5a-685b-4628-ae1a-d387800b301d",
+    "type": "book",
+    "slug": "formative-guide",
+    "titleAr": "دليل المعلم للتقويم التكويني",
+    "titleEn": "The teacher's guide to formative assessment",
+    "summaryAr": "أكثر من 60 أداة تقويم سريعة تُطبّق داخل الحصة، مع نماذج جاهزة للطباعة.",
+    "summaryEn": "60+ quick in-class assessment tools with printable templates.",
+    "badge": null,
+    "category": {
+     "slug": "teach",
+     "nameAr": "مهارات المعلم",
+     "nameEn": "Teacher skills"
+    },
+    "cover": null,
+    "price": "45.00",
+    "compareAtPrice": null,
+    "formats": [
+     {
+      "kind": "digital",
+      "price": "45.00"
+     },
+     {
+      "kind": "print",
+      "price": "85.00"
+     }
+    ],
+    "sponsorship": null,
+    "goal": null
+   },
+   {
+    "id": "13561563-d4d6-46d4-a48a-3aaec3cb35bf",
+    "type": "book",
+    "slug": "letters-tales",
+    "titleAr": "حكايات الحروف",
+    "titleEn": "Letter Tales",
+    "summaryAr": "28 قصة قصيرة، لكل حرف حكاية، تساعد الطفل على القراءة الأولى بمتعة.",
+    "summaryEn": "28 short stories, one per letter, for joyful first reading.",
+    "badge": "new",
+    "category": {
+     "slug": "kids",
+     "nameAr": "الطفولة المبكرة",
+     "nameEn": "Early childhood"
+    },
+    "cover": null,
+    "price": "25.00",
+    "compareAtPrice": null,
+    "formats": [
+     {
+      "kind": "digital",
+      "price": "25.00"
+     },
+     {
+      "kind": "print",
+      "price": "55.00"
+     }
+    ],
+    "sponsorship": {
+     "offerId": "3ac1c663-05bb-4b6c-a323-65cdc934f969",
+     "seatPrice": "30.00",
+     "unitLabelAr": "نسخة",
+     "unitLabelEn": "copy",
+     "targetUnits": 600,
+     "fundedUnits": 215,
+     "percent": 35,
+     "donorCount": 74,
+     "endsAt": "2026-12-31T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "id": "3de0855d-d7e8-4543-9a18-2fbb8b19d453",
+    "type": "book",
+    "slug": "study-planner",
+    "titleAr": "مخطط المذاكرة السنوي 2027",
+    "titleEn": "2027 annual study planner",
+    "summaryAr": "مخطط أسبوعي وشهري مبني على تقنيات دورة المذاكرة الذكية، مع ملصقات تحفيزية.",
+    "summaryEn": "Weekly and monthly planner built on the Smart Study method, with motivational stickers.",
+    "badge": null,
+    "category": {
+     "slug": "study",
+     "nameAr": "مهارات الدراسة",
+     "nameEn": "Study skills"
+    },
+    "cover": null,
+    "price": "40.00",
+    "compareAtPrice": null,
+    "formats": [
+     {
+      "kind": "print",
+      "price": "40.00"
+     }
+    ],
+    "sponsorship": null,
+    "goal": null
+   }
+  ],
+  "impact": [
+   {
+    "value": 1032,
+    "labelAr": "مقعداً مكفولاً",
+    "labelEn": "seats sponsored"
+   },
+   {
+    "value": 827,
+    "labelAr": "نسخة وُزّعت",
+    "labelEn": "books delivered"
+   },
+   {
+    "value": 3484,
+    "labelAr": "متبرعاً وكافلاً",
+    "labelEn": "donors & sponsors"
+   },
+   {
+    "value": 97,
+    "labelAr": "٪ من التبرعات تصل مباشرة للبرامج",
+    "labelEn": "% of gifts reach programs directly"
+   }
+  ],
+  "generalFund": null
+ },
+ "/catalog/categories": [
+  {
+   "slug": "teach",
+   "nameAr": "مهارات المعلم",
+   "nameEn": "Teacher skills",
+   "sort": 0
+  },
+  {
+   "slug": "tech",
+   "nameAr": "التقنية في التعليم",
+   "nameEn": "EdTech",
+   "sort": 0
+  },
+  {
+   "slug": "family",
+   "nameAr": "الأسرة",
+   "nameEn": "Family",
+   "sort": 0
+  },
+  {
+   "slug": "kids",
+   "nameAr": "الطفولة المبكرة",
+   "nameEn": "Early childhood",
+   "sort": 0
+  },
+  {
+   "slug": "study",
+   "nameAr": "مهارات الدراسة",
+   "nameEn": "Study skills",
+   "sort": 0
+  }
+ ],
+ "/catalog/config": {
+  "vatEnabled": false,
+  "vatRate": "15.00",
+  "shippingFlatFee": "25.00",
+  "minGiftAmount": "10.00",
+  "cartMaxTotal": "100000.00",
+  "cartMaxLines": 50,
+  "printMaxQuantity": 20,
+  "giftMaxQuantity": 999,
+  "paymentMethods": [
+   "mada",
+   "applepay",
+   "card",
+   "stcpay"
+  ],
+  "dedicationFreeTextEnabled": false,
+  "dedicationTemplates": [
+   {
+    "key": "hasanat",
+    "ar": "اللهم اجعله في ميزان حسناتك",
+    "en": "May it weigh in your good deeds"
+   },
+   {
+    "key": "departed",
+    "ar": "صدقة جارية عن روح الفقيد",
+    "en": "A lasting charity for the departed"
+   },
+   {
+    "key": "success",
+    "ar": "هدية بمناسبة نجاحك",
+    "en": "A gift for your success"
+   },
+   {
+    "key": "eid",
+    "ar": "عيدكم مبارك",
+    "en": "Eid Mubarak"
+   }
+  ],
+  "sponsorPresets": {
+   "course": [
+    1,
+    5,
+    10,
+    25
+   ],
+   "book": [
+    10,
+    25,
+    50,
+    100
+   ]
+  },
+  "causeUnitPresets": [
+   1,
+   2,
+   5,
+   10
+  ],
+  "amountPresets": [
+   "50.00",
+   "100.00",
+   "250.00",
+   "500.00"
+  ]
+ },
+ "/catalog/products?fields=slug&pageSize=100&page=1": {
+  "items": [
+   {
+    "type": "book",
+    "slug": "formative-guide",
+    "updatedAt": "2026-10-13T21:56:02.637136+00:00"
+   },
+   {
+    "type": "book",
+    "slug": "letters-tales",
+    "updatedAt": "2026-10-13T21:56:02.637136+00:00"
+   },
+   {
+    "type": "book",
+    "slug": "science-stars-book",
+    "updatedAt": "2026-10-13T21:56:02.637136+00:00"
+   },
+   {
+    "type": "book",
+    "slug": "study-planner",
+    "updatedAt": "2026-10-13T21:56:02.637136+00:00"
+   },
+   {
+    "type": "course",
+    "slug": "digital-teacher",
+    "updatedAt": "2026-10-13T21:56:02.637136+00:00"
+   },
+   {
+    "type": "course",
+    "slug": "early-childhood",
+    "updatedAt": "2026-10-13T21:56:02.637136+00:00"
+   },
+   {
+    "type": "course",
+    "slug": "family-remote",
+    "updatedAt": "2026-10-13T21:56:02.637136+00:00"
+   },
+   {
+    "type": "course",
+    "slug": "python-kids",
+    "updatedAt": "2026-10-13T21:56:02.637136+00:00"
+   },
+   {
+    "type": "course",
+    "slug": "qudrat-prep",
+    "updatedAt": "2026-10-13T21:56:02.637136+00:00"
+   },
+   {
+    "type": "course",
+    "slug": "smart-study",
+    "updatedAt": "2026-10-13T21:56:02.637136+00:00"
+   }
+  ],
+  "total": 10,
+  "page": 1,
+  "pageSize": 100
+ },
+ "/catalog/products?pageSize=100": {
+  "items": [
+   {
+    "id": "e2df8c4e-a3b7-4666-bf44-065d8edfbcb0",
+    "type": "course",
+    "slug": "digital-teacher",
+    "titleAr": "المعلّم الرقمي: أدوات التعليم الإلكتروني",
+    "titleEn": "The Digital Teacher: e-learning tools",
+    "summaryAr": "دورة عملية تمكّن المعلم من تصميم درس تفاعلي كامل باستخدام أدوات مجانية، مع تقييم تكويني ومتابعة للطلاب.",
+    "summaryEn": "A hands-on course that takes a teacher from zero to a complete interactive lesson using free tools.",
+    "badge": "best",
+    "category": {
+     "slug": "teach",
+     "nameAr": "مهارات المعلم",
+     "nameEn": "Teacher skills"
+    },
+    "cover": null,
+    "price": "350.00",
+    "compareAtPrice": "450.00",
+    "formats": null,
+    "sponsorship": {
+     "offerId": "7415370a-585a-4340-a6ef-7fdb0b310a7e",
+     "seatPrice": "350.00",
+     "unitLabelAr": "مقعد",
+     "unitLabelEn": "seat",
+     "targetUnits": 300,
+     "fundedUnits": 184,
+     "percent": 61,
+     "donorCount": 96,
+     "endsAt": "2026-12-31T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "id": "a2d75118-ab8d-49fa-bf49-2c7453fb2336",
+    "type": "course",
+    "slug": "smart-study",
+    "titleAr": "مهارات المذاكرة الذكية",
+    "titleEn": "Smart study skills",
+    "summaryAr": "تقنيات مثبتة علمياً لتنظيم الوقت والتركيز والحفظ طويل المدى، مصمّمة لطلاب المرحلتين المتوسطة والثانوية.",
+    "summaryEn": "Evidence-based techniques for time, focus and long-term memory, for middle and high school students.",
+    "badge": null,
+    "category": {
+     "slug": "study",
+     "nameAr": "مهارات الدراسة",
+     "nameEn": "Study skills"
+    },
+    "cover": null,
+    "price": "120.00",
+    "compareAtPrice": null,
+    "formats": null,
+    "sponsorship": {
+     "offerId": "fdbd1342-894b-42dc-816b-75bf67f497c8",
+     "seatPrice": "120.00",
+     "unitLabelAr": "مقعد",
+     "unitLabelEn": "seat",
+     "targetUnits": 500,
+     "fundedUnits": 342,
+     "percent": 68,
+     "donorCount": 210,
+     "endsAt": "2026-11-30T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "id": "53aa8ed7-573c-4186-a74f-265939ac1363",
+    "type": "course",
+    "slug": "python-kids",
+    "titleAr": "البرمجة للناشئين بلغة بايثون",
+    "titleEn": "Python for young coders",
+    "summaryAr": "رحلة ممتعة من أول سطر برمجي إلى لعبة كاملة، للأعمار 10–15 سنة، بمشاريع أسبوعية قصيرة.",
+    "summaryEn": "From the first line of code to a finished game, ages 10–15, with short weekly projects.",
+    "badge": "new",
+    "category": {
+     "slug": "tech",
+     "nameAr": "التقنية في التعليم",
+     "nameEn": "EdTech"
+    },
+    "cover": null,
+    "price": "450.00",
+    "compareAtPrice": null,
+    "formats": null,
+    "sponsorship": {
+     "offerId": "cace5f1c-52b5-4219-807d-a26df856fda2",
+     "seatPrice": "450.00",
+     "unitLabelAr": "مقعد",
+     "unitLabelEn": "seat",
+     "targetUnits": 150,
+     "fundedUnits": 41,
+     "percent": 27,
+     "donorCount": 23,
+     "endsAt": "2027-01-31T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "id": "332487ce-e4a5-48b8-84fe-f4dd3422924b",
+    "type": "course",
+    "slug": "early-childhood",
+    "titleAr": "أساسيات التعليم في الطفولة المبكرة",
+    "titleEn": "Early-childhood teaching essentials",
+    "summaryAr": "للمعلمات والأمهات: كيف نبني المهارات الأساسية الاثنتي عشرة من خلال اللعب والأنشطة اليومية.",
+    "summaryEn": "For teachers and mothers: building twelve core skills through play and daily routines.",
+    "badge": null,
+    "category": {
+     "slug": "kids",
+     "nameAr": "الطفولة المبكرة",
+     "nameEn": "Early childhood"
+    },
+    "cover": null,
+    "price": "280.00",
+    "compareAtPrice": null,
+    "formats": null,
+    "sponsorship": {
+     "offerId": "4aa86c23-f7df-4c64-a176-5deaca15ef93",
+     "seatPrice": "280.00",
+     "unitLabelAr": "مقعد",
+     "unitLabelEn": "seat",
+     "targetUnits": 200,
+     "fundedUnits": 77,
+     "percent": 38,
+     "donorCount": 41,
+     "endsAt": "2026-12-31T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "id": "2bcb544b-7d8a-4ab2-98ca-47ca789f115e",
+    "type": "course",
+    "slug": "qudrat-prep",
+    "titleAr": "الاستعداد لاختبار القدرات العامة",
+    "titleEn": "General aptitude test prep",
+    "summaryAr": "شرح مبسّط للقسمين الكمي واللفظي مع ثلاثة اختبارات تجريبية كاملة وتحليل للأداء.",
+    "summaryEn": "Quantitative and verbal sections with three full mock tests and performance analysis.",
+    "badge": null,
+    "category": {
+     "slug": "study",
+     "nameAr": "مهارات الدراسة",
+     "nameEn": "Study skills"
+    },
+    "cover": null,
+    "price": "199.00",
+    "compareAtPrice": "249.00",
+    "formats": null,
+    "sponsorship": null,
+    "goal": null
+   },
+   {
+    "id": "bd3960f9-3731-45f2-b84f-9c0540fea9f5",
+    "type": "course",
+    "slug": "family-remote",
+    "titleAr": "دليل الأسرة للتعلّم عن بُعد",
+    "titleEn": "The family guide to remote learning",
+    "summaryAr": "كيف تهيّئ الأسرة بيئة تعلّم منزلية صحية، وتتابع أبناءها دون ضغط.",
+    "summaryEn": "Setting up a healthy home-learning environment and following up without pressure.",
+    "badge": null,
+    "category": {
+     "slug": "family",
+     "nameAr": "الأسرة",
+     "nameEn": "Family"
+    },
+    "cover": null,
+    "price": "90.00",
+    "compareAtPrice": null,
+    "formats": null,
+    "sponsorship": {
+     "offerId": "26a55978-d8bf-44f9-a484-4ffb24ff6967",
+     "seatPrice": "90.00",
+     "unitLabelAr": "مقعد",
+     "unitLabelEn": "seat",
+     "targetUnits": 400,
+     "fundedUnits": 388,
+     "percent": 97,
+     "donorCount": 150,
+     "endsAt": "2026-10-31T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "id": "8b2f682c-f67e-4856-8b7e-8b5081ac09e5",
+    "type": "book",
+    "slug": "science-stars-book",
+    "titleAr": "نجوم العلوم — كتاب التجارب المنزلية",
+    "titleEn": "Science Stars — home experiments book",
+    "summaryAr": "48 تجربة علمية آمنة بأدوات المنزل، ملوّنة ومصوّرة خطوة بخطوة للمرحلة الابتدائية.",
+    "summaryEn": "48 safe experiments with household items, illustrated step by step for primary pupils.",
+    "badge": "best",
+    "category": {
+     "slug": "kids",
+     "nameAr": "الطفولة المبكرة",
+     "nameEn": "Early childhood"
+    },
+    "cover": null,
+    "price": "35.00",
+    "compareAtPrice": null,
+    "formats": [
+     {
+      "kind": "digital",
+      "price": "35.00"
+     },
+     {
+      "kind": "print",
+      "price": "65.00"
+     }
+    ],
+    "sponsorship": {
+     "offerId": "e0fb194c-1dfc-47dd-9836-4d42fc2d9919",
+     "seatPrice": "40.00",
+     "unitLabelAr": "نسخة",
+     "unitLabelEn": "copy",
+     "targetUnits": 1000,
+     "fundedUnits": 612,
+     "percent": 61,
+     "donorCount": 188,
+     "endsAt": "2026-12-31T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "id": "bd7dcf5a-685b-4628-ae1a-d387800b301d",
+    "type": "book",
+    "slug": "formative-guide",
+    "titleAr": "دليل المعلم للتقويم التكويني",
+    "titleEn": "The teacher's guide to formative assessment",
+    "summaryAr": "أكثر من 60 أداة تقويم سريعة تُطبّق داخل الحصة، مع نماذج جاهزة للطباعة.",
+    "summaryEn": "60+ quick in-class assessment tools with printable templates.",
+    "badge": null,
+    "category": {
+     "slug": "teach",
+     "nameAr": "مهارات المعلم",
+     "nameEn": "Teacher skills"
+    },
+    "cover": null,
+    "price": "45.00",
+    "compareAtPrice": null,
+    "formats": [
+     {
+      "kind": "digital",
+      "price": "45.00"
+     },
+     {
+      "kind": "print",
+      "price": "85.00"
+     }
+    ],
+    "sponsorship": null,
+    "goal": null
+   },
+   {
+    "id": "13561563-d4d6-46d4-a48a-3aaec3cb35bf",
+    "type": "book",
+    "slug": "letters-tales",
+    "titleAr": "حكايات الحروف",
+    "titleEn": "Letter Tales",
+    "summaryAr": "28 قصة قصيرة، لكل حرف حكاية، تساعد الطفل على القراءة الأولى بمتعة.",
+    "summaryEn": "28 short stories, one per letter, for joyful first reading.",
+    "badge": "new",
+    "category": {
+     "slug": "kids",
+     "nameAr": "الطفولة المبكرة",
+     "nameEn": "Early childhood"
+    },
+    "cover": null,
+    "price": "25.00",
+    "compareAtPrice": null,
+    "formats": [
+     {
+      "kind": "digital",
+      "price": "25.00"
+     },
+     {
+      "kind": "print",
+      "price": "55.00"
+     }
+    ],
+    "sponsorship": {
+     "offerId": "3ac1c663-05bb-4b6c-a323-65cdc934f969",
+     "seatPrice": "30.00",
+     "unitLabelAr": "نسخة",
+     "unitLabelEn": "copy",
+     "targetUnits": 600,
+     "fundedUnits": 215,
+     "percent": 35,
+     "donorCount": 74,
+     "endsAt": "2026-12-31T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "id": "3de0855d-d7e8-4543-9a18-2fbb8b19d453",
+    "type": "book",
+    "slug": "study-planner",
+    "titleAr": "مخطط المذاكرة السنوي 2027",
+    "titleEn": "2027 annual study planner",
+    "summaryAr": "مخطط أسبوعي وشهري مبني على تقنيات دورة المذاكرة الذكية، مع ملصقات تحفيزية.",
+    "summaryEn": "Weekly and monthly planner built on the Smart Study method, with motivational stickers.",
+    "badge": null,
+    "category": {
+     "slug": "study",
+     "nameAr": "مهارات الدراسة",
+     "nameEn": "Study skills"
+    },
+    "cover": null,
+    "price": "40.00",
+    "compareAtPrice": null,
+    "formats": [
+     {
+      "kind": "print",
+      "price": "40.00"
+     }
+    ],
+    "sponsorship": null,
+    "goal": null
+   }
+  ],
+  "total": 10,
+  "page": 1,
+  "pageSize": 100
+ },
+ "/catalog/products?pageSize=100&type=course": {
+  "items": [
+   {
+    "id": "e2df8c4e-a3b7-4666-bf44-065d8edfbcb0",
+    "type": "course",
+    "slug": "digital-teacher",
+    "titleAr": "المعلّم الرقمي: أدوات التعليم الإلكتروني",
+    "titleEn": "The Digital Teacher: e-learning tools",
+    "summaryAr": "دورة عملية تمكّن المعلم من تصميم درس تفاعلي كامل باستخدام أدوات مجانية، مع تقييم تكويني ومتابعة للطلاب.",
+    "summaryEn": "A hands-on course that takes a teacher from zero to a complete interactive lesson using free tools.",
+    "badge": "best",
+    "category": {
+     "slug": "teach",
+     "nameAr": "مهارات المعلم",
+     "nameEn": "Teacher skills"
+    },
+    "cover": null,
+    "price": "350.00",
+    "compareAtPrice": "450.00",
+    "formats": null,
+    "sponsorship": {
+     "offerId": "7415370a-585a-4340-a6ef-7fdb0b310a7e",
+     "seatPrice": "350.00",
+     "unitLabelAr": "مقعد",
+     "unitLabelEn": "seat",
+     "targetUnits": 300,
+     "fundedUnits": 184,
+     "percent": 61,
+     "donorCount": 96,
+     "endsAt": "2026-12-31T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "id": "a2d75118-ab8d-49fa-bf49-2c7453fb2336",
+    "type": "course",
+    "slug": "smart-study",
+    "titleAr": "مهارات المذاكرة الذكية",
+    "titleEn": "Smart study skills",
+    "summaryAr": "تقنيات مثبتة علمياً لتنظيم الوقت والتركيز والحفظ طويل المدى، مصمّمة لطلاب المرحلتين المتوسطة والثانوية.",
+    "summaryEn": "Evidence-based techniques for time, focus and long-term memory, for middle and high school students.",
+    "badge": null,
+    "category": {
+     "slug": "study",
+     "nameAr": "مهارات الدراسة",
+     "nameEn": "Study skills"
+    },
+    "cover": null,
+    "price": "120.00",
+    "compareAtPrice": null,
+    "formats": null,
+    "sponsorship": {
+     "offerId": "fdbd1342-894b-42dc-816b-75bf67f497c8",
+     "seatPrice": "120.00",
+     "unitLabelAr": "مقعد",
+     "unitLabelEn": "seat",
+     "targetUnits": 500,
+     "fundedUnits": 342,
+     "percent": 68,
+     "donorCount": 210,
+     "endsAt": "2026-11-30T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "id": "53aa8ed7-573c-4186-a74f-265939ac1363",
+    "type": "course",
+    "slug": "python-kids",
+    "titleAr": "البرمجة للناشئين بلغة بايثون",
+    "titleEn": "Python for young coders",
+    "summaryAr": "رحلة ممتعة من أول سطر برمجي إلى لعبة كاملة، للأعمار 10–15 سنة، بمشاريع أسبوعية قصيرة.",
+    "summaryEn": "From the first line of code to a finished game, ages 10–15, with short weekly projects.",
+    "badge": "new",
+    "category": {
+     "slug": "tech",
+     "nameAr": "التقنية في التعليم",
+     "nameEn": "EdTech"
+    },
+    "cover": null,
+    "price": "450.00",
+    "compareAtPrice": null,
+    "formats": null,
+    "sponsorship": {
+     "offerId": "cace5f1c-52b5-4219-807d-a26df856fda2",
+     "seatPrice": "450.00",
+     "unitLabelAr": "مقعد",
+     "unitLabelEn": "seat",
+     "targetUnits": 150,
+     "fundedUnits": 41,
+     "percent": 27,
+     "donorCount": 23,
+     "endsAt": "2027-01-31T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "id": "332487ce-e4a5-48b8-84fe-f4dd3422924b",
+    "type": "course",
+    "slug": "early-childhood",
+    "titleAr": "أساسيات التعليم في الطفولة المبكرة",
+    "titleEn": "Early-childhood teaching essentials",
+    "summaryAr": "للمعلمات والأمهات: كيف نبني المهارات الأساسية الاثنتي عشرة من خلال اللعب والأنشطة اليومية.",
+    "summaryEn": "For teachers and mothers: building twelve core skills through play and daily routines.",
+    "badge": null,
+    "category": {
+     "slug": "kids",
+     "nameAr": "الطفولة المبكرة",
+     "nameEn": "Early childhood"
+    },
+    "cover": null,
+    "price": "280.00",
+    "compareAtPrice": null,
+    "formats": null,
+    "sponsorship": {
+     "offerId": "4aa86c23-f7df-4c64-a176-5deaca15ef93",
+     "seatPrice": "280.00",
+     "unitLabelAr": "مقعد",
+     "unitLabelEn": "seat",
+     "targetUnits": 200,
+     "fundedUnits": 77,
+     "percent": 38,
+     "donorCount": 41,
+     "endsAt": "2026-12-31T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "id": "2bcb544b-7d8a-4ab2-98ca-47ca789f115e",
+    "type": "course",
+    "slug": "qudrat-prep",
+    "titleAr": "الاستعداد لاختبار القدرات العامة",
+    "titleEn": "General aptitude test prep",
+    "summaryAr": "شرح مبسّط للقسمين الكمي واللفظي مع ثلاثة اختبارات تجريبية كاملة وتحليل للأداء.",
+    "summaryEn": "Quantitative and verbal sections with three full mock tests and performance analysis.",
+    "badge": null,
+    "category": {
+     "slug": "study",
+     "nameAr": "مهارات الدراسة",
+     "nameEn": "Study skills"
+    },
+    "cover": null,
+    "price": "199.00",
+    "compareAtPrice": "249.00",
+    "formats": null,
+    "sponsorship": null,
+    "goal": null
+   },
+   {
+    "id": "bd3960f9-3731-45f2-b84f-9c0540fea9f5",
+    "type": "course",
+    "slug": "family-remote",
+    "titleAr": "دليل الأسرة للتعلّم عن بُعد",
+    "titleEn": "The family guide to remote learning",
+    "summaryAr": "كيف تهيّئ الأسرة بيئة تعلّم منزلية صحية، وتتابع أبناءها دون ضغط.",
+    "summaryEn": "Setting up a healthy home-learning environment and following up without pressure.",
+    "badge": null,
+    "category": {
+     "slug": "family",
+     "nameAr": "الأسرة",
+     "nameEn": "Family"
+    },
+    "cover": null,
+    "price": "90.00",
+    "compareAtPrice": null,
+    "formats": null,
+    "sponsorship": {
+     "offerId": "26a55978-d8bf-44f9-a484-4ffb24ff6967",
+     "seatPrice": "90.00",
+     "unitLabelAr": "مقعد",
+     "unitLabelEn": "seat",
+     "targetUnits": 400,
+     "fundedUnits": 388,
+     "percent": 97,
+     "donorCount": 150,
+     "endsAt": "2026-10-31T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   }
+  ],
+  "total": 6,
+  "page": 1,
+  "pageSize": 100
+ },
+ "/catalog/products?pageSize=100&type=book": {
+  "items": [
+   {
+    "id": "8b2f682c-f67e-4856-8b7e-8b5081ac09e5",
+    "type": "book",
+    "slug": "science-stars-book",
+    "titleAr": "نجوم العلوم — كتاب التجارب المنزلية",
+    "titleEn": "Science Stars — home experiments book",
+    "summaryAr": "48 تجربة علمية آمنة بأدوات المنزل، ملوّنة ومصوّرة خطوة بخطوة للمرحلة الابتدائية.",
+    "summaryEn": "48 safe experiments with household items, illustrated step by step for primary pupils.",
+    "badge": "best",
+    "category": {
+     "slug": "kids",
+     "nameAr": "الطفولة المبكرة",
+     "nameEn": "Early childhood"
+    },
+    "cover": null,
+    "price": "35.00",
+    "compareAtPrice": null,
+    "formats": [
+     {
+      "kind": "digital",
+      "price": "35.00"
+     },
+     {
+      "kind": "print",
+      "price": "65.00"
+     }
+    ],
+    "sponsorship": {
+     "offerId": "e0fb194c-1dfc-47dd-9836-4d42fc2d9919",
+     "seatPrice": "40.00",
+     "unitLabelAr": "نسخة",
+     "unitLabelEn": "copy",
+     "targetUnits": 1000,
+     "fundedUnits": 612,
+     "percent": 61,
+     "donorCount": 188,
+     "endsAt": "2026-12-31T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "id": "bd7dcf5a-685b-4628-ae1a-d387800b301d",
+    "type": "book",
+    "slug": "formative-guide",
+    "titleAr": "دليل المعلم للتقويم التكويني",
+    "titleEn": "The teacher's guide to formative assessment",
+    "summaryAr": "أكثر من 60 أداة تقويم سريعة تُطبّق داخل الحصة، مع نماذج جاهزة للطباعة.",
+    "summaryEn": "60+ quick in-class assessment tools with printable templates.",
+    "badge": null,
+    "category": {
+     "slug": "teach",
+     "nameAr": "مهارات المعلم",
+     "nameEn": "Teacher skills"
+    },
+    "cover": null,
+    "price": "45.00",
+    "compareAtPrice": null,
+    "formats": [
+     {
+      "kind": "digital",
+      "price": "45.00"
+     },
+     {
+      "kind": "print",
+      "price": "85.00"
+     }
+    ],
+    "sponsorship": null,
+    "goal": null
+   },
+   {
+    "id": "13561563-d4d6-46d4-a48a-3aaec3cb35bf",
+    "type": "book",
+    "slug": "letters-tales",
+    "titleAr": "حكايات الحروف",
+    "titleEn": "Letter Tales",
+    "summaryAr": "28 قصة قصيرة، لكل حرف حكاية، تساعد الطفل على القراءة الأولى بمتعة.",
+    "summaryEn": "28 short stories, one per letter, for joyful first reading.",
+    "badge": "new",
+    "category": {
+     "slug": "kids",
+     "nameAr": "الطفولة المبكرة",
+     "nameEn": "Early childhood"
+    },
+    "cover": null,
+    "price": "25.00",
+    "compareAtPrice": null,
+    "formats": [
+     {
+      "kind": "digital",
+      "price": "25.00"
+     },
+     {
+      "kind": "print",
+      "price": "55.00"
+     }
+    ],
+    "sponsorship": {
+     "offerId": "3ac1c663-05bb-4b6c-a323-65cdc934f969",
+     "seatPrice": "30.00",
+     "unitLabelAr": "نسخة",
+     "unitLabelEn": "copy",
+     "targetUnits": 600,
+     "fundedUnits": 215,
+     "percent": 35,
+     "donorCount": 74,
+     "endsAt": "2026-12-31T20:59:59+00:00",
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "id": "3de0855d-d7e8-4543-9a18-2fbb8b19d453",
+    "type": "book",
+    "slug": "study-planner",
+    "titleAr": "مخطط المذاكرة السنوي 2027",
+    "titleEn": "2027 annual study planner",
+    "summaryAr": "مخطط أسبوعي وشهري مبني على تقنيات دورة المذاكرة الذكية، مع ملصقات تحفيزية.",
+    "summaryEn": "Weekly and monthly planner built on the Smart Study method, with motivational stickers.",
+    "badge": null,
+    "category": {
+     "slug": "study",
+     "nameAr": "مهارات الدراسة",
+     "nameEn": "Study skills"
+    },
+    "cover": null,
+    "price": "40.00",
+    "compareAtPrice": null,
+    "formats": [
+     {
+      "kind": "print",
+      "price": "40.00"
+     }
+    ],
+    "sponsorship": null,
+    "goal": null
+   }
+  ],
+  "total": 4,
+  "page": 1,
+  "pageSize": 100
+ },
+ "/catalog/products/formative-guide": {
+  "id": "bd7dcf5a-685b-4628-ae1a-d387800b301d",
+  "type": "book",
+  "slug": "formative-guide",
+  "titleAr": "دليل المعلم للتقويم التكويني",
+  "titleEn": "The teacher's guide to formative assessment",
+  "summaryAr": "أكثر من 60 أداة تقويم سريعة تُطبّق داخل الحصة، مع نماذج جاهزة للطباعة.",
+  "summaryEn": "60+ quick in-class assessment tools with printable templates.",
+  "bodyAr": null,
+  "bodyEn": null,
+  "badge": null,
+  "category": {
+   "slug": "teach",
+   "nameAr": "مهارات المعلم",
+   "nameEn": "Teacher skills"
+  },
+  "cover": null,
+  "seo": {
+   "titleAr": null,
+   "titleEn": null,
+   "descAr": null,
+   "descEn": null
+  },
+  "course": null,
+  "book": {
+   "authorAr": "د. سلمان المطيري",
+   "authorEn": "Dr. Salman Al-Mutairi",
+   "pages": 210,
+   "isbn": null,
+   "publishedYear": 2026,
+   "formats": [
+    {
+     "id": "90c34415-e8cd-420b-a7f0-8d6f0c0d0a5b",
+     "kind": "digital",
+     "sku": "BK-FORMATIVE-GU-D",
+     "price": "45.00",
+     "compareAtPrice": null,
+     "available": null,
+     "maxQuantity": 1
+    },
+    {
+     "id": "c28d84de-412b-4235-ad49-b1acc085dbc2",
+     "kind": "print",
+     "sku": "BK-FORMATIVE-GU-P",
+     "price": "85.00",
+     "compareAtPrice": null,
+     "available": 500,
+     "maxQuantity": 20
+    }
+   ]
+  },
+  "cause": null,
+  "sponsorship": null,
+  "related": [
+   {
+    "slug": "science-stars-book",
+    "type": "book",
+    "titleAr": "نجوم العلوم — كتاب التجارب المنزلية",
+    "titleEn": "Science Stars — home experiments book",
+    "price": "35.00"
+   },
+   {
+    "slug": "letters-tales",
+    "type": "book",
+    "titleAr": "حكايات الحروف",
+    "titleEn": "Letter Tales",
+    "price": "25.00"
+   },
+   {
+    "slug": "study-planner",
+    "type": "book",
+    "titleAr": "مخطط المذاكرة السنوي 2027",
+    "titleEn": "2027 annual study planner",
+    "price": "40.00"
+   }
+  ]
+ },
+ "/catalog/products/letters-tales": {
+  "id": "13561563-d4d6-46d4-a48a-3aaec3cb35bf",
+  "type": "book",
+  "slug": "letters-tales",
+  "titleAr": "حكايات الحروف",
+  "titleEn": "Letter Tales",
+  "summaryAr": "28 قصة قصيرة، لكل حرف حكاية، تساعد الطفل على القراءة الأولى بمتعة.",
+  "summaryEn": "28 short stories, one per letter, for joyful first reading.",
+  "bodyAr": null,
+  "bodyEn": null,
+  "badge": "new",
+  "category": {
+   "slug": "kids",
+   "nameAr": "الطفولة المبكرة",
+   "nameEn": "Early childhood"
+  },
+  "cover": null,
+  "seo": {
+   "titleAr": null,
+   "titleEn": null,
+   "descAr": null,
+   "descEn": null
+  },
+  "course": null,
+  "book": {
+   "authorAr": "أ. نوف الحربي",
+   "authorEn": "Nouf Al-Harbi",
+   "pages": 96,
+   "isbn": null,
+   "publishedYear": 2026,
+   "formats": [
+    {
+     "id": "96147dfb-9706-49ae-8a63-7474fa78323e",
+     "kind": "digital",
+     "sku": "BK-LETTERS-TALE-D",
+     "price": "25.00",
+     "compareAtPrice": null,
+     "available": null,
+     "maxQuantity": 1
+    },
+    {
+     "id": "c543db88-fa0f-4b77-bb22-25bccd2715e5",
+     "kind": "print",
+     "sku": "BK-LETTERS-TALE-P",
+     "price": "55.00",
+     "compareAtPrice": null,
+     "available": 500,
+     "maxQuantity": 20
+    }
+   ]
+  },
+  "cause": null,
+  "sponsorship": {
+   "offerId": "3ac1c663-05bb-4b6c-a323-65cdc934f969",
+   "seatPrice": "30.00",
+   "unitLabelAr": "نسخة",
+   "unitLabelEn": "copy",
+   "targetUnits": 600,
+   "fundedUnits": 215,
+   "percent": 35,
+   "donorCount": 74,
+   "groupLabelAr": "أطفال الأسر المستفيدة (3–7 سنوات)",
+   "groupLabelEn": "Children of beneficiary families (3–7)",
+   "allowPartial": true,
+   "zakatEligible": false,
+   "startsAt": "2026-10-13T21:56:02.637136+00:00",
+   "endsAt": "2026-12-31T20:59:59+00:00",
+   "isOpen": true
+  },
+  "related": [
+   {
+    "slug": "science-stars-book",
+    "type": "book",
+    "titleAr": "نجوم العلوم — كتاب التجارب المنزلية",
+    "titleEn": "Science Stars — home experiments book",
+    "price": "35.00"
+   },
+   {
+    "slug": "formative-guide",
+    "type": "book",
+    "titleAr": "دليل المعلم للتقويم التكويني",
+    "titleEn": "The teacher's guide to formative assessment",
+    "price": "45.00"
+   },
+   {
+    "slug": "study-planner",
+    "type": "book",
+    "titleAr": "مخطط المذاكرة السنوي 2027",
+    "titleEn": "2027 annual study planner",
+    "price": "40.00"
+   }
+  ]
+ },
+ "/catalog/products/science-stars-book": {
+  "id": "8b2f682c-f67e-4856-8b7e-8b5081ac09e5",
+  "type": "book",
+  "slug": "science-stars-book",
+  "titleAr": "نجوم العلوم — كتاب التجارب المنزلية",
+  "titleEn": "Science Stars — home experiments book",
+  "summaryAr": "48 تجربة علمية آمنة بأدوات المنزل، ملوّنة ومصوّرة خطوة بخطوة للمرحلة الابتدائية.",
+  "summaryEn": "48 safe experiments with household items, illustrated step by step for primary pupils.",
+  "bodyAr": null,
+  "bodyEn": null,
+  "badge": "best",
+  "category": {
+   "slug": "kids",
+   "nameAr": "الطفولة المبكرة",
+   "nameEn": "Early childhood"
+  },
+  "cover": null,
+  "seo": {
+   "titleAr": null,
+   "titleEn": null,
+   "descAr": null,
+   "descEn": null
+  },
+  "course": null,
+  "book": {
+   "authorAr": "فريق جمعية التعلم الإلكتروني",
+   "authorEn": "E-Learning Association team",
+   "pages": 132,
+   "isbn": null,
+   "publishedYear": 2026,
+   "formats": [
+    {
+     "id": "9f7fcd01-1ee7-4e4d-a848-6bb7f112a80b",
+     "kind": "digital",
+     "sku": "BK-SCIENCE-STAR-D",
+     "price": "35.00",
+     "compareAtPrice": null,
+     "available": null,
+     "maxQuantity": 1
+    },
+    {
+     "id": "5fc9073e-369b-4edd-9877-95ae4b925a5e",
+     "kind": "print",
+     "sku": "BK-SCIENCE-STAR-P",
+     "price": "65.00",
+     "compareAtPrice": "80.00",
+     "available": 500,
+     "maxQuantity": 20
+    }
+   ]
+  },
+  "cause": null,
+  "sponsorship": {
+   "offerId": "e0fb194c-1dfc-47dd-9836-4d42fc2d9919",
+   "seatPrice": "40.00",
+   "unitLabelAr": "نسخة",
+   "unitLabelEn": "copy",
+   "targetUnits": 1000,
+   "fundedUnits": 612,
+   "percent": 61,
+   "donorCount": 188,
+   "groupLabelAr": "مكتبات المدارس الابتدائية الحكومية",
+   "groupLabelEn": "Public primary-school libraries",
+   "allowPartial": true,
+   "zakatEligible": false,
+   "startsAt": "2026-10-13T21:56:02.637136+00:00",
+   "endsAt": "2026-12-31T20:59:59+00:00",
+   "isOpen": true
+  },
+  "related": [
+   {
+    "slug": "letters-tales",
+    "type": "book",
+    "titleAr": "حكايات الحروف",
+    "titleEn": "Letter Tales",
+    "price": "25.00"
+   },
+   {
+    "slug": "formative-guide",
+    "type": "book",
+    "titleAr": "دليل المعلم للتقويم التكويني",
+    "titleEn": "The teacher's guide to formative assessment",
+    "price": "45.00"
+   },
+   {
+    "slug": "study-planner",
+    "type": "book",
+    "titleAr": "مخطط المذاكرة السنوي 2027",
+    "titleEn": "2027 annual study planner",
+    "price": "40.00"
+   }
+  ]
+ },
+ "/catalog/products/study-planner": {
+  "id": "3de0855d-d7e8-4543-9a18-2fbb8b19d453",
+  "type": "book",
+  "slug": "study-planner",
+  "titleAr": "مخطط المذاكرة السنوي 2027",
+  "titleEn": "2027 annual study planner",
+  "summaryAr": "مخطط أسبوعي وشهري مبني على تقنيات دورة المذاكرة الذكية، مع ملصقات تحفيزية.",
+  "summaryEn": "Weekly and monthly planner built on the Smart Study method, with motivational stickers.",
+  "bodyAr": null,
+  "bodyEn": null,
+  "badge": null,
+  "category": {
+   "slug": "study",
+   "nameAr": "مهارات الدراسة",
+   "nameEn": "Study skills"
+  },
+  "cover": null,
+  "seo": {
+   "titleAr": null,
+   "titleEn": null,
+   "descAr": null,
+   "descEn": null
+  },
+  "course": null,
+  "book": {
+   "authorAr": "فريق الجمعية",
+   "authorEn": "Association team",
+   "pages": 180,
+   "isbn": null,
+   "publishedYear": 2026,
+   "formats": [
+    {
+     "id": "67f6fb99-b3f7-435f-a8ae-e4aa17631272",
+     "kind": "print",
+     "sku": "BK-STUDY-PLANNE-P",
+     "price": "40.00",
+     "compareAtPrice": null,
+     "available": 500,
+     "maxQuantity": 20
+    }
+   ]
+  },
+  "cause": null,
+  "sponsorship": null,
+  "related": [
+   {
+    "slug": "science-stars-book",
+    "type": "book",
+    "titleAr": "نجوم العلوم — كتاب التجارب المنزلية",
+    "titleEn": "Science Stars — home experiments book",
+    "price": "35.00"
+   },
+   {
+    "slug": "formative-guide",
+    "type": "book",
+    "titleAr": "دليل المعلم للتقويم التكويني",
+    "titleEn": "The teacher's guide to formative assessment",
+    "price": "45.00"
+   },
+   {
+    "slug": "letters-tales",
+    "type": "book",
+    "titleAr": "حكايات الحروف",
+    "titleEn": "Letter Tales",
+    "price": "25.00"
+   }
+  ]
+ },
+ "/catalog/products/digital-teacher": {
+  "id": "e2df8c4e-a3b7-4666-bf44-065d8edfbcb0",
+  "type": "course",
+  "slug": "digital-teacher",
+  "titleAr": "المعلّم الرقمي: أدوات التعليم الإلكتروني",
+  "titleEn": "The Digital Teacher: e-learning tools",
+  "summaryAr": "دورة عملية تمكّن المعلم من تصميم درس تفاعلي كامل باستخدام أدوات مجانية، مع تقييم تكويني ومتابعة للطلاب.",
+  "summaryEn": "A hands-on course that takes a teacher from zero to a complete interactive lesson using free tools.",
+  "bodyAr": null,
+  "bodyEn": null,
+  "badge": "best",
+  "category": {
+   "slug": "teach",
+   "nameAr": "مهارات المعلم",
+   "nameEn": "Teacher skills"
+  },
+  "cover": null,
+  "seo": {
+   "titleAr": null,
+   "titleEn": null,
+   "descAr": null,
+   "descEn": null
+  },
+  "course": {
+   "price": "350.00",
+   "compareAtPrice": "450.00",
+   "lessons": 24,
+   "durationMinutes": 1080,
+   "levelAr": "مبتدئ – متوسط",
+   "levelEn": "Beginner – intermediate",
+   "instructorAr": "أ. ريم السبيعي",
+   "instructorEn": "Reem Al-Subaie",
+   "accessDays": null,
+   "learnerCount": 1240,
+   "modules": [
+    {
+     "sort": 1,
+     "titleAr": "أساسيات الفصل الافتراضي",
+     "titleEn": "Virtual classroom basics",
+     "durationSeconds": 2520
+    },
+    {
+     "sort": 2,
+     "titleAr": "تصميم درس تفاعلي في 10 دقائق",
+     "titleEn": "An interactive lesson in 10 minutes",
+     "durationSeconds": 3480
+    },
+    {
+     "sort": 3,
+     "titleAr": "التقييم التكويني الرقمي",
+     "titleEn": "Digital formative assessment",
+     "durationSeconds": 4200
+    },
+    {
+     "sort": 4,
+     "titleAr": "إدارة الصف عن بُعد",
+     "titleEn": "Remote classroom management",
+     "durationSeconds": 2940
+    },
+    {
+     "sort": 5,
+     "titleAr": "مشروع التخرج وشهادة الإتمام",
+     "titleEn": "Capstone and certificate",
+     "durationSeconds": 2100
+    }
+   ]
+  },
+  "book": null,
+  "cause": null,
+  "sponsorship": {
+   "offerId": "7415370a-585a-4340-a6ef-7fdb0b310a7e",
+   "seatPrice": "350.00",
+   "unitLabelAr": "مقعد",
+   "unitLabelEn": "seat",
+   "targetUnits": 300,
+   "fundedUnits": 184,
+   "percent": 61,
+   "donorCount": 96,
+   "groupLabelAr": "معلمات المدارس الأهلية الناشئة في القرى والهجر",
+   "groupLabelEn": "Teachers at small rural private schools",
+   "allowPartial": true,
+   "zakatEligible": false,
+   "startsAt": "2026-10-13T21:56:02.637136+00:00",
+   "endsAt": "2026-12-31T20:59:59+00:00",
+   "isOpen": true
+  },
+  "related": [
+   {
+    "slug": "smart-study",
+    "type": "course",
+    "titleAr": "مهارات المذاكرة الذكية",
+    "titleEn": "Smart study skills",
+    "price": "120.00"
+   },
+   {
+    "slug": "python-kids",
+    "type": "course",
+    "titleAr": "البرمجة للناشئين بلغة بايثون",
+    "titleEn": "Python for young coders",
+    "price": "450.00"
+   },
+   {
+    "slug": "early-childhood",
+    "type": "course",
+    "titleAr": "أساسيات التعليم في الطفولة المبكرة",
+    "titleEn": "Early-childhood teaching essentials",
+    "price": "280.00"
+   },
+   {
+    "slug": "qudrat-prep",
+    "type": "course",
+    "titleAr": "الاستعداد لاختبار القدرات العامة",
+    "titleEn": "General aptitude test prep",
+    "price": "199.00"
+   }
+  ]
+ },
+ "/catalog/products/early-childhood": {
+  "id": "332487ce-e4a5-48b8-84fe-f4dd3422924b",
+  "type": "course",
+  "slug": "early-childhood",
+  "titleAr": "أساسيات التعليم في الطفولة المبكرة",
+  "titleEn": "Early-childhood teaching essentials",
+  "summaryAr": "للمعلمات والأمهات: كيف نبني المهارات الأساسية الاثنتي عشرة من خلال اللعب والأنشطة اليومية.",
+  "summaryEn": "For teachers and mothers: building twelve core skills through play and daily routines.",
+  "bodyAr": null,
+  "bodyEn": null,
+  "badge": null,
+  "category": {
+   "slug": "kids",
+   "nameAr": "الطفولة المبكرة",
+   "nameEn": "Early childhood"
+  },
+  "cover": null,
+  "seo": {
+   "titleAr": null,
+   "titleEn": null,
+   "descAr": null,
+   "descEn": null
+  },
+  "course": {
+   "price": "280.00",
+   "compareAtPrice": null,
+   "lessons": 16,
+   "durationMinutes": 600,
+   "levelAr": "جميع المستويات",
+   "levelEn": "All levels",
+   "instructorAr": "أ. هيا الدوسري",
+   "instructorEn": "Haya Al-Dosari",
+   "accessDays": null,
+   "learnerCount": 870,
+   "modules": [
+    {
+     "sort": 1,
+     "titleAr": "المهارات الاثنتا عشرة",
+     "titleEn": "The twelve core skills",
+     "durationSeconds": 2100
+    },
+    {
+     "sort": 2,
+     "titleAr": "التعلّم باللعب",
+     "titleEn": "Learning through play",
+     "durationSeconds": 2400
+    },
+    {
+     "sort": 3,
+     "titleAr": "ركن القراءة في المنزل",
+     "titleEn": "A reading corner at home",
+     "durationSeconds": 1560
+    }
+   ]
+  },
+  "book": null,
+  "cause": null,
+  "sponsorship": {
+   "offerId": "4aa86c23-f7df-4c64-a176-5deaca15ef93",
+   "seatPrice": "280.00",
+   "unitLabelAr": "مقعد",
+   "unitLabelEn": "seat",
+   "targetUnits": 200,
+   "fundedUnits": 77,
+   "percent": 38,
+   "donorCount": 41,
+   "groupLabelAr": "أمهات مستفيدات من برامج الأسرة",
+   "groupLabelEn": "Mothers enrolled in family programs",
+   "allowPartial": true,
+   "zakatEligible": false,
+   "startsAt": "2026-10-13T21:56:02.637136+00:00",
+   "endsAt": "2026-12-31T20:59:59+00:00",
+   "isOpen": true
+  },
+  "related": [
+   {
+    "slug": "digital-teacher",
+    "type": "course",
+    "titleAr": "المعلّم الرقمي: أدوات التعليم الإلكتروني",
+    "titleEn": "The Digital Teacher: e-learning tools",
+    "price": "350.00"
+   },
+   {
+    "slug": "smart-study",
+    "type": "course",
+    "titleAr": "مهارات المذاكرة الذكية",
+    "titleEn": "Smart study skills",
+    "price": "120.00"
+   },
+   {
+    "slug": "python-kids",
+    "type": "course",
+    "titleAr": "البرمجة للناشئين بلغة بايثون",
+    "titleEn": "Python for young coders",
+    "price": "450.00"
+   },
+   {
+    "slug": "qudrat-prep",
+    "type": "course",
+    "titleAr": "الاستعداد لاختبار القدرات العامة",
+    "titleEn": "General aptitude test prep",
+    "price": "199.00"
+   }
+  ]
+ },
+ "/catalog/products/family-remote": {
+  "id": "bd3960f9-3731-45f2-b84f-9c0540fea9f5",
+  "type": "course",
+  "slug": "family-remote",
+  "titleAr": "دليل الأسرة للتعلّم عن بُعد",
+  "titleEn": "The family guide to remote learning",
+  "summaryAr": "كيف تهيّئ الأسرة بيئة تعلّم منزلية صحية، وتتابع أبناءها دون ضغط.",
+  "summaryEn": "Setting up a healthy home-learning environment and following up without pressure.",
+  "bodyAr": null,
+  "bodyEn": null,
+  "badge": null,
+  "category": {
+   "slug": "family",
+   "nameAr": "الأسرة",
+   "nameEn": "Family"
+  },
+  "cover": null,
+  "seo": {
+   "titleAr": null,
+   "titleEn": null,
+   "descAr": null,
+   "descEn": null
+  },
+  "course": {
+   "price": "90.00",
+   "compareAtPrice": null,
+   "lessons": 8,
+   "durationMinutes": 240,
+   "levelAr": "جميع المستويات",
+   "levelEn": "All levels",
+   "instructorAr": "د. منى العنزي",
+   "instructorEn": "Dr. Mona Al-Anazi",
+   "accessDays": null,
+   "learnerCount": 1520,
+   "modules": [
+    {
+     "sort": 1,
+     "titleAr": "بيئة التعلّم المنزلية",
+     "titleEn": "The home learning space",
+     "durationSeconds": 1200
+    },
+    {
+     "sort": 2,
+     "titleAr": "الروتين اليومي",
+     "titleEn": "Daily routine",
+     "durationSeconds": 1440
+    },
+    {
+     "sort": 3,
+     "titleAr": "المتابعة دون ضغط",
+     "titleEn": "Following up without pressure",
+     "durationSeconds": 1800
+    }
+   ]
+  },
+  "book": null,
+  "cause": null,
+  "sponsorship": {
+   "offerId": "26a55978-d8bf-44f9-a484-4ffb24ff6967",
+   "seatPrice": "90.00",
+   "unitLabelAr": "مقعد",
+   "unitLabelEn": "seat",
+   "targetUnits": 400,
+   "fundedUnits": 388,
+   "percent": 97,
+   "donorCount": 150,
+   "groupLabelAr": "أسر الطلاب المستفيدين",
+   "groupLabelEn": "Families of enrolled students",
+   "allowPartial": true,
+   "zakatEligible": false,
+   "startsAt": "2026-10-13T21:56:02.637136+00:00",
+   "endsAt": "2026-10-31T20:59:59+00:00",
+   "isOpen": true
+  },
+  "related": [
+   {
+    "slug": "digital-teacher",
+    "type": "course",
+    "titleAr": "المعلّم الرقمي: أدوات التعليم الإلكتروني",
+    "titleEn": "The Digital Teacher: e-learning tools",
+    "price": "350.00"
+   },
+   {
+    "slug": "smart-study",
+    "type": "course",
+    "titleAr": "مهارات المذاكرة الذكية",
+    "titleEn": "Smart study skills",
+    "price": "120.00"
+   },
+   {
+    "slug": "python-kids",
+    "type": "course",
+    "titleAr": "البرمجة للناشئين بلغة بايثون",
+    "titleEn": "Python for young coders",
+    "price": "450.00"
+   },
+   {
+    "slug": "early-childhood",
+    "type": "course",
+    "titleAr": "أساسيات التعليم في الطفولة المبكرة",
+    "titleEn": "Early-childhood teaching essentials",
+    "price": "280.00"
+   }
+  ]
+ },
+ "/catalog/products/python-kids": {
+  "id": "53aa8ed7-573c-4186-a74f-265939ac1363",
+  "type": "course",
+  "slug": "python-kids",
+  "titleAr": "البرمجة للناشئين بلغة بايثون",
+  "titleEn": "Python for young coders",
+  "summaryAr": "رحلة ممتعة من أول سطر برمجي إلى لعبة كاملة، للأعمار 10–15 سنة، بمشاريع أسبوعية قصيرة.",
+  "summaryEn": "From the first line of code to a finished game, ages 10–15, with short weekly projects.",
+  "bodyAr": null,
+  "bodyEn": null,
+  "badge": "new",
+  "category": {
+   "slug": "tech",
+   "nameAr": "التقنية في التعليم",
+   "nameEn": "EdTech"
+  },
+  "cover": null,
+  "seo": {
+   "titleAr": null,
+   "titleEn": null,
+   "descAr": null,
+   "descEn": null
+  },
+  "course": {
+   "price": "450.00",
+   "compareAtPrice": null,
+   "lessons": 30,
+   "durationMinutes": 1440,
+   "levelAr": "مبتدئ",
+   "levelEn": "Beginner",
+   "instructorAr": "م. فيصل القحطاني",
+   "instructorEn": "Faisal Al-Qahtani",
+   "accessDays": null,
+   "learnerCount": 640,
+   "modules": [
+    {
+     "sort": 1,
+     "titleAr": "مرحباً بايثون",
+     "titleEn": "Hello Python",
+     "durationSeconds": 1800
+    },
+    {
+     "sort": 2,
+     "titleAr": "المتغيرات والقرارات",
+     "titleEn": "Variables and decisions",
+     "durationSeconds": 2700
+    },
+    {
+     "sort": 3,
+     "titleAr": "الحلقات والرسم",
+     "titleEn": "Loops and drawing",
+     "durationSeconds": 3000
+    },
+    {
+     "sort": 4,
+     "titleAr": "لعبتي الأولى",
+     "titleEn": "My first game",
+     "durationSeconds": 4800
+    }
+   ]
+  },
+  "book": null,
+  "cause": null,
+  "sponsorship": {
+   "offerId": "cace5f1c-52b5-4219-807d-a26df856fda2",
+   "seatPrice": "450.00",
+   "unitLabelAr": "مقعد",
+   "unitLabelEn": "seat",
+   "targetUnits": 150,
+   "fundedUnits": 41,
+   "percent": 27,
+   "donorCount": 23,
+   "groupLabelAr": "طلاب دور الأيتام الشريكة",
+   "groupLabelEn": "Students at partner orphan-care homes",
+   "allowPartial": true,
+   "zakatEligible": false,
+   "startsAt": "2026-10-13T21:56:02.637136+00:00",
+   "endsAt": "2027-01-31T20:59:59+00:00",
+   "isOpen": true
+  },
+  "related": [
+   {
+    "slug": "digital-teacher",
+    "type": "course",
+    "titleAr": "المعلّم الرقمي: أدوات التعليم الإلكتروني",
+    "titleEn": "The Digital Teacher: e-learning tools",
+    "price": "350.00"
+   },
+   {
+    "slug": "smart-study",
+    "type": "course",
+    "titleAr": "مهارات المذاكرة الذكية",
+    "titleEn": "Smart study skills",
+    "price": "120.00"
+   },
+   {
+    "slug": "early-childhood",
+    "type": "course",
+    "titleAr": "أساسيات التعليم في الطفولة المبكرة",
+    "titleEn": "Early-childhood teaching essentials",
+    "price": "280.00"
+   },
+   {
+    "slug": "qudrat-prep",
+    "type": "course",
+    "titleAr": "الاستعداد لاختبار القدرات العامة",
+    "titleEn": "General aptitude test prep",
+    "price": "199.00"
+   }
+  ]
+ },
+ "/catalog/products/qudrat-prep": {
+  "id": "2bcb544b-7d8a-4ab2-98ca-47ca789f115e",
+  "type": "course",
+  "slug": "qudrat-prep",
+  "titleAr": "الاستعداد لاختبار القدرات العامة",
+  "titleEn": "General aptitude test prep",
+  "summaryAr": "شرح مبسّط للقسمين الكمي واللفظي مع ثلاثة اختبارات تجريبية كاملة وتحليل للأداء.",
+  "summaryEn": "Quantitative and verbal sections with three full mock tests and performance analysis.",
+  "bodyAr": null,
+  "bodyEn": null,
+  "badge": null,
+  "category": {
+   "slug": "study",
+   "nameAr": "مهارات الدراسة",
+   "nameEn": "Study skills"
+  },
+  "cover": null,
+  "seo": {
+   "titleAr": null,
+   "titleEn": null,
+   "descAr": null,
+   "descEn": null
+  },
+  "course": {
+   "price": "199.00",
+   "compareAtPrice": "249.00",
+   "lessons": 28,
+   "durationMinutes": 840,
+   "levelAr": "متوسط",
+   "levelEn": "Intermediate",
+   "instructorAr": "أ. عبدالرحمن الشهري",
+   "instructorEn": "Abdulrahman Al-Shehri",
+   "accessDays": null,
+   "learnerCount": 2150,
+   "modules": [
+    {
+     "sort": 1,
+     "titleAr": "القسم الكمي",
+     "titleEn": "Quantitative",
+     "durationSeconds": 11400
+    },
+    {
+     "sort": 2,
+     "titleAr": "القسم اللفظي",
+     "titleEn": "Verbal",
+     "durationSeconds": 9600
+    },
+    {
+     "sort": 3,
+     "titleAr": "الاختبارات التجريبية",
+     "titleEn": "Mock tests",
+     "durationSeconds": 14400
+    }
+   ]
+  },
+  "book": null,
+  "cause": null,
+  "sponsorship": null,
+  "related": [
+   {
+    "slug": "smart-study",
+    "type": "course",
+    "titleAr": "مهارات المذاكرة الذكية",
+    "titleEn": "Smart study skills",
+    "price": "120.00"
+   },
+   {
+    "slug": "digital-teacher",
+    "type": "course",
+    "titleAr": "المعلّم الرقمي: أدوات التعليم الإلكتروني",
+    "titleEn": "The Digital Teacher: e-learning tools",
+    "price": "350.00"
+   },
+   {
+    "slug": "python-kids",
+    "type": "course",
+    "titleAr": "البرمجة للناشئين بلغة بايثون",
+    "titleEn": "Python for young coders",
+    "price": "450.00"
+   },
+   {
+    "slug": "early-childhood",
+    "type": "course",
+    "titleAr": "أساسيات التعليم في الطفولة المبكرة",
+    "titleEn": "Early-childhood teaching essentials",
+    "price": "280.00"
+   }
+  ]
+ },
+ "/catalog/products/smart-study": {
+  "id": "a2d75118-ab8d-49fa-bf49-2c7453fb2336",
+  "type": "course",
+  "slug": "smart-study",
+  "titleAr": "مهارات المذاكرة الذكية",
+  "titleEn": "Smart study skills",
+  "summaryAr": "تقنيات مثبتة علمياً لتنظيم الوقت والتركيز والحفظ طويل المدى، مصمّمة لطلاب المرحلتين المتوسطة والثانوية.",
+  "summaryEn": "Evidence-based techniques for time, focus and long-term memory, for middle and high school students.",
+  "bodyAr": null,
+  "bodyEn": null,
+  "badge": null,
+  "category": {
+   "slug": "study",
+   "nameAr": "مهارات الدراسة",
+   "nameEn": "Study skills"
+  },
+  "cover": null,
+  "seo": {
+   "titleAr": null,
+   "titleEn": null,
+   "descAr": null,
+   "descEn": null
+  },
+  "course": {
+   "price": "120.00",
+   "compareAtPrice": null,
+   "lessons": 12,
+   "durationMinutes": 360,
+   "levelAr": "جميع المستويات",
+   "levelEn": "All levels",
+   "instructorAr": "د. خالد الزهراني",
+   "instructorEn": "Dr. Khalid Al-Zahrani",
+   "accessDays": null,
+   "learnerCount": 3100,
+   "modules": [
+    {
+     "sort": 1,
+     "titleAr": "كيف يعمل الدماغ عند التعلّم",
+     "titleEn": "How the brain learns",
+     "durationSeconds": 1500
+    },
+    {
+     "sort": 2,
+     "titleAr": "جدول مذاكرة واقعي",
+     "titleEn": "A realistic study plan",
+     "durationSeconds": 1860
+    },
+    {
+     "sort": 3,
+     "titleAr": "تقنية الاسترجاع النشط",
+     "titleEn": "Active recall",
+     "durationSeconds": 1680
+    },
+    {
+     "sort": 4,
+     "titleAr": "قبل الاختبار بأسبوع",
+     "titleEn": "One week before the exam",
+     "durationSeconds": 1320
+    }
+   ]
+  },
+  "book": null,
+  "cause": null,
+  "sponsorship": {
+   "offerId": "fdbd1342-894b-42dc-816b-75bf67f497c8",
+   "seatPrice": "120.00",
+   "unitLabelAr": "مقعد",
+   "unitLabelEn": "seat",
+   "targetUnits": 500,
+   "fundedUnits": 342,
+   "percent": 68,
+   "donorCount": 210,
+   "groupLabelAr": "طلاب الأسر المستفيدة من الضمان الاجتماعي",
+   "groupLabelEn": "Students from social-security families",
+   "allowPartial": true,
+   "zakatEligible": false,
+   "startsAt": "2026-10-13T21:56:02.637136+00:00",
+   "endsAt": "2026-11-30T20:59:59+00:00",
+   "isOpen": true
+  },
+  "related": [
+   {
+    "slug": "qudrat-prep",
+    "type": "course",
+    "titleAr": "الاستعداد لاختبار القدرات العامة",
+    "titleEn": "General aptitude test prep",
+    "price": "199.00"
+   },
+   {
+    "slug": "digital-teacher",
+    "type": "course",
+    "titleAr": "المعلّم الرقمي: أدوات التعليم الإلكتروني",
+    "titleEn": "The Digital Teacher: e-learning tools",
+    "price": "350.00"
+   },
+   {
+    "slug": "python-kids",
+    "type": "course",
+    "titleAr": "البرمجة للناشئين بلغة بايثون",
+    "titleEn": "Python for young coders",
+    "price": "450.00"
+   },
+   {
+    "slug": "early-childhood",
+    "type": "course",
+    "titleAr": "أساسيات التعليم في الطفولة المبكرة",
+    "titleEn": "Early-childhood teaching essentials",
+    "price": "280.00"
+   }
+  ]
+ },
+ "/catalog/live?slugs=formative-guide,letters-tales,science-stars-book,study-planner,digital-teacher,early-childhood,family-remote,python-kids,qudrat-prep,smart-study": {
+  "items": [
+   {
+    "slug": "formative-guide",
+    "price": null,
+    "compareAtPrice": null,
+    "formats": [
+     {
+      "kind": "digital",
+      "price": "45.00",
+      "available": null
+     },
+     {
+      "kind": "print",
+      "price": "85.00",
+      "available": 500
+     }
+    ],
+    "sponsorship": null,
+    "goal": null
+   },
+   {
+    "slug": "letters-tales",
+    "price": null,
+    "compareAtPrice": null,
+    "formats": [
+     {
+      "kind": "digital",
+      "price": "25.00",
+      "available": null
+     },
+     {
+      "kind": "print",
+      "price": "55.00",
+      "available": 500
+     }
+    ],
+    "sponsorship": {
+     "fundedUnits": 215,
+     "targetUnits": 600,
+     "percent": 35,
+     "donorCount": 74,
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "slug": "science-stars-book",
+    "price": null,
+    "compareAtPrice": null,
+    "formats": [
+     {
+      "kind": "digital",
+      "price": "35.00",
+      "available": null
+     },
+     {
+      "kind": "print",
+      "price": "65.00",
+      "available": 500
+     }
+    ],
+    "sponsorship": {
+     "fundedUnits": 612,
+     "targetUnits": 1000,
+     "percent": 61,
+     "donorCount": 188,
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "slug": "study-planner",
+    "price": null,
+    "compareAtPrice": null,
+    "formats": [
+     {
+      "kind": "print",
+      "price": "40.00",
+      "available": 500
+     }
+    ],
+    "sponsorship": null,
+    "goal": null
+   },
+   {
+    "slug": "digital-teacher",
+    "price": "350.00",
+    "compareAtPrice": "450.00",
+    "formats": null,
+    "sponsorship": {
+     "fundedUnits": 184,
+     "targetUnits": 300,
+     "percent": 61,
+     "donorCount": 96,
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "slug": "early-childhood",
+    "price": "280.00",
+    "compareAtPrice": null,
+    "formats": null,
+    "sponsorship": {
+     "fundedUnits": 77,
+     "targetUnits": 200,
+     "percent": 38,
+     "donorCount": 41,
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "slug": "family-remote",
+    "price": "90.00",
+    "compareAtPrice": null,
+    "formats": null,
+    "sponsorship": {
+     "fundedUnits": 388,
+     "targetUnits": 400,
+     "percent": 97,
+     "donorCount": 150,
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "slug": "python-kids",
+    "price": "450.00",
+    "compareAtPrice": null,
+    "formats": null,
+    "sponsorship": {
+     "fundedUnits": 41,
+     "targetUnits": 150,
+     "percent": 27,
+     "donorCount": 23,
+     "isOpen": true
+    },
+    "goal": null
+   },
+   {
+    "slug": "qudrat-prep",
+    "price": "199.00",
+    "compareAtPrice": "249.00",
+    "formats": null,
+    "sponsorship": null,
+    "goal": null
+   },
+   {
+    "slug": "smart-study",
+    "price": "120.00",
+    "compareAtPrice": null,
+    "formats": null,
+    "sponsorship": {
+     "fundedUnits": 342,
+     "targetUnits": 500,
+     "percent": 68,
+     "donorCount": 210,
+     "isOpen": true
+    },
+    "goal": null
+   }
+  ],
+  "asOf": "2026-10-13T22:03:41.7376129+00:00"
+ }
+}

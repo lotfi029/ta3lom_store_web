@@ -1,0 +1,5 @@
+# Client-rendered routes the a11y sweep opens without any state (one per line, locale-prefixed). Stateful screens
+# (cart with lines, checkout steps, thanks states, account tabs, admin) are checked by the e2e specs with axe
+# (e2e/support/a11y.ts) in both themes.
+/ar/does-not-exist
+/en/does-not-exist
