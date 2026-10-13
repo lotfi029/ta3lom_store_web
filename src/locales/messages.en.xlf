@@ -2,6 +2,594 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="ar" target-language="en" datatype="plaintext" original="ng2.template">
     <body>
+      <trans-unit id="store.error.validation-failed" datatype="html">
+        <source>تحقّق من الحقول المميّزة ثم أعد المحاولة.</source>
+        <target state="translated">Check the highlighted fields and try again.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.http-not-found" datatype="html">
+        <source>لم نجد ما تبحث عنه.</source>
+        <target state="translated">We couldn’t find what you’re looking for.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.http-rate-limited" datatype="html">
+        <source>طلبات كثيرة في وقت قصير. انتظر قليلًا ثم أعد المحاولة.</source>
+        <target state="translated">Too many requests. Wait a moment and try again.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.http-origin-forbidden" datatype="html">
+        <source>تعذّر إتمام الطلب من هذه الصفحة. حدّث الصفحة ثم أعد المحاولة.</source>
+        <target state="translated">This request can’t be made from this page. Reload and try again.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.http-error" datatype="html">
+        <source>تعذّر إتمام الطلب.</source>
+        <target state="translated">The request couldn’t be completed.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.server-error" datatype="html">
+        <source>حدث خطأ غير متوقع. حاول مرة أخرى لاحقًا.</source>
+        <target state="translated">Something went wrong. Please try again later.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.network-error" datatype="html">
+        <source>تعذّر الاتصال بالمتجر. تحقّق من اتصالك ثم أعد المحاولة.</source>
+        <target state="translated">Can’t reach the store. Check your connection and try again.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.auth-unauthenticated" datatype="html">
+        <source>انتهت جلستك. سجّل الدخول مرة أخرى.</source>
+        <target state="translated">Your session has ended. Please sign in again.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.auth-forbidden" datatype="html">
+        <source>صلاحياتك لا تسمح بهذا الإجراء.</source>
+        <target state="translated">Your role doesn’t allow this action.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">27</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.auth-account-blocked" datatype="html">
+        <source>هذا الحساب موقوف. تواصل مع الجمعية للمساعدة.</source>
+        <target state="translated">This account is blocked. Contact the association for help.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.auth-refresh-invalid" datatype="html">
+        <source>انتهت جلستك. سجّل الدخول مرة أخرى.</source>
+        <target state="translated">Your session has ended. Please sign in again.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.auth-refresh-expired" datatype="html">
+        <source>انتهت جلستك. سجّل الدخول مرة أخرى.</source>
+        <target state="translated">Your session has expired. Please sign in again.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">33</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.auth-refresh-reused" datatype="html">
+        <source>أُنهيت جلساتك لحمايتك. سجّل الدخول مرة أخرى.</source>
+        <target state="translated">Your sessions were ended to protect you. Please sign in again.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.auth-refresh-race" datatype="html">
+        <source>حدث تعارض في الجلسة. أعد المحاولة.</source>
+        <target state="translated">A session conflict happened. Try again.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.auth-invalid-credentials" datatype="html">
+        <source>البريد الإلكتروني أو كلمة المرور غير صحيحة.</source>
+        <target state="translated">The email or password is incorrect.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.auth-account-locked" datatype="html">
+        <source>الحساب مقفل مؤقتًا بعد محاولات كثيرة. حاول لاحقًا.</source>
+        <target state="translated">The account is locked after too many attempts. Try again later.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.auth-totp-required" datatype="html">
+        <source>أدخل رمز التحقق من تطبيق المصادقة.</source>
+        <target state="translated">Enter the code from your authenticator app.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">43</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.auth-totp-invalid" datatype="html">
+        <source>رمز التحقق غير صحيح.</source>
+        <target state="translated">The verification code is incorrect.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">45</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.auth-totp-not-enrolled" datatype="html">
+        <source>فعّل التحقق بخطوتين أولًا.</source>
+        <target state="translated">Set up two-step verification first.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">47</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.otp-mobile-invalid" datatype="html">
+        <source>أدخل رقم جوال سعودي صحيحًا يبدأ بـ 05.</source>
+        <target state="translated">Enter a valid Saudi mobile number starting with 05.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">49</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/login/otp-sign-in.ts</context>
+          <context context-type="linenumber">65</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.otp-rate-limited" datatype="html">
+        <source>طلبت رموزًا كثيرة. انتظر قليلًا ثم أعد المحاولة.</source>
+        <target state="translated">You’ve requested too many codes. Wait a little and try again.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.otp-invalid" datatype="html">
+        <source>الرمز غير صحيح.</source>
+        <target state="translated">That code is incorrect.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.otp-expired" datatype="html">
+        <source>انتهت صلاحية الرمز. اطلب رمزًا جديدًا.</source>
+        <target state="translated">The code has expired. Request a new one.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">55</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.otp-too-many-attempts" datatype="html">
+        <source>محاولات خاطئة كثيرة. اطلب رمزًا جديدًا.</source>
+        <target state="translated">Too many wrong attempts. Request a new code.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">57</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.concurrency-conflict" datatype="html">
+        <source>تغيّرت البيانات أثناء التعديل. حدّث الصفحة ثم أعد المحاولة.</source>
+        <target state="translated">The data changed while you were editing. Reload and try again.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">59</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.idempotency-key-required" datatype="html">
+        <source>تعذّر إرسال الطلب. أعد المحاولة.</source>
+        <target state="translated">The request couldn’t be sent. Try again.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">61</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.idempotency-key-reused" datatype="html">
+        <source>تعذّر إرسال الطلب. أعد المحاولة.</source>
+        <target state="translated">The request couldn’t be sent. Try again.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">63</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.idempotency-in-progress" datatype="html">
+        <source>طلبك قيد المعالجة. انتظر لحظة.</source>
+        <target state="translated">Your request is being processed. Please wait.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">65</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.catalog-product-not-found" datatype="html">
+        <source>هذا المنتج غير متاح.</source>
+        <target state="translated">This product isn’t available.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">67</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.cart-product-unavailable" datatype="html">
+        <source>هذا المنتج لم يعد متاحًا.</source>
+        <target state="translated">This product is no longer available.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">69</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.cart-mode-not-allowed" datatype="html">
+        <source>لا يمكن إضافة هذا المنتج بهذه الطريقة.</source>
+        <target state="translated">This product can’t be added this way.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">71</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.cart-quantity-limit" datatype="html">
+        <source>الكمية أكبر من الحد المسموح.</source>
+        <target state="translated">The quantity is above the allowed limit.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">73</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.cart-duplicate-course" datatype="html">
+        <source>هذه الدورة موجودة في سلتك.</source>
+        <target state="translated">This course is already in your cart.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">75</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.cart-course-owned" datatype="html">
+        <source>أنت مسجّل في هذه الدورة مسبقًا.</source>
+        <target state="translated">You’re already enrolled in this course.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">77</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.cart-course-in-unpaid-order" datatype="html">
+        <source>هذه الدورة في طلب لم يُدفع بعد.</source>
+        <target state="translated">This course is in an order that hasn’t been paid yet.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">79</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.cart-out-of-stock" datatype="html">
+        <source>الكمية المطلوبة غير متوفرة.</source>
+        <target state="translated">The requested quantity isn’t in stock.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">81</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.cart-too-many-lines" datatype="html">
+        <source>وصلت سلتك إلى الحد الأقصى من العناصر.</source>
+        <target state="translated">Your cart has reached the maximum number of items.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">83</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.cart-total-exceeded" datatype="html">
+        <source>تجاوز مجموع السلة الحد المسموح.</source>
+        <target state="translated">The cart total is above the allowed maximum.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">85</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.cart-line-not-found" datatype="html">
+        <source>هذا العنصر لم يعد في سلتك.</source>
+        <target state="translated">This item is no longer in your cart.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">87</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.checkout-cart-empty" datatype="html">
+        <source>سلتك فارغة.</source>
+        <target state="translated">Your cart is empty.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">89</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.checkout-lines-invalid" datatype="html">
+        <source>بعض عناصر السلة لم تعد متاحة. راجعها ثم أعد المحاولة.</source>
+        <target state="translated">Some items in your cart are no longer available. Review them and try again.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">91</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.checkout-price-changed" datatype="html">
+        <source>تغيّرت الأسعار منذ آخر مراجعة. راجع الملخص المحدّث.</source>
+        <target state="translated">Prices changed since you last checked. Review the updated summary.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">93</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.checkout-out-of-stock" datatype="html">
+        <source>نفدت كمية أحد الكتب أثناء الطلب.</source>
+        <target state="translated">One of the books ran out of stock while ordering.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">95</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.checkout-address-required" datatype="html">
+        <source>أدخل عنوان الشحن للكتب المطبوعة.</source>
+        <target state="translated">Enter a shipping address for the printed books.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">97</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.checkout-contact-required" datatype="html">
+        <source>أدخل الاسم والبريد الإلكتروني.</source>
+        <target state="translated">Enter your name and email.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">99</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.checkout-terms-not-accepted" datatype="html">
+        <source>يلزم الموافقة على الشروط والأحكام.</source>
+        <target state="translated">You need to accept the terms and conditions.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">101</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.checkout-payment-method-not-allowed" datatype="html">
+        <source>طريقة الدفع هذه غير متاحة.</source>
+        <target state="translated">This payment method isn’t available.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">103</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.checkout-gateway-unavailable" datatype="html">
+        <source>تعذّر بدء الدفع الآن. طلبك محفوظ؛ أعد المحاولة لاحقًا.</source>
+        <target state="translated">Payment couldn’t start right now. Your order is saved; try again later.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">105</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.order-not-found" datatype="html">
+        <source>لم نجد هذا الطلب.</source>
+        <target state="translated">We couldn’t find this order.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">107</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.order-retry-not-allowed" datatype="html">
+        <source>لا يمكن إعادة الدفع لهذا الطلب.</source>
+        <target state="translated">This order can’t be paid again.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">109</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.order-payment-window-closed" datatype="html">
+        <source>انتهت مهلة الدفع لهذا الطلب.</source>
+        <target state="translated">The payment window for this order has closed.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">111</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.order-cancel-not-allowed" datatype="html">
+        <source>لا يمكن إلغاء هذا الطلب في حالته الحالية.</source>
+        <target state="translated">This order can’t be cancelled in its current status.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">113</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.download-limit-reached" datatype="html">
+        <source>استنفدت عدد مرات التنزيل المتاحة.</source>
+        <target state="translated">You’ve used all available downloads.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">115</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.download-revoked" datatype="html">
+        <source>أُلغي حق التنزيل لهذا الكتاب.</source>
+        <target state="translated">The download right for this book was revoked.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">117</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.download-link-expired" datatype="html">
+        <source>انتهت صلاحية رابط التنزيل. اطلب رابطًا جديدًا.</source>
+        <target state="translated">The download link has expired. Request a new one.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">119</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.enrolment-not-active" datatype="html">
+        <source>التسجيل في هذه الدورة غير نشط.</source>
+        <target state="translated">The enrolment in this course isn’t active.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">121</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.document-not-found" datatype="html">
+        <source>المستند غير متوفر.</source>
+        <target state="translated">The document isn’t available.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">123</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.document-not-ready" datatype="html">
+        <source>المستند قيد الإعداد. حاول بعد قليل.</source>
+        <target state="translated">The document is being prepared. Try again shortly.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">125</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.product-slug-taken" datatype="html">
+        <source>هذا الرابط مستخدم لمنتج آخر.</source>
+        <target state="translated">This slug is used by another product.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">127</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.category-slug-taken" datatype="html">
+        <source>هذا الرابط مستخدم لتصنيف آخر.</source>
+        <target state="translated">This slug is used by another category.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">129</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.product-type-locked" datatype="html">
+        <source>لا يمكن تغيير نوع المنتج بعد أول طلب.</source>
+        <target state="translated">The product type can’t change after the first order.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">131</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.product-publish-incomplete" datatype="html">
+        <source>لا يمكن النشر قبل استكمال البيانات المطلوبة.</source>
+        <target state="translated">It can’t be published until the required details are complete.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">133</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.media-alt-required" datatype="html">
+        <source>أضف نصًا بديلًا بالعربية للصورة.</source>
+        <target state="translated">Add Arabic alt text to the image.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">135</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.media-type-not-allowed" datatype="html">
+        <source>نوع الملف غير مسموح.</source>
+        <target state="translated">This file type isn’t allowed.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">137</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.media-too-large" datatype="html">
+        <source>حجم الملف أكبر من المسموح.</source>
+        <target state="translated">The file is too large.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">139</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.stock-below-reserved" datatype="html">
+        <source>لا يمكن أن يقل المخزون عن الكمية المحجوزة.</source>
+        <target state="translated">Stock can’t go below the reserved quantity.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">141</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.shipment-invalid-transition" datatype="html">
+        <source>لا يمكن نقل الشحنة إلى هذه الحالة الآن.</source>
+        <target state="translated">The shipment can’t move to this status now.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">143</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.setting-unknown-key" datatype="html">
+        <source>هذا الإعداد غير معروف.</source>
+        <target state="translated">This setting is unknown.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">145</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.setting-invalid-value" datatype="html">
+        <source>القيمة غير صالحة لهذا الإعداد.</source>
+        <target state="translated">The value isn’t valid for this setting.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">147</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.template-render-failed" datatype="html">
+        <source>في القالب خطأ في الصياغة.</source>
+        <target state="translated">The template has a syntax error.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">149</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.staff-email-taken" datatype="html">
+        <source>هذا البريد مستخدم لموظف آخر.</source>
+        <target state="translated">This email is used by another staff member.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">151</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.fallback-server" datatype="html">
+        <source>حدث خطأ غير متوقع. حاول مرة أخرى لاحقًا.</source>
+        <target state="translated">Something went wrong. Please try again later.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">153</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.fallback" datatype="html">
+        <source>تعذّر إتمام الطلب.</source>
+        <target state="translated">The request couldn’t be completed.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">154</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="store.error.toast-server" datatype="html">
         <source>تعذّر الاتصال بالمتجر الآن. حاول مرة أخرى بعد قليل.</source>
         <target state="translated">Can’t reach the store right now. Please try again shortly.</target>
@@ -39,7 +627,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/catalog/catalog.page.ts</context>
-          <context context-type="linenumber">66</context>
+          <context context-type="linenumber">68</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
@@ -47,7 +635,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/product/product.page.ts</context>
-          <context context-type="linenumber">171</context>
+          <context context-type="linenumber">163</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
@@ -75,7 +663,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/catalog/search.page.ts</context>
-          <context context-type="linenumber">55,56</context>
+          <context context-type="linenumber">56,57</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
@@ -119,7 +707,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/catalog/search.page.ts</context>
-          <context context-type="linenumber">56,58</context>
+          <context context-type="linenumber">57,59</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
@@ -187,7 +775,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/catalog/search.page.ts</context>
-          <context context-type="linenumber">40</context>
+          <context context-type="linenumber">41</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.catalog.empty-title" datatype="html">
@@ -199,7 +787,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/catalog/search.page.ts</context>
-          <context context-type="linenumber">52,53</context>
+          <context context-type="linenumber">53,54</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.catalog.empty-lede" datatype="html">
@@ -223,7 +811,7 @@
         <target state="translated">Courses</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/catalog/catalog.page.ts</context>
-          <context context-type="linenumber">54</context>
+          <context context-type="linenumber">56</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.catalog.books-title" datatype="html">
@@ -231,7 +819,7 @@
         <target state="translated">Books</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/catalog/catalog.page.ts</context>
-          <context context-type="linenumber">54</context>
+          <context context-type="linenumber">56</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.catalog.courses-lede" datatype="html">
@@ -239,7 +827,7 @@
         <target state="translated">Practical courses from the association, at your own pace.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/catalog/catalog.page.ts</context>
-          <context context-type="linenumber">58</context>
+          <context context-type="linenumber">60</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.catalog.books-lede" datatype="html">
@@ -247,7 +835,7 @@
         <target state="translated">The association’s books: printed and shipped to you, or digital and downloaded right away from your account.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/catalog/catalog.page.ts</context>
-          <context context-type="linenumber">59</context>
+          <context context-type="linenumber">61</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.catalog.sort-newest" datatype="html">
@@ -255,7 +843,7 @@
         <target state="translated">Newest</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/catalog/catalog.page.ts</context>
-          <context context-type="linenumber">86</context>
+          <context context-type="linenumber">88</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.catalog.sort-price-asc" datatype="html">
@@ -263,7 +851,7 @@
         <target state="translated">Price: low to high</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/catalog/catalog.page.ts</context>
-          <context context-type="linenumber">88</context>
+          <context context-type="linenumber">90</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.catalog.sort-price-desc" datatype="html">
@@ -271,7 +859,7 @@
         <target state="translated">Price: high to low</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/catalog/catalog.page.ts</context>
-          <context context-type="linenumber">90</context>
+          <context context-type="linenumber">92</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.catalog.sort-featured" datatype="html">
@@ -279,7 +867,7 @@
         <target state="translated">Featured</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/catalog/catalog.page.ts</context>
-          <context context-type="linenumber">92</context>
+          <context context-type="linenumber">94</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.search.title" datatype="html">
@@ -287,15 +875,15 @@
         <target state="translated">Search the store</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/catalog/search.page.ts</context>
-          <context context-type="linenumber">20,21</context>
+          <context context-type="linenumber">21,22</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/catalog/search.page.ts</context>
-          <context context-type="linenumber">62,63</context>
+          <context context-type="linenumber">63,64</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/catalog/search.page.ts</context>
-          <context context-type="linenumber">142</context>
+          <context context-type="linenumber">143</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.search-label" datatype="html">
@@ -303,7 +891,7 @@
         <target state="translated">Search the store</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/catalog/search.page.ts</context>
-          <context context-type="linenumber">22,23</context>
+          <context context-type="linenumber">23,24</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
@@ -323,7 +911,7 @@
         <target state="translated">Search for a course or a book…</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/catalog/search.page.ts</context>
-          <context context-type="linenumber">23</context>
+          <context context-type="linenumber">24</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
@@ -343,7 +931,7 @@
         <target state="translated">Search</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/catalog/search.page.ts</context>
-          <context context-type="linenumber">24,27</context>
+          <context context-type="linenumber">25,28</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
@@ -363,7 +951,7 @@
         <target state="translated">Results for “<x id="INTERPOLATION" equiv-text="{{ query() }}"/>”: <x id="INTERPOLATION_1" equiv-text="{{ total() }}"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/catalog/search.page.ts</context>
-          <context context-type="linenumber">31,32</context>
+          <context context-type="linenumber">32,33</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.search.empty-lede" datatype="html">
@@ -371,7 +959,7 @@
         <target state="translated">Try another word, or browse courses and books.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/catalog/search.page.ts</context>
-          <context context-type="linenumber">53,54</context>
+          <context context-type="linenumber">54,55</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.search.hint" datatype="html">
@@ -379,11 +967,11 @@
         <target state="translated">Type a course or book name, or a topic, then press “Search”.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/catalog/search.page.ts</context>
-          <context context-type="linenumber">63,66</context>
+          <context context-type="linenumber">64,67</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/catalog/search.page.ts</context>
-          <context context-type="linenumber">143</context>
+          <context context-type="linenumber">144</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.home.eyebrow" datatype="html">
@@ -536,6 +1124,174 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.ts</context>
           <context context-type="linenumber">41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.login.title" datatype="html">
+        <source>تسجيل الدخول</source>
+        <target state="translated">Sign in</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/login/login.page.ts</context>
+          <context context-type="linenumber">19,20</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/login/login.page.ts</context>
+          <context context-type="linenumber">57</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.login.lede" datatype="html">
+        <source>برقم جوالك فقط — نرسل لك رمزًا برسالة نصية. أول دخول ينشئ حسابك تلقائيًا.</source>
+        <target state="translated">Just your mobile number — we’ll text you a code. Your first sign-in creates your account.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/login/login.page.ts</context>
+          <context context-type="linenumber">20,23</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/login/login.page.ts</context>
+          <context context-type="linenumber">58</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.otp.mobile-label" datatype="html">
+        <source>رقم الجوال</source>
+        <target state="translated">Mobile number</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/login/otp-sign-in.html</context>
+          <context context-type="linenumber">10,12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.otp.mobile-hint" datatype="html">
+        <source>نرسل لك رمز تحقق برسالة نصية. لا حاجة لكلمة مرور.</source>
+        <target state="translated">We’ll text you a verification code. No password needed.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/login/otp-sign-in.html</context>
+          <context context-type="linenumber">23,24</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.otp.send" datatype="html">
+        <source>أرسل الرمز</source>
+        <target state="translated">Send code</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/login/otp-sign-in.html</context>
+          <context context-type="linenumber">32,34</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.otp.sent-to" datatype="html">
+        <source>أرسلنا الرمز إلى <x id="START_TAG_BDI" ctype="x-bdi" equiv-text="&lt;bdi dir=&quot;ltr&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{ masked() }}"/><x id="CLOSE_TAG_BDI" ctype="x-bdi" equiv-text="&lt;/bdi&gt;"/></source>
+        <target state="translated">We sent the code to <x id="START_TAG_BDI" ctype="x-bdi" equiv-text="&lt;bdi dir=&quot;ltr&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{ masked() }}"/><x id="CLOSE_TAG_BDI" ctype="x-bdi" equiv-text="&lt;/bdi&gt;"/></target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/login/otp-sign-in.html</context>
+          <context context-type="linenumber">36,37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.otp.code-label" datatype="html">
+        <source>رمز التحقق</source>
+        <target state="translated">Verification code</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/login/otp-sign-in.html</context>
+          <context context-type="linenumber">38,40</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.otp.expires" datatype="html">
+        <source>ينتهي الرمز خلال <x id="START_TAG_BDI" ctype="x-bdi" equiv-text="&lt;bdi class=&quot;mono&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{ expiresLabel() }}"/><x id="CLOSE_TAG_BDI" ctype="x-bdi" equiv-text="&lt;/bdi&gt;"/></source>
+        <target state="translated">The code expires in <x id="START_TAG_BDI" ctype="x-bdi" equiv-text="&lt;bdi class=&quot;mono&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{ expiresLabel() }}"/><x id="CLOSE_TAG_BDI" ctype="x-bdi" equiv-text="&lt;/bdi&gt;"/></target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/login/otp-sign-in.html</context>
+          <context context-type="linenumber">53,54</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.otp.expired-hint" datatype="html">
+        <source>انتهت صلاحية الرمز. اطلب رمزًا جديدًا.</source>
+        <target state="translated">The code has expired. Request a new one.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/login/otp-sign-in.html</context>
+          <context context-type="linenumber">55,57</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.otp.verify" datatype="html">
+        <source>تحقّق ودخول</source>
+        <target state="translated">Verify and sign in</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/login/otp-sign-in.html</context>
+          <context context-type="linenumber">66,67</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.otp.resend-in" datatype="html">
+        <source>إعادة الإرسال بعد <x id="START_TAG_BDI" ctype="x-bdi" equiv-text="&lt;bdi class=&quot;mono&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{ resendIn() }}"/><x id="CLOSE_TAG_BDI" ctype="x-bdi" equiv-text="&lt;/bdi&gt;"/> ثانية</source>
+        <target state="translated">Resend in <x id="START_TAG_BDI" ctype="x-bdi" equiv-text="&lt;bdi class=&quot;mono&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{ resendIn() }}"/><x id="CLOSE_TAG_BDI" ctype="x-bdi" equiv-text="&lt;/bdi&gt;"/> seconds</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/login/otp-sign-in.html</context>
+          <context context-type="linenumber">70,71</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.otp.resend" datatype="html">
+        <source>أعد إرسال الرمز</source>
+        <target state="translated">Resend the code</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/login/otp-sign-in.html</context>
+          <context context-type="linenumber">72,74</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.otp.change-number" datatype="html">
+        <source>تغيير الرقم</source>
+        <target state="translated">Change number</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/login/otp-sign-in.html</context>
+          <context context-type="linenumber">75,78</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.otp.mobile-required" datatype="html">
+        <source>أدخل رقم الجوال.</source>
+        <target state="translated">Enter your mobile number.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/login/otp-sign-in.ts</context>
+          <context context-type="linenumber">63</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.otp.code-format" datatype="html">
+        <source>الرمز من 6 أرقام.</source>
+        <target state="translated">The code has 6 digits.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/login/otp-sign-in.ts</context>
+          <context context-type="linenumber">71</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.otp.sent" datatype="html">
+        <source>أرسلنا رمز التحقق إلى <x id="masked" equiv-text="this.masked()"/>.</source>
+        <target state="translated">We sent a verification code to <x id="masked" equiv-text="this.masked()"/>.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/login/otp-sign-in.ts</context>
+          <context context-type="linenumber">121</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.otp.signed-in" datatype="html">
+        <source>تم تسجيل الدخول.</source>
+        <target state="translated">You’re signed in.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/login/otp-sign-in.ts</context>
+          <context context-type="linenumber">143</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.otp.invalid-left" datatype="html">
+        <source>الرمز غير صحيح. المحاولات المتبقية: <x id="left" equiv-text="left"/>.</source>
+        <target state="translated">That code is incorrect. Attempts left: <x id="left" equiv-text="left"/>.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/login/otp-sign-in.ts</context>
+          <context context-type="linenumber">167</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.otp.wait" datatype="html">
+        <source>طلبت رموزًا كثيرة. حاول مرة أخرى بعد <x id="minutes" equiv-text="minutes"/> دقيقة.</source>
+        <target state="translated">You’ve requested too many codes. Try again in <x id="minutes" equiv-text="minutes"/> minutes.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/login/otp-sign-in.ts</context>
+          <context context-type="linenumber">172</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.otp.blocked" datatype="html">
+        <source>لا يمكن لهذا الحساب تسجيل الدخول. تواصل مع الجمعية للمساعدة.</source>
+        <target state="translated">This account can’t sign in. Contact the association for help.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/login/otp-sign-in.ts</context>
+          <context context-type="linenumber">174</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.not-found.title" datatype="html">
@@ -931,7 +1687,7 @@
         <target state="translated">You may also like</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
-          <context context-type="linenumber">140,141</context>
+          <context context-type="linenumber">138,139</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.ui.loading" datatype="html">
@@ -939,7 +1695,7 @@
         <target state="translated">Loading…</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
-          <context context-type="linenumber">151,153</context>
+          <context context-type="linenumber">149,151</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/ui/resource-state/resource-state.html</context>
@@ -1030,12 +1786,20 @@
           <context context-type="linenumber">26,28</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="store.layout.sign-out-all" datatype="html">
+        <source>الخروج من كل الأجهزة</source>
+        <target state="translated">Sign out everywhere</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/account-menu/account-menu.ts</context>
+          <context context-type="linenumber">29,31</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="store.layout.sign-out" datatype="html">
         <source>تسجيل الخروج</source>
         <target state="translated">Sign out</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/account-menu/account-menu.ts</context>
-          <context context-type="linenumber">29,31</context>
+          <context context-type="linenumber">34,36</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.logo-alt" datatype="html">

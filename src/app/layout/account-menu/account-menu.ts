@@ -25,6 +25,11 @@ import { Icon } from '../../shared/ui/icon/icon';
           <li><a routerLink="/account/orders" (click)="close()" i18n="@@store.layout.my-orders">طلباتي</a></li>
           <li><a routerLink="/account/profile" (click)="close()" i18n="@@store.layout.my-profile">الملف الشخصي</a></li>
           <li>
+            <button type="button" (click)="signOutEverywhere()">
+              <ta-icon name="logout" [size]="18" /><span i18n="@@store.layout.sign-out-all">الخروج من كل الأجهزة</span>
+            </button>
+          </li>
+          <li>
             <button type="button" (click)="signOut()">
               <ta-icon name="logout" [size]="18" /><span i18n="@@store.layout.sign-out">تسجيل الخروج</span>
             </button>
@@ -57,6 +62,17 @@ export class AccountMenu {
 
   protected close(): void {
     this.open.set(false);
+  }
+
+  /** #20: revokes every session of the customer (all devices). */
+  protected async signOutEverywhere(): Promise<void> {
+    this.open.set(false);
+    try {
+      await this.auth.logoutAll();
+    } finally {
+      await this.cart.load();
+      await this.router.navigateByUrl('/');
+    }
   }
 
   protected async signOut(): Promise<void> {

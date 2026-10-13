@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { guestOnlyGuard } from './core/guards/guards';
 import { PublicLayout } from './layout/public-layout/public-layout';
 
 /** Plan §2.2. Every path sits under /{ar,en} (the locale build's base href); there is no /store prefix (ADR-S09). */
@@ -11,6 +12,7 @@ export const routes: Routes = [
       { path: 'courses', data: { type: 'course' }, loadComponent: () => import('./features/store/catalog/catalog.page').then((m) => m.CatalogPage) },
       { path: 'books', data: { type: 'book' }, loadComponent: () => import('./features/store/catalog/catalog.page').then((m) => m.CatalogPage) },
       { path: 'search', loadComponent: () => import('./features/store/catalog/search.page').then((m) => m.SearchPage) },
+      { path: 'login', canActivate: [guestOnlyGuard], loadComponent: () => import('./features/store/login/login.page').then((m) => m.LoginPage) },
       { path: 'p/:slug', loadComponent: () => import('./features/store/product/product.page').then((m) => m.ProductPage) },
       { path: '**', loadComponent: () => import('./features/store/not-found/not-found.page').then((m) => m.NotFoundPage) },
     ],
