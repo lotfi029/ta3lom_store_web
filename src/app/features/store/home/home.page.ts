@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { SeoService } from '../../../core/seo/seo.service';
 
 /** W-00 placeholder — replaced by the real home page in W-03. */
 @Component({
@@ -10,4 +11,13 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
     </main>
   `,
 })
-export class HomePage {}
+export class HomePage {
+  private readonly seo = inject(SeoService);
+
+  constructor() {
+    this.seo.set({
+      description: $localize`:@@store.home.seo-description:دورات وكتب جمعية التعلم الإلكتروني: تسجيل فوري في الدورات، وكتب مطبوعة ورقمية.`,
+      path: '/',
+    });
+  }
+}

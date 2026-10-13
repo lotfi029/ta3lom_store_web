@@ -1,11 +1,11 @@
 # Store web progress
-Next: W-01 — Core
+Next: W-02 — Layout
 
 | Session | Status (todo/doing/done/blocked) | PR | Screens | Endpoints # | Tests (unit/e2e/a11y) | Notes |
 |---|---|---|---|---|---|---|
 | STEP 0 | done | — | — | — | — | setup READY (node 24.21, dotnet 10.0.112, PG 16); API cloned, built, migrated, on :5080 |
-| W-00 Bootstrap and tooling | doing | — | placeholder home | #3 (`fields=slug`, prerender) | 3 / 3 smoke / 28 routes × 2 themes | budgets 89 KB JS / 95 KB transfer (ar) |
-| W-01 Core | todo | | | | | |
+| W-00 Bootstrap and tooling | done | [#1](https://github.com/lotfi029/ta3lom_store_web/pull/1) | placeholder home | #3 (`fields=slug`, prerender) | 3 / 3 smoke / 28 routes × 2 themes | budgets 89 KB JS / 95 KB transfer (ar) |
+| W-01 Core | done | #2 | — (core only) | #11, #16–#20 (auth service), #47–#51 (staff auth service) | 48 / 3 smoke / 28 × 2 | money, problem → 71 r4 messages, SEO, theme, StoreAuth/StaffAuth, store-API interceptor, guards, CartSummary; 93 KB JS |
 | W-02 Layout | todo | | | | | |
 | W-03 Catalogue | todo | | | | | |
 | W-04 Sign-in | todo | | | | | |

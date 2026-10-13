@@ -57,7 +57,9 @@ if (!check) {
   writeFileSync(EN, xml);
   console.log(`i18n-merge: ${src.size} units → ${EN}${problems.length ? ` (${problems.length} to translate/review)` : ''}`);
 }
-for (const id of Object.keys(map)) if (!src.has(id)) problems.push(`${MAP} has "${id}", which no template uses — remove it`);
+// Ids authored ahead of the code that uses them (e.g. problem messages before their first screen) are only reported.
+const unused = Object.keys(map).filter((id) => !src.has(id));
+if (unused.length && !check) console.log(`i18n-merge: ${unused.length} id(s) in ${MAP} not used yet (kept): ${unused.slice(0, 5).join(', ')}${unused.length > 5 ? ' …' : ''}`);
 if (problems.length) {
   for (const p of problems) console[check ? 'error' : 'log'](`  - ${p}`);
   if (check) {
