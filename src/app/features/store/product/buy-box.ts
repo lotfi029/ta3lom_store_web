@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import type { BookFormat, ProductDetail } from '../../../core/api/api.types';
 import { toInt } from '../../../core/api/api.types';
 import { I18nService } from '../../../core/i18n/i18n';
@@ -11,7 +20,14 @@ export interface BuyRequest {
   productId: string;
   bookFormatId: string | null;
   quantity: number;
-  preview: { slug: string; type: string; titleAr: string; titleEn: string | null; unitPrice: string; formatKind: string | null };
+  preview: {
+    slug: string;
+    type: string;
+    titleAr: string;
+    titleEn: string | null;
+    unitPrice: string;
+    formatKind: string | null;
+  };
 }
 
 /**
@@ -62,12 +78,16 @@ export class BuyBox {
     const avail = printAvailable(f);
     return Math.max(1, avail === null ? cap : Math.min(cap, avail));
   });
-  protected readonly price = computed(() => (this.isBook() ? (this.selected()?.price ?? null) : this.coursePrice()));
+  protected readonly price = computed(() =>
+    this.isBook() ? (this.selected()?.price ?? null) : this.coursePrice(),
+  );
   protected readonly total = computed(() => {
     const p = this.price();
     return p ? times(p, this.isBook() ? this.qty() : 1) : null;
   });
-  protected readonly soldOut = computed(() => this.isBook() && !!this.selected() && !this.inStock(this.selected()!));
+  protected readonly soldOut = computed(
+    () => this.isBook() && !!this.selected() && !this.inStock(this.selected()!),
+  );
   protected readonly lessons = computed(() => toInt(this.product().course?.lessons));
 
   constructor() {
@@ -84,7 +104,9 @@ export class BuyBox {
   }
 
   protected formatLabel(f: BookFormat): string {
-    return f.kind === 'print' ? $localize`:@@store.card.format-print:نسخة مطبوعة` : $localize`:@@store.card.format-digital:نسخة رقمية PDF`;
+    return f.kind === 'print'
+      ? $localize`:@@store.card.format-print:نسخة مطبوعة`
+      : $localize`:@@store.card.format-digital:نسخة رقمية PDF`;
   }
 
   protected step(delta: number): void {
@@ -100,15 +122,34 @@ export class BuyBox {
     if (this.isBook()) {
       const f = this.selected();
       if (!f || !this.inStock(f)) return null;
-      return { productId: this.product().id, bookFormatId: f.id, quantity: f.kind === 'print' ? this.qty() : 1, preview: this.preview(f.price, f.kind) };
+      return {
+        productId: this.product().id,
+        bookFormatId: f.id,
+        quantity: f.kind === 'print' ? this.qty() : 1,
+        preview: this.preview(f.price, f.kind),
+      };
     }
     const price = this.coursePrice();
-    return price ? { productId: this.product().id, bookFormatId: null, quantity: 1, preview: this.preview(price, null) } : null;
+    return price
+      ? {
+          productId: this.product().id,
+          bookFormatId: null,
+          quantity: 1,
+          preview: this.preview(price, null),
+        }
+      : null;
   }
 
   private preview(unitPrice: string, formatKind: string | null): BuyRequest['preview'] {
     const p = this.product();
-    return { slug: p.slug, type: p.type, titleAr: p.titleAr, titleEn: p.titleEn, unitPrice, formatKind };
+    return {
+      slug: p.slug,
+      type: p.type,
+      titleAr: p.titleAr,
+      titleEn: p.titleEn,
+      unitPrice,
+      formatKind,
+    };
   }
 
   protected emitAdd(): void {

@@ -18,13 +18,31 @@ export interface StoreProblem {
   retryAfterSeconds: number | null;
 }
 
-const KNOWN = new Set(['type', 'title', 'status', 'detail', 'instance', 'code', 'errors', 'traceId']);
+const KNOWN = new Set([
+  'type',
+  'title',
+  'status',
+  'detail',
+  'instance',
+  'code',
+  'errors',
+  'traceId',
+]);
 
 export function toProblem(error: unknown): StoreProblem {
   if (!(error instanceof HttpErrorResponse)) {
-    return { status: 0, code: 'network.error', detail: null, errors: {}, extra: {}, retryAfterSeconds: null };
+    return {
+      status: 0,
+      code: 'network.error',
+      detail: null,
+      errors: {},
+      extra: {},
+      retryAfterSeconds: null,
+    };
   }
-  const body = (typeof error.error === 'object' && error.error !== null ? error.error : {}) as Record<string, unknown>;
+  const body = (
+    typeof error.error === 'object' && error.error !== null ? error.error : {}
+  ) as Record<string, unknown>;
   const status = error.status;
   const code =
     typeof body['code'] === 'string'
@@ -41,7 +59,9 @@ export function toProblem(error: unknown): StoreProblem {
   const errors: Record<string, string[]> = {};
   if (body['errors'] && typeof body['errors'] === 'object') {
     for (const [k, v] of Object.entries(body['errors'] as Record<string, unknown>)) {
-      errors[k.charAt(0).toLowerCase() + k.slice(1)] = Array.isArray(v) ? v.map(String) : [String(v)];
+      errors[k.charAt(0).toLowerCase() + k.slice(1)] = Array.isArray(v)
+        ? v.map(String)
+        : [String(v)];
     }
   }
   const extra: Record<string, unknown> = {};
@@ -54,6 +74,7 @@ export function toProblem(error: unknown): StoreProblem {
     detail: typeof body['detail'] === 'string' ? (body['detail'] as string) : null,
     errors,
     extra,
-    retryAfterSeconds: retry === undefined || retry === null ? null : toInt(retry as string | number, 0) || null,
+    retryAfterSeconds:
+      retry === undefined || retry === null ? null : toInt(retry as string | number, 0) || null,
   };
 }

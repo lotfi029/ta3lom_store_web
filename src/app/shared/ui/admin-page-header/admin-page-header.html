@@ -6,7 +6,13 @@
     }
   </div>
   @if (addLabel()) {
-    <ta-button type="button" variant="primary" size="sm" [disabled]="addDisabled()" (click)="add.emit()">
+    <ta-button
+      type="button"
+      variant="primary"
+      size="sm"
+      [disabled]="addDisabled()"
+      (click)="add.emit()"
+    >
       {{ addLabel() }}
     </ta-button>
   }

@@ -13,7 +13,11 @@ describe('problem → message (11 §1.6, r4)', () => {
   });
 
   it('carries no giving codes', () => {
-    expect(R4_ERROR_CODES.some((c) => /campaign|zakat|dedication|allocation|beneficiary|card\.|offer\.|cause|goal|refund/.test(c))).toBe(false);
+    expect(
+      R4_ERROR_CODES.some((c) =>
+        /campaign|zakat|dedication|allocation|beneficiary|card\.|offer\.|cause|goal|refund/.test(c),
+      ),
+    ).toBe(false);
   });
 
   it('reads code, field errors, extensions and Retry-After', () => {
@@ -21,7 +25,13 @@ describe('problem → message (11 §1.6, r4)', () => {
       new HttpErrorResponse({
         status: 429,
         headers: new HttpHeaders({ 'Retry-After': '42' }),
-        error: { code: 'otp.rate_limited', detail: 'x', errors: { Mobile: ['bad'] }, retryAfterSeconds: 30, attemptsLeft: 2 },
+        error: {
+          code: 'otp.rate_limited',
+          detail: 'x',
+          errors: { Mobile: ['bad'] },
+          retryAfterSeconds: 30,
+          attemptsLeft: 2,
+        },
       }),
     );
     expect(p.code).toBe('otp.rate_limited');

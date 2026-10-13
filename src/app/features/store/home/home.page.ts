@@ -3,7 +3,10 @@ import { Router, RouterLink } from '@angular/router';
 import { refreshAfterHydration } from '../../../core/http/refresh-after-hydration';
 import { I18nService } from '../../../core/i18n/i18n';
 import { SeoService, siteName } from '../../../core/seo/seo.service';
-import { AccordionHero, type AccordionHeroItem } from '../../../shared/ui/accordion-hero/accordion-hero';
+import {
+  AccordionHero,
+  type AccordionHeroItem,
+} from '../../../shared/ui/accordion-hero/accordion-hero';
 import { Icon } from '../../../shared/ui/icon/icon';
 import { ProductCard } from '../../../shared/ui/product-card/product-card';
 import { HomeData } from './home.data';
@@ -41,11 +44,20 @@ export class HomePage {
         description: $localize`:@@store.home.seo-description:دورات وكتب جمعية التعلم الإلكتروني: تسجيل فوري في الدورات، وكتب مطبوعة ورقمية.`,
         path: '/',
         jsonLd: [
-          { '@context': 'https://schema.org', '@type': 'WebPage', name: siteName(), url: this.seo.url(this.i18n.locale, '/') },
+          {
+            '@context': 'https://schema.org',
+            '@type': 'WebPage',
+            name: siteName(),
+            url: this.seo.url(this.i18n.locale, '/'),
+          },
           {
             '@context': 'https://schema.org',
             '@type': 'ItemList',
-            itemListElement: items.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: this.seo.url(this.i18n.locale, `/p/${p.slug}`) })),
+            itemListElement: items.map((p, i) => ({
+              '@type': 'ListItem',
+              position: i + 1,
+              url: this.seo.url(this.i18n.locale, `/p/${p.slug}`),
+            })),
           },
         ],
       });

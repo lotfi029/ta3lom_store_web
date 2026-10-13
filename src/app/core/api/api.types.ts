@@ -55,7 +55,8 @@ export type CatalogConfig = Schemas['CatalogConfigResponse'];
 
 /** r4: the storefront sells these two product types only. */
 export type StoreProductType = 'course' | 'book';
-export const isStoreProduct = (p: { type: string }): boolean => p.type === 'course' || p.type === 'book';
+export const isStoreProduct = (p: { type: string }): boolean =>
+  p.type === 'course' || p.type === 'book';
 
 // Cart (#10–#15)
 export type Cart = Schemas['CartResponse'];
@@ -66,6 +67,14 @@ export type AddCartLine = Schemas['AddCartLineRequest'];
 // Checkout (#40–#41)
 export type Quote = Schemas['QuoteResponse'];
 export type QuoteLine = Schemas['QuoteLine'];
+export type CheckoutRequest = Schemas['CheckoutRequest'];
+export type CheckoutResponse = Schemas['CheckoutResponse'];
+export type AddressInput = Schemas['AddressInput'];
+export type Address = Schemas['AddressResponse'];
+export type Profile = Schemas['ProfileResponse'];
+export type OrderStatus = Schemas['OrderStatusResponse'];
+export type StatusPurchase = Schemas['StatusPurchase'];
+export type StatusDocument = Schemas['StatusDocument'];
 
 // Account (#21–#39)
 export type Enrolment = Schemas['EnrolmentItem'];

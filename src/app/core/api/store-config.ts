@@ -14,9 +14,13 @@ import { STORE_API_URL } from './store-api-url';
 export class StoreConfig {
   private readonly api = inject(STORE_API_URL);
   private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
-  readonly resource = httpResource<CatalogConfig>(() => (this.browser ? `${this.api}/catalog/config` : undefined));
+  readonly resource = httpResource<CatalogConfig>(() =>
+    this.browser ? `${this.api}/catalog/config` : undefined,
+  );
 
-  readonly printMaxQuantity = computed(() => Number(valueOf(this.resource)?.printMaxQuantity ?? 20));
+  readonly printMaxQuantity = computed(() =>
+    Number(valueOf(this.resource)?.printMaxQuantity ?? 20),
+  );
   readonly shippingFlatFee = computed(() => valueOf(this.resource)?.shippingFlatFee ?? '25.00');
   readonly paymentMethods = computed(() => valueOf(this.resource)?.paymentMethods ?? []);
   readonly vatEnabled = computed(() => valueOf(this.resource)?.vatEnabled ?? false);

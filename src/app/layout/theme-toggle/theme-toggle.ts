@@ -8,7 +8,14 @@ import { Icon } from '../../shared/ui/icon/icon';
   imports: [Icon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <button type="button" class="theme-toggle" [class.on-dark]="onDark()" [attr.aria-pressed]="dark()" [attr.title]="label" (click)="theme.toggle()">
+    <button
+      type="button"
+      class="theme-toggle"
+      [class.on-dark]="onDark()"
+      [attr.aria-pressed]="dark()"
+      [attr.title]="label"
+      (click)="theme.toggle()"
+    >
       <ta-icon [name]="dark() ? 'sun' : 'moon'" [size]="20" />
       <span class="visually-hidden">{{ label }}</span>
     </button>

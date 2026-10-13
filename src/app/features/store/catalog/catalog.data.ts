@@ -1,12 +1,24 @@
 import { isPlatformBrowser } from '@angular/common';
 import { httpResource } from '@angular/common/http';
 import { Injectable, PLATFORM_ID, inject } from '@angular/core';
-import type { Category, LiveFigures, LiveItem, ProductCard, ProductPage, StoreProductType } from '../../../core/api/api.types';
+import type {
+  Category,
+  LiveFigures,
+  LiveItem,
+  ProductCard,
+  ProductPage,
+  StoreProductType,
+} from '../../../core/api/api.types';
 import { isStoreProduct } from '../../../core/api/api.types';
 import { STORE_API_URL } from '../../../core/api/store-api-url';
 
 export type CatalogSort = 'featured' | 'newest' | 'price_asc' | 'price_desc';
-export const CATALOG_SORTS: readonly CatalogSort[] = ['featured', 'newest', 'price_asc', 'price_desc'];
+export const CATALOG_SORTS: readonly CatalogSort[] = [
+  'featured',
+  'newest',
+  'price_asc',
+  'price_desc',
+];
 export const PAGE_SIZE = 12;
 
 export interface CatalogQuery {
@@ -36,7 +48,10 @@ export class CatalogData {
     return httpResource<ProductPage>(() => {
       const q = query();
       if (!q) return undefined;
-      const params: Record<string, string> = { pageSize: String(PAGE_SIZE), page: String(q.page ?? 1) };
+      const params: Record<string, string> = {
+        pageSize: String(PAGE_SIZE),
+        page: String(q.page ?? 1),
+      };
       if (q.type) params['type'] = q.type;
       if (q.category) params['category'] = q.category;
       if (q.sort && q.sort !== 'featured') params['sort'] = q.sort;
@@ -48,7 +63,9 @@ export class CatalogData {
   liveResource(slugs: () => string[]) {
     return httpResource<LiveFigures>(() => {
       const s = slugs();
-      return this.browser && s.length ? { url: `${this.api}/catalog/live`, params: { slugs: s.slice(0, 50).join(',') } } : undefined;
+      return this.browser && s.length
+        ? { url: `${this.api}/catalog/live`, params: { slugs: s.slice(0, 50).join(',') } }
+        : undefined;
     });
   }
 }
@@ -66,7 +83,8 @@ function computedMap(items: LiveItem[]): Map<string, LiveItem> {
   return new Map(items.map((i) => [i.slug, i]));
 }
 
-export const sortOf = (v: string | null | undefined): CatalogSort => (CATALOG_SORTS.includes(v as CatalogSort) ? (v as CatalogSort) : 'featured');
+export const sortOf = (v: string | null | undefined): CatalogSort =>
+  CATALOG_SORTS.includes(v as CatalogSort) ? (v as CatalogSort) : 'featured';
 export const pageOf = (v: string | null | undefined): number => {
   const n = Number(v);
   return Number.isInteger(n) && n > 0 ? n : 1;

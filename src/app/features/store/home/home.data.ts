@@ -19,13 +19,23 @@ export class HomeData {
   readonly categories = httpResource<Category[]>(() => `${this.api}/catalog/categories`);
   readonly catList = computed(() => valueOf(this.categories) ?? []);
 
-  readonly featured = computed(() => (valueOf(this.home)?.featured ?? []).filter(isStoreProduct).slice(0, 5));
-  readonly courses = computed(() => (valueOf(this.home)?.courses ?? []).filter(isStoreProduct).slice(0, 6));
-  readonly books = computed(() => (valueOf(this.home)?.books ?? []).filter(isStoreProduct).slice(0, 4));
+  readonly featured = computed(() =>
+    (valueOf(this.home)?.featured ?? []).filter(isStoreProduct).slice(0, 5),
+  );
+  readonly courses = computed(() =>
+    (valueOf(this.home)?.courses ?? []).filter(isStoreProduct).slice(0, 6),
+  );
+  readonly books = computed(() =>
+    (valueOf(this.home)?.books ?? []).filter(isStoreProduct).slice(0, 4),
+  );
 
   private readonly liveRes = httpResource<LiveFigures>(() => {
     const slugs = [...this.courses(), ...this.books()].map((p) => p.slug);
-    return this.browser && slugs.length ? { url: `${this.api}/catalog/live`, params: { slugs: slugs.join(',') } } : undefined;
+    return this.browser && slugs.length
+      ? { url: `${this.api}/catalog/live`, params: { slugs: slugs.join(',') } }
+      : undefined;
   });
-  readonly live = computed(() => new Map<string, LiveItem>((valueOf(this.liveRes)?.items ?? []).map((i) => [i.slug, i])));
+  readonly live = computed(
+    () => new Map<string, LiveItem>((valueOf(this.liveRes)?.items ?? []).map((i) => [i.slug, i])),
+  );
 }

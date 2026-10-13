@@ -19,13 +19,23 @@ import { Icon } from '../../../shared/ui/icon/icon';
       <div class="sheet">
         <div class="hd">
           <h2 id="share-h" i18n="@@store.share.title">مشاركة المنتج</h2>
-          <button type="button" class="x" (click)="open.set(false)" aria-label="إغلاق" i18n-aria-label="@@store.ui.toast-dismiss"><ta-icon name="close" [size]="20" /></button>
+          <button
+            type="button"
+            class="x"
+            (click)="open.set(false)"
+            aria-label="إغلاق"
+            i18n-aria-label="@@store.ui.toast-dismiss"
+          >
+            <ta-icon name="close" [size]="20" />
+          </button>
         </div>
         <ul class="ways">
           <li><a [href]="whatsapp()" target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
           <li><a [href]="xUrl()" target="_blank" rel="noopener noreferrer">X</a></li>
           <li>
-            <button type="button" (click)="copy()"><ta-icon name="copy" [size]="18" /><span i18n="@@store.share.copy">نسخ الرابط</span></button>
+            <button type="button" (click)="copy()">
+              <ta-icon name="copy" [size]="18" /><span i18n="@@store.share.copy">نسخ الرابط</span>
+            </button>
           </li>
         </ul>
       </div>
@@ -112,8 +122,13 @@ export class ShareSheet {
   readonly url = input.required<string>();
   readonly title = input.required<string>();
   protected readonly open = signal(false);
-  protected readonly whatsapp = computed(() => `https://wa.me/?text=${encodeURIComponent(`${this.title()} ${this.url()}`)}`);
-  protected readonly xUrl = computed(() => `https://x.com/intent/post?text=${encodeURIComponent(this.title())}&url=${encodeURIComponent(this.url())}`);
+  protected readonly whatsapp = computed(
+    () => `https://wa.me/?text=${encodeURIComponent(`${this.title()} ${this.url()}`)}`,
+  );
+  protected readonly xUrl = computed(
+    () =>
+      `https://x.com/intent/post?text=${encodeURIComponent(this.title())}&url=${encodeURIComponent(this.url())}`,
+  );
 
   protected async share(): Promise<void> {
     if (typeof navigator !== 'undefined' && 'share' in navigator) {

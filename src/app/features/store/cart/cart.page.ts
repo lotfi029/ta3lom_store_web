@@ -1,9 +1,18 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, untracked } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  computed,
+  effect,
+  inject,
+  untracked,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import type { CartLine, CartNotice } from '../../../core/api/api.types';
 import { toInt } from '../../../core/api/api.types';
 import { problemMessage } from '../../../core/api/problem-message';
 import { StoreConfig } from '../../../core/api/store-config';
+import { cartNoticeText } from '../../../core/cart/cart-notice-text';
 import { CartStore } from '../../../core/cart/cart-store';
 import { I18nService } from '../../../core/i18n/i18n';
 import { SeoService } from '../../../core/seo/seo.service';
@@ -45,7 +54,8 @@ export class CartPage {
     this.cart.load();
     // RUL-15: once the cart settles, ask for a quote so a moved price shows here, before checkout.
     effect(() => {
-      if (this.cart.snapshot() && this.cart.pending() === 0) untracked(() => void this.cart.checkPrices());
+      if (this.cart.snapshot() && this.cart.pending() === 0)
+        untracked(() => void this.cart.checkPrices());
     });
     inject(DestroyRef).onDestroy(() => {
       for (const t of this.timers.values()) clearTimeout(t);
@@ -70,7 +80,9 @@ export class CartPage {
     if (next === toInt(l.quantity, 1)) return;
     this.wanted.set(l.id, next);
     // Optimistic display now; one PATCH after the presses settle.
-    this.cart.lines.update((lines) => lines.map((x) => (x.id === l.id ? { ...x, quantity: next } : x)));
+    this.cart.lines.update((lines) =>
+      lines.map((x) => (x.id === l.id ? { ...x, quantity: next } : x)),
+    );
     clearTimeout(this.timers.get(l.id));
     this.timers.set(
       l.id,
@@ -96,13 +108,6 @@ export class CartPage {
   }
 
   protected noticeText(n: CartNotice): string {
-    switch (n.code) {
-      case 'cart.merge_dropped_owned_course':
-        return $localize`:@@store.cart.notice-owned:أزلنا من سلتك دورة أنت مسجّل فيها مسبقًا.`;
-      case 'cart.merge_combined':
-        return $localize`:@@store.cart.notice-combined:دمجنا عناصر متطابقة من سلتك السابقة.`;
-      default:
-        return problemMessage({ code: n.code, status: 422 });
-    }
+    return cartNoticeText(n);
   }
 }

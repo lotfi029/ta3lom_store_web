@@ -16,7 +16,12 @@ describe('catalogue query parsing', () => {
   });
 
   it('keeps courses and books only (r4)', () => {
-    const page = { items: [{ type: 'course' }, { type: 'cause' }, { type: 'book' }], total: 3, page: 1, pageSize: 12 };
+    const page = {
+      items: [{ type: 'course' }, { type: 'cause' }, { type: 'book' }],
+      total: 3,
+      page: 1,
+      pageSize: 12,
+    };
     expect(storeItems(page as never).map((p) => p.type)).toEqual(['course', 'book']);
   });
 });

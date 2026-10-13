@@ -25,23 +25,32 @@ export class ProductCard {
   readonly live = input<LiveItem | null | undefined>(null);
   readonly headingLevel = input<2 | 3>(3);
 
-  protected readonly title = computed(() => this.i18n.pick(this.product().titleAr, this.product().titleEn));
-  protected readonly summary = computed(() => this.i18n.pick(this.product().summaryAr, this.product().summaryEn));
+  protected readonly title = computed(() =>
+    this.i18n.pick(this.product().titleAr, this.product().titleEn),
+  );
+  protected readonly summary = computed(() =>
+    this.i18n.pick(this.product().summaryAr, this.product().summaryEn),
+  );
   protected readonly category = computed(() => {
     const c = this.product().category;
     return c ? this.i18n.pick(c.nameAr, c.nameEn) : null;
   });
   protected readonly isBook = computed(() => this.product().type === 'book');
-  protected readonly formatKinds = computed(() => (this.live()?.formats ?? this.product().formats ?? []).map((f) => f.kind));
+  protected readonly formatKinds = computed(() =>
+    (this.live()?.formats ?? this.product().formats ?? []).map((f) => f.kind),
+  );
   protected readonly price = computed(() => {
     const live = this.live();
     if (this.isBook()) {
       const prices = (live?.formats ?? this.product().formats ?? []).map((f) => f.price);
-      return prices.length ? prices.reduce((a, b) => (compare(a, b) <= 0 ? a : b)) : this.product().price;
+      return prices.length
+        ? prices.reduce((a, b) => (compare(a, b) <= 0 ? a : b))
+        : this.product().price;
     }
     return live?.price ?? this.product().price;
   });
-  protected readonly compareAt = computed(() => (this.isBook() ? null : (this.live()?.compareAtPrice ?? this.product().compareAtPrice)));
+  protected readonly compareAt = computed(() =>
+    this.isBook() ? null : (this.live()?.compareAtPrice ?? this.product().compareAtPrice),
+  );
   protected readonly fromPrice = computed(() => this.isBook() && this.formatKinds().length > 1);
 }
-

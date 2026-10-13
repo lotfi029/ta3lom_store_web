@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import type { CourseModule, ProductDetail } from '../../../core/api/api.types';
 import { toInt } from '../../../core/api/api.types';
@@ -54,19 +62,28 @@ export class ProductPage {
   protected readonly bodyParagraphs = computed(() => {
     const p = this.p();
     const body = p ? this.i18n.pick(p.bodyAr ?? '', p.bodyEn) : '';
-    return body.split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean);
+    return body
+      .split(/\n\s*\n/)
+      .map((s) => s.trim())
+      .filter(Boolean);
   });
   protected readonly isCourse = computed(() => this.p()?.type === 'course');
   protected readonly typePath = computed(() => (this.isCourse() ? '/courses' : '/books'));
   protected readonly typeLabel = computed(() =>
-    this.isCourse() ? $localize`:@@store.layout.nav-courses:الدورات` : $localize`:@@store.layout.nav-books:الكتب`,
+    this.isCourse()
+      ? $localize`:@@store.layout.nav-courses:الدورات`
+      : $localize`:@@store.layout.nav-books:الكتب`,
   );
   protected readonly category = computed(() => {
     const c = this.p()?.category;
     return c ? this.i18n.pick(c.nameAr, c.nameEn) : null;
   });
-  protected readonly hours = computed(() => Math.round(toInt(this.p()?.course?.durationMinutes) / 60));
-  protected readonly canonical = computed(() => this.seo.url(this.i18n.locale, `/p/${this.slug()}`));
+  protected readonly hours = computed(() =>
+    Math.round(toInt(this.p()?.course?.durationMinutes) / 60),
+  );
+  protected readonly canonical = computed(() =>
+    this.seo.url(this.i18n.locale, `/p/${this.slug()}`),
+  );
 
   constructor() {
     effect(() => this.data.slug.set(this.slug()));
@@ -97,7 +114,9 @@ export class ProductPage {
     const m = Math.floor((s % 3600) / 60);
     const sec = s % 60;
     const mm = String(m).padStart(h ? 2 : 1, '0');
-    return h ? `${h}:${mm}:${String(sec).padStart(2, '0')}` : `${mm}:${String(sec).padStart(2, '0')}`;
+    return h
+      ? `${h}:${mm}:${String(sec).padStart(2, '0')}`
+      : `${mm}:${String(sec).padStart(2, '0')}`;
   }
 
   /** The instructor's initial for the avatar, skipping a title such as "أ." or "د.". */
@@ -111,7 +130,10 @@ export class ProductPage {
 
   protected async onAdd(request: BuyRequest): Promise<void> {
     if (await this.addToCart(request)) {
-      this.toast.show($localize`:@@store.cart.added:أُضيف إلى السلة`, 'success', { label: $localize`:@@store.cart.view:عرض السلة`, path: '/cart' });
+      this.toast.show($localize`:@@store.cart.added:أُضيف إلى السلة`, 'success', {
+        label: $localize`:@@store.cart.view:عرض السلة`,
+        path: '/cart',
+      });
     }
   }
 
@@ -129,7 +151,10 @@ export class ProductPage {
         const p = this.cart.lastProblem();
         // RUL-13/RUL-14: a course already in the cart is not an error for the buyer — take them to the cart.
         if (p?.code === 'cart.duplicate_course') {
-          this.toast.show(problemMessage(p), 'info', { label: $localize`:@@store.cart.view:عرض السلة`, path: '/cart' });
+          this.toast.show(problemMessage(p), 'info', {
+            label: $localize`:@@store.cart.view:عرض السلة`,
+            path: '/cart',
+          });
           return false;
         }
         this.buyError.set(p ? problemMessage(p) : null);
@@ -162,7 +187,14 @@ export class ProductPage {
             provider: org,
             ...(p.cover ? { image: p.cover.url } : {}),
             hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online' },
-            offers: { '@type': 'Offer', price: p.course?.price, priceCurrency: 'SAR', category: 'Paid', availability: 'https://schema.org/InStock', url },
+            offers: {
+              '@type': 'Offer',
+              price: p.course?.price,
+              priceCurrency: 'SAR',
+              category: 'Paid',
+              availability: 'https://schema.org/InStock',
+              url,
+            },
           }
         : {
             '@context': 'https://schema.org',
@@ -171,7 +203,10 @@ export class ProductPage {
             description,
             url,
             inLanguage: 'ar',
-            author: { '@type': 'Organization', name: this.i18n.pick(p.book?.authorAr ?? '', p.book?.authorEn) },
+            author: {
+              '@type': 'Organization',
+              name: this.i18n.pick(p.book?.authorAr ?? '', p.book?.authorEn),
+            },
             publisher: org,
             ...(p.cover ? { image: p.cover.url } : {}),
             ...(p.book?.pages ? { numberOfPages: toInt(p.book.pages) } : {}),
@@ -182,8 +217,15 @@ export class ProductPage {
               price: f.price,
               priceCurrency: 'SAR',
               url,
-              availability: f.kind === 'print' && toInt(f.available) <= 0 ? 'https://schema.org/OutOfStock' : 'https://schema.org/InStock',
-              itemOffered: { '@type': 'Book', bookFormat: f.kind === 'print' ? 'https://schema.org/Paperback' : 'https://schema.org/EBook' },
+              availability:
+                f.kind === 'print' && toInt(f.available) <= 0
+                  ? 'https://schema.org/OutOfStock'
+                  : 'https://schema.org/InStock',
+              itemOffered: {
+                '@type': 'Book',
+                bookFormat:
+                  f.kind === 'print' ? 'https://schema.org/Paperback' : 'https://schema.org/EBook',
+              },
             })),
           };
     this.seo.set({

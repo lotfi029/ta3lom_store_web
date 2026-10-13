@@ -14,24 +14,41 @@ describe('SeoService', () => {
     const { seo, doc } = setup('en');
     seo.set({ title: 'Smart study', description: 'd', path: '/p/smart-study' });
     expect(doc.title).toBe('Smart study — متجر جمعية التعلم الإلكتروني');
-    expect(doc.querySelector('link[rel=canonical]')?.getAttribute('href')).toBe('https://store.ta3lom.sa/en/p/smart-study');
-    expect(doc.querySelector('link[hreflang=ar]')?.getAttribute('href')).toBe('https://store.ta3lom.sa/ar/p/smart-study');
-    expect(doc.querySelector('link[hreflang=x-default]')?.getAttribute('href')).toBe('https://store.ta3lom.sa/ar/p/smart-study');
+    expect(doc.querySelector('link[rel=canonical]')?.getAttribute('href')).toBe(
+      'https://store.ta3lom.sa/en/p/smart-study',
+    );
+    expect(doc.querySelector('link[hreflang=ar]')?.getAttribute('href')).toBe(
+      'https://store.ta3lom.sa/ar/p/smart-study',
+    );
+    expect(doc.querySelector('link[hreflang=x-default]')?.getAttribute('href')).toBe(
+      'https://store.ta3lom.sa/ar/p/smart-study',
+    );
     expect(doc.querySelector('meta[name=robots]')?.getAttribute('content')).toBe('index, follow');
   });
 
   it('noindex pages drop canonical, alternates and JSON-LD', () => {
     const { seo, doc } = setup();
-    seo.set({ title: 'x', description: 'd', path: '/p/x', jsonLd: { '@context': 'https://schema.org', '@type': 'Course' } });
+    seo.set({
+      title: 'x',
+      description: 'd',
+      path: '/p/x',
+      jsonLd: { '@context': 'https://schema.org', '@type': 'Course' },
+    });
     seo.set({ title: 'السلة', description: 'd', path: '/cart', noindex: true });
-    expect(doc.querySelector('meta[name=robots]')?.getAttribute('content')).toBe('noindex, nofollow');
+    expect(doc.querySelector('meta[name=robots]')?.getAttribute('content')).toBe(
+      'noindex, nofollow',
+    );
     expect(doc.querySelector('link[rel=canonical]')).toBeNull();
     expect(doc.getElementById('ta-seo-json-ld')).toBeNull();
   });
 
   it('escapes < in JSON-LD', () => {
     const { seo, doc } = setup();
-    seo.set({ description: 'd', path: '/', jsonLd: { '@context': 'https://schema.org', '@type': 'Thing', name: '</script><b>' } });
+    seo.set({
+      description: 'd',
+      path: '/',
+      jsonLd: { '@context': 'https://schema.org', '@type': 'Thing', name: '</script><b>' },
+    });
     expect(doc.getElementById('ta-seo-json-ld')?.textContent).not.toContain('</script>');
   });
 });

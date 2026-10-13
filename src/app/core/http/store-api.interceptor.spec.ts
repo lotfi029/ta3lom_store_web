@@ -37,7 +37,11 @@ describe('storeApiInterceptor (plan §6 "Interceptors")', () => {
   async function signInStaff(token: string) {
     const auth = TestBed.inject(StaffAuth);
     const p = auth.refresh();
-    ctl.expectOne(`${API}/admin/auth/refresh`).flush({ accessToken: token, expiresIn: 600, staff: { id: 's', email: 'a@b', name: 'A', roles: ['admin'], lastLoginAt: null } });
+    ctl.expectOne(`${API}/admin/auth/refresh`).flush({
+      accessToken: token,
+      expiresIn: 600,
+      staff: { id: 's', email: 'a@b', name: 'A', roles: ['admin'], lastLoginAt: null },
+    });
     await p;
   }
 
@@ -80,7 +84,9 @@ describe('storeApiInterceptor (plan §6 "Interceptors")', () => {
   it('refreshes once on 401 and retries the request once', async () => {
     await signInCustomer('OLD');
     const result = firstValueFrom(http.get<{ ok: boolean }>(`${API}/me`));
-    ctl.expectOne(`${API}/me`).flush({ code: 'auth.unauthenticated' }, { status: 401, statusText: 'x' });
+    ctl
+      .expectOne(`${API}/me`)
+      .flush({ code: 'auth.unauthenticated' }, { status: 401, statusText: 'x' });
     await new Promise((r) => setTimeout(r));
     ctl.expectOne(`${API}/auth/refresh`).flush({ accessToken: 'NEW', expiresIn: 900 });
     await new Promise((r) => setTimeout(r));

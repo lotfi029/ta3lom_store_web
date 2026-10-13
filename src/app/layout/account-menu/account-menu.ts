@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, ElementRef, HostListener, inject, signal, viewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  HostListener,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { StoreAuth } from '../../core/auth/store-auth';
 import { CartSummary } from '../../core/cart/cart-summary';
@@ -14,24 +22,49 @@ import { Icon } from '../../shared/ui/icon/icon';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="acc-menu">
-      <button #toggle type="button" class="acc-btn" [attr.aria-expanded]="open()" aria-controls="account-menu-list" (click)="open.set(!open())">
+      <button
+        #toggle
+        type="button"
+        class="acc-btn"
+        [attr.aria-expanded]="open()"
+        aria-controls="account-menu-list"
+        (click)="open.set(!open())"
+      >
         <ta-icon name="user" [size]="19" />
         <span class="lbl" i18n="@@store.layout.account">حسابي</span>
       </button>
       @if (open()) {
         <ul id="account-menu-list" class="acc-list">
-          <li><a routerLink="/account/courses" (click)="close()" i18n="@@store.layout.my-courses">دوراتي</a></li>
-          <li><a routerLink="/account/books" (click)="close()" i18n="@@store.layout.my-books">كتبي</a></li>
-          <li><a routerLink="/account/orders" (click)="close()" i18n="@@store.layout.my-orders">طلباتي</a></li>
-          <li><a routerLink="/account/profile" (click)="close()" i18n="@@store.layout.my-profile">الملف الشخصي</a></li>
+          <li>
+            <a routerLink="/account/courses" (click)="close()" i18n="@@store.layout.my-courses"
+              >دوراتي</a
+            >
+          </li>
+          <li>
+            <a routerLink="/account/books" (click)="close()" i18n="@@store.layout.my-books">كتبي</a>
+          </li>
+          <li>
+            <a routerLink="/account/orders" (click)="close()" i18n="@@store.layout.my-orders"
+              >طلباتي</a
+            >
+          </li>
+          <li>
+            <a routerLink="/account/profile" (click)="close()" i18n="@@store.layout.my-profile"
+              >الملف الشخصي</a
+            >
+          </li>
           <li>
             <button type="button" (click)="signOutEverywhere()">
-              <ta-icon name="logout" [size]="18" /><span i18n="@@store.layout.sign-out-all">الخروج من كل الأجهزة</span>
+              <ta-icon name="logout" [size]="18" /><span i18n="@@store.layout.sign-out-all"
+                >الخروج من كل الأجهزة</span
+              >
             </button>
           </li>
           <li>
             <button type="button" (click)="signOut()">
-              <ta-icon name="logout" [size]="18" /><span i18n="@@store.layout.sign-out">تسجيل الخروج</span>
+              <ta-icon name="logout" [size]="18" /><span i18n="@@store.layout.sign-out"
+                >تسجيل الخروج</span
+              >
             </button>
           </li>
         </ul>
@@ -57,7 +90,8 @@ export class AccountMenu {
 
   @HostListener('document:click', ['$event'])
   protected onDocumentClick(event: MouseEvent): void {
-    if (this.open() && !this.host.nativeElement.contains(event.target as Node)) this.open.set(false);
+    if (this.open() && !this.host.nativeElement.contains(event.target as Node))
+      this.open.set(false);
   }
 
   protected close(): void {

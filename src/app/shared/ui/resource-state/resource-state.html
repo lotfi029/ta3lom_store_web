@@ -9,7 +9,14 @@
     }
   </p>
   <p class="state-retry">
-    <ta-button type="button" variant="ghost" size="sm" (click)="retry.emit()" i18n="@@store.ui.retry">إعادة المحاولة</ta-button>
+    <ta-button
+      type="button"
+      variant="ghost"
+      size="sm"
+      (click)="retry.emit()"
+      i18n="@@store.ui.retry"
+      >إعادة المحاولة</ta-button
+    >
   </p>
 } @else {
   <ng-content />

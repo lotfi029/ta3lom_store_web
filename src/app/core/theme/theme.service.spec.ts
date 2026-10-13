@@ -11,7 +11,11 @@ function fakeMatchMedia(initial: boolean) {
     addEventListener: (_: string, l: Listener) => listeners.push(l),
   };
   // jsdom has no matchMedia at all, so it is defined rather than spied on.
-  Object.defineProperty(window, 'matchMedia', { configurable: true, writable: true, value: () => query as unknown as MediaQueryList });
+  Object.defineProperty(window, 'matchMedia', {
+    configurable: true,
+    writable: true,
+    value: () => query as unknown as MediaQueryList,
+  });
   return (matches: boolean) => listeners.forEach((l) => l({ matches }));
 }
 

@@ -3,7 +3,9 @@
     <nav class="crumbs" aria-label="مسار التنقل" i18n-aria-label="@@store.ui.breadcrumb">
       <ol>
         <li><a routerLink="/" i18n="@@store.layout.nav-home">الرئيسية</a></li>
-        <li><span aria-hidden="true">/</span><span aria-current="page">{{ heading() }}</span></li>
+        <li>
+          <span aria-hidden="true">/</span><span aria-current="page">{{ heading() }}</span>
+        </li>
       </ol>
     </nav>
     <h1>{{ heading() }}</h1>
@@ -13,8 +15,20 @@
 
 <nav class="subnav" aria-label="أقسام المتجر" i18n-aria-label="@@store.catalog.sections-label">
   <div class="wrap">
-    <a routerLink="/courses" [class.on]="type() === 'course'" [attr.aria-current]="type() === 'course' ? 'page' : null" i18n="@@store.layout.nav-courses">الدورات</a>
-    <a routerLink="/books" [class.on]="type() === 'book'" [attr.aria-current]="type() === 'book' ? 'page' : null" i18n="@@store.layout.nav-books">الكتب</a>
+    <a
+      routerLink="/courses"
+      [class.on]="type() === 'course'"
+      [attr.aria-current]="type() === 'course' ? 'page' : null"
+      i18n="@@store.layout.nav-courses"
+      >الدورات</a
+    >
+    <a
+      routerLink="/books"
+      [class.on]="type() === 'book'"
+      [attr.aria-current]="type() === 'book' ? 'page' : null"
+      i18n="@@store.layout.nav-books"
+      >الكتب</a
+    >
   </div>
 </nav>
 
@@ -22,10 +36,28 @@
   <div class="wrap">
     <h2 id="list-h" class="visually-hidden">{{ heading() }}</h2>
     <div class="toolbar">
-      <div class="filters" role="group" aria-label="التصنيفات" i18n-aria-label="@@store.catalog.categories-label">
-        <a [routerLink]="path()" [queryParams]="{ category: null, page: null }" queryParamsHandling="merge" [attr.aria-current]="!category() ? 'true' : null" i18n="@@store.catalog.all-categories">كل التصنيفات</a>
+      <div
+        class="filters"
+        role="group"
+        aria-label="التصنيفات"
+        i18n-aria-label="@@store.catalog.categories-label"
+      >
+        <a
+          [routerLink]="path()"
+          [queryParams]="{ category: null, page: null }"
+          queryParamsHandling="merge"
+          [attr.aria-current]="!category() ? 'true' : null"
+          i18n="@@store.catalog.all-categories"
+          >كل التصنيفات</a
+        >
         @for (c of catList(); track c.slug) {
-          <a [routerLink]="path()" [queryParams]="{ category: c.slug, page: null }" queryParamsHandling="merge" [attr.aria-current]="category() === c.slug ? 'true' : null">{{ categoryName(c) }}</a>
+          <a
+            [routerLink]="path()"
+            [queryParams]="{ category: c.slug, page: null }"
+            queryParamsHandling="merge"
+            [attr.aria-current]="category() === c.slug ? 'true' : null"
+            >{{ categoryName(c) }}</a
+          >
         }
       </div>
       <div class="sort">
@@ -38,7 +70,11 @@
       </div>
     </div>
 
-    <ta-resource-state [loading]="list.isLoading() && !list.hasValue()" [error]="!!list.error()" (retry)="list.reload()">
+    <ta-resource-state
+      [loading]="list.isLoading() && !list.hasValue()"
+      [error]="!!list.error()"
+      (retry)="list.reload()"
+    >
       @if (items().length > 0) {
         <ul class="cards" [class.c3]="type() === 'course'" [class.c4]="type() === 'book'">
           @for (p of items(); track p.id) {
@@ -46,12 +82,21 @@
           }
         </ul>
         @if (pages() > 1) {
-          <nav class="pager" aria-label="ترقيم الصفحات" i18n-aria-label="@@store.ui.data-table-pager-label">
+          <nav
+            class="pager"
+            aria-label="ترقيم الصفحات"
+            i18n-aria-label="@@store.ui.data-table-pager-label"
+          >
             @for (n of pageNumbers(); track n) {
               @if (n === pageValue()) {
                 <span aria-current="page">{{ n }}</span>
               } @else {
-                <a [routerLink]="path()" [queryParams]="{ page: n === 1 ? null : n }" queryParamsHandling="merge">{{ n }}</a>
+                <a
+                  [routerLink]="path()"
+                  [queryParams]="{ page: n === 1 ? null : n }"
+                  queryParamsHandling="merge"
+                  >{{ n }}</a
+                >
               }
             }
           </nav>

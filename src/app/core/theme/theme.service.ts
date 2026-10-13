@@ -54,7 +54,8 @@ export class ThemeService {
     this.preferenceState.set(preference);
     if (!this.browser) return;
     try {
-      if (preference === 'system') this.document.defaultView?.localStorage.removeItem(THEME_STORAGE_KEY);
+      if (preference === 'system')
+        this.document.defaultView?.localStorage.removeItem(THEME_STORAGE_KEY);
       else this.document.defaultView?.localStorage.setItem(THEME_STORAGE_KEY, preference);
     } catch {
       // Private mode / storage disabled: the choice still applies for this page view.

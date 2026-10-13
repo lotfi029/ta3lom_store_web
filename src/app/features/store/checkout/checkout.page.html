@@ -1,0 +1,479 @@
+<div class="ph">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="مسار التنقل" i18n-aria-label="@@store.ui.breadcrumb">
+      <ol>
+        <li><a routerLink="/" i18n="@@store.layout.nav-home">الرئيسية</a></li>
+        <li>
+          <span aria-hidden="true">/</span><a routerLink="/cart" i18n="@@store.cart.title">السلة</a>
+        </li>
+        <li>
+          <span aria-hidden="true">/</span
+          ><span aria-current="page" i18n="@@store.checkout.title">إتمام الطلب</span>
+        </li>
+      </ol>
+    </nav>
+    <h1 i18n="@@store.checkout.title">إتمام الطلب</h1>
+  </div>
+</div>
+
+<section class="cartsec">
+  <div class="wrap">
+    <ta-steps [current]="2" />
+    <ta-resource-state
+      [loading]="cart.loading()"
+      [error]="cart.loadError()"
+      (retry)="cart.reload()"
+    >
+      @if (blocked()) {
+        <div class="banner err" role="alert" i18n="@@store.otp.blocked">
+          لا يمكن لهذا الحساب تسجيل الدخول. تواصل مع الجمعية للمساعدة.
+        </div>
+      } @else if (cart.isEmpty()) {
+        <div class="empty">
+          <h2 i18n="@@store.cart.empty-title">سلتك فارغة</h2>
+          <p class="links">
+            <a class="b primary" routerLink="/courses" i18n="@@store.layout.nav-courses">الدورات</a>
+          </p>
+        </div>
+      } @else {
+        @if (cart.notices().length > 0) {
+          <div class="banner info" role="status">
+            <ul>
+              @for (n of cart.notices(); track $index) {
+                <li>{{ noticeText(n) }}</li>
+              }
+            </ul>
+          </div>
+        }
+        <div class="cgrid">
+          <div class="co-main">
+            @if (!auth.isSignedIn()) {
+              <section class="cgroup" aria-labelledby="co-id-h">
+                <h2 id="co-id-h" i18n="@@store.checkout.identity">تأكيد رقم الجوال</h2>
+                <div class="pad">
+                  <p class="lede" i18n="@@store.checkout.identity-lede">
+                    نرسل رمز تحقق إلى جوالك، ثم نكمل بياناتك. نرسل إيصال الطلب إلى الرقم نفسه.
+                  </p>
+                  <ta-otp-sign-in />
+                </div>
+              </section>
+            } @else {
+              <form class="co" (submit)="pay($event)" novalidate>
+                @if (error(); as e) {
+                  <div #errorBox class="banner err" role="alert" tabindex="-1">
+                    <p>{{ e }}</p>
+                    @if (invalidLines().length > 0) {
+                      <ul>
+                        @for (l of invalidLines(); track l.lineId) {
+                          <li>
+                            @if (lineTitle(l.lineId); as t) {
+                              <b>{{ t }}</b> —
+                            }
+                            {{ issueText(l.code) }}
+                          </li>
+                        }
+                      </ul>
+                      <a routerLink="/cart" i18n="@@store.checkout.back-to-cart"
+                        >العودة إلى السلة</a
+                      >
+                    }
+                  </div>
+                }
+                @if (priceChanged()) {
+                  <div
+                    #changedBox
+                    class="banner warn"
+                    role="alert"
+                    tabindex="-1"
+                    i18n="@@store.checkout.price-changed"
+                  >
+                    تغيّرت أسعار بعض العناصر منذ إضافتها. راجع الإجمالي الجديد ثم اضغط «ادفع» مرة
+                    أخرى.
+                  </div>
+                }
+
+                <section class="cgroup" aria-labelledby="co-details-h">
+                  <h2 id="co-details-h" i18n="@@store.checkout.details">بياناتك</h2>
+                  <div class="pad grid">
+                    <div class="row2">
+                      <div class="field">
+                        <label for="co-name" i18n="@@store.checkout.name">الاسم الكامل</label>
+                        <input
+                          id="co-name"
+                          autocomplete="name"
+                          [formField]="f.name"
+                          [attr.aria-invalid]="f.name().touched() && f.name().invalid()"
+                          aria-describedby="co-name-err"
+                        />
+                        <ul id="co-name-err" class="field-errors">
+                          @if (f.name().touched()) {
+                            @for (e of f.name().errors(); track e.kind) {
+                              <li>{{ e.message }}</li>
+                            }
+                          }
+                        </ul>
+                      </div>
+                      <div class="field">
+                        <span class="lbl" id="co-mobile-l" i18n="@@store.otp.mobile-label"
+                          >رقم الجوال</span
+                        >
+                        <p class="ro" aria-labelledby="co-mobile-l">
+                          <bdi dir="ltr">{{ auth.customer()?.mobile }}</bdi>
+                          <ta-icon name="check" [size]="16" />
+                        </p>
+                        <p class="field-hint" i18n="@@store.checkout.mobile-hint">
+                          نرسل رمز تحقق وإيصال الطلب إلى هذا الرقم
+                        </p>
+                      </div>
+                    </div>
+                    <div class="field">
+                      <label for="co-email" i18n="@@store.checkout.email">البريد الإلكتروني</label>
+                      <input
+                        id="co-email"
+                        type="email"
+                        inputmode="email"
+                        autocomplete="email"
+                        dir="ltr"
+                        [formField]="f.email"
+                        [attr.aria-invalid]="f.email().touched() && f.email().invalid()"
+                        aria-describedby="co-email-err"
+                      />
+                      <ul id="co-email-err" class="field-errors">
+                        @if (f.email().touched()) {
+                          @for (e of f.email().errors(); track e.kind) {
+                            <li>{{ e.message }}</li>
+                          }
+                        }
+                      </ul>
+                    </div>
+                  </div>
+                </section>
+
+                @if (needsAddress()) {
+                  <section class="cgroup" aria-labelledby="co-ship-h">
+                    <h2 id="co-ship-h" i18n="@@store.checkout.shipping">عنوان الشحن</h2>
+                    <div class="pad grid">
+                      @if (saved().length > 0) {
+                        <fieldset class="opts">
+                          <legend class="visually-hidden" i18n="@@store.checkout.shipping">
+                            عنوان الشحن
+                          </legend>
+                          @for (a of saved(); track a.id) {
+                            <label class="opt" [class.on]="model().savedId === a.id">
+                              <input
+                                type="radio"
+                                name="co-addr"
+                                [value]="a.id"
+                                [checked]="model().savedId === a.id"
+                                (change)="setSaved(a.id)"
+                              />
+                              <span>{{ addressLabel(a) }}</span>
+                            </label>
+                          }
+                          <label class="opt" [class.on]="model().savedId === 'new'">
+                            <input
+                              type="radio"
+                              name="co-addr"
+                              value="new"
+                              [checked]="model().savedId === 'new'"
+                              (change)="setSaved('new')"
+                            />
+                            <span i18n="@@store.checkout.new-address">عنوان جديد</span>
+                          </label>
+                        </fieldset>
+                      }
+                      @if (newAddress()) {
+                        <div class="row2">
+                          <div class="field">
+                            <label for="co-rname" i18n="@@store.checkout.recipient"
+                              >اسم المستلم</label
+                            >
+                            <input
+                              id="co-rname"
+                              autocomplete="shipping name"
+                              [formField]="f.address.recipientName"
+                              [attr.aria-invalid]="
+                                f.address.recipientName().touched() &&
+                                f.address.recipientName().invalid()
+                              "
+                              aria-describedby="co-rname-err"
+                            />
+                            <ul id="co-rname-err" class="field-errors">
+                              @if (f.address.recipientName().touched()) {
+                                @for (e of f.address.recipientName().errors(); track e.kind) {
+                                  <li>{{ e.message }}</li>
+                                }
+                              }
+                            </ul>
+                          </div>
+                          <div class="field">
+                            <label for="co-rmobile" i18n="@@store.checkout.recipient-mobile"
+                              >جوال المستلم</label
+                            >
+                            <input
+                              id="co-rmobile"
+                              type="tel"
+                              inputmode="tel"
+                              autocomplete="shipping tel-national"
+                              dir="ltr"
+                              placeholder="05XXXXXXXX"
+                              [formField]="f.address.recipientMobile"
+                              [attr.aria-invalid]="
+                                f.address.recipientMobile().touched() &&
+                                f.address.recipientMobile().invalid()
+                              "
+                              aria-describedby="co-rmobile-err"
+                            />
+                            <ul id="co-rmobile-err" class="field-errors">
+                              @if (f.address.recipientMobile().touched()) {
+                                @for (e of f.address.recipientMobile().errors(); track e.kind) {
+                                  <li>{{ e.message }}</li>
+                                }
+                              }
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="row2">
+                          <div class="field">
+                            <label for="co-city" i18n="@@store.checkout.city">المدينة</label>
+                            <input
+                              id="co-city"
+                              autocomplete="shipping address-level2"
+                              [formField]="f.address.city"
+                              [attr.aria-invalid]="
+                                f.address.city().touched() && f.address.city().invalid()
+                              "
+                              aria-describedby="co-city-err"
+                            />
+                            <ul id="co-city-err" class="field-errors">
+                              @if (f.address.city().touched()) {
+                                @for (e of f.address.city().errors(); track e.kind) {
+                                  <li>{{ e.message }}</li>
+                                }
+                              }
+                            </ul>
+                          </div>
+                          <div class="field">
+                            <label for="co-short" i18n="@@store.checkout.short-address"
+                              >العنوان الوطني المختصر</label
+                            >
+                            <input
+                              id="co-short"
+                              dir="ltr"
+                              autocomplete="off"
+                              autocapitalize="characters"
+                              placeholder="RRRD2929"
+                              [formField]="f.address.shortAddress"
+                              [attr.aria-invalid]="
+                                f.address.shortAddress().touched() &&
+                                f.address.shortAddress().invalid()
+                              "
+                              aria-describedby="co-short-hint co-short-err"
+                            />
+                            <p
+                              id="co-short-hint"
+                              class="field-hint"
+                              i18n="@@store.checkout.short-address-hint"
+                            >
+                              أربعة أحرف ثم أربعة أرقام، من تطبيق «العنوان الوطني».
+                            </p>
+                            <ul id="co-short-err" class="field-errors">
+                              @if (f.address.shortAddress().touched()) {
+                                @for (e of f.address.shortAddress().errors(); track e.kind) {
+                                  <li>{{ e.message }}</li>
+                                }
+                              }
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="row2">
+                          <div class="field">
+                            <label for="co-district" i18n="@@store.checkout.district"
+                              >الحي (اختياري)</label
+                            >
+                            <input
+                              id="co-district"
+                              autocomplete="shipping address-level3"
+                              [formField]="f.address.district"
+                            />
+                          </div>
+                          <div class="field">
+                            <label for="co-street" i18n="@@store.checkout.street"
+                              >الشارع (اختياري)</label
+                            >
+                            <input
+                              id="co-street"
+                              autocomplete="shipping address-line1"
+                              [formField]="f.address.street"
+                            />
+                          </div>
+                        </div>
+                        <div class="row2">
+                          <div class="field">
+                            <label for="co-building" i18n="@@store.checkout.building"
+                              >رقم المبنى (اختياري)</label
+                            >
+                            <input
+                              id="co-building"
+                              inputmode="numeric"
+                              dir="ltr"
+                              [formField]="f.address.buildingNo"
+                            />
+                          </div>
+                          <div class="field">
+                            <label for="co-postal" i18n="@@store.checkout.postal-code"
+                              >الرمز البريدي (اختياري)</label
+                            >
+                            <input
+                              id="co-postal"
+                              inputmode="numeric"
+                              dir="ltr"
+                              autocomplete="shipping postal-code"
+                              [formField]="f.address.postalCode"
+                              [attr.aria-invalid]="
+                                f.address.postalCode().touched() && f.address.postalCode().invalid()
+                              "
+                              aria-describedby="co-postal-err"
+                            />
+                            <ul id="co-postal-err" class="field-errors">
+                              @if (f.address.postalCode().touched()) {
+                                @for (e of f.address.postalCode().errors(); track e.kind) {
+                                  <li>{{ e.message }}</li>
+                                }
+                              }
+                            </ul>
+                          </div>
+                        </div>
+                        <label class="chk">
+                          <input
+                            type="checkbox"
+                            [checked]="model().saveAddress"
+                            (change)="setSaveAddress($event)"
+                          />
+                          <span i18n="@@store.checkout.save-address"
+                            >احفظ العنوان لطلباتي القادمة</span
+                          >
+                        </label>
+                      }
+                      <p class="note" i18n="@@store.cart.shipping-note">
+                        رسوم شحن واحدة للطلب عند وجود كتب مطبوعة، داخل المملكة.
+                      </p>
+                    </div>
+                  </section>
+                }
+
+                <section class="cgroup" aria-labelledby="co-pay-h">
+                  <h2 id="co-pay-h" i18n="@@store.checkout.payment">طريقة الدفع</h2>
+                  <div class="pad">
+                    <fieldset class="paygrid">
+                      <legend class="visually-hidden" i18n="@@store.checkout.payment">
+                        طريقة الدفع
+                      </legend>
+                      @for (m of methods(); track m) {
+                        <label class="opt" [class.on]="model().method === m">
+                          <input
+                            type="radio"
+                            name="co-pay"
+                            [value]="m"
+                            [checked]="model().method === m"
+                            (change)="setMethod(m)"
+                          />
+                          <span>{{ methodLabel(m) }}</span>
+                        </label>
+                      }
+                    </fieldset>
+                    <p class="note" i18n="@@store.checkout.payment-note">
+                      تُكمل الدفع في صفحة بوابة الدفع الآمنة. لا نحفظ بيانات بطاقتك.
+                    </p>
+                  </div>
+                </section>
+
+                <div class="field terms">
+                  <label class="chk">
+                    <input
+                      id="co-terms"
+                      type="checkbox"
+                      [checked]="model().acceptTerms"
+                      (change)="setTerms($event)"
+                      [attr.aria-invalid]="f.acceptTerms().touched() && f.acceptTerms().invalid()"
+                      aria-describedby="co-terms-err"
+                    />
+                    <span i18n="@@store.checkout.terms"
+                      >أوافق على الشروط والأحكام وسياسة الاسترجاع</span
+                    >
+                  </label>
+                  <ul id="co-terms-err" class="field-errors">
+                    @if (f.acceptTerms().touched()) {
+                      @for (e of f.acceptTerms().errors(); track e.kind) {
+                        <li>{{ e.message }}</li>
+                      }
+                    }
+                  </ul>
+                </div>
+
+                <button
+                  type="submit"
+                  class="b cta pay-btn"
+                  [disabled]="busy() || redirecting()"
+                  [attr.aria-busy]="busy()"
+                >
+                  <ta-icon name="lock" [size]="18" />
+                  @if (redirecting()) {
+                    <span i18n="@@store.checkout.redirecting">جارٍ التحويل…</span>
+                  } @else {
+                    <span>{{ payLabel() }}</span>
+                  }
+                </button>
+              </form>
+            }
+          </div>
+
+          <aside class="sumbox" aria-labelledby="co-sum-h">
+            <h2 id="co-sum-h" i18n="@@store.cart.summary">ملخص الطلب</h2>
+            <ul class="sumlines">
+              @for (l of cart.lines(); track l.id) {
+                <li [class.changed]="lineChanged(l)">
+                  <span class="t"
+                    >{{ title(l) }}
+                    @if (qty(l) > 1) {
+                      <bdi>× {{ qty(l) }}</bdi>
+                    }
+                  </span>
+                  <b><ta-money [value]="lineAmount(l)" /></b>
+                </li>
+              }
+            </ul>
+            <div class="r">
+              @if (config.vatEnabled()) {
+                <span i18n="@@store.cart.purchases-vat">المشتريات (شاملة الضريبة)</span>
+              } @else {
+                <span i18n="@@store.cart.purchases">المشتريات</span>
+              }
+              <b><ta-money [value]="totals().purchases" /></b>
+            </div>
+            @if (totals().requiresShipping) {
+              <div class="r">
+                <span i18n="@@store.cart.shipping">الشحن</span>
+                <b><ta-money [value]="totals().shipping" /></b>
+              </div>
+            }
+            <div class="r t">
+              <span i18n="@@store.cart.total">الإجمالي</span>
+              <b aria-live="polite"><ta-money [value]="totals().grand" /></b>
+            </div>
+            <ul
+              class="pay"
+              aria-label="طرق الدفع المقبولة"
+              i18n-aria-label="@@store.layout.footer-payments"
+            >
+              <li>mada</li>
+              <li>Apple Pay</li>
+              <li>VISA</li>
+              <li>STC Pay</li>
+            </ul>
+          </aside>
+        </div>
+      }
+    </ta-resource-state>
+  </div>
+</section>

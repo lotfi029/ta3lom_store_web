@@ -1,11 +1,21 @@
 <ng-template #body><ng-content /></ng-template>
 
 @if (routerLink()) {
-  <a class="card link" [class.white]="variant() === 'white'" [class.tint]="variant() === 'tint'" [routerLink]="routerLink()">
+  <a
+    class="card link"
+    [class.white]="variant() === 'white'"
+    [class.tint]="variant() === 'tint'"
+    [routerLink]="routerLink()"
+  >
     <ng-container [ngTemplateOutlet]="body" />
   </a>
 } @else if (href()) {
-  <a class="card link" [class.white]="variant() === 'white'" [class.tint]="variant() === 'tint'" [href]="href()">
+  <a
+    class="card link"
+    [class.white]="variant() === 'white'"
+    [class.tint]="variant() === 'tint'"
+    [href]="href()"
+  >
     <ng-container [ngTemplateOutlet]="body" />
   </a>
 } @else {

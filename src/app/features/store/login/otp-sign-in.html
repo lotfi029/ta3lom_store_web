@@ -20,7 +20,9 @@
           [attr.aria-invalid]="mobileForm.mobile().touched() && mobileForm.mobile().invalid()"
           aria-describedby="otp-mobile-hint otp-mobile-errors"
         />
-        <p id="otp-mobile-hint" class="field-hint" i18n="@@store.otp.mobile-hint">نرسل لك رمز تحقق برسالة نصية. لا حاجة لكلمة مرور.</p>
+        <p id="otp-mobile-hint" class="field-hint" i18n="@@store.otp.mobile-hint">
+          نرسل لك رمز تحقق برسالة نصية. لا حاجة لكلمة مرور.
+        </p>
         <ul id="otp-mobile-errors" class="field-errors">
           @if (mobileForm.mobile().touched()) {
             @for (e of mobileForm.mobile().errors(); track e.kind) {
@@ -29,11 +31,21 @@
           }
         </ul>
       </div>
-      <button type="submit" class="go" [attr.aria-busy]="busy()" [disabled]="busy()" i18n="@@store.otp.send">أرسل الرمز</button>
+      <button
+        type="submit"
+        class="go"
+        [attr.aria-busy]="busy()"
+        [disabled]="busy()"
+        i18n="@@store.otp.send"
+      >
+        أرسل الرمز
+      </button>
     </form>
   } @else {
     <form class="otp-form" (submit)="verify($event)" novalidate>
-      <p class="sent" i18n="@@store.otp.sent-to">أرسلنا الرمز إلى <bdi dir="ltr">{{ masked() }}</bdi></p>
+      <p class="sent" i18n="@@store.otp.sent-to">
+        أرسلنا الرمز إلى <bdi dir="ltr">{{ masked() }}</bdi>
+      </p>
       <div class="field">
         <label for="otp-code" i18n="@@store.otp.code-label">رمز التحقق</label>
         <input
@@ -50,9 +62,13 @@
         />
         <p id="otp-code-hint" class="field-hint">
           @if (expiresIn() > 0) {
-            <ng-container i18n="@@store.otp.expires">ينتهي الرمز خلال <bdi class="mono">{{ expiresLabel() }}</bdi></ng-container>
+            <ng-container i18n="@@store.otp.expires"
+              >ينتهي الرمز خلال <bdi class="mono">{{ expiresLabel() }}</bdi></ng-container
+            >
           } @else {
-            <ng-container i18n="@@store.otp.expired-hint">انتهت صلاحية الرمز. اطلب رمزًا جديدًا.</ng-container>
+            <ng-container i18n="@@store.otp.expired-hint"
+              >انتهت صلاحية الرمز. اطلب رمزًا جديدًا.</ng-container
+            >
           }
         </p>
         <ul id="otp-code-errors" class="field-errors">
@@ -63,16 +79,38 @@
           }
         </ul>
       </div>
-      <button type="submit" class="go" [attr.aria-busy]="busy()" [disabled]="busy()" i18n="@@store.otp.verify">تحقّق ودخول</button>
+      <button
+        type="submit"
+        class="go"
+        [attr.aria-busy]="busy()"
+        [disabled]="busy()"
+        i18n="@@store.otp.verify"
+      >
+        تحقّق ودخول
+      </button>
       <div class="row">
-        <button type="button" class="link" (click)="requestCode()" [disabled]="resendIn() > 0 || busy()">
+        <button
+          type="button"
+          class="link"
+          (click)="requestCode()"
+          [disabled]="resendIn() > 0 || busy()"
+        >
           @if (resendIn() > 0) {
-            <ng-container i18n="@@store.otp.resend-in">إعادة الإرسال بعد <bdi class="mono">{{ resendIn() }}</bdi> ثانية</ng-container>
+            <ng-container i18n="@@store.otp.resend-in"
+              >إعادة الإرسال بعد <bdi class="mono">{{ resendIn() }}</bdi> ثانية</ng-container
+            >
           } @else {
             <ng-container i18n="@@store.otp.resend">أعد إرسال الرمز</ng-container>
           }
         </button>
-        <button type="button" class="link" (click)="changeNumber()" i18n="@@store.otp.change-number">تغيير الرقم</button>
+        <button
+          type="button"
+          class="link"
+          (click)="changeNumber()"
+          i18n="@@store.otp.change-number"
+        >
+          تغيير الرقم
+        </button>
       </div>
     </form>
   }

@@ -27,7 +27,12 @@ interface Row {
   `,
 })
 class TestHost {
-  readonly data = signal<PagedData<Row>>({ items: [{ id: 'a', name: 'A' }], total: 3, page: 1, pageSize: 1 });
+  readonly data = signal<PagedData<Row>>({
+    items: [{ id: 'a', name: 'A' }],
+    total: 3,
+    page: 1,
+    pageSize: 1,
+  });
   readonly lastPageChange = signal<number | null>(null);
 }
 
@@ -41,7 +46,9 @@ function setup() {
 describe('DataTable pagination', () => {
   it('emits page + 1 when Next is clicked', () => {
     const fixture = setup();
-    const buttons: HTMLButtonElement[] = Array.from(fixture.nativeElement.querySelectorAll('.pager-btn'));
+    const buttons: HTMLButtonElement[] = Array.from(
+      fixture.nativeElement.querySelectorAll('.pager-btn'),
+    );
     const next = buttons[1];
 
     next.click();
@@ -52,10 +59,17 @@ describe('DataTable pagination', () => {
 
   it('emits page - 1 when Prev is clicked', () => {
     const fixture = setup();
-    fixture.componentInstance.data.set({ items: [{ id: 'b', name: 'B' }], total: 3, page: 2, pageSize: 1 });
+    fixture.componentInstance.data.set({
+      items: [{ id: 'b', name: 'B' }],
+      total: 3,
+      page: 2,
+      pageSize: 1,
+    });
     fixture.detectChanges();
 
-    const buttons: HTMLButtonElement[] = Array.from(fixture.nativeElement.querySelectorAll('.pager-btn'));
+    const buttons: HTMLButtonElement[] = Array.from(
+      fixture.nativeElement.querySelectorAll('.pager-btn'),
+    );
     buttons[0].click(); // Prev
     fixture.detectChanges();
 
@@ -64,20 +78,34 @@ describe('DataTable pagination', () => {
 
   it('disables Prev on page 1 and Next on the last page', () => {
     const fixture = setup(); // page 1 of 3
-    const buttons: HTMLButtonElement[] = Array.from(fixture.nativeElement.querySelectorAll('.pager-btn'));
+    const buttons: HTMLButtonElement[] = Array.from(
+      fixture.nativeElement.querySelectorAll('.pager-btn'),
+    );
     expect(buttons[0].disabled).toBe(true); // Prev
     expect(buttons[1].disabled).toBe(false); // Next
 
-    fixture.componentInstance.data.set({ items: [{ id: 'c', name: 'C' }], total: 3, page: 3, pageSize: 1 });
+    fixture.componentInstance.data.set({
+      items: [{ id: 'c', name: 'C' }],
+      total: 3,
+      page: 3,
+      pageSize: 1,
+    });
     fixture.detectChanges();
-    const buttonsAtEnd: HTMLButtonElement[] = Array.from(fixture.nativeElement.querySelectorAll('.pager-btn'));
+    const buttonsAtEnd: HTMLButtonElement[] = Array.from(
+      fixture.nativeElement.querySelectorAll('.pager-btn'),
+    );
     expect(buttonsAtEnd[0].disabled).toBe(false); // Prev
     expect(buttonsAtEnd[1].disabled).toBe(true); // Next
   });
 
   it('falls back to a coherent page count instead of Infinity when size is 0', () => {
     const fixture = setup();
-    fixture.componentInstance.data.set({ items: [{ id: 'd', name: 'D' }], total: 5, page: 1, pageSize: 0 });
+    fixture.componentInstance.data.set({
+      items: [{ id: 'd', name: 'D' }],
+      total: 5,
+      page: 1,
+      pageSize: 0,
+    });
     fixture.detectChanges();
 
     const status = fixture.nativeElement.querySelector('.pager-status');

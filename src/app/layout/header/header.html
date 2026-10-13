@@ -1,7 +1,9 @@
 <header class="hdr" [class.scrolled]="scrolled()">
   <div class="wrap">
     <a class="brand" [href]="mainSite">
-      <svg class="mark" viewBox="380 320 1250 1060" aria-hidden="true" focusable="false"><use href="logo.svg#logo-src" /></svg>
+      <svg class="mark" viewBox="380 320 1250 1060" aria-hidden="true" focusable="false">
+        <use href="logo.svg#logo-src" />
+      </svg>
       <span class="nm">
         <ng-container i18n="@@store.layout.association">جمعية التعلم الإلكتروني</ng-container>
         <span class="sub" i18n="@@store.layout.store-tagline">المتجر · دورات وكتب</span>
@@ -9,14 +11,43 @@
     </a>
 
     <nav class="nav" aria-label="المتجر" i18n-aria-label="@@store.layout.nav-label">
-      <a routerLink="/" routerLinkActive="on" [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page" i18n="@@store.layout.nav-home">الرئيسية</a>
-      <a routerLink="/courses" routerLinkActive="on" ariaCurrentWhenActive="page" i18n="@@store.layout.nav-courses">الدورات</a>
-      <a routerLink="/books" routerLinkActive="on" ariaCurrentWhenActive="page" i18n="@@store.layout.nav-books">الكتب</a>
+      <a
+        routerLink="/"
+        routerLinkActive="on"
+        [routerLinkActiveOptions]="{ exact: true }"
+        ariaCurrentWhenActive="page"
+        i18n="@@store.layout.nav-home"
+        >الرئيسية</a
+      >
+      <a
+        routerLink="/courses"
+        routerLinkActive="on"
+        ariaCurrentWhenActive="page"
+        i18n="@@store.layout.nav-courses"
+        >الدورات</a
+      >
+      <a
+        routerLink="/books"
+        routerLinkActive="on"
+        ariaCurrentWhenActive="page"
+        i18n="@@store.layout.nav-books"
+        >الكتب</a
+      >
     </nav>
 
     <form class="hsearch" role="search" (submit)="search($event, q)">
-      <label class="visually-hidden" for="hdr-q" i18n="@@store.layout.search-label">ابحث في المتجر</label>
-      <input #q id="hdr-q" name="q" type="search" placeholder="ابحث عن دورة أو كتاب…" i18n-placeholder="@@store.layout.search-placeholder" autocomplete="off" />
+      <label class="visually-hidden" for="hdr-q" i18n="@@store.layout.search-label"
+        >ابحث في المتجر</label
+      >
+      <input
+        #q
+        id="hdr-q"
+        name="q"
+        type="search"
+        placeholder="ابحث عن دورة أو كتاب…"
+        i18n-placeholder="@@store.layout.search-placeholder"
+        autocomplete="off"
+      />
       <button type="submit" class="hsearch-btn">
         <ta-icon name="search" [size]="18" />
         <span class="visually-hidden" i18n="@@store.layout.search-submit">بحث</span>
@@ -24,7 +55,11 @@
     </form>
 
     <div class="acts">
-      <a class="backsite" [href]="mainSite"><ta-icon name="arrow" [size]="14" /><span i18n="@@store.layout.main-site">الموقع الرئيسي</span></a>
+      <a class="backsite" [href]="mainSite"
+        ><ta-icon name="arrow" [size]="14" /><span i18n="@@store.layout.main-site"
+          >الموقع الرئيسي</span
+        ></a
+      >
       <ta-lang-switch />
       <ta-theme-toggle />
       <a class="cartbtn" routerLink="/cart" [class.bump]="bump()" [attr.aria-label]="cartLabel()">
@@ -36,32 +71,89 @@
       @if (auth.isSignedIn()) {
         <ta-account-menu />
       } @else {
-        <a class="signin" routerLink="/login"><ta-icon name="user" [size]="19" class="signin-ic" /><span class="lbl" i18n="@@store.layout.sign-in">دخول</span></a>
+        <a class="signin" routerLink="/login"
+          ><ta-icon name="user" [size]="19" class="signin-ic" /><span
+            class="lbl"
+            i18n="@@store.layout.sign-in"
+            >دخول</span
+          ></a
+        >
       }
-      <button #burger type="button" class="burger" [attr.aria-expanded]="mobileOpen()" aria-controls="mobile-nav" (click)="mobileOpen.set(!mobileOpen())">
+      <button
+        #burger
+        type="button"
+        class="burger"
+        [attr.aria-expanded]="mobileOpen()"
+        aria-controls="mobile-nav"
+        (click)="mobileOpen.set(!mobileOpen())"
+      >
         <span></span><span></span><span></span>
         <span class="visually-hidden" i18n="@@store.layout.menu">القائمة</span>
       </button>
     </div>
   </div>
 
-  <nav id="mobile-nav" class="mnav" [hidden]="!mobileOpen()" aria-label="القائمة على الجوال" i18n-aria-label="@@store.layout.mobile-nav-label">
+  <nav
+    id="mobile-nav"
+    class="mnav"
+    [hidden]="!mobileOpen()"
+    aria-label="القائمة على الجوال"
+    i18n-aria-label="@@store.layout.mobile-nav-label"
+  >
     <form class="msearch" role="search" (submit)="search($event, mq)">
-      <label class="visually-hidden" for="m-q" i18n="@@store.layout.search-label">ابحث في المتجر</label>
-      <input #mq id="m-q" name="q" type="search" placeholder="ابحث عن دورة أو كتاب…" i18n-placeholder="@@store.layout.search-placeholder" autocomplete="off" />
+      <label class="visually-hidden" for="m-q" i18n="@@store.layout.search-label"
+        >ابحث في المتجر</label
+      >
+      <input
+        #mq
+        id="m-q"
+        name="q"
+        type="search"
+        placeholder="ابحث عن دورة أو كتاب…"
+        i18n-placeholder="@@store.layout.search-placeholder"
+        autocomplete="off"
+      />
       <button type="submit" class="hsearch-btn">
         <ta-icon name="search" [size]="18" />
         <span class="visually-hidden" i18n="@@store.layout.search-submit">بحث</span>
       </button>
     </form>
-    <a class="ml" routerLink="/" (click)="mobileOpen.set(false)" i18n="@@store.layout.nav-home">الرئيسية</a>
-    <a class="ml" routerLink="/courses" (click)="mobileOpen.set(false)" i18n="@@store.layout.nav-courses">الدورات</a>
-    <a class="ml" routerLink="/books" (click)="mobileOpen.set(false)" i18n="@@store.layout.nav-books">الكتب</a>
-    <a class="ml" routerLink="/cart" (click)="mobileOpen.set(false)" i18n="@@store.layout.nav-cart">السلة</a>
+    <a class="ml" routerLink="/" (click)="mobileOpen.set(false)" i18n="@@store.layout.nav-home"
+      >الرئيسية</a
+    >
+    <a
+      class="ml"
+      routerLink="/courses"
+      (click)="mobileOpen.set(false)"
+      i18n="@@store.layout.nav-courses"
+      >الدورات</a
+    >
+    <a
+      class="ml"
+      routerLink="/books"
+      (click)="mobileOpen.set(false)"
+      i18n="@@store.layout.nav-books"
+      >الكتب</a
+    >
+    <a class="ml" routerLink="/cart" (click)="mobileOpen.set(false)" i18n="@@store.layout.nav-cart"
+      >السلة</a
+    >
     @if (auth.isSignedIn()) {
-      <a class="ml" routerLink="/account/courses" (click)="mobileOpen.set(false)" i18n="@@store.layout.account">حسابي</a>
+      <a
+        class="ml"
+        routerLink="/account/courses"
+        (click)="mobileOpen.set(false)"
+        i18n="@@store.layout.account"
+        >حسابي</a
+      >
     } @else {
-      <a class="ml" routerLink="/login" (click)="mobileOpen.set(false)" i18n="@@store.layout.sign-in">دخول</a>
+      <a
+        class="ml"
+        routerLink="/login"
+        (click)="mobileOpen.set(false)"
+        i18n="@@store.layout.sign-in"
+        >دخول</a
+      >
     }
     <a class="ml" [href]="mainSite" i18n="@@store.layout.main-site">الموقع الرئيسي</a>
   </nav>

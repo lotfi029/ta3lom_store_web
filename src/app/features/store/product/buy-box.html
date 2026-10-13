@@ -5,7 +5,14 @@
       <legend class="h4" i18n="@@store.buybox.choose-format">اختر الصيغة</legend>
       @for (f of formats(); track f.id) {
         <label class="opt" [class.on]="selected()?.id === f.id" [class.off]="!inStock(f)">
-          <input type="radio" name="fmt" [value]="f.id" [checked]="selected()?.id === f.id" [disabled]="!inStock(f)" (change)="formatId.set(f.id)" />
+          <input
+            type="radio"
+            name="fmt"
+            [value]="f.id"
+            [checked]="selected()?.id === f.id"
+            [disabled]="!inStock(f)"
+            (change)="formatId.set(f.id)"
+          />
           <span class="d">
             <b>{{ formatLabel(f) }}</b>
             @if (f.kind === 'print') {
@@ -26,9 +33,34 @@
       <div class="blk">
         <span class="h4" id="qty-l" i18n="@@store.buybox.quantity">الكمية</span>
         <div class="stepper" role="group" aria-labelledby="qty-l">
-          <button type="button" (click)="step(-1)" [disabled]="qty() <= 1" aria-label="إنقاص الكمية" i18n-aria-label="@@store.buybox.decrease"><ta-icon name="minus" [size]="18" /></button>
-          <input type="number" inputmode="numeric" [min]="1" [max]="maxQty()" [value]="qty()" (change)="typed($any($event.target).value)" aria-label="الكمية" i18n-aria-label="@@store.buybox.quantity" />
-          <button type="button" (click)="step(1)" [disabled]="qty() >= maxQty()" aria-label="زيادة الكمية" i18n-aria-label="@@store.buybox.increase"><ta-icon name="plus" [size]="18" /></button>
+          <button
+            type="button"
+            (click)="step(-1)"
+            [disabled]="qty() <= 1"
+            aria-label="إنقاص الكمية"
+            i18n-aria-label="@@store.buybox.decrease"
+          >
+            <ta-icon name="minus" [size]="18" />
+          </button>
+          <input
+            type="number"
+            inputmode="numeric"
+            [min]="1"
+            [max]="maxQty()"
+            [value]="qty()"
+            (change)="typed($any($event.target).value)"
+            aria-label="الكمية"
+            i18n-aria-label="@@store.buybox.quantity"
+          />
+          <button
+            type="button"
+            (click)="step(1)"
+            [disabled]="qty() >= maxQty()"
+            aria-label="زيادة الكمية"
+            i18n-aria-label="@@store.buybox.increase"
+          >
+            <ta-icon name="plus" [size]="18" />
+          </button>
         </div>
         <p class="note" i18n="@@store.buybox.max-note">الحد الأقصى {{ maxQty() }} نسخة في الطلب.</p>
       </div>
@@ -39,9 +71,21 @@
         <div class="big"><ta-money [value]="p" [compareAt]="courseCompareAt()" /></div>
       }
       <ul class="ticks">
-        <li><ta-icon name="check" [size]="16" /><span i18n="@@store.buybox.course-lessons">وصول إلى {{ lessons() }} درسًا</span></li>
-        <li><ta-icon name="check" [size]="16" /><span i18n="@@store.buybox.course-certificate">شهادة إتمام موثّقة</span></li>
-        <li><ta-icon name="check" [size]="16" /><span i18n="@@store.buybox.course-instant">تسجيل فوري بعد الدفع</span></li>
+        <li>
+          <ta-icon name="check" [size]="16" /><span i18n="@@store.buybox.course-lessons"
+            >وصول إلى {{ lessons() }} درسًا</span
+          >
+        </li>
+        <li>
+          <ta-icon name="check" [size]="16" /><span i18n="@@store.buybox.course-certificate"
+            >شهادة إتمام موثّقة</span
+          >
+        </li>
+        <li>
+          <ta-icon name="check" [size]="16" /><span i18n="@@store.buybox.course-instant"
+            >تسجيل فوري بعد الدفع</span
+          >
+        </li>
       </ul>
     </div>
   }
@@ -59,13 +103,34 @@
   @if (actions()) {
     @if (owned()) {
       <p class="owned" i18n="@@store.buybox.owned">أنت مسجّل في هذه الدورة.</p>
-      <button type="button" class="b primary" (click)="goToCourse.emit()" i18n="@@store.buybox.go-to-course">انتقل إلى الدورة</button>
+      <button
+        type="button"
+        class="b primary"
+        (click)="goToCourse.emit()"
+        i18n="@@store.buybox.go-to-course"
+      >
+        انتقل إلى الدورة
+      </button>
     } @else {
       <div class="acts">
-        <button type="button" class="b primary" [disabled]="soldOut()" [attr.aria-busy]="busy()" (click)="emitAdd()">
+        <button
+          type="button"
+          class="b primary"
+          [disabled]="soldOut()"
+          [attr.aria-busy]="busy()"
+          (click)="emitAdd()"
+        >
           <ta-icon name="cart" [size]="18" /><span i18n="@@store.buybox.add">أضف إلى السلة</span>
         </button>
-        <button type="button" class="b ghost" [disabled]="soldOut()" (click)="emitBuyNow()" i18n="@@store.buybox.buy-now">اشترِ الآن</button>
+        <button
+          type="button"
+          class="b ghost"
+          [disabled]="soldOut()"
+          (click)="emitBuyNow()"
+          i18n="@@store.buybox.buy-now"
+        >
+          اشترِ الآن
+        </button>
       </div>
     }
   }
@@ -77,8 +142,20 @@
           <b><ta-money [value]="t" /></b>
         }
       </div>
-      <button type="button" class="b primary" [disabled]="soldOut()" [attr.aria-busy]="busy()" (click)="emitAdd()" i18n="@@store.buybox.add">أضف إلى السلة</button>
+      <button
+        type="button"
+        class="b primary"
+        [disabled]="soldOut()"
+        [attr.aria-busy]="busy()"
+        (click)="emitAdd()"
+        i18n="@@store.buybox.add"
+      >
+        أضف إلى السلة
+      </button>
     </div>
   }
-  <p class="secure mono"><ta-icon name="lock" [size]="14" /> <span i18n="@@store.buybox.secure">دفع آمن</span> · mada · Apple Pay · VISA</p>
+  <p class="secure mono">
+    <ta-icon name="lock" [size]="14" /> <span i18n="@@store.buybox.secure">دفع آمن</span> · mada ·
+    Apple Pay · VISA
+  </p>
 </aside>

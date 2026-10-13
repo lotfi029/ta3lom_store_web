@@ -7,8 +7,13 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   template: `
     <ol class="steps" aria-label="مراحل الطلب" i18n-aria-label="@@store.steps.label">
       @for (s of labels; track $index) {
-        <li [class.on]="$index + 1 === current()" [class.done]="$index + 1 < current()" [attr.aria-current]="$index + 1 === current() ? 'step' : null">
-          <i aria-hidden="true">{{ $index + 1 }}</i>{{ s }}
+        <li
+          [class.on]="$index + 1 === current()"
+          [class.done]="$index + 1 < current()"
+          [attr.aria-current]="$index + 1 === current() ? 'step' : null"
+        >
+          <i aria-hidden="true">{{ $index + 1 }}</i
+          >{{ s }}
         </li>
         @if (!$last) {
           <li class="ln" aria-hidden="true"></li>

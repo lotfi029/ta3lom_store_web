@@ -1,6 +1,7 @@
 @if (current(); as toast) {
   <div
-    class="toast" [class.bad]="toast.tone === 'error'"
+    class="toast"
+    [class.bad]="toast.tone === 'error'"
     [attr.role]="toast.tone === 'error' ? 'alert' : 'status'"
     [attr.aria-live]="toast.tone === 'error' ? 'assertive' : 'polite'"
     (mouseenter)="pauseTimer()"

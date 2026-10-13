@@ -2,7 +2,13 @@ import { isPlatformBrowser } from '@angular/common';
 import { HttpBackend, HttpClient } from '@angular/common/http';
 import { Injectable, PLATFORM_ID, computed, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import type { AccessTokenResponse, CartNotice, CustomerSession, OtpRequestedResponse, SessionResponse } from '../api/api.types';
+import type {
+  AccessTokenResponse,
+  CartNotice,
+  CustomerSession,
+  OtpRequestedResponse,
+  SessionResponse,
+} from '../api/api.types';
 import { STORE_API_URL } from '../api/store-api-url';
 import { I18nService } from '../i18n/i18n';
 
@@ -29,14 +35,29 @@ export class StoreAuth {
   private refreshing: Promise<string> | null = null;
   private restoring: Promise<boolean> | null = null;
 
-  private readonly options = () => ({ withCredentials: true, headers: { 'Accept-Language': this.i18n.locale } });
+  private readonly options = () => ({
+    withCredentials: true,
+    headers: { 'Accept-Language': this.i18n.locale },
+  });
 
   requestOtp(mobile: string): Promise<OtpRequestedResponse> {
-    return firstValueFrom(this.http.post<OtpRequestedResponse>(`${this.api}/auth/otp/request`, { mobile, locale: this.i18n.locale }, this.options()));
+    return firstValueFrom(
+      this.http.post<OtpRequestedResponse>(
+        `${this.api}/auth/otp/request`,
+        { mobile, locale: this.i18n.locale },
+        this.options(),
+      ),
+    );
   }
 
   async verifyOtp(mobile: string, code: string): Promise<SessionResponse> {
-    const session = await firstValueFrom(this.http.post<SessionResponse>(`${this.api}/auth/otp/verify`, { mobile, code }, this.options()));
+    const session = await firstValueFrom(
+      this.http.post<SessionResponse>(
+        `${this.api}/auth/otp/verify`,
+        { mobile, code },
+        this.options(),
+      ),
+    );
     this.token.set(session.accessToken);
     this.customer.set(session.customer);
     this.cartNotices.set(session.cartNotices ?? []);
@@ -53,7 +74,9 @@ export class StoreAuth {
 
   private async doRefresh(retried = false): Promise<string> {
     try {
-      const res = await firstValueFrom(this.http.post<AccessTokenResponse>(`${this.api}/auth/refresh`, null, this.options()));
+      const res = await firstValueFrom(
+        this.http.post<AccessTokenResponse>(`${this.api}/auth/refresh`, null, this.options()),
+      );
       this.token.set(res.accessToken);
       return res.accessToken;
     } catch (err) {
@@ -90,7 +113,10 @@ export class StoreAuth {
       await firstValueFrom(
         this.http.post(`${this.api}/auth/logout-all`, null, {
           withCredentials: true,
-          headers: { 'Accept-Language': this.i18n.locale, ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+          headers: {
+            'Accept-Language': this.i18n.locale,
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
         }),
       );
     } finally {

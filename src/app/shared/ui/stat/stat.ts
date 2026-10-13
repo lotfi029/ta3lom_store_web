@@ -1,4 +1,12 @@
-import { Component, DestroyRef, ElementRef, afterNextRender, inject, input, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  afterNextRender,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 
 /**
  * Counts up from 0 to `value` once the element scrolls into view, then stops — never

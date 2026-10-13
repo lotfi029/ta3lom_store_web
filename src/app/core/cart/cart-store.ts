@@ -18,15 +18,26 @@ export interface CartDraft {
   bookFormatId: string | null;
   quantity: number;
   /** What the buyer saw, for the optimistic line (the server's answer replaces it). */
-  preview?: { slug: string; type: string; titleAr: string; titleEn: string | null; unitPrice: string; formatKind: string | null };
+  preview?: {
+    slug: string;
+    type: string;
+    titleAr: string;
+    titleEn: string | null;
+    unitPrice: string;
+    formatKind: string | null;
+  };
 }
 
 /** RUL-14 on the client: the same product + format merges into one line; otherwise a provisional line is appended. */
 export function mergeOrAppend(lines: readonly CartLine[], draft: CartDraft): readonly CartLine[] {
-  const same = lines.find((l) => l.productId === draft.productId && (l.bookFormat?.id ?? null) === draft.bookFormatId);
+  const same = lines.find(
+    (l) => l.productId === draft.productId && (l.bookFormat?.id ?? null) === draft.bookFormatId,
+  );
   if (same) {
     const q = Math.min(toInt(same.maxQuantity, 20) || 20, toInt(same.quantity, 1) + draft.quantity);
-    return lines.map((l) => (l === same ? { ...l, quantity: q, amount: times(l.unitPrice, q) } : l));
+    return lines.map((l) =>
+      l === same ? { ...l, quantity: q, amount: times(l.unitPrice, q) } : l,
+    );
   }
   const p = draft.preview;
   if (!p) return lines;
@@ -39,7 +50,8 @@ export function mergeOrAppend(lines: readonly CartLine[], draft: CartDraft): rea
     mode: 'units',
     titleAr: p.titleAr,
     titleEn: p.titleEn,
-    bookFormat: draft.bookFormatId && p.formatKind ? { id: draft.bookFormatId, kind: p.formatKind } : null,
+    bookFormat:
+      draft.bookFormatId && p.formatKind ? { id: draft.bookFormatId, kind: p.formatKind } : null,
     quantity: draft.quantity,
     maxQuantity: p.formatKind === 'print' ? 20 : 1,
     unitPrice: p.unitPrice,
@@ -69,7 +81,9 @@ export class CartStore {
   private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
 
   private readonly enabled = signal(false);
-  private readonly remote = httpResource<Cart>(() => (this.browser && this.enabled() ? `${this.api}/cart` : undefined));
+  private readonly remote = httpResource<Cart>(() =>
+    this.browser && this.enabled() ? `${this.api}/cart` : undefined,
+  );
   /** The last cart the server sent (from GET or from a mutation). */
   private readonly server = linkedSignal<Cart | undefined>(() => valueOf(this.remote));
 
@@ -83,15 +97,23 @@ export class CartStore {
    * RUL-15: the cart keeps the price the visitor saw; only the checkout quote reprices. The cart page asks for a quote
    * (`checkPrices`) and shows what moved. Any new server cart invalidates it.
    */
-  readonly quote = linkedSignal<Cart | undefined, Quote | null>({ source: () => this.server(), computation: () => null });
-  readonly priceChanged = computed(() => (this.quote()?.lines ?? []).filter((l) => l.status === 'changed').map((l) => l.lineId));
+  readonly quote = linkedSignal<Cart | undefined, Quote | null>({
+    source: () => this.server(),
+    computation: () => null,
+  });
+  readonly priceChanged = computed(() =>
+    (this.quote()?.lines ?? []).filter((l) => l.status === 'changed').map((l) => l.lineId),
+  );
 
   readonly count = computed(() => this.lines().length);
   readonly isEmpty = computed(() => this.server() !== undefined && this.lines().length === 0);
   readonly hasPrint = computed(() => this.lines().some((l) => l.bookFormat?.kind === 'print'));
   readonly issues = computed(() => this.lines().filter((l) => l.issues.length > 0));
   /** Merge notices (RUL-17) from the last sign-in plus the server's own cart notices. */
-  readonly notices = computed<CartNotice[]>(() => [...this.auth.cartNotices(), ...(this.server()?.notices ?? [])]);
+  readonly notices = computed<CartNotice[]>(() => [
+    ...this.auth.cartNotices(),
+    ...(this.server()?.notices ?? []),
+  ]);
 
   /**
    * Totals. With no edit in flight these are the server's own figures; during an optimistic edit they are estimated in
@@ -102,13 +124,35 @@ export class CartStore {
     const q = this.quote();
     const purchases = sum(this.lines().map((l) => l.amount));
     if (s && q?.priceChanged && this.pending() === 0) {
-      return { purchases: q.purchasesTotal, shipping: q.shippingTotal, vat: q.vatTotal, grand: add(q.purchasesTotal, q.shippingTotal), requiresShipping: q.requiresShipping };
+      return {
+        purchases: q.purchasesTotal,
+        shipping: q.shippingTotal,
+        vat: q.vatTotal,
+        grand: add(q.purchasesTotal, q.shippingTotal),
+        requiresShipping: q.requiresShipping,
+      };
     }
     if (s && this.pending() === 0) {
-      return { purchases: s.purchasesTotal, shipping: s.shippingTotal, vat: s.vatIncluded, grand: s.grandTotal, requiresShipping: s.requiresShipping };
+      return {
+        purchases: s.purchasesTotal,
+        shipping: s.shippingTotal,
+        vat: s.vatIncluded,
+        grand: s.grandTotal,
+        requiresShipping: s.requiresShipping,
+      };
     }
-    const shipping = this.hasPrint() ? (s && toHalalas(s.shippingTotal) > 0 ? s.shippingTotal : this.lastShippingFee) : '0.00';
-    return { purchases, shipping, vat: s?.vatIncluded ?? '0.00', grand: add(purchases, shipping), requiresShipping: this.hasPrint() };
+    const shipping = this.hasPrint()
+      ? s && toHalalas(s.shippingTotal) > 0
+        ? s.shippingTotal
+        : this.lastShippingFee
+      : '0.00';
+    return {
+      purchases,
+      shipping,
+      vat: s?.vatIncluded ?? '0.00',
+      grand: add(purchases, shipping),
+      requiresShipping: this.hasPrint(),
+    };
   });
 
   private lastShippingFee = '25.00';
@@ -125,9 +169,28 @@ export class CartStore {
     this.load();
   }
 
+  /** Fetches the cart now and replaces the view (after sign-in the guest cart was merged server-side, RUL-17). */
+  async refresh(): Promise<void> {
+    if (!this.browser) return;
+    try {
+      this.accept(await firstValueFrom(this.http.get<Cart>(`${this.api}/cart`)), false);
+    } catch {
+      this.load();
+    }
+  }
+
   add(draft: CartDraft): Promise<boolean> {
-    const body = { ...PURCHASE_LINE, productId: draft.productId, bookFormatId: draft.bookFormatId, quantity: draft.quantity };
-    return this.mutate((lines) => mergeOrAppend(lines, draft), () => this.http.post<Cart>(`${this.api}/cart/lines`, body), true);
+    const body = {
+      ...PURCHASE_LINE,
+      productId: draft.productId,
+      bookFormatId: draft.bookFormatId,
+      quantity: draft.quantity,
+    };
+    return this.mutate(
+      (lines) => mergeOrAppend(lines, draft),
+      () => this.http.post<Cart>(`${this.api}/cart/lines`, body),
+      true,
+    );
   }
 
   setQuantity(lineId: string, quantity: number): Promise<boolean> {
@@ -135,7 +198,10 @@ export class CartStore {
     const max = line ? toInt(line.maxQuantity, 20) || 20 : 20;
     const q = Math.min(Math.max(Math.trunc(quantity) || 1, 1), max);
     return this.mutate(
-      (lines) => lines.map((l) => (l.id === lineId ? { ...l, quantity: q, amount: times(l.unitPrice, q) } : l)),
+      (lines) =>
+        lines.map((l) =>
+          l.id === lineId ? { ...l, quantity: q, amount: times(l.unitPrice, q) } : l,
+        ),
       () => this.http.patch<Cart>(`${this.api}/cart/lines/${lineId}`, { quantity: q }),
     );
   }
@@ -152,7 +218,13 @@ export class CartStore {
     const cart = this.server();
     if (!this.browser || !cart || cart.purchases.length === 0 || this.pending() > 0) return;
     try {
-      const q = await firstValueFrom(this.http.post<Quote>(`${this.api}/checkout/quote`, {}, { context: new HttpContext().set(SILENT, true) }));
+      const q = await firstValueFrom(
+        this.http.post<Quote>(
+          `${this.api}/checkout/quote`,
+          {},
+          { context: new HttpContext().set(SILENT, true) },
+        ),
+      );
       if (this.server() === cart) this.quote.set(q);
     } catch {
       // The cart page stays on the stored prices.
@@ -169,7 +241,11 @@ export class CartStore {
     this.auth.cartNotices.set([]);
   }
 
-  private mutate(apply: (l: readonly CartLine[]) => readonly CartLine[], call: () => Observable<Cart>, bump = false): Promise<boolean> {
+  private mutate(
+    apply: (l: readonly CartLine[]) => readonly CartLine[],
+    call: () => Observable<Cart>,
+    bump = false,
+  ): Promise<boolean> {
     const run = async (): Promise<boolean> => {
       const before = this.lines();
       this.lines.set(apply(before));
@@ -195,11 +271,14 @@ export class CartStore {
   private accept(cart: Cart, bump: boolean): void {
     this.enabled.set(true);
     this.server.set(cart);
-    if (toHalalas(cart.summary.shippingTotal) > 0) this.lastShippingFee = cart.summary.shippingTotal;
-    this.summary.set({ lineCount: cart.summary.lineCount, grandTotal: cart.summary.grandTotal }, bump);
+    if (toHalalas(cart.summary.shippingTotal) > 0)
+      this.lastShippingFee = cart.summary.shippingTotal;
+    this.summary.set(
+      { lineCount: cart.summary.lineCount, grandTotal: cart.summary.grandTotal },
+      bump,
+    );
   }
 
   /** The current server cart (checkout reads the line ids and the requires-shipping flag). */
   readonly snapshot = computed(() => this.server());
 }
-

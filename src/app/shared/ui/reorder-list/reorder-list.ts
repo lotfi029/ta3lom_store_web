@@ -84,7 +84,11 @@ export class ReorderList<T extends { id: string }> {
     // pressed: this is what makes them do nothing.
     if (this.busy() || target < 0 || target >= list.length) return;
     [list[index], list[target]] = [list[target], list[index]];
-    this.pending = { id: list[target].id, expectedIndex: target, direction: direction < 0 ? 'up' : 'down' };
+    this.pending = {
+      id: list[target].id,
+      expectedIndex: target,
+      direction: direction < 0 ? 'up' : 'down',
+    };
     this.reordered.emit(list.map((item) => item.id));
   }
 
@@ -131,7 +135,9 @@ export class ReorderList<T extends { id: string }> {
       afterNextRender(
         () =>
           this.host.nativeElement
-            .querySelector<HTMLElement>(`li[data-id="${CSS.escape(pending.id)}"] button[data-move="${pending.direction}"]`)
+            .querySelector<HTMLElement>(
+              `li[data-id="${CSS.escape(pending.id)}"] button[data-move="${pending.direction}"]`,
+            )
             ?.focus(),
         { injector: this.injector },
       );
