@@ -2,11 +2,25 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="ar" datatype="plaintext" original="ng2.template">
     <body>
+      <trans-unit id="store.error.toast-server" datatype="html">
+        <source>تعذّر الاتصال بالمتجر الآن. حاول مرة أخرى بعد قليل.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/http/error-toast.interceptor.ts</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="store.home.title" datatype="html">
         <source>متجر جمعية التعلم الإلكتروني</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.ts</context>
-          <context context-type="linenumber">9,13</context>
+          <context context-type="linenumber">10,14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.home.seo-description" datatype="html">
+        <source>دورات وكتب جمعية التعلم الإلكتروني: تسجيل فوري في الدورات، وكتب مطبوعة ورقمية.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/home.page.ts</context>
+          <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
     </body>

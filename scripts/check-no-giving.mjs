@@ -22,7 +22,7 @@ const files = (dir) =>
   });
 const problems = [];
 for (const f of files(ROOT)) {
-  if (ALLOWED.has(f)) continue;
+  if (ALLOWED.has(f) || f.endsWith('.spec.ts')) continue; // specs may name giving terms to assert their absence
   readFileSync(f, 'utf8').split('\n').forEach((line, i) => {
     for (const re of BANNED) {
       const m = line.match(re);
