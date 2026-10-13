@@ -1,0 +1,133 @@
+<div class="ph">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="مسار التنقل" i18n-aria-label="@@store.ui.breadcrumb">
+      <ol>
+        <li><a routerLink="/" i18n="@@store.layout.nav-home">الرئيسية</a></li>
+        <li><span aria-hidden="true">/</span><span aria-current="page" i18n="@@store.cart.title">السلة</span></li>
+      </ol>
+    </nav>
+    <h1 i18n="@@store.cart.title">السلة</h1>
+  </div>
+</div>
+
+<section class="cartsec">
+  <div class="wrap">
+    <ta-resource-state [loading]="cart.loading()" [error]="cart.loadError()" (retry)="cart.reload()">
+      @if (cart.isEmpty()) {
+        <div class="empty">
+          <ta-icon name="cart" [size]="56" class="ic" />
+          <h2 i18n="@@store.cart.empty-title">سلتك فارغة</h2>
+          <p i18n="@@store.cart.empty-lede">ابدأ بدورة أو كتاب من إصدارات الجمعية.</p>
+          <p class="links">
+            <a class="b primary" routerLink="/courses" i18n="@@store.layout.nav-courses">الدورات</a>
+            <a class="b ghost" routerLink="/books" i18n="@@store.layout.nav-books">الكتب</a>
+          </p>
+        </div>
+      } @else if (cart.lines().length > 0) {
+        <ta-steps [current]="1" />
+
+        @if (cart.notices().length > 0) {
+          <div class="banner info" role="status">
+            <ul>
+              @for (n of cart.notices(); track $index) {
+                <li>{{ noticeText(n) }}</li>
+              }
+            </ul>
+          </div>
+        }
+        @if (cart.priceChanged().length > 0) {
+          <div class="banner warn" role="status" i18n="@@store.cart.price-changed">تغيّر سعر بعض العناصر منذ إضافتها. المبالغ أدناه محدّثة، والأسعار النهائية تُؤكَّد عند إتمام الطلب.</div>
+        }
+        @if (problem(); as p) {
+          <div class="banner err" role="alert">{{ p }}</div>
+        }
+
+        <div class="cgrid">
+          <div>
+            <section class="cgroup" aria-labelledby="grp-h">
+              <h2 id="grp-h">
+                <ta-icon name="cart" [size]="18" /><span i18n="@@store.cart.group">مشترياتك</span>
+                <span class="tag"><span class="visually-hidden" i18n="@@store.cart.count-label">عدد العناصر:</span> {{ cart.count() }}</span>
+              </h2>
+              <ul class="lines">
+                @for (l of cart.lines(); track l.id) {
+                  <li class="cline" [class.bad]="l.issues.length > 0">
+                    <a class="th" [routerLink]="['/p', l.slug]" [attr.aria-label]="title(l)">
+                      <ta-icon [name]="l.type === 'book' ? 'book' : 'play'" [size]="28" />
+                    </a>
+                    <div class="bd">
+                      <div class="top">
+                        <a class="t" [routerLink]="['/p', l.slug]">{{ title(l) }}</a>
+                        <span class="lp"><ta-money [value]="l.amount" /></span>
+                      </div>
+                      <div class="row">
+                        @if (l.type === 'course') {
+                          <span i18n="@@store.cart.line-course">اشتراك شخصي · وصول دائم</span>
+                        } @else if (l.bookFormat?.kind === 'print') {
+                          <span><ng-container i18n="@@store.card.format-print">نسخة مطبوعة</ng-container> · <bdi>{{ qty(l) }}</bdi> × <ta-money [value]="l.unitPrice" /></span>
+                        } @else {
+                          <span i18n="@@store.card.format-digital">نسخة رقمية PDF</span>
+                        }
+                      </div>
+                      @for (code of l.issues; track code) {
+                        <p class="issue" role="alert">{{ issueText(code) }}</p>
+                      }
+                      <div class="row">
+                        @if (l.bookFormat?.kind === 'print') {
+                          <div class="stepper" role="group" [attr.aria-label]="title(l)">
+                            <button type="button" (click)="step(l, -1)" [disabled]="qty(l) <= 1" aria-label="إنقاص الكمية" i18n-aria-label="@@store.buybox.decrease"><ta-icon name="minus" [size]="16" /></button>
+                            <output aria-live="polite">{{ qty(l) }}</output>
+                            <button type="button" (click)="step(l, 1)" [disabled]="qty(l) >= max(l)" aria-label="زيادة الكمية" i18n-aria-label="@@store.buybox.increase"><ta-icon name="plus" [size]="16" /></button>
+                          </div>
+                        }
+                        <button type="button" class="rm" (click)="remove(l)">
+                          <ta-icon name="trash" [size]="16" /><span i18n="@@store.cart.remove">حذف</span><span class="visually-hidden">{{ title(l) }}</span>
+                        </button>
+                      </div>
+                    </div>
+                  </li>
+                }
+              </ul>
+            </section>
+            <a class="b ghost sm" routerLink="/courses" i18n="@@store.cart.continue">متابعة التسوق</a>
+          </div>
+
+          <aside class="sumbox" aria-labelledby="sum-h">
+            <h2 id="sum-h" i18n="@@store.cart.summary">ملخص الطلب</h2>
+            <div class="r">
+              @if (config.vatEnabled()) {
+                <span i18n="@@store.cart.purchases-vat">المشتريات (شاملة الضريبة)</span>
+              } @else {
+                <span i18n="@@store.cart.purchases">المشتريات</span>
+              }
+              <b><ta-money [value]="cart.totals().purchases" /></b>
+            </div>
+            @if (cart.totals().requiresShipping) {
+              <div class="r">
+                <span i18n="@@store.cart.shipping">الشحن</span>
+                <b><ta-money [value]="cart.totals().shipping" /></b>
+              </div>
+              <p class="note" i18n="@@store.cart.shipping-note">رسوم شحن واحدة للطلب عند وجود كتب مطبوعة، داخل المملكة.</p>
+            }
+            <div class="r t">
+              <span i18n="@@store.cart.total">الإجمالي</span>
+              <b aria-live="polite"><ta-money [value]="cart.totals().grand" /></b>
+            </div>
+            <a class="b cta" routerLink="/checkout" [class.dis]="cart.pending() > 0 || cart.issues().length > 0" [attr.aria-disabled]="cart.pending() > 0 || cart.issues().length > 0 ? 'true' : null" (click)="guard($event)">
+              <span i18n="@@store.cart.checkout">إتمام الطلب</span> <ta-icon name="arrow" [size]="18" />
+            </a>
+            @if (cart.issues().length > 0) {
+              <p class="note" i18n="@@store.cart.fix-issues">عالج العناصر المميّزة قبل إتمام الطلب.</p>
+            }
+            <ul class="pay" aria-label="طرق الدفع المقبولة" i18n-aria-label="@@store.layout.footer-payments">
+              <li>mada</li>
+              <li>Apple Pay</li>
+              <li>VISA</li>
+              <li>STC Pay</li>
+            </ul>
+          </aside>
+        </div>
+      }
+    </ta-resource-state>
+  </div>
+</section>

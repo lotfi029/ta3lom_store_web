@@ -2,8 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import type { BookFormat, ProductDetail } from '../../../core/api/api.types';
 import { BuyBox, type BuyRequest } from './buy-box';
 
-const course = { id: 'c1', type: 'course', slug: 'c', course: { lessons: 12, price: '120.00' }, book: null } as unknown as ProductDetail;
-const book = { id: 'b1', type: 'book', slug: 'b', course: null, book: { formats: [] } } as unknown as ProductDetail;
+const course = { id: 'c1', type: 'course', slug: 'c', titleAr: 'د', titleEn: null, course: { lessons: 12, price: '120.00' }, book: null } as unknown as ProductDetail;
+const book = { id: 'b1', type: 'book', slug: 'b', titleAr: 'ك', titleEn: null, course: null, book: { formats: [] } } as unknown as ProductDetail;
 const print = (available: number): BookFormat => ({ id: 'p', kind: 'print', sku: 'P', price: '65.00', compareAtPrice: null, available, maxQuantity: 20 });
 const digital: BookFormat = { id: 'd', kind: 'digital', sku: 'D', price: '35.00', compareAtPrice: null, available: null, maxQuantity: 1 };
 
@@ -25,7 +25,7 @@ describe('BuyBox (plan §6 "Buy box")', () => {
     const { el, added } = mount(course);
     expect(el.querySelector('.stepper')).toBeNull();
     (el.querySelector('.b.primary') as HTMLButtonElement).click();
-    expect(added).toEqual([{ productId: 'c1', bookFormatId: null, quantity: 1 }]);
+    expect(added).toEqual([expect.objectContaining({ productId: 'c1', bookFormatId: null, quantity: 1 })]);
   });
 
   it('print: stepper 1…20, never above the stock', async () => {
@@ -36,7 +36,7 @@ describe('BuyBox (plan §6 "Buy box")', () => {
     expect((el.querySelector('.stepper input') as HTMLInputElement).value).toBe('20');
     expect(plus.disabled).toBe(true);
     (el.querySelector('.b.primary') as HTMLButtonElement).click();
-    expect(added.at(-1)).toEqual({ productId: 'b1', bookFormatId: 'p', quantity: 20 });
+    expect(added.at(-1)).toEqual(expect.objectContaining({ productId: 'b1', bookFormatId: 'p', quantity: 20 }));
 
     fixture.componentRef.setInput('formats', [print(3), digital]);
     fixture.detectChanges();
@@ -51,7 +51,7 @@ describe('BuyBox (plan §6 "Buy box")', () => {
     fixture.detectChanges();
     expect(el.querySelector('.stepper')).toBeNull();
     (el.querySelector('.b.primary') as HTMLButtonElement).click();
-    expect(added).toEqual([{ productId: 'b1', bookFormatId: 'd', quantity: 1 }]);
+    expect(added).toEqual([expect.objectContaining({ productId: 'b1', bookFormatId: 'd', quantity: 1 })]);
   });
 
   it('out of stock: the print option is disabled and digital is pre-selected', () => {

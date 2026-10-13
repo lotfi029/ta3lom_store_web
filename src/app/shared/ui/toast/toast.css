@@ -68,3 +68,17 @@
     max-width: none;
   }
 }
+
+.toast.bad {
+  background: var(--c-danger-fill);
+  color: var(--c-on-brand);
+}
+
+.toast a {
+  color: inherit;
+  text-decoration: underline;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 24px;
+}

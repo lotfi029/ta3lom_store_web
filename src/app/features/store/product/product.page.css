@@ -173,3 +173,11 @@ h1 {
 .sk-box {
   block-size: 360px;
 }
+
+/* Room for the mobile sticky buy bar so it never covers the last content. */
+@media (width < 1000px) {
+  :host {
+    display: block;
+    padding-block-end: 76px;
+  }
+}
