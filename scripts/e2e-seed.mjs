@@ -91,7 +91,7 @@ async function catalogue(manager) {
 
   for (const p of list.body.items.filter((x) => x.type === 'book')) {
     const detail = await manager.call('GET', `/v1/admin/products/${p.id}`);
-    for (const f of detail.body.book?.formats ?? []) {
+    for (const f of detail.body.formats ?? []) {
       if (f.kind === 'digital' && !f.fileAssetId) {
         const form = new FormData();
         form.append('kind', 'book_file');

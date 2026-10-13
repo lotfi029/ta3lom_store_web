@@ -11,6 +11,7 @@ export interface BuyRequest {
   productId: string;
   bookFormatId: string | null;
   quantity: number;
+  preview: { slug: string; type: string; titleAr: string; titleEn: string | null; unitPrice: string; formatKind: string | null };
 }
 
 /**
@@ -37,6 +38,8 @@ export class BuyBox {
   readonly owned = input(false);
   readonly busy = input(false);
   readonly actions = input(true);
+  /** A cart error for the last attempt (shown in the box, role=alert). */
+  readonly error = input<string | null>(null);
 
   readonly add = output<BuyRequest>();
   readonly buyNow = output<BuyRequest>();
@@ -97,9 +100,15 @@ export class BuyBox {
     if (this.isBook()) {
       const f = this.selected();
       if (!f || !this.inStock(f)) return null;
-      return { productId: this.product().id, bookFormatId: f.id, quantity: f.kind === 'print' ? this.qty() : 1 };
+      return { productId: this.product().id, bookFormatId: f.id, quantity: f.kind === 'print' ? this.qty() : 1, preview: this.preview(f.price, f.kind) };
     }
-    return { productId: this.product().id, bookFormatId: null, quantity: 1 };
+    const price = this.coursePrice();
+    return price ? { productId: this.product().id, bookFormatId: null, quantity: 1, preview: this.preview(price, null) } : null;
+  }
+
+  private preview(unitPrice: string, formatKind: string | null): BuyRequest['preview'] {
+    const p = this.product();
+    return { slug: p.slug, type: p.type, titleAr: p.titleAr, titleEn: p.titleEn, unitPrice, formatKind };
   }
 
   protected emitAdd(): void {

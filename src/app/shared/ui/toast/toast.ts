@@ -1,4 +1,5 @@
 import { Component, DestroyRef, effect, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { ToastService } from '../../../core/ui/toast.service';
 
 const AUTO_DISMISS_MS = 6000;
@@ -18,6 +19,7 @@ const AUTO_DISMISS_MS = 6000;
  */
 @Component({
   selector: 'ta-toast',
+  imports: [RouterLink],
   templateUrl: './toast.html',
   styleUrl: './toast.css',
 })

@@ -125,7 +125,10 @@
           [formats]="data.formats()"
           [printMax]="config.printMaxQuantity()"
           [busy]="busy()"
-          [actions]="actionsEnabled()"
+          [owned]="data.owned()"
+          [error]="buyError()"
+          (add)="onAdd($event)"
+          (buyNow)="onBuyNow($event)"
           (goToCourse)="goToCourse()"
         />
       </div>

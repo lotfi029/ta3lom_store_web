@@ -53,6 +53,9 @@
     </div>
   }
 
+  @if (error(); as e) {
+    <p class="err" role="alert">{{ e }}</p>
+  }
   @if (actions()) {
     @if (owned()) {
       <p class="owned" i18n="@@store.buybox.owned">أنت مسجّل في هذه الدورة.</p>
@@ -65,6 +68,17 @@
         <button type="button" class="b ghost" [disabled]="soldOut()" (click)="emitBuyNow()" i18n="@@store.buybox.buy-now">اشترِ الآن</button>
       </div>
     }
+  }
+  @if (actions() && !owned()) {
+    <div class="stickybar">
+      <div>
+        <span class="note" i18n="@@store.buybox.total">الإجمالي</span>
+        @if (total(); as t) {
+          <b><ta-money [value]="t" /></b>
+        }
+      </div>
+      <button type="button" class="b primary" [disabled]="soldOut()" [attr.aria-busy]="busy()" (click)="emitAdd()" i18n="@@store.buybox.add">أضف إلى السلة</button>
+    </div>
   }
   <p class="secure mono"><ta-icon name="lock" [size]="14" /> <span i18n="@@store.buybox.secure">دفع آمن</span> · mada · Apple Pay · VISA</p>
 </aside>

@@ -1,10 +1,11 @@
 import { isPlatformBrowser } from '@angular/common';
 import { HttpErrorResponse, httpResource } from '@angular/common/http';
 import { Injectable, PLATFORM_ID, computed, inject, signal } from '@angular/core';
-import type { BookFormat, LiveFigures, ProductDetail, ProductPage } from '../../../core/api/api.types';
+import type { BookFormat, Enrolment, LiveFigures, ProductDetail, ProductPage } from '../../../core/api/api.types';
 import { isStoreProduct, toInt } from '../../../core/api/api.types';
 import { valueOf } from '../../../core/http/resource-value';
 import { STORE_API_URL } from '../../../core/api/store-api-url';
+import { StoreAuth } from '../../../core/auth/store-auth';
 
 /**
  * One product page (#4 detail, #5 live). Provided on the page component, so each visit has its own instance.
@@ -50,6 +51,18 @@ export class ProductData {
         return l ? { ...f, price: l.price, available: l.available } : f;
       });
   });
+
+  /**
+   * Ownership (RUL-13): a signed-in customer's enrolments, course pages only — never part of the public live call.
+   * The API stays the final guard (`cart.course_owned`).
+   */
+  private readonly auth = inject(StoreAuth);
+  private readonly enrolments = httpResource<Enrolment[]>(() =>
+    this.browser && this.auth.isSignedIn() && this.value()?.type === 'course' ? `${this.api}/me/enrolments` : undefined,
+  );
+  readonly owned = computed(() =>
+    (valueOf(this.enrolments) ?? []).some((e) => e.product.slug === this.slug() && e.status !== 'revoked' && e.status !== 'expired'),
+  );
 
   readonly relatedWanted = signal(false);
   private readonly relatedList = httpResource<ProductPage>(() => {

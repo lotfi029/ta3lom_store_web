@@ -1,14 +1,19 @@
 @if (current(); as toast) {
   <div
-    class="toast"
-    role="status"
-    aria-live="polite"
+    class="toast" [class.bad]="toast.tone === 'error'"
+    [attr.role]="toast.tone === 'error' ? 'alert' : 'status'"
+    [attr.aria-live]="toast.tone === 'error' ? 'assertive' : 'polite'"
     (mouseenter)="pauseTimer()"
     (mouseleave)="resumeTimer()"
     (focusin)="pauseTimer()"
     (focusout)="resumeTimer()"
   >
-    <p>{{ toast.message }}</p>
+    <p>
+      {{ toast.message }}
+      @if (toast.action; as a) {
+        · <a [routerLink]="a.path" (click)="onDismiss()">{{ a.label }}</a>
+      }
+    </p>
     <button type="button" class="close" (click)="onDismiss()" [attr.aria-label]="dismissLabel">
       <span aria-hidden="true">×</span>
     </button>

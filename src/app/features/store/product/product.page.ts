@@ -3,12 +3,15 @@ import { Router, RouterLink } from '@angular/router';
 import type { CourseModule, ProductDetail } from '../../../core/api/api.types';
 import { toInt } from '../../../core/api/api.types';
 import { StoreConfig } from '../../../core/api/store-config';
+import { problemMessage } from '../../../core/api/problem-message';
+import { CartStore } from '../../../core/cart/cart-store';
+import { ToastService } from '../../../core/ui/toast.service';
 import { refreshAfterHydration } from '../../../core/http/refresh-after-hydration';
 import { I18nService } from '../../../core/i18n/i18n';
 import { type JsonLd, SeoService, siteName, breadcrumbJsonLd } from '../../../core/seo/seo.service';
 import { environment } from '../../../../environments/environment';
 import { Cover } from '../../../shared/ui/cover/cover';
-import { BuyBox } from './buy-box';
+import { BuyBox, type BuyRequest } from './buy-box';
 import { ProductData } from './product.data';
 import { RelatedList } from './related-list';
 import { ShareSheet } from './share-sheet';
@@ -33,9 +36,10 @@ export class ProductPage {
   protected readonly i18n = inject(I18nService);
 
   readonly slug = input.required<string>();
-  /** W-05 wires the cart; until then the buy box shows prices and options only. */
-  protected readonly actionsEnabled = signal(false);
+  private readonly cart = inject(CartStore);
+  private readonly toast = inject(ToastService);
   protected readonly busy = signal(false);
+  protected readonly buyError = signal<string | null>(null);
 
   protected readonly p = this.data.value;
   protected readonly title = computed(() => {
@@ -103,6 +107,37 @@ export class ProductPage {
 
   protected n(value: number | string | null | undefined): string {
     return this.i18n.formatNumber(toInt(value));
+  }
+
+  protected async onAdd(request: BuyRequest): Promise<void> {
+    if (await this.addToCart(request)) {
+      this.toast.show($localize`:@@store.cart.added:أُضيف إلى السلة`, 'success', { label: $localize`:@@store.cart.view:عرض السلة`, path: '/cart' });
+    }
+  }
+
+  protected async onBuyNow(request: BuyRequest): Promise<void> {
+    if (await this.addToCart(request)) await this.router.navigateByUrl('/checkout');
+  }
+
+  private async addToCart(request: BuyRequest): Promise<boolean> {
+    if (this.busy()) return false;
+    this.busy.set(true);
+    this.buyError.set(null);
+    try {
+      const ok = await this.cart.add(request);
+      if (!ok) {
+        const p = this.cart.lastProblem();
+        // RUL-13/RUL-14: a course already in the cart is not an error for the buyer — take them to the cart.
+        if (p?.code === 'cart.duplicate_course') {
+          this.toast.show(problemMessage(p), 'info', { label: $localize`:@@store.cart.view:عرض السلة`, path: '/cart' });
+          return false;
+        }
+        this.buyError.set(p ? problemMessage(p) : null);
+      }
+      return ok;
+    } finally {
+      this.busy.set(false);
+    }
   }
 
   protected goToCourse(): void {
