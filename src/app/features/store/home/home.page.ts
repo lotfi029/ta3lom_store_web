@@ -6,9 +6,9 @@ import { SeoService } from '../../../core/seo/seo.service';
   selector: 'ta-home-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <main id="main" class="container">
+    <section class="wrap">
       <h1 i18n="@@store.home.title">متجر جمعية التعلم الإلكتروني</h1>
-    </main>
+    </section>
   `,
 })
 export class HomePage {

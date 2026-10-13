@@ -42,7 +42,14 @@ for (const [id, body] of src) {
     state = 'needs-review';
   }
   if (typeof map[id] === 'string') {
-    target = map[id];
+    // `{$name}` in en.json → the source's own placeholder element (<x id="name" …/>), matched case-insensitively.
+    const xs = new Map([...source.matchAll(/<x id="([^"]+)"[^>]*\/>/g)].map((m) => [m[1].toLowerCase(), m[0]]));
+    target = map[id].replace(/\{\$([A-Za-z0-9_]+)\}/g, (all, name) => {
+      const x = xs.get(name.toLowerCase());
+      if (!x) problems.push(`${id}: placeholder {$${name}} is not in the source`);
+      return x ?? all;
+    });
+    for (const [name] of xs) if (!target.includes(`id="${[...source.matchAll(/<x id="([^"]+)"/g)].find((m) => m[1].toLowerCase() === name)?.[1]}"`)) problems.push(`${id}: English text drops the placeholder ${name}`);
     state = 'translated';
   }
   if (state !== 'translated' && state !== 'final') problems.push(`${id}: ${state} — "${source.replace(/<[^>]+>/g, '…').slice(0, 60)}"`);

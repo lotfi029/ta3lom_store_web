@@ -1,12 +1,12 @@
 # Store web progress
-Next: W-02 — Layout
+Next: W-03 — Catalogue
 
 | Session | Status (todo/doing/done/blocked) | PR | Screens | Endpoints # | Tests (unit/e2e/a11y) | Notes |
 |---|---|---|---|---|---|---|
 | STEP 0 | done | — | — | — | — | setup READY (node 24.21, dotnet 10.0.112, PG 16); API cloned, built, migrated, on :5080 |
 | W-00 Bootstrap and tooling | done | [#1](https://github.com/lotfi029/ta3lom_store_web/pull/1) | placeholder home | #3 (`fields=slug`, prerender) | 3 / 3 smoke / 28 routes × 2 themes | budgets 89 KB JS / 95 KB transfer (ar) |
-| W-01 Core | done | #2 | — (core only) | #11, #16–#20 (auth service), #47–#51 (staff auth service) | 48 / 3 smoke / 28 × 2 | money, problem → 71 r4 messages, SEO, theme, StoreAuth/StaffAuth, store-API interceptor, guards, CartSummary; 93 KB JS |
-| W-02 Layout | todo | | | | | |
+| W-01 Core | done | [#2](https://github.com/lotfi029/ta3lom_store_web/pull/2) | — (core only) | #11, #16–#20 (auth service), #47–#51 (staff auth service) | 48 / 3 smoke / 28 × 2 | money, problem → 71 r4 messages, SEO, theme, StoreAuth/StaffAuth, store-API interceptor, guards, CartSummary; 93 KB JS |
+| W-02 Layout | done | #3 | header, footer, skip link, account menu, 404, toast, resource-state | #11 (badge), #18 (session restore), #19 (sign out) | 102 / 17 (layout + smoke, ar+en, 320 px, keyboard, axe both themes) / 28 × 2 | kit layout ported to the store prototype header; store icon set; 113 KB JS |
 | W-03 Catalogue | todo | | | | | |
 | W-04 Sign-in | todo | | | | | |
 | W-05 Cart | todo | | | | | |

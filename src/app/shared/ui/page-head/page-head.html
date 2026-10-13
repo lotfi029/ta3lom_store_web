@@ -1,0 +1,31 @@
+<div class="ph">
+  <div class="wrap">
+    @if (crumbs().length > 0) {
+      <nav class="crumbs" [attr.aria-label]="crumbsLabel()">
+        <ol>
+          @for (crumb of crumbs(); track crumb.label) {
+            <li>
+              <!-- A real element, not a ::before, so it can carry aria-hidden. CSS generated
+                   content IS exposed to the accessibility tree by current browsers, so a
+                   `content: '/'` separator had NVDA reading "الرئيسية slash من نحن slash …". -->
+              @if (!$first) {
+                <span class="crumb-sep" aria-hidden="true">/</span>
+              }
+              @if (crumb.path) {
+                <a [routerLink]="crumb.path">{{ crumb.label }}</a>
+              } @else {
+                <span aria-current="page">{{ crumb.label }}</span>
+              }
+            </li>
+          }
+        </ol>
+      </nav>
+    }
+
+    <h1>{{ heading() }}</h1>
+
+    @if (lede()) {
+      <p>{{ lede() }}</p>
+    }
+  </div>
+</div>

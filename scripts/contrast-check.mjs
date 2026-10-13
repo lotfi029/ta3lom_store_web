@@ -48,6 +48,9 @@ const PAIRS = [
   // light-mode pixels, which FE-1 must not do; recorded in the CR-01 notes as a finding instead.
   ['--c-success', '--c-surface', TEXT, 'success text', { preexistingLight: true }],
   ['--c-warn-text', '--c-gold-tint', TEXT, 'warning text on its tint'],
+  ['--c-success-text', '--c-surface', TEXT, 'success text (store status pills)'],
+  ['--c-success-text', '--c-surface-2', TEXT, 'success text on panels'],
+  ['--c-danger', '--c-surface-2', TEXT, 'error text on panels'],
   ['--c-on-brand', '--c-brand-strong', TEXT, 'primary button'],
   ['--c-on-brand', '--c-brand-deep', TEXT, 'deep brand fill'],
   ['--c-on-gold', '--c-gold', TEXT, 'CTA button'],

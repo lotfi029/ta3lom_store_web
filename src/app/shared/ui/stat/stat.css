@@ -1,0 +1,23 @@
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  text-align: center;
+}
+
+.stat.start {
+  text-align: start;
+}
+
+.num {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 500;
+  color: var(--c-accent);
+}
+
+.label {
+  /* Only used inside home's .stat-card, whose background is --gray — --muted is 4.41:1 there,
+     under the 4.5:1 AA minimum. --muted-on-gray is 5.75:1. */
+  color: var(--c-muted-2);
+  font-size: 0.95rem;
+}

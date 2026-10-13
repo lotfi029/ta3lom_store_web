@@ -1,9 +1,10 @@
 import { isPlatformBrowser } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { Injectable, PLATFORM_ID, computed, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { type CartBadge, toInt } from '../api/api.types';
 import { STORE_API_URL } from '../api/store-api-url';
+import { SILENT } from '../http/error-toast.interceptor';
 
 /**
  * The header cart badge (11 §3.3, #11) — part of the initial bundle, so it stays tiny. The full cart (CartStore) is a
@@ -25,7 +26,7 @@ export class CartSummary {
   async load(): Promise<number> {
     if (!this.browser) return 0;
     try {
-      this.state.set(await firstValueFrom(this.http.get<CartBadge>(`${this.api}/cart/summary`)));
+      this.state.set(await firstValueFrom(this.http.get<CartBadge>(`${this.api}/cart/summary`, { context: new HttpContext().set(SILENT, true) })));
     } catch {
       /* the badge is decoration; a failure leaves the last value */
     }

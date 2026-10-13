@@ -1,0 +1,34 @@
+<ng-template #body>
+  <span class="label"><ng-content /></span>
+</ng-template>
+
+@if (routerLink()) {
+  <a
+    class="btn"
+    [class]="'v-' + variant() + ' s-' + size()"
+    [routerLink]="routerLink()"
+    [fragment]="fragment()"
+  >
+    <ng-container [ngTemplateOutlet]="body" />
+  </a>
+} @else if (href()) {
+  <a class="btn" [class]="'v-' + variant() + ' s-' + size()" [href]="href()">
+    <ng-container [ngTemplateOutlet]="body" />
+  </a>
+} @else {
+  <button
+    class="btn"
+    [class]="'v-' + variant() + ' s-' + size()"
+    [class.is-loading]="loading()"
+    [type]="type()"
+    [disabled]="disabled()"
+    [attr.aria-busy]="loading() ? 'true' : null"
+    [attr.aria-disabled]="loading() ? 'true' : null"
+    (click)="onClick($event)"
+  >
+    <ng-container [ngTemplateOutlet]="body" />
+    @if (loading()) {
+      <span class="spinner" aria-hidden="true"></span>
+    }
+  </button>
+}

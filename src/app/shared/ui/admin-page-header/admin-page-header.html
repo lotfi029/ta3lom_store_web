@@ -1,0 +1,13 @@
+<div class="adm-h">
+  <div>
+    <h1>{{ heading() }}</h1>
+    @if (description()) {
+      <p class="note">{{ description() }}</p>
+    }
+  </div>
+  @if (addLabel()) {
+    <ta-button type="button" variant="primary" size="sm" [disabled]="addDisabled()" (click)="add.emit()">
+      {{ addLabel() }}
+    </ta-button>
+  }
+</div>
