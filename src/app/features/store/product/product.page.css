@@ -1,0 +1,175 @@
+.crumbs-row {
+  padding-block: 28px 0;
+}
+
+.crumbs-row .crumbs {
+  margin: 0;
+}
+
+.pp {
+  padding-block: 12px 56px;
+}
+
+.hero-media {
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--c-tint);
+}
+
+.hero-media.book {
+  display: grid;
+  place-items: center;
+  padding-block: 24px;
+}
+
+.hero-media.book ta-cover {
+  inline-size: min(260px, 60%);
+}
+
+.tagrow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-block: 22px 10px;
+}
+
+.tag.grey {
+  background: var(--c-surface-3);
+  color: var(--c-text-2);
+}
+
+.spacer {
+  flex: 1;
+}
+
+h1 {
+  font-size: clamp(1.8rem, 3.6vw, 2.6rem);
+  margin: 0;
+}
+
+.kv b.sm {
+  font-size: 1rem;
+}
+
+.h2 {
+  font-size: 1.6rem;
+  margin-block: 34px 12px;
+}
+
+.curric {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  border: 1px solid var(--c-border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.curric li {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding-block: 12px;
+  padding-inline: 16px;
+  border-block-end: 1px solid var(--c-border);
+  font-size: 0.93rem;
+}
+
+.curric li:last-child {
+  border-block-end: 0;
+}
+
+.curric .no {
+  font-size: 0.75rem;
+  color: var(--c-accent-strong);
+  inline-size: 26px;
+  flex: none;
+}
+
+.curric .d {
+  margin-inline-start: auto;
+  font-size: 0.75rem;
+  color: var(--c-muted);
+  direction: ltr;
+}
+
+.person {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  background: var(--c-surface-2);
+  border-radius: var(--rc);
+  padding: 18px;
+  margin-block-start: 26px;
+}
+
+.avatar {
+  inline-size: 64px;
+  block-size: 64px;
+  border-radius: 50%;
+  background: var(--c-brand-strong);
+  color: var(--c-on-brand);
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+  font-size: 1.2rem;
+  flex: none;
+}
+
+.person b {
+  display: block;
+  font-weight: 500;
+}
+
+.person .ti {
+  font-size: 0.88rem;
+  color: var(--c-muted-2);
+}
+
+.related {
+  padding-block: 0 72px;
+}
+
+.rel-h {
+  font-size: 1.8rem;
+  margin-block: 0 28px;
+}
+
+.rel-ph {
+  min-block-size: 320px;
+}
+
+.gone {
+  padding-block: var(--space-10);
+  text-align: center;
+}
+
+.gone p {
+  color: var(--c-text-2);
+}
+
+.links {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.links a {
+  color: var(--c-link);
+  min-block-size: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.loading {
+  padding-block: 40px;
+}
+
+.sk-media {
+  aspect-ratio: 16 / 10;
+}
+
+.sk-box {
+  block-size: 360px;
+}

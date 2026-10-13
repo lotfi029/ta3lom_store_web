@@ -23,8 +23,8 @@ export interface SeoData {
   jsonLd?: JsonLd | JsonLd[];
 }
 
-export const SITE_NAME_AR = 'متجر جمعية التعلم الإلكتروني';
-export const SITE_NAME_EN = 'E-Learning Association Store';
+/** The store's name in the current locale (titles, Open Graph, JSON-LD). */
+export const siteName = (): string => $localize`:@@store.seo.site-name:متجر جمعية التعلم الإلكتروني`;
 const JSON_LD_ID = 'ta-seo-json-ld';
 
 /** Every route calls `set()` (non-negotiable #4; a unit test checks every page does). Canonicals on store.ta3lom.sa. */
@@ -36,7 +36,7 @@ export class SeoService {
   private readonly i18n = inject(I18nService);
 
   set(data: SeoData): void {
-    const site = this.i18n.pick(SITE_NAME_AR, SITE_NAME_EN);
+    const site = siteName();
     const title = data.title ? `${data.title} — ${site}` : site;
     const canonical = this.url(this.i18n.locale, data.path);
 

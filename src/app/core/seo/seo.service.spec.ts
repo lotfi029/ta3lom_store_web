@@ -13,7 +13,7 @@ describe('SeoService', () => {
   it('puts the canonical and hreflang alternates on store.ta3lom.sa', () => {
     const { seo, doc } = setup('en');
     seo.set({ title: 'Smart study', description: 'd', path: '/p/smart-study' });
-    expect(doc.title).toBe('Smart study — E-Learning Association Store');
+    expect(doc.title).toBe('Smart study — متجر جمعية التعلم الإلكتروني');
     expect(doc.querySelector('link[rel=canonical]')?.getAttribute('href')).toBe('https://store.ta3lom.sa/en/p/smart-study');
     expect(doc.querySelector('link[hreflang=ar]')?.getAttribute('href')).toBe('https://store.ta3lom.sa/ar/p/smart-study');
     expect(doc.querySelector('link[hreflang=x-default]')?.getAttribute('href')).toBe('https://store.ta3lom.sa/ar/p/smart-study');

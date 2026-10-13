@@ -8,6 +8,10 @@ export const routes: Routes = [
     component: PublicLayout,
     children: [
       { path: '', loadComponent: () => import('./features/store/home/home.page').then((m) => m.HomePage) },
+      { path: 'courses', data: { type: 'course' }, loadComponent: () => import('./features/store/catalog/catalog.page').then((m) => m.CatalogPage) },
+      { path: 'books', data: { type: 'book' }, loadComponent: () => import('./features/store/catalog/catalog.page').then((m) => m.CatalogPage) },
+      { path: 'search', loadComponent: () => import('./features/store/catalog/search.page').then((m) => m.SearchPage) },
+      { path: 'p/:slug', loadComponent: () => import('./features/store/product/product.page').then((m) => m.ProductPage) },
       { path: '**', loadComponent: () => import('./features/store/not-found/not-found.page').then((m) => m.NotFoundPage) },
     ],
   },

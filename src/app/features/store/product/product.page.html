@@ -1,0 +1,155 @@
+@if (data.notFound()) {
+  <section class="gone wrap">
+    <h1 i18n="@@store.product.unavailable-title">هذا المنتج غير متاح</h1>
+    <p i18n="@@store.product.unavailable-lede">ربما أُرشف هذا المنتج أو لم يُنشر بعد.</p>
+    <p class="links">
+      <a routerLink="/courses" i18n="@@store.layout.nav-courses">الدورات</a>
+      <a routerLink="/books" i18n="@@store.layout.nav-books">الكتب</a>
+      <a routerLink="/account/orders" i18n="@@store.layout.my-orders">طلباتي</a>
+    </p>
+  </section>
+} @else if (p(); as p) {
+  <div class="crumbs-row">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="مسار التنقل" i18n-aria-label="@@store.ui.breadcrumb">
+        <ol>
+          <li><a routerLink="/" i18n="@@store.layout.nav-home">الرئيسية</a></li>
+          <li><span aria-hidden="true">/</span><a [routerLink]="typePath()">{{ typeLabel() }}</a></li>
+          <li><span aria-hidden="true">/</span><span aria-current="page">{{ title() }}</span></li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+  <section class="pp">
+    <div class="wrap">
+      <div class="pgrid">
+        <div class="main">
+          <div class="hero-media" [class.book]="!isCourse()">
+            <ta-cover [cover]="p.cover" [shape]="isCourse() ? 'tile' : 'book'" [priority]="true" />
+          </div>
+          <div class="tagrow">
+            @if (p.badge === 'best') {
+              <span class="tag gold" i18n="@@store.card.badge-best">الأكثر طلبًا</span>
+            } @else if (p.badge === 'new') {
+              <span class="tag green" i18n="@@store.card.badge-new">جديد</span>
+            }
+            <span class="tag">
+              @if (isCourse()) {
+                <ng-container i18n="@@store.product.type-course">دورة</ng-container>
+              } @else {
+                <ng-container i18n="@@store.product.type-book">كتاب</ng-container>
+              }
+            </span>
+            @if (category(); as c) {
+              <span class="tag grey">{{ c }}</span>
+            }
+            <span class="spacer"></span>
+            <ta-share-sheet [url]="canonical()" [title]="title()" />
+          </div>
+          <h1>{{ title() }}</h1>
+
+          @if (p.course; as c) {
+            <div class="kv">
+              <div><b>{{ n(c.lessons) }}</b><span i18n="@@store.product.lessons">درسًا</span></div>
+              <div><b>{{ n(hours()) }}</b><span i18n="@@store.product.hours">ساعة تعليمية</span></div>
+              <div><b>{{ n(c.learnerCount) }}</b><span i18n="@@store.product.learners">متعلّم</span></div>
+              @if (c.levelAr) {
+                <div><b class="sm">{{ i18n.pick(c.levelAr, c.levelEn) }}</b><span i18n="@@store.product.level">المستوى</span></div>
+              }
+            </div>
+          }
+          @if (p.book; as b) {
+            <div class="kv">
+              @if (b.pages) {
+                <div><b>{{ n(b.pages) }}</b><span i18n="@@store.product.pages">صفحة</span></div>
+              }
+              <div><b>{{ n(b.formats.length) }}</b><span i18n="@@store.product.formats">صيغة متاحة</span></div>
+              <div><b class="sm">{{ i18n.pick(b.authorAr, b.authorEn) }}</b><span i18n="@@store.product.author">المؤلف</span></div>
+              @if (b.publishedYear) {
+                <div><b>{{ b.publishedYear }}</b><span i18n="@@store.product.year">سنة النشر</span></div>
+              }
+            </div>
+          }
+
+          <div class="prose">
+            @if (isCourse()) {
+              <h2 i18n="@@store.product.about-course">عن الدورة</h2>
+            } @else {
+              <h2 i18n="@@store.product.about-book">عن الكتاب</h2>
+            }
+            <p>{{ summary() }}</p>
+            @for (para of bodyParagraphs(); track $index) {
+              <p>{{ para }}</p>
+            }
+            @if (p.book; as b) {
+              <ul>
+                @for (f of b.formats; track f.id) {
+                  @if (f.kind === 'print') {
+                    <li i18n="@@store.product.print-info">النسخة المطبوعة: شحن داخل المملكة، ورسوم الشحن تُحسب مرة واحدة لكل طلب.</li>
+                  } @else {
+                    <li i18n="@@store.product.digital-info">النسخة الرقمية: تحميل فوري من حسابك، بعلامة مائية باسم المشتري.</li>
+                  }
+                }
+              </ul>
+            }
+          </div>
+
+          @if (p.course; as c) {
+            @if (c.modules.length > 0) {
+              <h2 class="h2" i18n="@@store.product.curriculum">المحتوى</h2>
+              <ol class="curric">
+                @for (m of c.modules; track $index) {
+                  <li>
+                    <span class="no mono" aria-hidden="true">{{ ($index + 1).toString().padStart(2, '0') }}</span>
+                    <span class="mt">{{ moduleTitle(m) }}</span>
+                    <span class="d mono"><span class="visually-hidden" i18n="@@store.product.duration">المدة</span> {{ duration(m.durationSeconds) }}</span>
+                  </li>
+                }
+              </ol>
+            }
+            <div class="person">
+              <span class="avatar" aria-hidden="true">{{ initial(i18n.pick(c.instructorAr, c.instructorEn)) }}</span>
+              <div>
+                <span class="ti" i18n="@@store.product.instructor">المدرّب</span>
+                <b>{{ i18n.pick(c.instructorAr, c.instructorEn) }}</b>
+              </div>
+            </div>
+          }
+        </div>
+
+        <ta-buy-box
+          [product]="p"
+          [coursePrice]="data.coursePrice()"
+          [courseCompareAt]="data.courseCompareAt()"
+          [formats]="data.formats()"
+          [printMax]="config.printMaxQuantity()"
+          [busy]="busy()"
+          [actions]="actionsEnabled()"
+          (goToCourse)="goToCourse()"
+        />
+      </div>
+    </div>
+  </section>
+
+  @if (p.related.length > 0) {
+    <section class="related" aria-labelledby="rel-h">
+      <div class="wrap">
+        <h2 id="rel-h" class="rel-h" i18n="@@store.product.related">قد يهمّك أيضًا</h2>
+        @defer (on viewport) {
+          <ta-related-list />
+        } @placeholder {
+          <div class="rel-ph"></div>
+        }
+      </div>
+    </section>
+  }
+} @else {
+  <section class="wrap loading" aria-busy="true">
+    <h1 class="visually-hidden" i18n="@@store.ui.loading">جارٍ التحميل…</h1>
+    <div class="pgrid">
+      <div class="skel sk-media"></div>
+      <div class="skel sk-box"></div>
+    </div>
+  </section>
+}
