@@ -1,0 +1,18 @@
+.adm-h {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-block-end: var(--space-6);
+}
+
+.adm-h h1 {
+  font-size: 1.6rem;
+}
+
+.note {
+  color: var(--c-muted);
+  font-size: 0.9rem;
+  margin-block-start: var(--space-1);
+}

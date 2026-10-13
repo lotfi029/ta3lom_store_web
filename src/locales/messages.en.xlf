@@ -26,6 +26,374 @@
           <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="store.not-found.title" datatype="html">
+        <source>الصفحة غير موجودة</source>
+        <target state="translated">Page not found</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/not-found/not-found.page.ts</context>
+          <context context-type="linenumber">13,14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.not-found.lede" datatype="html">
+        <source>ربما نُقلت الصفحة أو لم تعد متاحة. تصفّح الدورات والكتب من هنا.</source>
+        <target state="translated">The page may have moved or is no longer available. Browse courses and books from here.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/not-found/not-found.page.ts</context>
+          <context context-type="linenumber">14,16</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/not-found/not-found.page.ts</context>
+          <context context-type="linenumber">55</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.not-found.home" datatype="html">
+        <source>الصفحة الرئيسية للمتجر</source>
+        <target state="translated">Store home</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/not-found/not-found.page.ts</context>
+          <context context-type="linenumber">16,17</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.nav-courses" datatype="html">
+        <source>الدورات</source>
+        <target state="translated">Courses</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/not-found/not-found.page.ts</context>
+          <context context-type="linenumber">17,18</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/footer/footer.html</context>
+          <context context-type="linenumber">15,16</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">13,14</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">58,59</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.nav-books" datatype="html">
+        <source>الكتب</source>
+        <target state="translated">Books</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/not-found/not-found.page.ts</context>
+          <context context-type="linenumber">18,20</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/footer/footer.html</context>
+          <context context-type="linenumber">16,17</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">14,17</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">59,60</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.not-found.seo-title" datatype="html">
+        <source>الصفحة غير موجودة</source>
+        <target state="translated">Page not found</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/not-found/not-found.page.ts</context>
+          <context context-type="linenumber">54</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.account" datatype="html">
+        <source>حسابي</source>
+        <target state="translated">My account</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/account-menu/account-menu.ts</context>
+          <context context-type="linenumber">19,21</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/footer/footer.html</context>
+          <context context-type="linenumber">18,22</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">62,64</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.my-courses" datatype="html">
+        <source>دوراتي</source>
+        <target state="translated">My courses</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/account-menu/account-menu.ts</context>
+          <context context-type="linenumber">23,24</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.my-books" datatype="html">
+        <source>كتبي</source>
+        <target state="translated">My books</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/account-menu/account-menu.ts</context>
+          <context context-type="linenumber">24,25</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.my-orders" datatype="html">
+        <source>طلباتي</source>
+        <target state="translated">My orders</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/account-menu/account-menu.ts</context>
+          <context context-type="linenumber">25,26</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.my-profile" datatype="html">
+        <source>الملف الشخصي</source>
+        <target state="translated">Profile</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/account-menu/account-menu.ts</context>
+          <context context-type="linenumber">26,28</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.sign-out" datatype="html">
+        <source>تسجيل الخروج</source>
+        <target state="translated">Sign out</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/account-menu/account-menu.ts</context>
+          <context context-type="linenumber">29,31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.logo-alt" datatype="html">
+        <source>شعار جمعية التعلم الإلكتروني</source>
+        <target state="translated">E-Learning Association logo</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/footer/footer.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.footer-about" datatype="html">
+        <source>متجر جمعية التعلم الإلكتروني: كل ريال يُنفق هنا يعود إلى برامج الجمعية التعليمية.</source>
+        <target state="translated">The E-Learning Association store: every riyal spent here goes back into the association’s education programmes.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/footer/footer.html</context>
+          <context context-type="linenumber">10,14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.footer-store" datatype="html">
+        <source>المتجر</source>
+        <target state="translated">Store</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/footer/footer.html</context>
+          <context context-type="linenumber">14,15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.nav-cart" datatype="html">
+        <source>السلة</source>
+        <target state="translated">Cart</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/footer/footer.html</context>
+          <context context-type="linenumber">17,18</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">60,62</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.footer-association" datatype="html">
+        <source>الجمعية</source>
+        <target state="translated">Association</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/footer/footer.html</context>
+          <context context-type="linenumber">22,23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.main-site" datatype="html">
+        <source>الموقع الرئيسي</source>
+        <target state="translated">Main site</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/footer/footer.html</context>
+          <context context-type="linenumber">23,24</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">27,29</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">66,69</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.footer-about-link" datatype="html">
+        <source>عن الجمعية</source>
+        <target state="translated">About the association</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/footer/footer.html</context>
+          <context context-type="linenumber">24,25</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.footer-privacy" datatype="html">
+        <source>سياسة الخصوصية</source>
+        <target state="translated">Privacy policy</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/footer/footer.html</context>
+          <context context-type="linenumber">25,26</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.footer-contact-link" datatype="html">
+        <source>تواصل معنا</source>
+        <target state="translated">Contact us</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/footer/footer.html</context>
+          <context context-type="linenumber">26,30</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.footer-contact" datatype="html">
+        <source>تواصل</source>
+        <target state="translated">Contact</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/footer/footer.html</context>
+          <context context-type="linenumber">30,31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.footer-payments" datatype="html">
+        <source>طرق الدفع المقبولة</source>
+        <target state="translated">Accepted payment methods</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/footer/footer.html</context>
+          <context context-type="linenumber">32</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.association" datatype="html">
+        <source>جمعية التعلم الإلكتروني</source>
+        <target state="translated">E-Learning Association</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/footer/footer.html</context>
+          <context context-type="linenumber">42,44</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">6,7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.store-tagline" datatype="html">
+        <source>المتجر · دورات وكتب</source>
+        <target state="translated">Store · courses and books</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">7,11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.nav-label" datatype="html">
+        <source>المتجر</source>
+        <target state="translated">Store</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.nav-home" datatype="html">
+        <source>الرئيسية</source>
+        <target state="translated">Home</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">12,13</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">57,58</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.search-label" datatype="html">
+        <source>ابحث في المتجر</source>
+        <target state="translated">Search the store</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">18,19</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">50,51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.search-placeholder" datatype="html">
+        <source>ابحث عن دورة أو كتاب…</source>
+        <target state="translated">Search for a course or a book…</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.search-submit" datatype="html">
+        <source>بحث</source>
+        <target state="translated">Search</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">22,26</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">54,57</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.sign-in" datatype="html">
+        <source>دخول</source>
+        <target state="translated">Sign in</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">40,41</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">65,66</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.menu" datatype="html">
+        <source>القائمة</source>
+        <target state="translated">Menu</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">43,45</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.mobile-nav-label" datatype="html">
+        <source>القائمة على الجوال</source>
+        <target state="translated">Mobile menu</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">48</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.cart-label" datatype="html">
+        <source>السلة، <x id="count" equiv-text="n"/> عنصر</source>
+        <target state="translated">Cart, <x id="count" equiv-text="n"/> items</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.ts</context>
+          <context context-type="linenumber">70</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.skip-link" datatype="html">
+        <source>تخطَّ إلى المحتوى الرئيسي</source>
+        <target state="translated">Skip to main content</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/skip-link/skip-link.ts</context>
+          <context context-type="linenumber">7,8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.dark-mode" datatype="html">
+        <source>الوضع الداكن</source>
+        <target state="translated">Dark mode</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/theme-toggle/theme-toggle.ts</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.ui.toast-dismiss" datatype="html">
+        <source>إغلاق</source>
+        <target state="translated">Dismiss</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/toast/toast.ts</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -1,0 +1,10 @@
+<dialog
+  #dialogEl
+  class="ta-dialog"
+  [attr.aria-labelledby]="labelledBy()"
+  (pointerdown)="onPointerDown($event)"
+  (pointerup)="onPointerUp($event)"
+  (close)="onNativeClose()"
+>
+  <ng-content />
+</dialog>

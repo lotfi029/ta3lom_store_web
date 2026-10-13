@@ -1,0 +1,45 @@
+<footer class="foot">
+  <div class="wrap">
+    <div class="grid">
+      <div>
+        <div class="foot-logo">
+          <svg viewBox="380 320 1250 1350" role="img" aria-label="شعار جمعية التعلم الإلكتروني" i18n-aria-label="@@store.layout.logo-alt">
+            <use href="logo.svg#logo-src" />
+          </svg>
+        </div>
+        <p i18n="@@store.layout.footer-about">متجر جمعية التعلم الإلكتروني: كل ريال يُنفق هنا يعود إلى برامج الجمعية التعليمية.</p>
+      </div>
+
+      <div>
+        <h2 class="fh" i18n="@@store.layout.footer-store">المتجر</h2>
+        <a routerLink="/courses" i18n="@@store.layout.nav-courses">الدورات</a>
+        <a routerLink="/books" i18n="@@store.layout.nav-books">الكتب</a>
+        <a routerLink="/cart" i18n="@@store.layout.nav-cart">السلة</a>
+        <a routerLink="/account/courses" i18n="@@store.layout.account">حسابي</a>
+      </div>
+
+      <div>
+        <h2 class="fh" i18n="@@store.layout.footer-association">الجمعية</h2>
+        <a [href]="main" i18n="@@store.layout.main-site">الموقع الرئيسي</a>
+        <a [href]="main + '/ar/about/identity'" i18n="@@store.layout.footer-about-link">عن الجمعية</a>
+        <a [href]="main + '/ar/privacy'" i18n="@@store.layout.footer-privacy">سياسة الخصوصية</a>
+        <a [href]="main + '/ar/contact'" i18n="@@store.layout.footer-contact-link">تواصل معنا</a>
+      </div>
+
+      <div>
+        <h2 class="fh" i18n="@@store.layout.footer-contact">تواصل</h2>
+        <a class="mono" dir="ltr" href="mailto:store@ta3lom.sa">store&#64;ta3lom.sa</a>
+        <ul class="pay" aria-label="طرق الدفع المقبولة" i18n-aria-label="@@store.layout.footer-payments">
+          <li>mada</li>
+          <li>Apple Pay</li>
+          <li>VISA</li>
+          <li>STC Pay</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="foot-bottom">
+      <span><bdi>©</bdi> {{ year }} <ng-container i18n="@@store.layout.association">جمعية التعلم الإلكتروني</ng-container></span>
+    </div>
+  </div>
+</footer>

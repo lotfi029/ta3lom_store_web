@@ -1,0 +1,208 @@
+/*
+ * CR-01 FE-1 micro-interactions. Every transition names its properties (never `all`, which also
+ * animates layout and anything a variant happens to change); every one of them — the lift, the
+ * press, the shine, the icon nudge, the focus ring, the spinner — stops under
+ * prefers-reduced-motion at the bottom of this file, leaving only the colour change.
+ */
+.btn {
+  position: relative;
+  overflow: hidden; /* clips the shine sweep; an element's own outline is never clipped */
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.95rem;
+  min-height: 44px;
+  min-width: 44px;
+  padding-block: 11px;
+  padding-inline: var(--space-5);
+  border-radius: var(--r);
+  border: 1px solid transparent;
+  text-decoration: none;
+  cursor: pointer;
+  line-height: 1.3;
+  transition:
+    background-color var(--dur-1) var(--ease),
+    color var(--dur-1) var(--ease),
+    border-color var(--dur-1) var(--ease),
+    box-shadow var(--dur-1) var(--ease),
+    transform var(--dur-1) var(--ease);
+
+  /* No 300ms double-tap-zoom wait on a phone, so the press state shows immediately. */
+  touch-action: manipulation;
+}
+
+/* The projected content. Its own flex row, so the gap between a label and a trailing chevron
+   survives being wrapped, and so `loading` can hide it while it keeps holding the width. */
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Hover only where a real pointer can hover. On a touch screen `:hover` sticks to the last-tapped
+   button until the next tap elsewhere, leaving a lifted button behind after every navigation back.
+   Touch gets the press state below instead, which is the feedback a finger needs. */
+@media (hover: hover) {
+  .btn:hover {
+    transform: translateY(-1px);
+  }
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none;
+}
+
+/* Animated focus ring: grows out from the edge rather than snapping on. Colour from --c-focus,
+   which lightens in dark mode (≥ 7.5:1 on every dark surface). */
+.btn:focus-visible {
+  outline: 3px solid var(--c-focus);
+  outline-offset: 3px;
+  animation: ring-in var(--dur-2) var(--ease);
+}
+
+@keyframes ring-in {
+  from {
+    outline-offset: 0;
+    outline-color: transparent;
+  }
+}
+
+/* Press: a slight give under the pointer. */
+.btn:active:not(:disabled, .is-loading) {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Shine sweep on the two filled, call-to-action variants. It travels in the READING direction —
+   inline-start to inline-end — via --dir (base.css: 1 under dir=ltr, -1 under dir=rtl), so in
+   Arabic it runs right-to-left. Purely decorative: no pointer events, under the label. */
+.v-primary::after,
+.v-cta::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(100deg, transparent 20%, var(--c-shine) 50%, transparent 80%);
+  transform: translateX(calc(-110% * var(--dir, 1)));
+  transition: transform var(--dur-3) var(--ease);
+}
+
+.v-primary:hover:not(:disabled, .is-loading)::after,
+.v-cta:hover:not(:disabled, .is-loading)::after {
+  transform: translateX(calc(110% * var(--dir, 1)));
+}
+
+/* White text on --brand is 3.4:1 — under the 4.5:1 AA minimum at this weight/size (600/0.95rem
+   doesn't clear the "large text" bold exemption). --brand-700 is 4.86:1. Hover darkens one step
+   further to --brand-900 (6.64:1) so the state change stays visible now the base tone moved.
+   Brand fills keep their value in dark mode, so these ratios hold in both themes. */
+.v-primary {
+  background: var(--c-brand-strong);
+  color: var(--c-on-brand);
+}
+
+.v-primary:hover:not(:disabled) {
+  background: var(--c-brand-deep);
+  box-shadow: var(--shadow-brand);
+}
+
+/*
+ * Ink text, not white — white on --gold is 3.22:1, under the 4.5:1 AA text minimum (CLAUDE.md
+ * already flags --gold as "large text and non-text UI only, never body copy"; a 0.95rem button
+ * label doesn't qualify as large text either). Ink on --gold is 4.97:1 — --c-on-gold, which stays
+ * ink in dark mode too (the fill doesn't change). The hover state keeps the same background
+ * rather than darkening to --gold-700, because ink-on-gold-700 drops to 3.65:1 — the shadow/lift
+ * already carry the hover feedback.
+ */
+.v-cta {
+  background: var(--c-gold);
+  color: var(--c-on-gold);
+}
+
+.v-cta:hover:not(:disabled) {
+  box-shadow: var(--shadow-gold);
+}
+
+.v-ghost {
+  background: transparent;
+  color: var(--c-text);
+  border-color: var(--c-border);
+}
+
+.v-ghost:hover:not(:disabled) {
+  border-color: var(--c-text);
+  background-color: var(--c-surface-2);
+}
+
+.v-lite {
+  background: var(--c-surface-3);
+  color: var(--c-text);
+}
+
+/* The one variant with no hover at all before. --c-border is one step darker than its
+   --c-surface-3 fill; --c-text stays far above 4.5:1 on it in both themes. */
+.v-lite:hover:not(:disabled) {
+  background-color: var(--c-border);
+}
+
+.s-sm {
+  padding-block: 8px;
+  padding-inline: 14px;
+  font-size: 0.88rem;
+}
+
+/* Loading: the label keeps its box (so the width never jumps) and a spinner sits over it. */
+.is-loading {
+  cursor: progress;
+}
+
+.is-loading .label {
+  visibility: hidden;
+}
+
+.spinner {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  inline-size: 1.1em;
+  block-size: 1.1em;
+  border-radius: 50%;
+  border: 2px solid currentcolor;
+  border-block-start-color: transparent;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* stylelint-disable-next-line no-descending-specificity -- a different property (animation) from the :active rule above; order cannot matter */
+  .btn:focus-visible {
+    animation: none;
+  }
+
+  .btn:hover,
+  .btn:active:not(:disabled, .is-loading) {
+    transform: none;
+  }
+
+  .v-primary::after,
+  .v-cta::after {
+    display: none;
+  }
+
+  /* A still ring, not a spinner: the busy state is still visible (and aria-busy still set). */
+  .spinner {
+    animation: none;
+    border-block-start-color: currentcolor;
+    opacity: 0.6;
+  }
+}

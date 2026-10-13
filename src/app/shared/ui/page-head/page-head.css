@@ -1,0 +1,61 @@
+/* Prototype `.ph` (line 96). */
+.ph {
+  background: var(--c-surface-2);
+  padding-block: 52px 44px;
+}
+
+.ph h1 {
+  font-size: clamp(2rem, 4.6vw, 3.2rem);
+}
+
+.ph p {
+  color: var(--c-muted-2);
+  margin-block-start: 12px;
+  font-size: 1.05rem;
+}
+
+/* Prototype `.crumbs` (line 99). */
+.crumbs {
+  font-size: 0.82rem;
+  color: var(--c-muted-2);
+  margin-block-end: 14px;
+}
+
+.crumbs ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* The separator is a real aria-hidden <span> in the template, not a ::before. An earlier version
+   used generated content on the theory that it would stay out of the accessibility tree — it does
+   not: current browsers expose ::before/::after text, so every crumb after the first was read as
+   "slash". A pseudo-element cannot carry aria-hidden, so the separator has to be a real node. */
+.crumb-sep {
+  margin-inline-end: 8px;
+}
+
+.crumbs a {
+  color: var(--c-muted-2);
+  text-decoration: none;
+
+  /* 0.82rem inline links sit under the 44px target of non-negotiable #7. WCAG 2.2's target-size
+     (minimum) exempts a link rendered inline within a block of text, which a breadcrumb trail is;
+     the block padding still gives a comfortably taller hit area than the text alone. */
+  display: inline-block;
+  padding-block: 6px;
+}
+
+.crumbs a:hover {
+  color: var(--c-text);
+  text-decoration: underline;
+}
+
+.crumbs [aria-current='page'] {
+  display: inline-block;
+  padding-block: 6px;
+  color: var(--c-text);
+}

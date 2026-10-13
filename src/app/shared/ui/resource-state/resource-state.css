@@ -1,0 +1,9 @@
+/* .state itself is global (src/styles/base.css) — only the error/retry additions live here. */
+.state.error {
+  color: var(--c-danger);
+}
+
+.state-retry {
+  text-align: center;
+  padding-block-end: var(--space-6);
+}

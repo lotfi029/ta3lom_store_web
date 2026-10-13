@@ -1,0 +1,16 @@
+@if (loading()) {
+  <p class="state" role="status" i18n="@@store.ui.loading">جارٍ التحميل…</p>
+} @else if (error()) {
+  <p class="state error" role="alert">
+    @if (errorMessage(); as message) {
+      {{ message }}
+    } @else {
+      <ng-container i18n="@@store.ui.load-failed">تعذّر التحميل.</ng-container>
+    }
+  </p>
+  <p class="state-retry">
+    <ta-button type="button" variant="ghost" size="sm" (click)="retry.emit()" i18n="@@store.ui.retry">إعادة المحاولة</ta-button>
+  </p>
+} @else {
+  <ng-content />
+}
