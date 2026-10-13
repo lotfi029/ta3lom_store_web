@@ -1,13 +1,14 @@
 import { isPlatformBrowser } from '@angular/common';
-import { HttpClient, httpResource } from '@angular/common/http';
-import { Injectable, PLATFORM_ID, computed, effect, inject, linkedSignal, signal, untracked } from '@angular/core';
+import { HttpClient, HttpContext, httpResource } from '@angular/common/http';
+import { Injectable, PLATFORM_ID, computed, inject, linkedSignal, signal } from '@angular/core';
 import { type Observable, firstValueFrom } from 'rxjs';
-import type { Cart, CartLine, CartNotice } from '../api/api.types';
+import type { Cart, CartLine, CartNotice, Quote, QuoteLine } from '../api/api.types';
 import { toInt } from '../api/api.types';
 import { PURCHASE_LINE } from '../api/pre-r4';
 import { type StoreProblem, toProblem } from '../api/problem';
 import { STORE_API_URL } from '../api/store-api-url';
 import { StoreAuth } from '../auth/store-auth';
+import { SILENT } from '../http/error-toast.interceptor';
 import { valueOf } from '../http/resource-value';
 import { add, sum, times, toHalalas } from '../money/money';
 import { CartSummary } from './cart-summary';
@@ -78,8 +79,12 @@ export class CartStore {
   readonly loadError = computed(() => !!this.remote.error() && !this.server());
   readonly pending = signal(0);
   readonly lastProblem = signal<StoreProblem | null>(null);
-  /** Lines whose unit price changed since this page last saw them (RUL-15 — the checkout quote is authoritative). */
-  readonly priceChanged = signal<string[]>([]);
+  /**
+   * RUL-15: the cart keeps the price the visitor saw; only the checkout quote reprices. The cart page asks for a quote
+   * (`checkPrices`) and shows what moved. Any new server cart invalidates it.
+   */
+  readonly quote = linkedSignal<Cart | undefined, Quote | null>({ source: () => this.server(), computation: () => null });
+  readonly priceChanged = computed(() => (this.quote()?.lines ?? []).filter((l) => l.status === 'changed').map((l) => l.lineId));
 
   readonly count = computed(() => this.lines().length);
   readonly isEmpty = computed(() => this.server() !== undefined && this.lines().length === 0);
@@ -94,7 +99,11 @@ export class CartStore {
    */
   readonly totals = computed(() => {
     const s = this.server()?.summary;
+    const q = this.quote();
     const purchases = sum(this.lines().map((l) => l.amount));
+    if (s && q?.priceChanged && this.pending() === 0) {
+      return { purchases: q.purchasesTotal, shipping: q.shippingTotal, vat: q.vatTotal, grand: add(q.purchasesTotal, q.shippingTotal), requiresShipping: q.requiresShipping };
+    }
     if (s && this.pending() === 0) {
       return { purchases: s.purchasesTotal, shipping: s.shippingTotal, vat: s.vatIncluded, grand: s.grandTotal, requiresShipping: s.requiresShipping };
     }
@@ -103,15 +112,7 @@ export class CartStore {
   });
 
   private lastShippingFee = '25.00';
-  private seenPrices = new Map<string, string>();
   private queue: Promise<unknown> = Promise.resolve();
-
-  constructor() {
-    effect(() => {
-      const cart = this.server();
-      untracked(() => this.trackPrices(cart));
-    });
-  }
 
   /** Starts loading (or reloads) the cart — cart, checkout and product pages call this. */
   load(): void {
@@ -144,6 +145,23 @@ export class CartStore {
       (lines) => lines.filter((l) => l.id !== lineId),
       () => this.http.delete<Cart>(`${this.api}/cart/lines/${lineId}`),
     );
+  }
+
+  /** Reprices the current cart without writing (#40); failures are silent — checkout reprices again anyway. */
+  async checkPrices(): Promise<void> {
+    const cart = this.server();
+    if (!this.browser || !cart || cart.purchases.length === 0 || this.pending() > 0) return;
+    try {
+      const q = await firstValueFrom(this.http.post<Quote>(`${this.api}/checkout/quote`, {}, { context: new HttpContext().set(SILENT, true) }));
+      if (this.server() === cart) this.quote.set(q);
+    } catch {
+      // The cart page stays on the stored prices.
+    }
+  }
+
+  /** The repriced line when the quote moved its price, else null. */
+  repriced(lineId: string): QuoteLine | null {
+    return this.quote()?.lines.find((l) => l.lineId === lineId && l.status === 'changed') ?? null;
   }
 
   /** Forget the merge notices once shown. */
@@ -179,18 +197,6 @@ export class CartStore {
     this.server.set(cart);
     if (toHalalas(cart.summary.shippingTotal) > 0) this.lastShippingFee = cart.summary.shippingTotal;
     this.summary.set({ lineCount: cart.summary.lineCount, grandTotal: cart.summary.grandTotal }, bump);
-  }
-
-  /** Runs whenever the server cart changes (initial load included). */
-  private trackPrices(cart: Cart | undefined = this.server()): void {
-    if (!cart) return;
-    const changed: string[] = [];
-    for (const l of cart.purchases) {
-      const prev = this.seenPrices.get(l.id);
-      if (prev !== undefined && prev !== l.unitPrice) changed.push(l.id);
-      this.seenPrices.set(l.id, l.unitPrice);
-    }
-    if (changed.length) this.priceChanged.set(changed);
   }
 
   /** The current server cart (checkout reads the line ids and the requires-shipping flag). */

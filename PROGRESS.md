@@ -1,5 +1,5 @@
 # Store web progress
-Next: W-05 — Cart
+Next: W-06 — Checkout and thanks
 
 | Session | Status (todo/doing/done/blocked) | PR | Screens | Endpoints # | Tests (unit/e2e/a11y) | Notes |
 |---|---|---|---|---|---|---|
@@ -8,8 +8,8 @@ Next: W-05 — Cart
 | W-01 Core | done | [#2](https://github.com/lotfi029/ta3lom_store_web/pull/2) | — (core only) | #11, #16–#20 (auth service), #47–#51 (staff auth service) | 48 / 3 smoke / 28 × 2 | money, problem → 71 r4 messages, SEO, theme, StoreAuth/StaffAuth, store-API interceptor, guards, CartSummary; 93 KB JS |
 | W-02 Layout | done | [#3](https://github.com/lotfi029/ta3lom_store_web/pull/3) | header, footer, skip link, account menu, 404, toast, resource-state | #11 (badge), #18 (session restore), #19 (sign out) | 102 / 17 (layout + smoke, ar+en, 320 px, keyboard, axe both themes) / 28 × 2 | kit layout ported to the store prototype header; store icon set; 113 KB JS |
 | W-03 Catalogue | done | [#4](https://github.com/lotfi029/ta3lom_store_web/pull/4) | home, /courses, /books, /search, /p/:slug (course, book), unavailable product | #1, #2, #3, #4, #5, #9 | 114 / 32 (15 catalogue ar+en: API-driven chips/filter/sort, search, course + book pages, JSON-LD, share, related, 320 px, axe both themes; no-JS prerender smoke) / 28 × 2 | 26 pages prerendered; buy box presentational (cart in W-05); 121 KB JS |
-| W-04 Sign-in | done | #5 | /login, `<ta-otp-sign-in>` (reused at checkout), account menu sign out / sign out everywhere | #16, #17, #18, #19, #20 (+ #129, #131, #132 as test tooling) | 122 / 42 (10 sign-in ar+en: OTP from /dev/sms, wrong number, attempts left, session restore, sign out, sign out everywhere, rate limit (mock), blocked customer (real)) / 32 × 2 | Signal Forms; auto-submit on 6 digits; Arabic-Indic digits; 125 KB JS |
-| W-05 Cart | todo | | | | | |
+| W-04 Sign-in | done | [#5](https://github.com/lotfi029/ta3lom_store_web/pull/5) | /login, `<ta-otp-sign-in>` (reused at checkout), account menu sign out / sign out everywhere | #16, #17, #18, #19, #20 (+ #129, #131, #132 as test tooling) | 122 / 42 (10 sign-in ar+en: OTP from /dev/sms, wrong number, attempts left, session restore, sign out, sign out everywhere, rate limit (mock), blocked customer (real)) / 32 × 2 | Signal Forms; auto-submit on 6 digits; Arabic-Indic digits; 125 KB JS |
+| W-05 Cart | done | #6 | buy boxes (course / book formats, print stepper, stock state, sticky bar), add / buy now, /cart (one group, qty, remove, totals, shipping note, notices, price-changed banner, line issues) | #10, #11, #12, #13, #14, #40 (quote, price check) (+ #57, #61 admin as e2e tooling) | 131 / 54 (12 cart ar+en: add course + print ×2, qty, totals, remove, empty; duplicate course RUL-13; guest cart kept after sign-in RUL-17; price changed RUL-15; out of stock RUL-30; mobile sticky bar; axe both themes) / 34 × 2 | `CartStore` optimistic + queued + rollback; 125 KB JS |
 | W-06 Checkout and thanks | todo | | | | | |
 | W-07 Account | todo | | | | | |
 | W-08 Admin shell and platform | todo | | | | | |

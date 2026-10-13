@@ -7,3 +7,5 @@
 /en/login
 /ar/search?q=%D8%AF%D9%88%D8%B1%D8%A9
 /en/search?q=course
+/ar/cart
+/en/cart

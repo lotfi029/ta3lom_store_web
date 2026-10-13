@@ -84,13 +84,28 @@ describe('CartStore (plan §6)', () => {
     expect(http.expectOne(`${API}/cart/lines/a`).request.body).toEqual({ quantity: 20 });
   });
 
-  it('flags a line whose unit price changed since it was seen (RUL-15)', async () => {
-    store.load();
-    TestBed.tick();
-    http.expectOne(`${API}/cart`).flush(cart([line('a', { unitPrice: '70.00', amount: '70.00' })]));
-    await tick();
-    TestBed.tick();
+  it('flags lines the checkout quote repriced and switches the totals to the quote (RUL-15)', async () => {
+    const done = store.checkPrices();
+    const req = http.expectOne(`${API}/checkout/quote`);
+    expect(req.request.method).toBe('POST');
+    req.flush({ lines: [{ lineId: 'a', status: 'changed', code: null, previousUnitPrice: '65.00', unitPrice: '70.00', amount: '70.00', vatAmount: '0.00' }], purchasesTotal: '70.00', shippingTotal: '25.00', giftsTotal: '0.00', vatTotal: '0.00', grandTotal: '95.00', priceChanged: true, requiresShipping: true, hasGifts: false, valid: true, cartIssues: [] });
+    await done;
     expect(store.priceChanged()).toEqual(['a']);
+    expect(store.repriced('a')?.unitPrice).toBe('70.00');
+    expect(store.totals().grand).toBe('95.00');
+  });
+
+  it('drops the quote when the cart changes, and never quotes an empty cart', async () => {
+    void store.checkPrices();
+    http.expectOne(`${API}/checkout/quote`).flush({ lines: [{ lineId: 'a', status: 'changed', code: null, previousUnitPrice: '65.00', unitPrice: '70.00', amount: '70.00', vatAmount: '0.00' }], purchasesTotal: '70.00', shippingTotal: '25.00', giftsTotal: '0.00', vatTotal: '0.00', grandTotal: '95.00', priceChanged: true, requiresShipping: true, hasGifts: false, valid: true, cartIssues: [] });
+    await tick();
+    void store.remove('a');
+    await tick();
+    http.expectOne(`${API}/cart/lines/a`).flush(cart([]));
+    await tick();
+    expect(store.priceChanged()).toEqual([]);
+    await store.checkPrices();
+    http.expectNone(`${API}/checkout/quote`);
   });
 
   it('estimates totals in halalas during an edit (shipping only with print)', async () => {

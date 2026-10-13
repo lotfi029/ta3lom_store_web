@@ -63,5 +63,9 @@ export type CartLine = Schemas['CartLineResponse'];
 export type CartTotals = Schemas['CartSummaryResponse'];
 export type AddCartLine = Schemas['AddCartLineRequest'];
 
+// Checkout (#40–#41)
+export type Quote = Schemas['QuoteResponse'];
+export type QuoteLine = Schemas['QuoteLine'];
+
 // Account (#21–#39)
 export type Enrolment = Schemas['EnrolmentItem'];

@@ -58,7 +58,11 @@
                     <div class="bd">
                       <div class="top">
                         <a class="t" [routerLink]="['/p', l.slug]">{{ title(l) }}</a>
-                        <span class="lp"><ta-money [value]="l.amount" /></span>
+                        @if (cart.repriced(l.id); as r) {
+                          <span class="lp"><s class="was"><span class="visually-hidden" i18n="@@store.cart.was">السعر السابق:</span> <ta-money [value]="l.amount" /></s> <ta-money [value]="r.amount" /></span>
+                        } @else {
+                          <span class="lp"><ta-money [value]="l.amount" /></span>
+                        }
                       </div>
                       <div class="row">
                         @if (l.type === 'course') {

@@ -130,6 +130,12 @@
   white-space: nowrap;
 }
 
+.lp .was {
+  margin-inline-end: 6px;
+  font-weight: 400;
+  color: var(--c-muted-2);
+}
+
 .row {
   display: flex;
   flex-wrap: wrap;

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, untracked } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import type { CartLine, CartNotice } from '../../../core/api/api.types';
 import { toInt } from '../../../core/api/api.types';
@@ -43,6 +43,10 @@ export class CartPage {
       noindex: true,
     });
     this.cart.load();
+    // RUL-15: once the cart settles, ask for a quote so a moved price shows here, before checkout.
+    effect(() => {
+      if (this.cart.snapshot() && this.cart.pending() === 0) untracked(() => void this.cart.checkPrices());
+    });
     inject(DestroyRef).onDestroy(() => {
       for (const t of this.timers.values()) clearTimeout(t);
       this.cart.dismissNotices();
