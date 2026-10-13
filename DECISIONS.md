@@ -1,0 +1,25 @@
+# Store web decisions
+
+Every choice the run made where the docs were silent, conflicting, or the environment forced it. `REVIEW` = touches
+money, auth or personal data — the owner should read it. Precedence: scope-change r4 > 03 > 11 + OpenAPI > 10 (with
+ADR-S09 and plan §2) > prototype.
+
+| Date | Session | Topic | Docs | Choice | Reason | REVIEW? |
+|---|---|---|---|---|---|---|
+| 2026-10-13 | STEP 0 | Docs location | prompt, plan §3.3 | Design, reference kit and OpenAPI are under `docs/` (`docs/design`, `docs/reference/ta3lom-web`, `docs/openapi`) | That is how the bootstrap commit laid them out; the prompt's shorter paths map 1:1 | |
+| 2026-10-13 | STEP 0 | Pre-r4 API | plan §3.1, r4 §5, 11 §12 | Build on the API as merged (giving still present, 128 operations). Endpoints are mapped **by path** from 11 §12 minus the r4 removals; shapes from `docs/openapi/store-api.v1.json`; giving types never imported (`scripts/check-no-giving.mjs`); a giving field the API *requires* gets its neutral value from `core/api/pre-r4.ts` only, each one listed here. W-11 refreshes the OpenAPI if r4 lands on the API's `main` | The API r4 session isn't merged; waiting would block the run | REVIEW |
+| 2026-10-13 | STEP 0 | API port | env doc §4 | Run the API DLL directly (`scripts/api-up.sh`) instead of `dotnet run` | `dotnet run` applies `launchSettings.json` (:5180/:7180) over `ASPNETCORE_URLS`; the plan needs :5080 | |
+| 2026-10-13 | STEP 0 | Env file | revision 4 | `scripts/dev-env.sh` holds the env doc's dev values (no secrets); every script sources it | `/tmp` doesn't survive a container restart | |
+| 2026-10-13 | STEP 0 | Branches / PRs | prompt rule 3, revisions 1–2 | `feat/w-nn-<slug>` per session (push to `feat/*` verified); PRs are polled, never waited on; next session stacked while CI runs | User revision; pushes to `feat/*` are allowed | |
+| 2026-10-13 | W-00 | Scaffold | revision 7 | `ng new` (Angular CLI 22.2.2, `--ssr --zoneless`) in a scratch dir, files copied in; output mode switched to `static`, `server.ts`/express dropped | `ng new` refuses a non-empty directory with an existing README; the result is the same files | |
+| 2026-10-13 | W-00 | Versions | plan §2.1 | Angular 22.2.2, TypeScript 6.0.3, RxJS 7.8, Vitest 5.0.4 (from `ng new`), Playwright 1.64, ESLint 10, npm 10.9.4 (the container's; plan says 11) | Taken from what Angular 22.2's `ng new` installs | |
+| 2026-10-13 | W-00 | openapi-typescript | plan §2.1 | `openapi-typescript` 7.13 with an npm `overrides` entry so it uses the project's TypeScript 6 | Its peer range is `typescript ^5`; no release accepts 6 yet. The generator runs fine on 6 (`types:check` compares output) | |
+| 2026-10-13 | W-00 | Build configurations | plan §4.1, env doc | `npm run build` = `production,local` (production optimisation, API = local :5080, dev trigger on); `build:ci` = stub :3000; `build:prod` = the deployable build (`store-api.ta3lom.sa`, dev trigger off) | The prerender needs a reachable API, and e2e/a11y must run on production-optimised output in the session | |
+| 2026-10-13 | W-00 | Stub API | plan §4 | `scripts/stub-api.mjs` replays responses **recorded from the real seeded API** (`scripts/stub-capture.mjs`) instead of OpenAPI examples | The OpenAPI file has almost no examples; recorded responses match the real shapes exactly | |
+| 2026-10-13 | W-00 | CI | revision 6 | CI: types:check, typecheck, lint, test, `build:ci` + `@smoke` e2e + a11y on the stub. Full real-API e2e is the local DoD gate | The workflow has no token for the API repo | |
+| 2026-10-13 | W-00 | e2e catalogue | plan §4 | `api-seed-e2e.sh` loads the API's reference catalogue (`dev-db-migrate.sh --seed-catalogue`), **archives the 5 `cause` products** through the admin API, tops up print stock and links a PDF to digital formats | The reference seed is pre-r4; archiving keeps the storefront to courses and books without editing the API repo | |
+| 2026-10-13 | W-00 | e2e rate limits | 09 §5.15 | `scripts/dev-env.sh` raises `Store:RateLimits:*` for the **local** API only | Every e2e "customer" and staff user shares 127.0.0.1; the per-IP limits are for one person per IP | |
+| 2026-10-13 | W-00 | Playwright browser | env doc §2 | `PLAYWRIGHT_BROWSERS_PATH` forced to the setup script's shim (`~/.cache/store-web/pw-browsers`) | The container presets `/opt/pw-browsers` (revision 1194); Playwright 1.64 needs 1248, which the shim maps | |
+| 2026-10-13 | W-00 | CSP source | ta3lom-web #15, plan W-11 | The CSP lives in `deploy/caddy-headers.conf` from W-00 (W-11 completes the headers) and is the build gate's source | `check-csp` needs the policy from the first build | |
+| 2026-10-13 | W-00 | English texts | plan §4.1 | English is authored in `src/locales/en.json`; `scripts/i18n-merge.mjs` writes it into the XLF and `lint` fails on a missing or untranslated id | Faster to review than hand-edited XLF; ids stay `@@store.<area>.<element>` | |
+| 2026-10-13 | W-00 | Contrast | contrast-check | The kit's known light pair `--c-success` on surface (4.14:1) is not used as text in the store | Pre-existing kit value; a status pill uses a filled variant instead | |
