@@ -16,7 +16,7 @@ export const guestOnlyGuard: CanActivateFn = async (route) => {
   const router = inject(Router);
   if (!(await inject(StoreAuth).ensureSession())) return true;
   const back = route.queryParamMap.get('returnUrl');
-  return router.parseUrl(back && back.startsWith('/') && !back.startsWith('//') ? back : '/account/courses');
+  return router.parseUrl(back && back.startsWith('/') && !back.startsWith('//') && !back.startsWith('/\\') ? back : '/account/courses');
 };
 
 /** Checkout needs something to pay for (plan §2.2). */

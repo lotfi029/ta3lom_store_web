@@ -46,7 +46,7 @@ export class BuyBox {
   protected readonly formatId = signal<string | null>(null);
   protected readonly qty = signal(1);
 
-  protected readonly selected = computed(() => {
+  protected readonly selected = computed<BookFormat | null>(() => {
     const id = this.formatId();
     const fs = this.formats();
     return fs.find((f) => f.id === id) ?? fs.find((f) => this.inStock(f)) ?? fs[0] ?? null;

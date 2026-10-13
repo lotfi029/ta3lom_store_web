@@ -1,0 +1,79 @@
+<div class="otp">
+  <p class="visually-hidden" role="status" aria-live="polite">{{ status() }}</p>
+  @if (error(); as e) {
+    <p class="form-error" role="alert">{{ e }}</p>
+  }
+
+  @if (step() === 'mobile') {
+    <form class="otp-form" (submit)="requestCode($event)" novalidate>
+      <div class="field">
+        <label for="otp-mobile" i18n="@@store.otp.mobile-label">رقم الجوال</label>
+        <input
+          #mobileInput
+          id="otp-mobile"
+          type="tel"
+          inputmode="tel"
+          autocomplete="tel-national"
+          dir="ltr"
+          placeholder="05XXXXXXXX"
+          [formField]="mobileForm.mobile"
+          [attr.aria-invalid]="mobileForm.mobile().touched() && mobileForm.mobile().invalid()"
+          aria-describedby="otp-mobile-hint otp-mobile-errors"
+        />
+        <p id="otp-mobile-hint" class="field-hint" i18n="@@store.otp.mobile-hint">نرسل لك رمز تحقق برسالة نصية. لا حاجة لكلمة مرور.</p>
+        <ul id="otp-mobile-errors" class="field-errors">
+          @if (mobileForm.mobile().touched()) {
+            @for (e of mobileForm.mobile().errors(); track e.kind) {
+              <li>{{ e.message }}</li>
+            }
+          }
+        </ul>
+      </div>
+      <button type="submit" class="go" [attr.aria-busy]="busy()" [disabled]="busy()" i18n="@@store.otp.send">أرسل الرمز</button>
+    </form>
+  } @else {
+    <form class="otp-form" (submit)="verify($event)" novalidate>
+      <p class="sent" i18n="@@store.otp.sent-to">أرسلنا الرمز إلى <bdi dir="ltr">{{ masked() }}</bdi></p>
+      <div class="field">
+        <label for="otp-code" i18n="@@store.otp.code-label">رمز التحقق</label>
+        <input
+          #codeInput
+          id="otp-code"
+          class="code"
+          type="text"
+          inputmode="numeric"
+          autocomplete="one-time-code"
+          dir="ltr"
+          [formField]="codeForm.code"
+          [attr.aria-invalid]="codeForm.code().touched() && codeForm.code().invalid()"
+          aria-describedby="otp-code-hint otp-code-errors"
+        />
+        <p id="otp-code-hint" class="field-hint">
+          @if (expiresIn() > 0) {
+            <ng-container i18n="@@store.otp.expires">ينتهي الرمز خلال <bdi class="mono">{{ expiresLabel() }}</bdi></ng-container>
+          } @else {
+            <ng-container i18n="@@store.otp.expired-hint">انتهت صلاحية الرمز. اطلب رمزًا جديدًا.</ng-container>
+          }
+        </p>
+        <ul id="otp-code-errors" class="field-errors">
+          @if (codeForm.code().touched()) {
+            @for (e of codeForm.code().errors(); track e.kind) {
+              <li>{{ e.message }}</li>
+            }
+          }
+        </ul>
+      </div>
+      <button type="submit" class="go" [attr.aria-busy]="busy()" [disabled]="busy()" i18n="@@store.otp.verify">تحقّق ودخول</button>
+      <div class="row">
+        <button type="button" class="link" (click)="requestCode()" [disabled]="resendIn() > 0 || busy()">
+          @if (resendIn() > 0) {
+            <ng-container i18n="@@store.otp.resend-in">إعادة الإرسال بعد <bdi class="mono">{{ resendIn() }}</bdi> ثانية</ng-container>
+          } @else {
+            <ng-container i18n="@@store.otp.resend">أعد إرسال الرمز</ng-container>
+          }
+        </button>
+        <button type="button" class="link" (click)="changeNumber()" i18n="@@store.otp.change-number">تغيير الرقم</button>
+      </div>
+    </form>
+  }
+</div>
