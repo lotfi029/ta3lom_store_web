@@ -7,15 +7,527 @@
         <target state="translated">Can’t reach the store right now. Please try again shortly.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/http/error-toast.interceptor.ts</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.seo.site-name" datatype="html">
+        <source>متجر جمعية التعلم الإلكتروني</source>
+        <target state="translated">E-Learning Association Store</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/seo/seo.service.ts</context>
+          <context context-type="linenumber">27</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.ui.breadcrumb" datatype="html">
+        <source>مسار التنقل</source>
+        <target state="translated">Breadcrumb</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/catalog.page.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
           <context context-type="linenumber">14</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="store.home.title" datatype="html">
+      <trans-unit id="store.layout.nav-home" datatype="html">
+        <source>الرئيسية</source>
+        <target state="translated">Home</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/catalog.page.html</context>
+          <context context-type="linenumber">5,6</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/catalog.page.ts</context>
+          <context context-type="linenumber">66</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
+          <context context-type="linenumber">16,17</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.ts</context>
+          <context context-type="linenumber">171</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">12,13</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">57,58</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.catalog.sections-label" datatype="html">
+        <source>أقسام المتجر</source>
+        <target state="translated">Store sections</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/catalog.page.html</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.nav-courses" datatype="html">
+        <source>الدورات</source>
+        <target state="translated">Courses</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/catalog.page.html</context>
+          <context context-type="linenumber">16,17</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/search.page.ts</context>
+          <context context-type="linenumber">55,56</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
+          <context context-type="linenumber">27</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
+          <context context-type="linenumber">53,54</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/not-found/not-found.page.ts</context>
+          <context context-type="linenumber">17,18</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
+          <context context-type="linenumber">6,7</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.ts</context>
+          <context context-type="linenumber">58</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/footer/footer.html</context>
+          <context context-type="linenumber">15,16</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">13,14</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">58,59</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.nav-books" datatype="html">
+        <source>الكتب</source>
+        <target state="translated">Books</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/catalog.page.html</context>
+          <context context-type="linenumber">17,21</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/search.page.ts</context>
+          <context context-type="linenumber">56,58</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
+          <context context-type="linenumber">33</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
+          <context context-type="linenumber">71,72</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/not-found/not-found.page.ts</context>
+          <context context-type="linenumber">18,20</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
+          <context context-type="linenumber">7,8</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.ts</context>
+          <context context-type="linenumber">58</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/footer/footer.html</context>
+          <context context-type="linenumber">16,17</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">14,17</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">59,60</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.catalog.categories-label" datatype="html">
+        <source>التصنيفات</source>
+        <target state="translated">Categories</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/catalog.page.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.catalog.all-categories" datatype="html">
+        <source>كل التصنيفات</source>
+        <target state="translated">All categories</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/catalog.page.html</context>
+          <context context-type="linenumber">26,27</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.catalog.sort-label" datatype="html">
+        <source>الترتيب</source>
+        <target state="translated">Sort by</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/catalog.page.html</context>
+          <context context-type="linenumber">32,33</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.ui.data-table-pager-label" datatype="html">
+        <source>ترقيم الصفحات</source>
+        <target state="translated">Pagination</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/catalog.page.html</context>
+          <context context-type="linenumber">49</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/search.page.ts</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.catalog.empty-title" datatype="html">
+        <source>لا توجد نتائج</source>
+        <target state="translated">No results</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/catalog.page.html</context>
+          <context context-type="linenumber">61,62</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/search.page.ts</context>
+          <context context-type="linenumber">52,53</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.catalog.empty-lede" datatype="html">
+        <source>جرّب تصنيفًا آخر.</source>
+        <target state="translated">Try another category.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/catalog.page.html</context>
+          <context context-type="linenumber">62,63</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.catalog.show-all" datatype="html">
+        <source>عرض الكل</source>
+        <target state="translated">Show all</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/catalog.page.html</context>
+          <context context-type="linenumber">63,66</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.catalog.courses-title" datatype="html">
+        <source>الدورات</source>
+        <target state="translated">Courses</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/catalog.page.ts</context>
+          <context context-type="linenumber">54</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.catalog.books-title" datatype="html">
+        <source>الكتب</source>
+        <target state="translated">Books</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/catalog.page.ts</context>
+          <context context-type="linenumber">54</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.catalog.courses-lede" datatype="html">
+        <source>دورات عملية من إنتاج الجمعية، تتعلّمها بالسرعة التي تناسبك.</source>
+        <target state="translated">Practical courses from the association, at your own pace.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/catalog.page.ts</context>
+          <context context-type="linenumber">58</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.catalog.books-lede" datatype="html">
+        <source>كتب الجمعية مطبوعة تصلك بالشحن، أو رقمية تحمّلها فورًا من حسابك.</source>
+        <target state="translated">The association’s books: printed and shipped to you, or digital and downloaded right away from your account.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/catalog.page.ts</context>
+          <context context-type="linenumber">59</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.catalog.sort-newest" datatype="html">
+        <source>الأحدث</source>
+        <target state="translated">Newest</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/catalog.page.ts</context>
+          <context context-type="linenumber">86</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.catalog.sort-price-asc" datatype="html">
+        <source>السعر: من الأقل</source>
+        <target state="translated">Price: low to high</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/catalog.page.ts</context>
+          <context context-type="linenumber">88</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.catalog.sort-price-desc" datatype="html">
+        <source>السعر: من الأعلى</source>
+        <target state="translated">Price: high to low</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/catalog.page.ts</context>
+          <context context-type="linenumber">90</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.catalog.sort-featured" datatype="html">
+        <source>المميّزة</source>
+        <target state="translated">Featured</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/catalog.page.ts</context>
+          <context context-type="linenumber">92</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.search.title" datatype="html">
+        <source>البحث في المتجر</source>
+        <target state="translated">Search the store</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/search.page.ts</context>
+          <context context-type="linenumber">20,21</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/search.page.ts</context>
+          <context context-type="linenumber">62,63</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/search.page.ts</context>
+          <context context-type="linenumber">142</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.search-label" datatype="html">
+        <source>ابحث في المتجر</source>
+        <target state="translated">Search the store</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/search.page.ts</context>
+          <context context-type="linenumber">22,23</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
+          <context context-type="linenumber">12,13</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">18,19</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">50,51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.search-placeholder" datatype="html">
+        <source>ابحث عن دورة أو كتاب…</source>
+        <target state="translated">Search for a course or a book…</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/search.page.ts</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.search-submit" datatype="html">
+        <source>بحث</source>
+        <target state="translated">Search</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/search.page.ts</context>
+          <context context-type="linenumber">24,27</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
+          <context context-type="linenumber">14,16</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">22,26</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">54,57</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.search.results" datatype="html">
+        <source>نتائج «<x id="INTERPOLATION" equiv-text="{{ query() }}"/>»: <x id="INTERPOLATION_1" equiv-text="{{ total() }}"/></source>
+        <target state="translated">Results for “<x id="INTERPOLATION" equiv-text="{{ query() }}"/>”: <x id="INTERPOLATION_1" equiv-text="{{ total() }}"/></target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/search.page.ts</context>
+          <context context-type="linenumber">31,32</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.search.empty-lede" datatype="html">
+        <source>جرّب كلمة أخرى، أو تصفّح الدورات والكتب.</source>
+        <target state="translated">Try another word, or browse courses and books.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/search.page.ts</context>
+          <context context-type="linenumber">53,54</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.search.hint" datatype="html">
+        <source>اكتب اسم دورة أو كتاب أو موضوعًا ثم اضغط «بحث».</source>
+        <target state="translated">Type a course or book name, or a topic, then press “Search”.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/search.page.ts</context>
+          <context context-type="linenumber">63,66</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/catalog/search.page.ts</context>
+          <context context-type="linenumber">143</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.home.eyebrow" datatype="html">
         <source>متجر جمعية التعلم الإلكتروني</source>
-        <target state="translated">ta3lom store</target>
+        <target state="translated">E-Learning Association store</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
+          <context context-type="linenumber">3,4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.home.headline" datatype="html">
+        <source>تعلّم لنفسك.<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br /&gt;"/><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>بالسرعة<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/> التي تناسبك.</source>
+        <target state="translated">Learn for yourself.<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br /&gt;"/><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>At your own<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/> pace.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
+          <context context-type="linenumber">4,5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.home.lede" datatype="html">
+        <source>دورات وكتب تعليمية من إنتاج الجمعية: سجّل في الدورة فور الدفع، واحصل على الكتب مطبوعة تصلك أو رقمية تحمّلها من حسابك.</source>
+        <target state="translated">Courses and books produced by the association: enrol in a course as soon as you pay, and get books printed and shipped or digital in your account.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
+          <context context-type="linenumber">5,7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.home.browse-courses" datatype="html">
+        <source>تصفّح الدورات</source>
+        <target state="translated">Browse courses</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.home.browse-books" datatype="html">
+        <source>تصفّح الكتب</source>
+        <target state="translated">Browse books</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
+          <context context-type="linenumber">8,10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.home.guarantee" datatype="html">
+        <source>دفع آمن بمدى وApple Pay · تسجيل فوري في الدورات · تحميل فوري للكتب الرقمية</source>
+        <target state="translated">Secure payment with mada and Apple Pay · instant course enrolment · instant digital downloads</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
+          <context context-type="linenumber">10,11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.home.pillar-courses" datatype="html">
+        <source>تعلّم بالسرعة التي تناسبك</source>
+        <target state="translated">Learn at your own pace</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
+          <context context-type="linenumber">27,30</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.home.pillar-books" datatype="html">
+        <source>مطبوعة أو رقمية</source>
+        <target state="translated">Printed or digital</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
+          <context context-type="linenumber">33,36</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.home.categories" datatype="html">
+        <source>تصفّح حسب التصنيف</source>
+        <target state="translated">Browse by category</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
+          <context context-type="linenumber">39,41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.home.courses-title" datatype="html">
+        <source>دورات تصنع فرقًا.</source>
+        <target state="translated">Courses that make a difference.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
+          <context context-type="linenumber">54,55</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.home.courses-lede" datatype="html">
+        <source>دورات عملية مصمّمة للمعلم والطالب والأسرة، مع شهادة إتمام.</source>
+        <target state="translated">Practical courses for teachers, students and families, with a completion certificate.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
+          <context context-type="linenumber">55,57</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.home.all-courses" datatype="html">
+        <source>جميع الدورات</source>
+        <target state="translated">All courses</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
+          <context context-type="linenumber">57</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.home.books-title" datatype="html">
+        <source>من إصدارات الجمعية.</source>
+        <target state="translated">From the association’s publications.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
+          <context context-type="linenumber">72,73</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.home.books-lede" datatype="html">
+        <source>نسخة مطبوعة تصلك بالشحن، أو رقمية تحمّلها فورًا من حسابك.</source>
+        <target state="translated">A printed copy shipped to you, or a digital one downloaded right away from your account.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
+          <context context-type="linenumber">73,75</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.home.all-books" datatype="html">
+        <source>جميع الكتب</source>
+        <target state="translated">All books</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
+          <context context-type="linenumber">75</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.product.type-course" datatype="html">
+        <source>دورة</source>
+        <target state="translated">Course</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.ts</context>
-          <context context-type="linenumber">10,14</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
+          <context context-type="linenumber">39,41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.product.type-book" datatype="html">
+        <source>كتاب</source>
+        <target state="translated">Book</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/home.page.ts</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
+          <context context-type="linenumber">41,43</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.home.seo-description" datatype="html">
@@ -23,7 +535,7 @@
         <target state="translated">Courses and books from the E-Learning Association: instant course enrolment, printed and digital books.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.ts</context>
-          <context context-type="linenumber">19</context>
+          <context context-type="linenumber">41</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.not-found.title" datatype="html">
@@ -54,52 +566,428 @@
           <context context-type="linenumber">16,17</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="store.layout.nav-courses" datatype="html">
-        <source>الدورات</source>
-        <target state="translated">Courses</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/store/not-found/not-found.page.ts</context>
-          <context context-type="linenumber">17,18</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/layout/footer/footer.html</context>
-          <context context-type="linenumber">15,16</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">13,14</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">58,59</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="store.layout.nav-books" datatype="html">
-        <source>الكتب</source>
-        <target state="translated">Books</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/store/not-found/not-found.page.ts</context>
-          <context context-type="linenumber">18,20</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/layout/footer/footer.html</context>
-          <context context-type="linenumber">16,17</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">14,17</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">59,60</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="store.not-found.seo-title" datatype="html">
         <source>الصفحة غير موجودة</source>
         <target state="translated">Page not found</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/not-found/not-found.page.ts</context>
           <context context-type="linenumber">54</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.buybox.title" datatype="html">
+        <source>الشراء</source>
+        <target state="translated">Buy</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/buy-box.html</context>
+          <context context-type="linenumber">2,4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.buybox.choose-format" datatype="html">
+        <source>اختر الصيغة</source>
+        <target state="translated">Choose a format</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/buy-box.html</context>
+          <context context-type="linenumber">5,6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.buybox.print-note" datatype="html">
+        <source>تُشحن داخل المملكة</source>
+        <target state="translated">Shipped within Saudi Arabia</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/buy-box.html</context>
+          <context context-type="linenumber">13,15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.buybox.out-of-stock" datatype="html">
+        <source>نفدت الكمية</source>
+        <target state="translated">Out of stock</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/buy-box.html</context>
+          <context context-type="linenumber">15,17</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.buybox.digital-note" datatype="html">
+        <source>تحميل فوري من حسابك</source>
+        <target state="translated">Instant download from your account</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/buy-box.html</context>
+          <context context-type="linenumber">18,21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.buybox.quantity" datatype="html">
+        <source>الكمية</source>
+        <target state="translated">Quantity</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/buy-box.html</context>
+          <context context-type="linenumber">27,28</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/buy-box.html</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.buybox.decrease" datatype="html">
+        <source>إنقاص الكمية</source>
+        <target state="translated">Decrease quantity</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/buy-box.html</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.buybox.increase" datatype="html">
+        <source>زيادة الكمية</source>
+        <target state="translated">Increase quantity</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/buy-box.html</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.buybox.max-note" datatype="html">
+        <source>الحد الأقصى <x id="INTERPOLATION" equiv-text="{{ maxQty() }}"/> نسخة في الطلب.</source>
+        <target state="translated">Up to <x id="INTERPOLATION" equiv-text="{{ maxQty() }}"/> copies per order.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/buy-box.html</context>
+          <context context-type="linenumber">33,34</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.buybox.course-lessons" datatype="html">
+        <source>وصول إلى <x id="INTERPOLATION" equiv-text="{{ lessons() }}"/> درسًا</source>
+        <target state="translated">Access to <x id="INTERPOLATION" equiv-text="{{ lessons() }}"/> lessons</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/buy-box.html</context>
+          <context context-type="linenumber">42,43</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.buybox.course-certificate" datatype="html">
+        <source>شهادة إتمام موثّقة</source>
+        <target state="translated">Verified completion certificate</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/buy-box.html</context>
+          <context context-type="linenumber">43,44</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.buybox.course-instant" datatype="html">
+        <source>تسجيل فوري بعد الدفع</source>
+        <target state="translated">Instant enrolment after payment</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/buy-box.html</context>
+          <context context-type="linenumber">44,49</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.buybox.total" datatype="html">
+        <source>الإجمالي</source>
+        <target state="translated">Total</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/buy-box.html</context>
+          <context context-type="linenumber">51,52</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.buybox.owned" datatype="html">
+        <source>أنت مسجّل في هذه الدورة.</source>
+        <target state="translated">You’re enrolled in this course.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/buy-box.html</context>
+          <context context-type="linenumber">58,59</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.buybox.go-to-course" datatype="html">
+        <source>انتقل إلى الدورة</source>
+        <target state="translated">Go to the course</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/buy-box.html</context>
+          <context context-type="linenumber">59,61</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.buybox.add" datatype="html">
+        <source>أضف إلى السلة</source>
+        <target state="translated">Add to cart</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/buy-box.html</context>
+          <context context-type="linenumber">63,65</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.buybox.buy-now" datatype="html">
+        <source>اشترِ الآن</source>
+        <target state="translated">Buy now</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/buy-box.html</context>
+          <context context-type="linenumber">65,69</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.buybox.secure" datatype="html">
+        <source>دفع آمن</source>
+        <target state="translated">Secure payment</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/buy-box.html</context>
+          <context context-type="linenumber">69</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.card.format-print" datatype="html">
+        <source>نسخة مطبوعة</source>
+        <target state="translated">Print edition</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/buy-box.ts</context>
+          <context context-type="linenumber">84</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/product-card/product-card.html</context>
+          <context context-type="linenumber">25,27</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.card.format-digital" datatype="html">
+        <source>نسخة رقمية PDF</source>
+        <target state="translated">Digital PDF</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/buy-box.ts</context>
+          <context context-type="linenumber">84</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/product-card/product-card.html</context>
+          <context context-type="linenumber">27,29</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.product.unavailable-title" datatype="html">
+        <source>هذا المنتج غير متاح</source>
+        <target state="translated">This product isn’t available</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
+          <context context-type="linenumber">3,4</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.ts</context>
+          <context context-type="linenumber">73</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.product.unavailable-lede" datatype="html">
+        <source>ربما أُرشف هذا المنتج أو لم يُنشر بعد.</source>
+        <target state="translated">It may have been archived or not published yet.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
+          <context context-type="linenumber">4,6</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.ts</context>
+          <context context-type="linenumber">74</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.my-orders" datatype="html">
+        <source>طلباتي</source>
+        <target state="translated">My orders</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
+          <context context-type="linenumber">8,11</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/account-menu/account-menu.ts</context>
+          <context context-type="linenumber">25,26</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.card.badge-best" datatype="html">
+        <source>الأكثر طلبًا</source>
+        <target state="translated">Best seller</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
+          <context context-type="linenumber">33,34</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/product-card/product-card.html</context>
+          <context context-type="linenumber">5,7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.card.badge-new" datatype="html">
+        <source>جديد</source>
+        <target state="translated">New</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
+          <context context-type="linenumber">35,37</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/product-card/product-card.html</context>
+          <context context-type="linenumber">7,11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.product.lessons" datatype="html">
+        <source>درسًا</source>
+        <target state="translated">lessons</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
+          <context context-type="linenumber">54,55</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.product.hours" datatype="html">
+        <source>ساعة تعليمية</source>
+        <target state="translated">hours of learning</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
+          <context context-type="linenumber">55,56</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.product.learners" datatype="html">
+        <source>متعلّم</source>
+        <target state="translated">learners</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
+          <context context-type="linenumber">56,57</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.product.level" datatype="html">
+        <source>المستوى</source>
+        <target state="translated">Level</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
+          <context context-type="linenumber">58,60</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.product.pages" datatype="html">
+        <source>صفحة</source>
+        <target state="translated">pages</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
+          <context context-type="linenumber">65,67</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.product.formats" datatype="html">
+        <source>صيغة متاحة</source>
+        <target state="translated">formats</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
+          <context context-type="linenumber">67,68</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.product.author" datatype="html">
+        <source>المؤلف</source>
+        <target state="translated">Author</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
+          <context context-type="linenumber">68,69</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.product.year" datatype="html">
+        <source>سنة النشر</source>
+        <target state="translated">Published</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
+          <context context-type="linenumber">70,72</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.product.about-course" datatype="html">
+        <source>عن الدورة</source>
+        <target state="translated">About the course</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
+          <context context-type="linenumber">77,79</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.product.about-book" datatype="html">
+        <source>عن الكتاب</source>
+        <target state="translated">About the book</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
+          <context context-type="linenumber">79,81</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.product.print-info" datatype="html">
+        <source>النسخة المطبوعة: شحن داخل المملكة، ورسوم الشحن تُحسب مرة واحدة لكل طلب.</source>
+        <target state="translated">Print edition: shipped within Saudi Arabia; shipping is charged once per order.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
+          <context context-type="linenumber">89,91</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.product.digital-info" datatype="html">
+        <source>النسخة الرقمية: تحميل فوري من حسابك، بعلامة مائية باسم المشتري.</source>
+        <target state="translated">Digital edition: instant download from your account, watermarked with the buyer’s name.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
+          <context context-type="linenumber">91,93</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.product.curriculum" datatype="html">
+        <source>المحتوى</source>
+        <target state="translated">Curriculum</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
+          <context context-type="linenumber">100,101</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.product.duration" datatype="html">
+        <source>المدة</source>
+        <target state="translated">Duration</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
+          <context context-type="linenumber">106</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.product.instructor" datatype="html">
+        <source>المدرّب</source>
+        <target state="translated">Instructor</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
+          <context context-type="linenumber">114,115</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.product.related" datatype="html">
+        <source>قد يهمّك أيضًا</source>
+        <target state="translated">You may also like</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
+          <context context-type="linenumber">140,141</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.ui.loading" datatype="html">
+        <source>جارٍ التحميل…</source>
+        <target state="translated">Loading…</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/product.page.html</context>
+          <context context-type="linenumber">151,153</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/resource-state/resource-state.html</context>
+          <context context-type="linenumber">2,4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.share.button" datatype="html">
+        <source>مشاركة</source>
+        <target state="translated">Share</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/share-sheet.ts</context>
+          <context context-type="linenumber">16,18</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.share.title" datatype="html">
+        <source>مشاركة المنتج</source>
+        <target state="translated">Share this product</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/share-sheet.ts</context>
+          <context context-type="linenumber">21,22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.ui.toast-dismiss" datatype="html">
+        <source>إغلاق</source>
+        <target state="translated">Dismiss</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/share-sheet.ts</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/toast/toast.ts</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.share.copy" datatype="html">
+        <source>نسخ الرابط</source>
+        <target state="translated">Copy link</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/share-sheet.ts</context>
+          <context context-type="linenumber">28,29</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.share.copied" datatype="html">
+        <source>نُسخ الرابط.</source>
+        <target state="translated">Link copied.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/product/share-sheet.ts</context>
+          <context context-type="linenumber">133</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.account" datatype="html">
@@ -132,14 +1020,6 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/account-menu/account-menu.ts</context>
           <context context-type="linenumber">24,25</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="store.layout.my-orders" datatype="html">
-        <source>طلباتي</source>
-        <target state="translated">My orders</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/layout/account-menu/account-menu.ts</context>
-          <context context-type="linenumber">25,26</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.my-profile" datatype="html">
@@ -286,60 +1166,12 @@
           <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="store.layout.nav-home" datatype="html">
-        <source>الرئيسية</source>
-        <target state="translated">Home</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">12,13</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">57,58</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="store.layout.search-label" datatype="html">
-        <source>ابحث في المتجر</source>
-        <target state="translated">Search the store</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">18,19</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">50,51</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="store.layout.search-placeholder" datatype="html">
-        <source>ابحث عن دورة أو كتاب…</source>
-        <target state="translated">Search for a course or a book…</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">19</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">51</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="store.layout.search-submit" datatype="html">
-        <source>بحث</source>
-        <target state="translated">Search</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">22,26</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">54,57</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="store.layout.sign-in" datatype="html">
         <source>دخول</source>
         <target state="translated">Sign in</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">40,41</context>
+          <context context-type="linenumber">39,41</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
@@ -386,12 +1218,44 @@
           <context context-type="linenumber">22</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="store.ui.toast-dismiss" datatype="html">
-        <source>إغلاق</source>
-        <target state="translated">Dismiss</target>
+      <trans-unit id="store.ui.was-price" datatype="html">
+        <source>بدلًا من</source>
+        <target state="translated">was</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/shared/ui/toast/toast.ts</context>
-          <context context-type="linenumber">29</context>
+          <context context-type="sourcefile">src/app/shared/ui/money/money.ts</context>
+          <context context-type="linenumber">16,17</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.card.from" datatype="html">
+        <source>يبدأ من </source>
+        <target state="translated">From </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/product-card/product-card.html</context>
+          <context context-type="linenumber">39,41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.card.details" datatype="html">
+        <source>التفاصيل</source>
+        <target state="translated">Details</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/product-card/product-card.html</context>
+          <context context-type="linenumber">44</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.ui.load-failed" datatype="html">
+        <source>تعذّر التحميل.</source>
+        <target state="translated">Couldn’t load this.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/resource-state/resource-state.html</context>
+          <context context-type="linenumber">8,11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.ui.retry" datatype="html">
+        <source>إعادة المحاولة</source>
+        <target state="translated">Retry</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/resource-state/resource-state.html</context>
+          <context context-type="linenumber">12,14</context>
         </context-group>
       </trans-unit>
     </body>

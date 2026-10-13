@@ -27,7 +27,7 @@
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [{ "glob": "**/*", "input": "public" }],
-            "styles": ["src/styles/fonts.css", "src/styles/tokens.css", "src/styles/base.css"],
+            "styles": ["src/styles/fonts.css", "src/styles/tokens.css", "src/styles/base.css", "src/styles/store.css"],
             "server": "src/main.server.ts",
             "outputMode": "static",
             "ssr": false,

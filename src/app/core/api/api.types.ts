@@ -34,3 +34,25 @@ export function toInt(value: number | string | null | undefined, fallback = 0): 
   const n = typeof value === 'number' ? value : Number.parseInt(value, 10);
   return Number.isFinite(n) ? n : fallback;
 }
+
+// Catalogue (#1–#5, #9)
+export type HomeResponse = Schemas['HomeResponse'];
+export type ProductCard = Schemas['ProductCardResponse'];
+export type ProductPage = Schemas['PagedResultOfProductCardResponse'];
+export type ProductDetail = Schemas['ProductDetailResponse'];
+export type CourseBlock = Schemas['CourseBlock'];
+export type BookBlock = Schemas['BookBlock'];
+export type BookFormat = Schemas['BookFormatResponse'];
+export type CourseModule = Schemas['CourseModuleResponse'];
+export type RelatedProduct = Schemas['RelatedProduct'];
+export type Category = Schemas['CategoryResponse'];
+export type CategoryRef = Schemas['CategoryRef'];
+export type CoverImage = Schemas['ImageResponse'];
+export type LiveFigures = Schemas['LiveFiguresResponse'];
+export type LiveItem = Schemas['LiveItem'];
+export type LiveFormat = Schemas['LiveFormat'];
+export type CatalogConfig = Schemas['CatalogConfigResponse'];
+
+/** r4: the storefront sells these two product types only. */
+export type StoreProductType = 'course' | 'book';
+export const isStoreProduct = (p: { type: string }): boolean => p.type === 'course' || p.type === 'book';
