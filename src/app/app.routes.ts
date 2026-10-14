@@ -9,6 +9,11 @@ import { PublicLayout } from './layout/public-layout/public-layout';
 
 /** Plan §2.2. Every path sits under /{ar,en} (the locale build's base href); there is no /store prefix (ADR-S09). */
 export const routes: Routes = [
+  // The staff admin has its own shell (W-08); it must come before the storefront's catch-all.
+  {
+    path: 'admin',
+    loadChildren: () => import('./features/admin/admin.routes').then((m) => m.ADMIN_ROUTES),
+  },
   {
     path: '',
     component: PublicLayout,

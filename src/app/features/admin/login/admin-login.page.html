@@ -1,0 +1,123 @@
+<div class="lwrap">
+  <div class="ltools">
+    <ta-lang-switch />
+    <ta-theme-toggle />
+  </div>
+  <main id="main" class="lcard" tabindex="-1">
+    <p class="brand">
+      <ta-icon name="lock" [size]="22" /><span i18n="@@store.admin.brand">إدارة المتجر</span>
+    </p>
+    <h1 i18n="@@store.admin.login-title">دخول فريق المتجر</h1>
+    @if (error(); as e) {
+      <p class="form-error" role="alert">{{ e }}</p>
+    }
+
+    @if (step() === 'password') {
+      <form (submit)="submitPassword($event)" novalidate class="lform">
+        <div class="field">
+          <label for="al-email" i18n="@@store.checkout.email">البريد الإلكتروني</label>
+          <input
+            id="al-email"
+            type="email"
+            inputmode="email"
+            autocomplete="username"
+            dir="ltr"
+            [formField]="cf.email"
+            [attr.aria-invalid]="cf.email().touched() && cf.email().invalid()"
+            aria-describedby="al-email-err"
+          />
+          <ul id="al-email-err" class="field-errors">
+            @if (cf.email().touched()) {
+              @for (e of cf.email().errors(); track e.kind) {
+                <li>{{ e.message }}</li>
+              }
+            }
+          </ul>
+        </div>
+        <div class="field">
+          <label for="al-password" i18n="@@store.admin.password">كلمة المرور</label>
+          <input
+            id="al-password"
+            type="password"
+            autocomplete="current-password"
+            dir="ltr"
+            [formField]="cf.password"
+            [attr.aria-invalid]="cf.password().touched() && cf.password().invalid()"
+            aria-describedby="al-password-err"
+          />
+          <ul id="al-password-err" class="field-errors">
+            @if (cf.password().touched()) {
+              @for (e of cf.password().errors(); track e.kind) {
+                <li>{{ e.message }}</li>
+              }
+            }
+          </ul>
+        </div>
+        <button
+          type="submit"
+          class="btn primary"
+          [disabled]="busy()"
+          [attr.aria-busy]="busy()"
+          i18n="@@store.admin.continue"
+        >
+          متابعة
+        </button>
+      </form>
+    } @else {
+      <form (submit)="submitCode($event)" novalidate class="lform">
+        @if (step() === 'enrol' && enrolment(); as en) {
+          <div class="enrol">
+            <p i18n="@@store.admin.enrol-lede">
+              أول دخول: فعّل التحقق بخطوتين. أضف هذا المفتاح في تطبيق المصادقة (Google Authenticator
+              أو Microsoft Authenticator)، ثم أدخل الرمز الذي يظهر.
+            </p>
+            <p class="lbl" i18n="@@store.admin.setup-key">مفتاح الإعداد</p>
+            <p class="secret" dir="ltr" data-testid="totp-secret">{{ group(en.secretBase32) }}</p>
+            <details>
+              <summary i18n="@@store.admin.otpauth">رابط الإعداد</summary>
+              <p class="secret small" dir="ltr">{{ en.otpauthUri }}</p>
+            </details>
+          </div>
+        } @else {
+          <p i18n="@@store.admin.code-lede">أدخل الرمز المكوّن من 6 أرقام من تطبيق المصادقة.</p>
+        }
+        <div class="field">
+          <label for="al-code" i18n="@@store.admin.code">رمز التحقق</label>
+          <input
+            #codeInput
+            id="al-code"
+            type="text"
+            inputmode="numeric"
+            autocomplete="one-time-code"
+            dir="ltr"
+            class="code"
+            [formField]="kf.code"
+            [attr.aria-invalid]="kf.code().touched() && kf.code().invalid()"
+            aria-describedby="al-code-err"
+          />
+          <ul id="al-code-err" class="field-errors">
+            @if (kf.code().touched()) {
+              @for (e of kf.code().errors(); track e.kind) {
+                <li>{{ e.message }}</li>
+              }
+            }
+          </ul>
+        </div>
+        <div class="row">
+          <button
+            type="submit"
+            class="btn primary"
+            [disabled]="busy()"
+            [attr.aria-busy]="busy()"
+            i18n="@@store.admin.sign-in"
+          >
+            دخول
+          </button>
+          <button type="button" class="btn" (click)="restart()" i18n="@@store.admin.back">
+            رجوع
+          </button>
+        </div>
+      </form>
+    }
+  </main>
+</div>

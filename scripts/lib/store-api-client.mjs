@@ -7,8 +7,17 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { totp } from './totp.mjs';
 
-export const API_ORIGIN = (process.env.STORE_API_URL ?? 'http://localhost:5080/v1').replace(/\/v1\/?$/, '');
-export const STAFF_FILE = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '.e2e', 'staff.json');
+export const API_ORIGIN = (process.env.STORE_API_URL ?? 'http://localhost:5080/v1').replace(
+  /\/v1\/?$/,
+  '',
+);
+export const STAFF_FILE = join(
+  dirname(fileURLToPath(import.meta.url)),
+  '..',
+  '..',
+  '.e2e',
+  'staff.json',
+);
 
 export class Client {
   constructor() {
@@ -25,12 +34,18 @@ export class Client {
       payload = JSON.stringify(body);
       h['Content-Type'] = 'application/json';
     }
-    const res = await fetch(path.startsWith('http') ? path : API_ORIGIN + path, { method, headers: h, body: payload, redirect: 'manual' });
+    const res = await fetch(path.startsWith('http') ? path : API_ORIGIN + path, {
+      method,
+      headers: h,
+      body: payload,
+      redirect: 'manual',
+    });
     for (const c of res.headers.getSetCookie()) {
       const [pair] = c.split(';');
       const [name, ...rest] = pair.split('=');
       const value = rest.join('=');
-      if (value && !/max-age=0|expires=thu, 01 jan 1970/i.test(c)) this.cookies.set(name.trim(), value);
+      if (value && !/max-age=0|expires=thu, 01 jan 1970/i.test(c))
+        this.cookies.set(name.trim(), value);
       else this.cookies.delete(name.trim());
     }
     const text = await res.text();
@@ -55,16 +70,22 @@ export function writeStaff(staff) {
 /** Signs a staff user in (password, then TOTP; enrols on first sign-in and records the secret). */
 export async function staffLogin(entry) {
   const c = new Client();
-  const login = await c.call('POST', '/v1/admin/auth/login', { email: entry.email, password: entry.password });
-  if (login.status !== 200) throw new Error(`staff login ${entry.email}: ${login.status} ${JSON.stringify(login.body)}`);
+  const login = await c.call('POST', '/v1/admin/auth/login', {
+    email: entry.email,
+    password: entry.password,
+  });
+  if (login.status !== 200)
+    throw new Error(`staff login ${entry.email}: ${login.status} ${JSON.stringify(login.body)}`);
   c.token = login.body.mfaToken;
   if (!login.body.totpEnrolled) {
     const enrol = await c.call('POST', '/v1/admin/auth/totp/enrol');
-    if (enrol.status !== 200) throw new Error(`totp enrol ${entry.email}: ${enrol.status} ${JSON.stringify(enrol.body)}`);
+    if (enrol.status !== 200)
+      throw new Error(`totp enrol ${entry.email}: ${enrol.status} ${JSON.stringify(enrol.body)}`);
     entry.secret = enrol.body.secretBase32;
   }
   const verify = await c.call('POST', '/v1/admin/auth/totp/verify', { code: totp(entry.secret) });
-  if (verify.status !== 200) throw new Error(`totp verify ${entry.email}: ${verify.status} ${JSON.stringify(verify.body)}`);
+  if (verify.status !== 200)
+    throw new Error(`totp verify ${entry.email}: ${verify.status} ${JSON.stringify(verify.body)}`);
   c.token = verify.body.accessToken;
   c.session = verify.body;
   return c;

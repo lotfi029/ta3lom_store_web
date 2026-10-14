@@ -9,3 +9,5 @@
 /en/search?q=course
 /ar/cart
 /en/cart
+/ar/admin/login
+/en/admin/login

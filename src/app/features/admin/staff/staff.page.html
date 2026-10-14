@@ -1,0 +1,233 @@
+<div class="ahead">
+  <div>
+    <h1 i18n="@@store.admin.nav-staff">فريق العمل</h1>
+    <p i18n="@@store.admin.staff-lede">حسابات فريق المتجر وأدوارهم. كل دور يفتح ما يلزمه فقط.</p>
+  </div>
+  <button type="button" class="btn primary" (click)="startCreate()" i18n="@@store.admin.add-staff">
+    إضافة عضو
+  </button>
+</div>
+
+<ta-resource-state
+  [loading]="data.staff.isLoading() && users().length === 0"
+  [error]="!!data.staff.error()"
+  (retry)="data.staff.reload()"
+>
+  <div class="panel tbl-wrap">
+    <table class="atbl">
+      <caption class="visually-hidden" i18n="@@store.admin.nav-staff">
+        فريق العمل
+      </caption>
+      <thead>
+        <tr>
+          <th scope="col" i18n="@@store.admin.col-name">الاسم</th>
+          <th scope="col" i18n="@@store.checkout.email">البريد الإلكتروني</th>
+          <th scope="col" i18n="@@store.admin.col-roles">الأدوار</th>
+          <th scope="col" i18n="@@store.account.col-status">الحالة</th>
+          <th scope="col" i18n="@@store.admin.col-last-login">آخر دخول</th>
+          <th scope="col">
+            <span class="visually-hidden" i18n="@@store.admin.col-actions">الإجراءات</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (u of users(); track u.id) {
+          <tr>
+            <td>{{ u.name }}</td>
+            <td>
+              <bdi dir="ltr">{{ u.email }}</bdi>
+            </td>
+            <td>{{ roles(u) }}</td>
+            <td>
+              @if (!u.isActive) {
+                <ta-status-pill tone="neutral"
+                  ><span i18n="@@store.admin.inactive">موقوف</span></ta-status-pill
+                >
+              } @else if (locked(u)) {
+                <ta-status-pill tone="danger"
+                  ><span i18n="@@store.admin.locked">مقفل</span></ta-status-pill
+                >
+              } @else {
+                <ta-status-pill tone="success"
+                  ><span i18n="@@store.admin.active">نشط</span></ta-status-pill
+                >
+              }
+              @if (!u.totpEnrolled) {
+                <ta-status-pill tone="warning"
+                  ><span i18n="@@store.admin.no-totp">بلا تحقق بخطوتين</span></ta-status-pill
+                >
+              }
+            </td>
+            <td>{{ u.lastLoginAt ? i18n.formatDateTime(u.lastLoginAt) : '—' }}</td>
+            <td class="rowacts">
+              <button type="button" class="btn sm" (click)="startEdit(u)">
+                <span i18n="@@store.account.edit">تعديل</span
+                ><span class="visually-hidden"> {{ u.email }}</span>
+              </button>
+              <button type="button" class="btn sm" (click)="ask('password', u)">
+                <span i18n="@@store.admin.reset-password">إعادة تعيين كلمة المرور</span
+                ><span class="visually-hidden"> {{ u.email }}</span>
+              </button>
+              <button type="button" class="btn sm" (click)="ask('totp', u)">
+                <span i18n="@@store.admin.reset-totp">إعادة تعيين التحقق بخطوتين</span
+                ><span class="visually-hidden"> {{ u.email }}</span>
+              </button>
+              @if (locked(u)) {
+                <button type="button" class="btn sm" (click)="ask('unlock', u)">
+                  <span i18n="@@store.admin.unlock">إلغاء القفل</span
+                  ><span class="visually-hidden"> {{ u.email }}</span>
+                </button>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</ta-resource-state>
+
+<ta-dialog [(open)]="editOpen" labelledBy="st-dlg-h" [lightDismiss]="false">
+  <form class="dlg" (submit)="save($event)" novalidate>
+    <h2 id="st-dlg-h">
+      @if (editing() === 'new') {
+        <span i18n="@@store.admin.add-staff">إضافة عضو</span>
+      } @else {
+        <span i18n="@@store.admin.edit-staff">تعديل العضو</span>
+      }
+    </h2>
+    @if (formError(); as e) {
+      <p class="err" role="alert">{{ e }}</p>
+    }
+    @if (editing() === 'new') {
+      <div class="field">
+        <label for="st-email" i18n="@@store.checkout.email">البريد الإلكتروني</label>
+        <input
+          id="st-email"
+          type="email"
+          dir="ltr"
+          autocomplete="off"
+          [formField]="f.email"
+          [attr.aria-invalid]="f.email().touched() && f.email().invalid()"
+          aria-describedby="st-email-err"
+        />
+        <ul id="st-email-err" class="field-errors">
+          @if (f.email().touched()) {
+            @for (e of f.email().errors(); track e.kind) {
+              <li>{{ e.message }}</li>
+            }
+          }
+        </ul>
+      </div>
+    } @else {
+      <p>
+        <bdi dir="ltr">{{ model().email }}</bdi>
+      </p>
+    }
+    <div class="field">
+      <label for="st-name" i18n="@@store.admin.col-name">الاسم</label>
+      <input
+        id="st-name"
+        autocomplete="off"
+        [formField]="f.name"
+        [attr.aria-invalid]="f.name().touched() && f.name().invalid()"
+        aria-describedby="st-name-err"
+      />
+      <ul id="st-name-err" class="field-errors">
+        @if (f.name().touched()) {
+          @for (e of f.name().errors(); track e.kind) {
+            <li>{{ e.message }}</li>
+          }
+        }
+      </ul>
+    </div>
+    <fieldset class="roles" aria-describedby="st-roles-err">
+      <legend i18n="@@store.admin.col-roles">الأدوار</legend>
+      @for (r of allRoles; track r) {
+        <label class="chk"
+          ><input
+            type="checkbox"
+            [checked]="model().roles.includes(r)"
+            (change)="toggleRole(r, $event)"
+          />
+          {{ roleLabel(r) }}</label
+        >
+      }
+      <ul id="st-roles-err" class="field-errors">
+        @if (f.roles().touched()) {
+          @for (e of f.roles().errors(); track e.kind) {
+            <li>{{ e.message }}</li>
+          }
+        }
+      </ul>
+    </fieldset>
+    @if (editing() !== 'new') {
+      <label class="chk"
+        ><input type="checkbox" [checked]="model().isActive" (change)="setActive($event)" />
+        <span i18n="@@store.admin.active">نشط</span></label
+      >
+    }
+    <div class="acts">
+      <button
+        type="submit"
+        class="btn primary"
+        [disabled]="busy()"
+        [attr.aria-busy]="busy()"
+        i18n="@@store.account.save"
+      >
+        حفظ
+      </button>
+      <button type="button" class="btn" (click)="editOpen.set(false)" i18n="@@store.account.cancel">
+        إلغاء
+      </button>
+    </div>
+  </form>
+</ta-dialog>
+
+<ta-dialog [(open)]="confirmOpen" labelledBy="st-cf-h">
+  <div class="dlg">
+    <h2 id="st-cf-h" i18n="@@store.admin.confirm-title">تأكيد الإجراء</h2>
+    <p>{{ confirmText() }}</p>
+    <div class="acts">
+      <button
+        type="button"
+        class="btn primary"
+        (click)="run()"
+        [disabled]="busy()"
+        [attr.aria-busy]="busy()"
+        i18n="@@store.admin.confirm"
+      >
+        تأكيد
+      </button>
+      <button
+        type="button"
+        class="btn"
+        (click)="confirmOpen.set(false)"
+        i18n="@@store.account.cancel"
+      >
+        إلغاء
+      </button>
+    </div>
+  </div>
+</ta-dialog>
+
+<ta-dialog
+  [(open)]="secretOpen"
+  labelledBy="st-otp-h"
+  [lightDismiss]="false"
+  (closed)="closeSecret()"
+>
+  <div class="dlg">
+    <h2 id="st-otp-h" i18n="@@store.admin.otp-title">كلمة مرور مؤقتة</h2>
+    @if (secret(); as s) {
+      <p i18n="@@store.admin.otp-lede">
+        سلّمها إلى {{ s.email }} بطريقة آمنة. لن تظهر مرة أخرى، ويُطلب تغييرها عند أول دخول.
+      </p>
+      <p class="secret" dir="ltr" data-testid="one-time-password">{{ s.password }}</p>
+    }
+    <div class="acts">
+      <button type="button" class="btn primary" (click)="closeSecret()" i18n="@@store.admin.done">
+        تم
+      </button>
+    </div>
+  </div>
+</ta-dialog>

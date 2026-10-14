@@ -1,0 +1,118 @@
+<div class="ahead">
+  <div>
+    <h1 i18n="@@store.admin.nav-audit">سجل التدقيق</h1>
+    <p i18n="@@store.admin.audit-lede">كل تعديل يجريه فريق المتجر، مع الفاعل والوقت والتغيير.</p>
+  </div>
+</div>
+<form class="filters panel" (submit)="apply($event)" novalidate>
+  <div class="field">
+    <label for="au-actor" i18n="@@store.admin.actor">الفاعل (البريد)</label>
+    <input id="au-actor" dir="ltr" [value]="draft().actor" (input)="set('actor', $event)" />
+  </div>
+  <div class="field">
+    <label for="au-entity" i18n="@@store.admin.entity">الكيان</label>
+    <input id="au-entity" dir="ltr" [value]="draft().entity" (input)="set('entity', $event)" />
+  </div>
+  <div class="field">
+    <label for="au-action" i18n="@@store.admin.action">الإجراء</label>
+    <input id="au-action" dir="ltr" [value]="draft().action" (input)="set('action', $event)" />
+  </div>
+  <div class="field">
+    <label for="au-from" i18n="@@store.admin.from">من</label>
+    <input id="au-from" type="date" [value]="draft().from" (input)="set('from', $event)" />
+  </div>
+  <div class="field">
+    <label for="au-to" i18n="@@store.admin.to">إلى</label>
+    <input id="au-to" type="date" [value]="draft().to" (input)="set('to', $event)" />
+  </div>
+  <button type="submit" class="btn primary" i18n="@@store.admin.apply">تطبيق</button>
+  <button type="button" class="btn" (click)="clear()" i18n="@@store.admin.clear">مسح</button>
+</form>
+
+<ta-resource-state
+  [loading]="data.audit.isLoading() && !page()"
+  [error]="!!data.audit.error() && !page()"
+  (retry)="data.audit.reload()"
+>
+  @if (items().length === 0) {
+    <p class="muted" i18n="@@store.admin.no-results">لا نتائج.</p>
+  } @else {
+    <div class="panel tbl-wrap">
+      <table class="atbl">
+        <caption class="visually-hidden" i18n="@@store.admin.nav-audit">
+          سجل التدقيق
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col" i18n="@@store.admin.when">الوقت</th>
+            <th scope="col" i18n="@@store.admin.actor">الفاعل (البريد)</th>
+            <th scope="col" i18n="@@store.admin.action">الإجراء</th>
+            <th scope="col" i18n="@@store.admin.entity">الكيان</th>
+            <th scope="col" i18n="@@store.admin.change">التغيير</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (e of items(); track key(e)) {
+            <tr>
+              <td class="nowrap">{{ i18n.formatDateTime(e.at) }}</td>
+              <td>
+                <bdi dir="ltr">{{ e.actor }}</bdi>
+              </td>
+              <td>
+                <bdi dir="ltr" class="mono">{{ e.action }}</bdi>
+              </td>
+              <td>
+                <bdi dir="ltr" class="mono">{{ e.entity }}</bdi>
+                @if (e.entityId) {
+                  <small class="muted id" dir="ltr">{{ e.entityId }}</small>
+                }
+              </td>
+              <td>
+                @if (diff(e)) {
+                  <button
+                    type="button"
+                    class="btn sm"
+                    (click)="toggle(e)"
+                    [attr.aria-expanded]="open() === key(e)"
+                    [attr.aria-controls]="'au-d-' + key(e)"
+                  >
+                    <span i18n="@@store.admin.show-change">عرض</span
+                    ><span class="visually-hidden"> {{ e.action }}</span>
+                  </button>
+                  @if (open() === key(e)) {
+                    <pre [id]="'au-d-' + key(e)" dir="ltr">{{ diff(e) }}</pre>
+                  }
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    @if (pages() > 1) {
+      <nav class="apager" aria-label="الصفحات" i18n-aria-label="@@store.ui.pagination">
+        <button
+          type="button"
+          class="btn sm"
+          (click)="go(data.auditFilter().page - 1)"
+          [disabled]="data.auditFilter().page <= 1"
+          i18n="@@store.account.prev"
+        >
+          السابق
+        </button>
+        <span
+          ><bdi>{{ data.auditFilter().page }} / {{ pages() }}</bdi></span
+        >
+        <button
+          type="button"
+          class="btn sm"
+          (click)="go(data.auditFilter().page + 1)"
+          [disabled]="data.auditFilter().page >= pages()"
+          i18n="@@store.account.next"
+        >
+          التالي
+        </button>
+      </nav>
+    }
+  }
+</ta-resource-state>

@@ -25,6 +25,20 @@ export type StaffSessionResponse = Schemas['StaffSessionResponse'];
 export type StaffMe = Schemas['StaffMeResponse'];
 export type TotpEnrolResponse = Schemas['TotpEnrolResponse'];
 
+// Admin platform (#118–#128, #133)
+export type StaffUser = Schemas['StaffUserResponse'];
+export type CreateStaff = Schemas['CreateStaffRequest'];
+export type UpdateStaff = Schemas['UpdateStaffRequest'];
+export type CreateStaffResult = Schemas['CreateStaffResponse'];
+export type OneTimePassword = Schemas['OneTimePasswordResponse'];
+export type Setting = Schemas['SettingResponse'];
+export type MessageTemplate = Schemas['TemplateResponse'];
+export type TemplateUpdate = Schemas['TemplateUpdateRequest'];
+export type TemplateTest = Schemas['TemplateTestRequest'];
+export type TemplateTestResult = Schemas['TemplateTestResponse'];
+export type AuditEntry = Schemas['AuditEntry'];
+export type AuditPage = Schemas['PagedResultOfAuditEntry'];
+
 // Cart (#11)
 export type CartBadge = Schemas['CartBadgeResponse'];
 

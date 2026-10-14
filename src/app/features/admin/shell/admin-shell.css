@@ -1,0 +1,159 @@
+:host {
+  display: block;
+  min-block-size: 100vh;
+  background: var(--c-bg);
+}
+
+.abar {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 12px 16px;
+  flex-wrap: wrap;
+  padding-block: 10px;
+  padding-inline: 20px;
+  background: var(--c-surface);
+  border-block-end: 1px solid var(--c-border);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-block-size: 44px;
+  font-weight: 600;
+  color: var(--c-text);
+  text-decoration: none;
+}
+
+.brand ta-icon {
+  color: var(--c-accent-strong);
+}
+
+.menu-btn {
+  display: none;
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  border: 1px solid var(--c-border);
+  border-radius: 10px;
+  background: var(--c-surface);
+  color: var(--c-text);
+}
+
+.who {
+  margin-inline-start: auto;
+  display: grid;
+  line-height: 1.3;
+  text-align: end;
+}
+
+.who small {
+  color: var(--c-muted-2);
+  font-size: 0.78rem;
+}
+
+.tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.out {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-block-size: 44px;
+  padding-inline: 12px;
+  border: 1px solid var(--c-border);
+  border-radius: 10px;
+  background: var(--c-surface);
+  color: var(--c-text);
+  font: inherit;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.abody {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (width >= 960px) {
+  .abody {
+    grid-template-columns: 240px minmax(0, 1fr);
+  }
+}
+
+.aside {
+  background: var(--c-surface-2);
+  padding: 14px;
+  border-inline-end: 1px solid var(--c-border);
+}
+
+@media (width >= 960px) {
+  .aside {
+    min-block-size: calc(100vh - 65px);
+  }
+}
+
+.aside ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.aside a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-block-size: 44px;
+  padding-inline: 12px;
+  border-radius: 10px;
+  color: var(--c-text);
+  text-decoration: none;
+  font-size: 0.93rem;
+}
+
+.aside a:hover {
+  background: var(--c-surface);
+}
+
+.aside a.on {
+  background: var(--c-surface);
+  font-weight: 600;
+  box-shadow: 0 1px 4px var(--c-header-shadow);
+}
+
+main {
+  display: block;
+  min-inline-size: 0;
+  padding-block: 24px 60px;
+  padding-inline: 20px;
+}
+
+main:focus {
+  outline: none;
+}
+
+@media (width < 960px) {
+  .menu-btn {
+    display: inline-grid;
+    place-items: center;
+  }
+
+  .who {
+    display: none;
+  }
+
+  .aside {
+    display: none;
+  }
+
+  .aside.open {
+    display: block;
+  }
+}
