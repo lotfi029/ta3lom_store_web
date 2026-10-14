@@ -8,7 +8,7 @@ import { Money } from '../../shared/ui/money/money';
 import { ResourceState } from '../../shared/ui/resource-state/resource-state';
 import { StatusPill } from '../../shared/ui/status-pill/status-pill';
 import { AccountData, ORDERS_PAGE_SIZE } from './account.data';
-import { orderStatus } from './labels';
+import { orderStatus } from '../../shared/ui/status-pill/status-labels';
 
 /** Orders and invoices (FR-S26, #35): newest first, paged. */
 @Component({

@@ -19,7 +19,7 @@ import { Icon } from '../../shared/ui/icon/icon';
 import { ResourceState } from '../../shared/ui/resource-state/resource-state';
 import { StatusPill } from '../../shared/ui/status-pill/status-pill';
 import { AccountData } from './account.data';
-import { shipmentStatus } from './labels';
+import { shipmentStatus } from '../../shared/ui/status-pill/status-labels';
 
 /**
  * My books (FR-S24): digital downloads with the remaining count (RUL-41) and print shipments with tracking (RUL-40).

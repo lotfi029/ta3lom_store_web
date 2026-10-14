@@ -23,7 +23,11 @@ import { Money } from '../../shared/ui/money/money';
 import { ResourceState } from '../../shared/ui/resource-state/resource-state';
 import { StatusPill } from '../../shared/ui/status-pill/status-pill';
 import { AccountData } from './account.data';
-import { documentKind, orderStatus, shipmentStatus } from './labels';
+import {
+  documentKind,
+  orderStatus,
+  shipmentStatus,
+} from '../../shared/ui/status-pill/status-labels';
 
 /** One order (FR-S26, #36): purchase lines, totals, payments, shipment, and invoice PDFs (#37, RUL-59). r4: purchases only. */
 @Component({

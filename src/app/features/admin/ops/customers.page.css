@@ -1,0 +1,40 @@
+.c360 h3 {
+  font-size: 0.95rem;
+  margin-block: 0 8px;
+}
+
+.cols {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (width >= 900px) {
+  .cols {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+.plain {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+  font-size: 0.88rem;
+}
+
+.plain li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.plain a {
+  color: var(--c-link);
+}
+
+.lookup-err:empty {
+  display: none;
+}

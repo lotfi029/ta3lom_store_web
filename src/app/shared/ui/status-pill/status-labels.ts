@@ -1,4 +1,4 @@
-import type { PillTone } from '../../shared/ui/status-pill/status-pill';
+import type { PillTone } from './status-pill';
 
 /** Order states (RUL-29) → label and pill tone. */
 export function orderStatus(status: string): { label: string; tone: PillTone } {
