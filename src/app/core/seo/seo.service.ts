@@ -24,7 +24,8 @@ export interface SeoData {
 }
 
 /** The store's name in the current locale (titles, Open Graph, JSON-LD). */
-export const siteName = (): string => $localize`:@@store.seo.site-name:متجر جمعية التعلم الإلكتروني`;
+export const siteName = (): string =>
+  $localize`:@@store.seo.site-name:متجر جمعية التعلم الإلكتروني`;
 const JSON_LD_ID = 'ta-seo-json-ld';
 
 /** Every route calls `set()` (non-negotiable #4; a unit test checks every page does). Canonicals on store.ta3lom.sa. */
@@ -42,14 +43,23 @@ export class SeoService {
 
     this.titleService.setTitle(title);
     this.meta.updateTag({ name: 'description', content: data.description });
-    this.meta.updateTag({ name: 'robots', content: data.noindex ? 'noindex, nofollow' : 'index, follow' });
+    this.meta.updateTag({
+      name: 'robots',
+      content: data.noindex ? 'noindex, nofollow' : 'index, follow',
+    });
     this.meta.updateTag({ property: 'og:type', content: data.ogType ?? 'website' });
     this.meta.updateTag({ property: 'og:site_name', content: site });
     this.meta.updateTag({ property: 'og:title', content: title });
     this.meta.updateTag({ property: 'og:description', content: data.description });
     this.meta.updateTag({ property: 'og:url', content: canonical });
-    this.meta.updateTag({ property: 'og:locale', content: this.i18n.locale === 'ar' ? 'ar_SA' : 'en_US' });
-    this.meta.updateTag({ name: 'twitter:card', content: data.image ? 'summary_large_image' : 'summary' });
+    this.meta.updateTag({
+      property: 'og:locale',
+      content: this.i18n.locale === 'ar' ? 'ar_SA' : 'en_US',
+    });
+    this.meta.updateTag({
+      name: 'twitter:card',
+      content: data.image ? 'summary_large_image' : 'summary',
+    });
     this.meta.updateTag({ name: 'twitter:title', content: title });
     this.meta.updateTag({ name: 'twitter:description', content: data.description });
     if (data.image) {
@@ -90,7 +100,9 @@ export class SeoService {
   }
 
   private removeLinks(): void {
-    this.document.head.querySelectorAll('link[rel="canonical"], link[rel="alternate"][hreflang]').forEach((l) => l.remove());
+    this.document.head
+      .querySelectorAll('link[rel="canonical"], link[rel="alternate"][hreflang]')
+      .forEach((l) => l.remove());
   }
 
   private setJsonLd(jsonLd: JsonLd | JsonLd[] | undefined): void {
@@ -109,6 +121,11 @@ export function breadcrumbJsonLd(items: readonly (readonly [string, string])[]):
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
-    itemListElement: items.map(([name, item], i) => ({ '@type': 'ListItem', position: i + 1, name, item })),
+    itemListElement: items.map(([name, item], i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name,
+      item,
+    })),
   };
 }

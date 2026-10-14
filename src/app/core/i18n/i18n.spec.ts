@@ -23,7 +23,8 @@ describe('Saudi mobile normalisation (plan §6 checkout form)', () => {
   });
 
   it('rejects non-mobiles', () => {
-    for (const bad of ['0112345678', '05512345', '+971551234567', 'abc']) expect(normalizeSaudiMobile(bad)).toBeNull();
+    for (const bad of ['0112345678', '05512345', '+971551234567', 'abc'])
+      expect(normalizeSaudiMobile(bad)).toBeNull();
   });
 
   it('converts to E.164 and Western digits', () => {

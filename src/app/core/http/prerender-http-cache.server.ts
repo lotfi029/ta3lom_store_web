@@ -33,7 +33,10 @@ export function createPrerenderHttpCache(): HttpInterceptorFn {
     let response = cache.get(key);
     if (!response) {
       response = next(req).pipe(
-        filter((event: HttpEvent<unknown>): event is HttpResponse<unknown> => event instanceof HttpResponse),
+        filter(
+          (event: HttpEvent<unknown>): event is HttpResponse<unknown> =>
+            event instanceof HttpResponse,
+        ),
         tap({ error: () => cache.delete(key) }),
         shareReplay(1),
       );

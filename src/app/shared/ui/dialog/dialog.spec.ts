@@ -21,7 +21,12 @@ import { Dialog } from './dialog';
   imports: [Dialog],
   template: `
     <button #trigger type="button">open</button>
-    <ta-dialog [open]="open()" [lightDismiss]="lightDismiss()" labelledBy="dlg-title" (closed)="open.set(false)">
+    <ta-dialog
+      [open]="open()"
+      [lightDismiss]="lightDismiss()"
+      labelledBy="dlg-title"
+      (closed)="open.set(false)"
+    >
       <h2 id="dlg-title">Title</h2>
       <button type="button">inside</button>
     </ta-dialog>

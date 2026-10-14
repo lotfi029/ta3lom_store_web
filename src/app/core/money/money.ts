@@ -20,7 +20,8 @@ export function toHalalas(value: Money): number {
 
 /** 35000 → `"350.00"`. */
 export function fromHalalas(halalas: number): Money {
-  if (!Number.isSafeInteger(halalas)) throw new Error(`money: halalas must be an integer, got ${halalas}`);
+  if (!Number.isSafeInteger(halalas))
+    throw new Error(`money: halalas must be an integer, got ${halalas}`);
   const sign = halalas < 0 ? '-' : '';
   const abs = Math.abs(halalas);
   return `${sign}${Math.trunc(abs / 100)}.${String(abs % 100).padStart(2, '0')}`;
@@ -28,11 +29,13 @@ export function fromHalalas(halalas: number): Money {
 
 export const add = (a: Money, b: Money): Money => fromHalalas(toHalalas(a) + toHalalas(b));
 export const subtract = (a: Money, b: Money): Money => fromHalalas(toHalalas(a) - toHalalas(b));
-export const sum = (values: readonly Money[]): Money => fromHalalas(values.reduce((t, v) => t + toHalalas(v), 0));
+export const sum = (values: readonly Money[]): Money =>
+  fromHalalas(values.reduce((t, v) => t + toHalalas(v), 0));
 
 /** `times("350.00", 5)` → `"1750.00"`. Quantity must be a whole number. */
 export function times(price: Money, quantity: number): Money {
-  if (!Number.isInteger(quantity)) throw new Error(`money: quantity must be an integer, got ${quantity}`);
+  if (!Number.isInteger(quantity))
+    throw new Error(`money: quantity must be an integer, got ${quantity}`);
   return fromHalalas(toHalalas(price) * quantity);
 }
 

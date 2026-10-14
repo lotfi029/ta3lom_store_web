@@ -1,4 +1,9 @@
-import { HttpContextToken, HttpErrorResponse, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
+import {
+  HttpContextToken,
+  HttpErrorResponse,
+  HttpInterceptorFn,
+  HttpRequest,
+} from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, from, switchMap, throwError } from 'rxjs';
@@ -45,9 +50,20 @@ export const storeApiInterceptor: HttpInterceptorFn = (req, next) => {
         !/\/(admin\/)?auth\//.test(req.url);
       if (!refreshable) return throwError(() => error);
       return from(auth.refresh()).pipe(
-        switchMap((token) => next(prepare(req.clone({ context: req.context.set(RETRIED, true), headers: req.headers.delete('Authorization') }), token))),
+        switchMap((token) =>
+          next(
+            prepare(
+              req.clone({
+                context: req.context.set(RETRIED, true),
+                headers: req.headers.delete('Authorization'),
+              }),
+              token,
+            ),
+          ),
+        ),
         catchError(() => {
-          if (staffRequest) void router.navigate(['/admin/login'], { queryParams: { returnUrl: router.url } });
+          if (staffRequest)
+            void router.navigate(['/admin/login'], { queryParams: { returnUrl: router.url } });
           return throwError(() => error);
         }),
       );

@@ -10,13 +10,24 @@ export async function bookFormat(slug: string, kind: 'print' | 'digital') {
   return { manager, format: f };
 }
 
-export async function setFormatPrice(slug: string, kind: 'print' | 'digital', price: string): Promise<string> {
+export async function setFormatPrice(
+  slug: string,
+  kind: 'print' | 'digital',
+  price: string,
+): Promise<string> {
   const { manager, format: f } = await bookFormat(slug, kind);
   const res = await manager.call('PUT', `/v1/admin/formats/${f.id}`, {
-    kind: f.kind, sku: f.sku, price, compareAtPrice: f.compareAtPrice ?? null, isActive: f.isActive ?? true,
-    weightGrams: f.weightGrams ?? null, lowStockThreshold: f.lowStockThreshold ?? null, fileAssetId: f.fileAssetId ?? null,
+    kind: f.kind,
+    sku: f.sku,
+    price,
+    compareAtPrice: f.compareAtPrice ?? null,
+    isActive: f.isActive ?? true,
+    weightGrams: f.weightGrams ?? null,
+    lowStockThreshold: f.lowStockThreshold ?? null,
+    fileAssetId: f.fileAssetId ?? null,
   });
-  if (res.status !== 200) throw new Error(`price ${slug}: ${res.status} ${JSON.stringify(res.body)}`);
+  if (res.status !== 200)
+    throw new Error(`price ${slug}: ${res.status} ${JSON.stringify(res.body)}`);
   return f.price;
 }
 
@@ -24,8 +35,13 @@ export async function setFormatPrice(slug: string, kind: 'print' | 'digital', pr
 export async function moveStock(slug: string, delta: number) {
   const { format } = await bookFormat(slug, 'print');
   const fulfilment = await staff('fulfilment');
-  const res = await fulfilment.call('POST', `/v1/admin/stock/${format.id}/movements`, { delta, reason: delta > 0 ? 'restock' : 'adjustment', note: 'e2e' });
-  if (res.status !== 201) throw new Error(`stock ${slug}: ${res.status} ${JSON.stringify(res.body)}`);
+  const res = await fulfilment.call('POST', `/v1/admin/stock/${format.id}/movements`, {
+    delta,
+    reason: delta > 0 ? 'restock' : 'adjustment',
+    note: 'e2e',
+  });
+  if (res.status !== 201)
+    throw new Error(`stock ${slug}: ${res.status} ${JSON.stringify(res.body)}`);
   return res.body as { available: number };
 }
 

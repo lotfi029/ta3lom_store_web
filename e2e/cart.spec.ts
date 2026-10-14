@@ -9,8 +9,12 @@ for (const locale of ['ar', 'en'] as const) {
   const t = (ar: string, en: string) => (locale === 'ar' ? ar : en);
 
   test.describe(`cart /${locale}`, () => {
-    test('course + print book ×2 → cart: badge, lines, quantity, totals, remove, empty', async ({ page }) => {
-      const courses = await apiGet<{ items: { slug: string }[] }>('/catalog/products?type=course&pageSize=1');
+    test('course + print book ×2 → cart: badge, lines, quantity, totals, remove, empty', async ({
+      page,
+    }) => {
+      const courses = await apiGet<{ items: { slug: string }[] }>(
+        '/catalog/products?type=course&pageSize=1',
+      );
       await page.goto(`/${locale}/p/${courses.items[0].slug}`);
       await page.locator('ta-buy-box .acts .b.primary').click();
       await expect(page.locator('.toast')).toContainText(t('أُضيف إلى السلة', 'Added to cart'));
@@ -23,7 +27,10 @@ for (const locale of ['ar', 'en'] as const) {
 
       await page.goto(`/${locale}/cart`);
       await expect(page.locator('h1')).toHaveCount(1);
-      await expect(page.locator('meta[name=robots]')).toHaveAttribute('content', 'noindex, nofollow');
+      await expect(page.locator('meta[name=robots]')).toHaveAttribute(
+        'content',
+        'noindex, nofollow',
+      );
       await expect(page.locator('.cline')).toHaveCount(2);
       const book = page.locator('.cline', { has: page.locator('.stepper') });
       await expect(book.locator('output')).toHaveText('2');
@@ -35,7 +42,9 @@ for (const locale of ['ar', 'en'] as const) {
       await expect(book.locator('output')).toHaveText('4');
       await expect(book.locator('.lp')).toContainText('260'); // 4 × 65 after the debounced PATCH
       await page.reload();
-      await expect(page.locator('.cline', { has: page.locator('.stepper') }).locator('output')).toHaveText('4');
+      await expect(
+        page.locator('.cline', { has: page.locator('.stepper') }).locator('output'),
+      ).toHaveText('4');
 
       await page.setViewportSize({ width: 320, height: 800 });
       await expectNoHorizontalScroll(page);
@@ -52,7 +61,9 @@ for (const locale of ['ar', 'en'] as const) {
       await page.locator('ta-buy-box .acts .b.primary').click();
       await expect(page.locator('a.cartbtn .n')).toHaveText('1');
       await page.locator('ta-buy-box .acts .b.primary').click();
-      await expect(page.locator('.toast')).toContainText(t('موجودة في سلتك', 'already in your cart'));
+      await expect(page.locator('.toast')).toContainText(
+        t('موجودة في سلتك', 'already in your cart'),
+      );
       await expect(page.locator('a.cartbtn .n')).toHaveText('1');
     });
 
@@ -83,7 +94,9 @@ for (const locale of ['ar', 'en'] as const) {
       }
     });
 
-    test('out of stock: the print format is disabled and digital is offered (RUL-30)', async ({ page }) => {
+    test('out of stock: the print format is disabled and digital is offered (RUL-30)', async ({
+      page,
+    }) => {
       const available = await printAvailable('study-planner');
       await moveStock('study-planner', -available);
       try {

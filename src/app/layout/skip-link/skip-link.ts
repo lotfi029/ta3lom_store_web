@@ -4,7 +4,9 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 @Component({
   selector: 'ta-skip-link',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<a class="skip-link" [attr.href]="'#' + targetId()" i18n="@@store.layout.skip-link">تخطَّ إلى المحتوى الرئيسي</a>`,
+  template: `<a class="skip-link" [attr.href]="'#' + targetId()" i18n="@@store.layout.skip-link"
+    >تخطَّ إلى المحتوى الرئيسي</a
+  >`,
   styleUrl: './skip-link.css',
 })
 export class SkipLink {

@@ -33,5 +33,7 @@ export function currencyLabel(locale: Locale): string {
 }
 
 export function formatMoney(value: Money, locale: Locale): string {
-  return locale === 'ar' ? `${formatAmount(value, locale)} ${currencyLabel(locale)}` : `${currencyLabel(locale)} ${formatAmount(value, locale)}`;
+  return locale === 'ar'
+    ? `${formatAmount(value, locale)} ${currencyLabel(locale)}`
+    : `${currencyLabel(locale)} ${formatAmount(value, locale)}`;
 }

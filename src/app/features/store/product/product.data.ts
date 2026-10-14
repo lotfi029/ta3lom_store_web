@@ -1,7 +1,13 @@
 import { isPlatformBrowser } from '@angular/common';
 import { HttpErrorResponse, httpResource } from '@angular/common/http';
 import { Injectable, PLATFORM_ID, computed, inject, signal } from '@angular/core';
-import type { BookFormat, Enrolment, LiveFigures, ProductDetail, ProductPage } from '../../../core/api/api.types';
+import type {
+  BookFormat,
+  Enrolment,
+  LiveFigures,
+  ProductDetail,
+  ProductPage,
+} from '../../../core/api/api.types';
 import { isStoreProduct, toInt } from '../../../core/api/api.types';
 import { valueOf } from '../../../core/http/resource-value';
 import { STORE_API_URL } from '../../../core/api/store-api-url';
@@ -19,11 +25,17 @@ export class ProductData {
   private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
 
   readonly slug = signal('');
-  readonly product = httpResource<ProductDetail>(() => (this.slug() ? `${this.api}/catalog/products/${encodeURIComponent(this.slug())}` : undefined));
-  private readonly liveRes = httpResource<LiveFigures>(() =>
-    this.browser && this.slug() ? { url: `${this.api}/catalog/live`, params: { slugs: this.slug() } } : undefined,
+  readonly product = httpResource<ProductDetail>(() =>
+    this.slug() ? `${this.api}/catalog/products/${encodeURIComponent(this.slug())}` : undefined,
   );
-  readonly live = computed(() => valueOf(this.liveRes)?.items.find((i) => i.slug === this.slug()) ?? null);
+  private readonly liveRes = httpResource<LiveFigures>(() =>
+    this.browser && this.slug()
+      ? { url: `${this.api}/catalog/live`, params: { slugs: this.slug() } }
+      : undefined,
+  );
+  readonly live = computed(
+    () => valueOf(this.liveRes)?.items.find((i) => i.slug === this.slug()) ?? null,
+  );
 
   /** The product exists, is published and is a course or a book (r4). */
   readonly value = computed(() => {
@@ -37,7 +49,9 @@ export class ProductData {
   });
 
   readonly coursePrice = computed(() => this.live()?.price ?? this.value()?.course?.price ?? null);
-  readonly courseCompareAt = computed(() => this.live()?.compareAtPrice ?? this.value()?.course?.compareAtPrice ?? null);
+  readonly courseCompareAt = computed(
+    () => this.live()?.compareAtPrice ?? this.value()?.course?.compareAtPrice ?? null,
+  );
 
   /** Book formats with the live price and stock merged in (print `available`; digital is unlimited). */
   readonly formats = computed<BookFormat[]>(() => {
@@ -58,10 +72,14 @@ export class ProductData {
    */
   private readonly auth = inject(StoreAuth);
   private readonly enrolments = httpResource<Enrolment[]>(() =>
-    this.browser && this.auth.isSignedIn() && this.value()?.type === 'course' ? `${this.api}/me/enrolments` : undefined,
+    this.browser && this.auth.isSignedIn() && this.value()?.type === 'course'
+      ? `${this.api}/me/enrolments`
+      : undefined,
   );
   readonly owned = computed(() =>
-    (valueOf(this.enrolments) ?? []).some((e) => e.product.slug === this.slug() && e.status !== 'revoked' && e.status !== 'expired'),
+    (valueOf(this.enrolments) ?? []).some(
+      (e) => e.product.slug === this.slug() && e.status !== 'revoked' && e.status !== 'expired',
+    ),
   );
 
   readonly relatedWanted = signal(false);
@@ -73,7 +91,9 @@ export class ProductData {
   });
   readonly related = computed(() => {
     const slugs = new Set((this.value()?.related ?? []).map((r) => r.slug));
-    return (valueOf(this.relatedList)?.items ?? []).filter((c) => slugs.has(c.slug) && isStoreProduct(c)).slice(0, 3);
+    return (valueOf(this.relatedList)?.items ?? [])
+      .filter((c) => slugs.has(c.slug) && isStoreProduct(c))
+      .slice(0, 3);
   });
   readonly relatedResource = this.relatedList;
 

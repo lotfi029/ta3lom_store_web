@@ -8,7 +8,15 @@ import { I18nService } from '../../../core/i18n/i18n';
 import { SeoService, breadcrumbJsonLd } from '../../../core/seo/seo.service';
 import { ProductCard } from '../../../shared/ui/product-card/product-card';
 import { ResourceState } from '../../../shared/ui/resource-state/resource-state';
-import { CATALOG_SORTS, CatalogData, type CatalogSort, liveMap, pageOf, sortOf, storeItems } from './catalog.data';
+import {
+  CATALOG_SORTS,
+  CatalogData,
+  type CatalogSort,
+  liveMap,
+  pageOf,
+  sortOf,
+  storeItems,
+} from './catalog.data';
 
 /**
  * `/courses` and `/books` (plan §2.2, FR-S02): category chips from the API, sort, paging — all in the query string
@@ -50,10 +58,14 @@ export class CatalogPage {
   protected readonly live = this.data.liveResource(() => this.items().map((p) => p.slug));
   protected readonly liveBySlug = computed(() => liveMap(this.live.value()));
   protected readonly pages = computed(() => pageCount(valueOf(this.list)));
-  protected readonly pageNumbers = computed(() => Array.from({ length: this.pages() }, (_, i) => i + 1));
+  protected readonly pageNumbers = computed(() =>
+    Array.from({ length: this.pages() }, (_, i) => i + 1),
+  );
 
   protected readonly heading = computed(() =>
-    this.type() === 'course' ? $localize`:@@store.catalog.courses-title:الدورات` : $localize`:@@store.catalog.books-title:الكتب`,
+    this.type() === 'course'
+      ? $localize`:@@store.catalog.courses-title:الدورات`
+      : $localize`:@@store.catalog.books-title:الكتب`,
   );
   protected readonly lede = computed(() =>
     this.type() === 'course'
@@ -96,6 +108,9 @@ export class CatalogPage {
   }
 
   protected onSort(value: string): void {
-    void this.router.navigate([], { queryParams: { sort: value === 'featured' ? null : value, page: null }, queryParamsHandling: 'merge' });
+    void this.router.navigate([], {
+      queryParams: { sort: value === 'featured' ? null : value, page: null },
+      queryParamsHandling: 'merge',
+    });
   }
 }

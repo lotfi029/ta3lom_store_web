@@ -1,0 +1,194 @@
+<section class="thx">
+  <div class="wrap">
+    <ta-steps [current]="3" />
+    <p class="visually-hidden" role="status" aria-live="polite">{{ announcement() }}</p>
+
+    <div class="success">
+      @switch (view()) {
+        @case ('paid') {
+          <div class="ok" aria-hidden="true"><ta-icon name="check" [size]="38" /></div>
+        }
+        @case ('pending') {
+          <div class="ok wait" aria-hidden="true"><span class="spin"></span></div>
+        }
+        @case ('loading') {
+          <div class="ok wait" aria-hidden="true"><span class="spin"></span></div>
+        }
+        @case ('slow') {
+          <div class="ok wait" aria-hidden="true"><ta-icon name="clock" [size]="34" /></div>
+        }
+        @default {
+          <div class="ok warn" aria-hidden="true"><ta-icon name="alert" [size]="34" /></div>
+        }
+      }
+
+      <h1>{{ headline() }}</h1>
+
+      @if (order(); as o) {
+        <p class="ref">
+          <span i18n="@@store.thanks.reference">رقم الطلب</span>
+          <bdi class="mono" dir="ltr">{{ o.reference }}</bdi>
+        </p>
+      }
+
+      @switch (view()) {
+        @case ('pending') {
+          <p class="lede" i18n="@@store.thanks.pending-lede">
+            أنشأنا طلبك وننتظر تأكيد الدفع. تتحدّث هذه الصفحة تلقائيًا، وسنرسل لك رسالة نصية عند
+            التأكيد.
+          </p>
+          @if (order(); as o) {
+            <p class="due">
+              <span i18n="@@store.thanks.due">ادفع قبل</span>
+              <bdi>{{ i18n.formatDateTime(o.paymentDueAt) }}</bdi>
+            </p>
+          }
+        }
+        @case ('slow') {
+          <p class="lede" i18n="@@store.thanks.slow-lede">
+            سنرسل لك رسالة نصية فور تأكيد الدفع. يمكنك إغلاق هذه الصفحة.
+          </p>
+          <p class="acts">
+            <button
+              type="button"
+              class="b ghost"
+              (click)="data.checkAgain()"
+              i18n="@@store.thanks.check-again"
+            >
+              تحقّق مرة أخرى
+            </button>
+          </p>
+        }
+        @case ('paid') {
+          <p class="lede" i18n="@@store.thanks.paid-lede">
+            تم تأكيد الدفع. أرسلنا الإيصال برسالة نصية، وتجد مشترياتك في حسابك.
+          </p>
+        }
+        @case ('failed') {
+          <p class="lede" i18n="@@store.thanks.failed-lede">
+            لم تُخصم أي مبالغ. يمكنك العودة إلى السلة وإعادة المحاولة.
+          </p>
+          <p class="acts">
+            <a class="b primary" routerLink="/cart" i18n="@@store.thanks.go-cart"
+              >انتقل إلى السلة</a
+            >
+          </p>
+        }
+        @case ('review') {
+          <p class="lede" i18n="@@store.thanks.review-lede">
+            نتحقق من عملية الدفع وسيتواصل معك فريق المالية. لن يُخصم المبلغ مرتين.
+          </p>
+        }
+        @case ('expired') {
+          @if (order()?.cartRestored) {
+            <p class="lede" i18n="@@store.thanks.restored">أعدنا العناصر إلى سلتك.</p>
+            <p class="acts">
+              <a class="b primary" routerLink="/cart" i18n="@@store.thanks.go-cart"
+                >انتقل إلى السلة</a
+              >
+            </p>
+          } @else {
+            <p class="lede" i18n="@@store.thanks.expired-lede">انتهت مهلة الدفع قبل تأكيده.</p>
+            <p class="acts">
+              <a class="b primary" routerLink="/" i18n="@@store.thanks.back-store"
+                >العودة إلى المتجر</a
+              >
+            </p>
+          }
+        }
+        @case ('cancelled') {
+          @if (order()?.cartRestored) {
+            <p class="lede" i18n="@@store.thanks.restored">أعدنا العناصر إلى سلتك.</p>
+            <p class="acts">
+              <a class="b primary" routerLink="/cart" i18n="@@store.thanks.go-cart"
+                >انتقل إلى السلة</a
+              >
+            </p>
+          } @else {
+            <p class="acts">
+              <a class="b primary" routerLink="/" i18n="@@store.thanks.back-store"
+                >العودة إلى المتجر</a
+              >
+            </p>
+          }
+        }
+        @case ('notFound') {
+          <p class="lede" i18n="@@store.thanks.not-found-lede">
+            سجّل الدخول بالرقم الذي طلبت به لعرض طلباتك.
+          </p>
+          <p class="acts">
+            <a class="b primary" routerLink="/login" i18n="@@store.layout.sign-in">تسجيل الدخول</a>
+          </p>
+        }
+      }
+
+      @if (order(); as o) {
+        @if (view() !== 'notFound') {
+          <div class="receipt">
+            <div class="hd">
+              <b i18n="@@store.thanks.receipt">ملخص الطلب</b>
+              <bdi class="mono" dir="ltr">{{ o.reference }}</bdi>
+            </div>
+            @for (p of purchases(); track $index) {
+              <div class="ln">
+                <span>{{ title(p) }}</span>
+                @if (view() === 'paid' && nextLink(p); as link) {
+                  <a [routerLink]="link">{{ nextLabel(p) }}</a>
+                }
+              </div>
+            }
+            <div class="ln tot">
+              <span i18n="@@store.cart.total">الإجمالي</span>
+              <b><ta-money [value]="o.grandTotal" /></b>
+            </div>
+            @if (documents().length > 0) {
+              <ul class="docs">
+                @for (d of documents(); track d.number) {
+                  <li>
+                    <ta-icon name="file" [size]="16" />
+                    <span i18n="@@store.thanks.invoice">فاتورة</span>
+                    <bdi class="mono" dir="ltr">{{ d.number }}</bdi>
+                    @if (!d.ready) {
+                      <small i18n="@@store.thanks.doc-preparing">قيد الإعداد</small>
+                    }
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+          @if (view() === 'paid') {
+            <p class="acts">
+              <a class="b primary" routerLink="/account/orders" i18n="@@store.thanks.my-account"
+                >حسابي</a
+              >
+              <a class="b ghost" routerLink="/" i18n="@@store.thanks.back-store"
+                >العودة إلى المتجر</a
+              >
+            </p>
+          }
+        }
+      }
+
+      @if (data.devTrigger && (view() === 'pending' || view() === 'slow')) {
+        <div class="dev">
+          <p i18n="@@store.thanks.dev-note">
+            بيئة التطوير فقط: لا توجد بوابة دفع. يحاكي هذا الزر تأكيد الدفع.
+          </p>
+          <button
+            type="button"
+            class="b ghost"
+            (click)="simulate()"
+            [disabled]="simulating()"
+            [attr.aria-busy]="simulating()"
+            i18n="@@store.thanks.dev-simulate"
+          >
+            محاكاة الدفع (تطوير)
+          </button>
+          @if (devError(); as e) {
+            <p class="err" role="alert">{{ e }}</p>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</section>

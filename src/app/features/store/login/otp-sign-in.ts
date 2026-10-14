@@ -62,13 +62,20 @@ export class OtpSignIn {
   protected readonly mobileForm = form(this.mobileModel, (p) => {
     required(p.mobile, { message: $localize`:@@store.otp.mobile-required:أدخل رقم الجوال.` });
     validate(p.mobile, ({ value }) =>
-      value() && !normalizeSaudiMobile(value()) ? { kind: 'mobile', message: $localize`:@@store.error.otp-mobile-invalid:أدخل رقم جوال سعودي صحيحًا يبدأ بـ 05.` } : undefined,
+      value() && !normalizeSaudiMobile(value())
+        ? {
+            kind: 'mobile',
+            message: $localize`:@@store.error.otp-mobile-invalid:أدخل رقم جوال سعودي صحيحًا يبدأ بـ 05.`,
+          }
+        : undefined,
     );
   });
   protected readonly codeModel = signal({ code: '' });
   protected readonly codeForm = form(this.codeModel, (p) => {
     validate(p.code, ({ value }) =>
-      /^\d{6}$/.test(westernDigits(value()).trim()) ? undefined : { kind: 'code', message: $localize`:@@store.otp.code-format:الرمز من 6 أرقام.` },
+      /^\d{6}$/.test(westernDigits(value()).trim())
+        ? undefined
+        : { kind: 'code', message: $localize`:@@store.otp.code-format:الرمز من 6 أرقام.` },
     );
   });
 
@@ -79,8 +86,12 @@ export class OtpSignIn {
     const m = this.sentTo();
     return m ? `${m.slice(0, 2)}•••••${m.slice(-3)}` : '';
   });
-  protected readonly resendIn = computed(() => Math.max(0, Math.ceil((this.resendAt() - this.now()) / 1000)));
-  protected readonly expiresIn = computed(() => Math.max(0, Math.ceil((this.expiresAt() - this.now()) / 1000)));
+  protected readonly resendIn = computed(() =>
+    Math.max(0, Math.ceil((this.resendAt() - this.now()) / 1000)),
+  );
+  protected readonly expiresIn = computed(() =>
+    Math.max(0, Math.ceil((this.expiresAt() - this.now()) / 1000)),
+  );
   protected readonly expiresLabel = computed(() => {
     const s = this.expiresIn();
     return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
@@ -95,7 +106,8 @@ export class OtpSignIn {
         untracked(() => this.codeModel.set({ code }));
         return;
       }
-      if (code.length === 6 && untracked(() => this.step() === 'code' && !this.busy())) void untracked(() => this.verify());
+      if (code.length === 6 && untracked(() => this.step() === 'code' && !this.busy()))
+        void untracked(() => this.verify());
     });
     if (this.browser) {
       const timer = setInterval(() => this.now.set(Date.now()), 1000);
@@ -171,7 +183,8 @@ export class OtpSignIn {
       const minutes = Math.max(1, Math.ceil(p.retryAfterSeconds / 60));
       return $localize`:@@store.otp.wait:طلبت رموزًا كثيرة. حاول مرة أخرى بعد ${minutes}:minutes: دقيقة.`;
     }
-    if (p.code === 'auth.account_blocked') return $localize`:@@store.otp.blocked:لا يمكن لهذا الحساب تسجيل الدخول. تواصل مع الجمعية للمساعدة.`;
+    if (p.code === 'auth.account_blocked')
+      return $localize`:@@store.otp.blocked:لا يمكن لهذا الحساب تسجيل الدخول. تواصل مع الجمعية للمساعدة.`;
     return problemMessage(p);
   }
 }

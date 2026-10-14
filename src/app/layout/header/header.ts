@@ -1,4 +1,14 @@
-import { ChangeDetectionStrategy, Component, ElementRef, HostListener, afterNextRender, effect, inject, signal, viewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  HostListener,
+  afterNextRender,
+  effect,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { StoreAuth } from '../../core/auth/store-auth';

@@ -12,7 +12,11 @@ describe('StoreAuth (plan §6)', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting(), { provide: STORE_API_URL, useValue: API }],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: STORE_API_URL, useValue: API },
+      ],
     });
     auth = TestBed.inject(StoreAuth);
     http = TestBed.inject(HttpTestingController);
@@ -35,7 +39,9 @@ describe('StoreAuth (plan §6)', () => {
     http.expectOne(`${API}/auth/refresh`).flush({ accessToken: 'T1', expiresIn: 900 });
     await first;
     const failing = auth.refresh();
-    http.expectOne(`${API}/auth/refresh`).flush({ code: 'auth.refresh_invalid' }, { status: 401, statusText: 'x' });
+    http
+      .expectOne(`${API}/auth/refresh`)
+      .flush({ code: 'auth.refresh_invalid' }, { status: 401, statusText: 'x' });
     await expect(failing).rejects.toBeTruthy();
     expect(auth.accessToken()).toBeNull();
     expect(auth.isSignedIn()).toBe(false);
@@ -43,7 +49,9 @@ describe('StoreAuth (plan §6)', () => {
 
   it('retries once on auth.refresh_race (409)', async () => {
     const p = auth.refresh();
-    http.expectOne(`${API}/auth/refresh`).flush({ code: 'auth.refresh_race' }, { status: 409, statusText: 'x' });
+    http
+      .expectOne(`${API}/auth/refresh`)
+      .flush({ code: 'auth.refresh_race' }, { status: 409, statusText: 'x' });
     await Promise.resolve();
     await new Promise((r) => setTimeout(r));
     http.expectOne(`${API}/auth/refresh`).flush({ accessToken: 'T2', expiresIn: 900 });
@@ -58,7 +66,16 @@ describe('StoreAuth (plan §6)', () => {
     req.flush({
       accessToken: 'SECRET',
       expiresIn: 900,
-      customer: { id: 'c', mobile: '+966551234567', fullName: null, email: null, locale: 'ar', anonymousDefault: false, isNew: true, profileComplete: false },
+      customer: {
+        id: 'c',
+        mobile: '+966551234567',
+        fullName: null,
+        email: null,
+        locale: 'ar',
+        anonymousDefault: false,
+        isNew: true,
+        profileComplete: false,
+      },
       cartNotices: [{ code: 'course_owned' }],
     });
     await verify;

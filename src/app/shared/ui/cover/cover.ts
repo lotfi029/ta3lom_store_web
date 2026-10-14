@@ -18,9 +18,18 @@ import { Image } from '../image/image';
   template: `
     <div class="cv" [class.book]="shape() === 'book'" [class.fill]="fill()">
       @if (cover(); as c) {
-        <ta-image [src]="c.url" [alt]="alt()" [width]="w()" [height]="h()" [priority]="priority()" imgClass="img-cover" />
+        <ta-image
+          [src]="c.url"
+          [alt]="alt()"
+          [width]="w()"
+          [height]="h()"
+          [priority]="priority()"
+          imgClass="img-cover"
+        />
       } @else {
-        <span class="ph" aria-hidden="true"><ta-icon [name]="shape() === 'book' ? 'book' : 'play'" [size]="44" /></span>
+        <span class="ph" aria-hidden="true"
+          ><ta-icon [name]="shape() === 'book' ? 'book' : 'play'" [size]="44"
+        /></span>
       }
     </div>
   `,

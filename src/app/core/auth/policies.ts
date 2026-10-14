@@ -14,7 +14,13 @@ export type StaffPolicy =
   | 'staff:resend'
   | 'staff:admin';
 
-export const STAFF_ROLES: readonly StaffRole[] = ['admin', 'store_manager', 'finance', 'fulfilment', 'viewer'];
+export const STAFF_ROLES: readonly StaffRole[] = [
+  'admin',
+  'store_manager',
+  'finance',
+  'fulfilment',
+  'viewer',
+];
 
 export const POLICY_ROLES: Readonly<Record<StaffPolicy, readonly StaffRole[]>> = {
   'staff:read': STAFF_ROLES,

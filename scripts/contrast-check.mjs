@@ -54,6 +54,8 @@ const PAIRS = [
   ['--c-muted-2', '--c-surface-2', TEXT, 'muted text in grey sections'],
   ['--c-success-text', '--c-surface-2', TEXT, 'success text on panels'],
   ['--c-danger', '--c-surface-2', TEXT, 'error text on panels'],
+  ['--c-success', '--c-success-tint', LARGE, 'thanks check icon on its tint'],
+  ['--c-warn-text', '--c-gold-tint', LARGE, 'thanks alert icon on its tint'],
   ['--c-on-brand', '--c-brand-strong', TEXT, 'primary button'],
   ['--c-on-brand', '--c-brand-deep', TEXT, 'deep brand fill'],
   ['--c-on-gold', '--c-gold', TEXT, 'CTA button'],

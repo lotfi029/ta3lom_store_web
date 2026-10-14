@@ -10,16 +10,60 @@ const API = 'https://store-api.test/v1';
 const tick = () => new Promise((r) => setTimeout(r));
 
 const line = (id: string, over: Partial<CartLine> = {}): CartLine =>
-  ({ id, productId: `p-${id}`, slug: id, type: 'book', kind: 'buy', mode: 'units', titleAr: id, titleEn: null, bookFormat: { id: `f-${id}`, kind: 'print' }, quantity: 1, maxQuantity: 20, unitPrice: '65.00', amount: '65.00', unitLabelAr: null, unitLabelEn: null, seatEquivalent: null, intent: null, dedication: null, issues: [], ...over }) as CartLine;
+  ({
+    id,
+    productId: `p-${id}`,
+    slug: id,
+    type: 'book',
+    kind: 'buy',
+    mode: 'units',
+    titleAr: id,
+    titleEn: null,
+    bookFormat: { id: `f-${id}`, kind: 'print' },
+    quantity: 1,
+    maxQuantity: 20,
+    unitPrice: '65.00',
+    amount: '65.00',
+    unitLabelAr: null,
+    unitLabelEn: null,
+    seatEquivalent: null,
+    intent: null,
+    dedication: null,
+    issues: [],
+    ...over,
+  }) as CartLine;
 const cart = (lines: CartLine[], shipping = '25.00'): Cart =>
-  ({ id: 'c', isGuest: true, purchases: lines, gifts: [], notices: [], expiresAt: null, summary: { purchasesTotal: lines.reduce((t, l) => t + Number(l.amount), 0).toFixed(2), vatIncluded: '0.00', shippingTotal: lines.length ? shipping : '0.00', giftsTotal: '0.00', grandTotal: '0', lineCount: lines.length, requiresShipping: lines.length > 0, hasGifts: false } }) as unknown as Cart;
+  ({
+    id: 'c',
+    isGuest: true,
+    purchases: lines,
+    gifts: [],
+    notices: [],
+    expiresAt: null,
+    summary: {
+      purchasesTotal: lines.reduce((t, l) => t + Number(l.amount), 0).toFixed(2),
+      vatIncluded: '0.00',
+      shippingTotal: lines.length ? shipping : '0.00',
+      giftsTotal: '0.00',
+      grandTotal: '0',
+      lineCount: lines.length,
+      requiresShipping: lines.length > 0,
+      hasGifts: false,
+    },
+  }) as unknown as Cart;
 
 describe('CartStore (plan §6)', () => {
   let store: CartStore;
   let http: HttpTestingController;
 
   beforeEach(async () => {
-    TestBed.configureTestingModule({ providers: [provideHttpClient(), provideHttpClientTesting(), { provide: STORE_API_URL, useValue: API }] });
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: STORE_API_URL, useValue: API },
+      ],
+    });
     store = TestBed.inject(CartStore);
     http = TestBed.inject(HttpTestingController);
     store.load();
@@ -31,12 +75,36 @@ describe('CartStore (plan §6)', () => {
 
   it('adds optimistically, then the server answer replaces the view and bumps the badge', async () => {
     const summary = TestBed.inject(CartSummary);
-    const done = store.add({ productId: 'p-new', bookFormatId: null, quantity: 1, preview: { slug: 'new', type: 'course', titleAr: 'جديد', titleEn: null, unitPrice: '120.00', formatKind: null } });
+    const done = store.add({
+      productId: 'p-new',
+      bookFormatId: null,
+      quantity: 1,
+      preview: {
+        slug: 'new',
+        type: 'course',
+        titleAr: 'جديد',
+        titleEn: null,
+        unitPrice: '120.00',
+        formatKind: null,
+      },
+    });
     await tick();
     expect(store.lines().map((l) => l.slug)).toEqual(['a', 'new']);
     const req = http.expectOne(`${API}/cart/lines`);
-    expect(req.request.body).toEqual({ kind: 'buy', mode: 'units', amount: null, intent: null, dedication: null, productId: 'p-new', bookFormatId: null, quantity: 1 });
-    req.flush(cart([line('a'), line('srv', { slug: 'new', type: 'course', bookFormat: null })]), { status: 201, statusText: 'Created' });
+    expect(req.request.body).toEqual({
+      kind: 'buy',
+      mode: 'units',
+      amount: null,
+      intent: null,
+      dedication: null,
+      productId: 'p-new',
+      bookFormatId: null,
+      quantity: 1,
+    });
+    req.flush(cart([line('a'), line('srv', { slug: 'new', type: 'course', bookFormat: null })]), {
+      status: 201,
+      statusText: 'Created',
+    });
     expect(await done).toBe(true);
     expect(store.lines().map((l) => l.id)).toEqual(['a', 'srv']);
     expect(summary.count()).toBe(2);
@@ -48,14 +116,21 @@ describe('CartStore (plan §6)', () => {
     await tick();
     expect(store.lines()[0].quantity).toBe(3);
     expect(store.lines()[0].amount).toBe('195.00');
-    http.expectOne(`${API}/cart/lines`).flush(cart([line('a', { quantity: 3, amount: '195.00' })]), { status: 201, statusText: 'Created' });
+    http
+      .expectOne(`${API}/cart/lines`)
+      .flush(cart([line('a', { quantity: 3, amount: '195.00' })]), {
+        status: 201,
+        statusText: 'Created',
+      });
   });
 
   it('rolls back and keeps the problem when the server refuses', async () => {
     const done = store.remove('a');
     await tick();
     expect(store.lines()).toEqual([]);
-    http.expectOne(`${API}/cart/lines/a`).flush({ code: 'cart.line_not_found' }, { status: 404, statusText: 'x' });
+    http
+      .expectOne(`${API}/cart/lines/a`)
+      .flush({ code: 'cart.line_not_found' }, { status: 404, statusText: 'x' });
     expect(await done).toBe(false);
     expect(store.lines().map((l) => l.id)).toEqual(['a']);
     expect(store.lastProblem()?.code).toBe('cart.line_not_found');
@@ -88,7 +163,29 @@ describe('CartStore (plan §6)', () => {
     const done = store.checkPrices();
     const req = http.expectOne(`${API}/checkout/quote`);
     expect(req.request.method).toBe('POST');
-    req.flush({ lines: [{ lineId: 'a', status: 'changed', code: null, previousUnitPrice: '65.00', unitPrice: '70.00', amount: '70.00', vatAmount: '0.00' }], purchasesTotal: '70.00', shippingTotal: '25.00', giftsTotal: '0.00', vatTotal: '0.00', grandTotal: '95.00', priceChanged: true, requiresShipping: true, hasGifts: false, valid: true, cartIssues: [] });
+    req.flush({
+      lines: [
+        {
+          lineId: 'a',
+          status: 'changed',
+          code: null,
+          previousUnitPrice: '65.00',
+          unitPrice: '70.00',
+          amount: '70.00',
+          vatAmount: '0.00',
+        },
+      ],
+      purchasesTotal: '70.00',
+      shippingTotal: '25.00',
+      giftsTotal: '0.00',
+      vatTotal: '0.00',
+      grandTotal: '95.00',
+      priceChanged: true,
+      requiresShipping: true,
+      hasGifts: false,
+      valid: true,
+      cartIssues: [],
+    });
     await done;
     expect(store.priceChanged()).toEqual(['a']);
     expect(store.repriced('a')?.unitPrice).toBe('70.00');
@@ -97,7 +194,29 @@ describe('CartStore (plan §6)', () => {
 
   it('drops the quote when the cart changes, and never quotes an empty cart', async () => {
     void store.checkPrices();
-    http.expectOne(`${API}/checkout/quote`).flush({ lines: [{ lineId: 'a', status: 'changed', code: null, previousUnitPrice: '65.00', unitPrice: '70.00', amount: '70.00', vatAmount: '0.00' }], purchasesTotal: '70.00', shippingTotal: '25.00', giftsTotal: '0.00', vatTotal: '0.00', grandTotal: '95.00', priceChanged: true, requiresShipping: true, hasGifts: false, valid: true, cartIssues: [] });
+    http.expectOne(`${API}/checkout/quote`).flush({
+      lines: [
+        {
+          lineId: 'a',
+          status: 'changed',
+          code: null,
+          previousUnitPrice: '65.00',
+          unitPrice: '70.00',
+          amount: '70.00',
+          vatAmount: '0.00',
+        },
+      ],
+      purchasesTotal: '70.00',
+      shippingTotal: '25.00',
+      giftsTotal: '0.00',
+      vatTotal: '0.00',
+      grandTotal: '95.00',
+      priceChanged: true,
+      requiresShipping: true,
+      hasGifts: false,
+      valid: true,
+      cartIssues: [],
+    });
     await tick();
     void store.remove('a');
     await tick();
@@ -108,11 +227,20 @@ describe('CartStore (plan §6)', () => {
     http.expectNone(`${API}/checkout/quote`);
   });
 
+  it('refresh() replaces the view with the merged cart after sign-in (RUL-17)', async () => {
+    const done = store.refresh();
+    http.expectOne(`${API}/cart`).flush(cart([line('b')]));
+    await done;
+    expect(store.lines().map((l) => l.id)).toEqual(['b']);
+  });
+
   it('estimates totals in halalas during an edit (shipping only with print)', async () => {
     void store.setQuantity('a', 3);
     await tick();
     expect(store.totals().purchases).toBe('195.00');
     expect(store.totals().grand).toBe('220.00');
-    http.expectOne(`${API}/cart/lines/a`).flush(cart([line('a', { quantity: 3, amount: '195.00' })]));
+    http
+      .expectOne(`${API}/cart/lines/a`)
+      .flush(cart([line('a', { quantity: 3, amount: '195.00' })]));
   });
 });

@@ -12,7 +12,13 @@ describe('OtpSignIn (10 §7.3, RUL-60)', () => {
   let http: HttpTestingController;
 
   function mount() {
-    TestBed.configureTestingModule({ providers: [provideHttpClient(), provideHttpClientTesting(), { provide: STORE_API_URL, useValue: API }] });
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: STORE_API_URL, useValue: API },
+      ],
+    });
     http = TestBed.inject(HttpTestingController);
     const fixture = TestBed.createComponent(OtpSignIn);
     fixture.detectChanges();
@@ -73,7 +79,9 @@ describe('OtpSignIn (10 §7.3, RUL-60)', () => {
     await toCodeStep(m);
     m.type('#otp-code', '000000');
     await tick();
-    http.expectOne(`${API}/auth/otp/verify`).flush({ code: 'otp.invalid', attemptsLeft: 3 }, { status: 400, statusText: 'x' });
+    http
+      .expectOne(`${API}/auth/otp/verify`)
+      .flush({ code: 'otp.invalid', attemptsLeft: 3 }, { status: 400, statusText: 'x' });
     await tick();
     m.fixture.detectChanges();
     expect(m.el.querySelector('[role=alert]')?.textContent).toContain('3');
@@ -83,7 +91,12 @@ describe('OtpSignIn (10 §7.3, RUL-60)', () => {
     const m = mount();
     m.type('#otp-mobile', '0551234567');
     m.el.querySelector<HTMLFormElement>('form')!.dispatchEvent(new Event('submit'));
-    http.expectOne(`${API}/auth/otp/request`).flush({ code: 'otp.rate_limited', retryAfterSeconds: 600 }, { status: 429, statusText: 'x' });
+    http
+      .expectOne(`${API}/auth/otp/request`)
+      .flush(
+        { code: 'otp.rate_limited', retryAfterSeconds: 600 },
+        { status: 429, statusText: 'x' },
+      );
     await tick();
     m.fixture.detectChanges();
     expect(m.el.querySelector('[role=alert]')?.textContent).toContain('10');
@@ -94,7 +107,9 @@ describe('OtpSignIn (10 §7.3, RUL-60)', () => {
     await toCodeStep(m);
     m.type('#otp-code', '123456');
     await tick();
-    http.expectOne(`${API}/auth/otp/verify`).flush({ code: 'auth.account_blocked' }, { status: 403, statusText: 'x' });
+    http
+      .expectOne(`${API}/auth/otp/verify`)
+      .flush({ code: 'auth.account_blocked' }, { status: 403, statusText: 'x' });
     await tick();
     m.fixture.detectChanges();
     expect(m.el.querySelector('[role=alert]')?.textContent).toContain('تواصل مع الجمعية');

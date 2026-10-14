@@ -29,14 +29,32 @@ export async function otpFor(mobile05: string, after = 0): Promise<string> {
  * each request (never in CI or any shared environment). DECISIONS: e2e OTP limits.
  */
 export function resetOtpLimits(): void {
-  execFileSync('psql', ['-h', 'localhost', '-U', 'postgres', '-d', process.env['PGDATABASE'] ?? 'ta3lom_store_dev', '-qc', 'DELETE FROM store.otp_challenge'], {
-    env: { ...process.env, PGPASSWORD: process.env['PGPASSWORD'] ?? 'postgres' },
-    stdio: 'ignore',
-  });
+  execFileSync(
+    'psql',
+    [
+      '-h',
+      'localhost',
+      '-U',
+      'postgres',
+      '-d',
+      process.env['PGDATABASE'] ?? 'ta3lom_store_dev',
+      '-qc',
+      'DELETE FROM store.otp_challenge',
+    ],
+    {
+      env: { ...process.env, PGPASSWORD: process.env['PGPASSWORD'] ?? 'postgres' },
+      stdio: 'ignore',
+    },
+  );
 }
 
 /** Signs in through the real /login page and returns the mobile used. */
-export async function signIn(page: Page, locale: 'ar' | 'en', mobile = freshMobile(), returnUrl = '/courses'): Promise<string> {
+export async function signIn(
+  page: Page,
+  locale: 'ar' | 'en',
+  mobile = freshMobile(),
+  returnUrl = '/courses',
+): Promise<string> {
   resetOtpLimits();
   await page.goto(`/${locale}/login?returnUrl=${encodeURIComponent(returnUrl)}`);
   const started = Date.now() - 50;

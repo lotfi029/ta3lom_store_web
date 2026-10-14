@@ -49,7 +49,13 @@ function shapes(name: IconName): Shape[] {
           <circle [attr.cx]="s.a['cx']" [attr.cy]="s.a['cy']" [attr.r]="s.a['r']" />
         }
         @case ('rect') {
-          <rect [attr.x]="s.a['x']" [attr.y]="s.a['y']" [attr.width]="s.a['width']" [attr.height]="s.a['height']" [attr.rx]="s.a['rx']" />
+          <rect
+            [attr.x]="s.a['x']"
+            [attr.y]="s.a['y']"
+            [attr.width]="s.a['width']"
+            [attr.height]="s.a['height']"
+            [attr.rx]="s.a['rx']"
+          />
         }
       }
     }

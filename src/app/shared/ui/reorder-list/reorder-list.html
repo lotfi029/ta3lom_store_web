@@ -10,7 +10,10 @@
     >
       <span class="drag-handle" aria-hidden="true">⠿</span>
       <span class="item-content">
-        <ng-container [ngTemplateOutlet]="itemTemplate()" [ngTemplateOutletContext]="{ $implicit: item }" />
+        <ng-container
+          [ngTemplateOutlet]="itemTemplate()"
+          [ngTemplateOutletContext]="{ $implicit: item }"
+        />
       </span>
       <!-- aria-disabled, never `disabled`: a button that becomes disabled loses focus to <body>,
            which is exactly what happened when a move put an item at either end of the list, or
@@ -19,7 +22,8 @@
         <button
           type="button"
           data-move="up"
-          aria-label="نقل للأعلى" i18n-aria-label="@@store.ui.move-up"
+          aria-label="نقل للأعلى"
+          i18n-aria-label="@@store.ui.move-up"
           [attr.aria-disabled]="busy() || i === 0 || null"
           (click)="move(i, -1)"
         >
@@ -28,7 +32,8 @@
         <button
           type="button"
           data-move="down"
-          aria-label="نقل للأسفل" i18n-aria-label="@@store.ui.move-down"
+          aria-label="نقل للأسفل"
+          i18n-aria-label="@@store.ui.move-down"
           [attr.aria-disabled]="busy() || i === count - 1 || null"
           (click)="move(i, 1)"
         >

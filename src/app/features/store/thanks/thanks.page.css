@@ -1,0 +1,153 @@
+/* Prototype .success / .ok / .receipt. */
+.thx {
+  padding-block: 36px 80px;
+}
+
+.success {
+  max-inline-size: 760px;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.ok {
+  inline-size: 78px;
+  block-size: 78px;
+  border-radius: 50%;
+  background: var(--c-success-tint);
+  color: var(--c-success);
+  display: grid;
+  place-items: center;
+  margin-block: 0 18px;
+  margin-inline: auto;
+}
+
+.ok.wait {
+  background: var(--c-tint);
+  color: var(--c-accent-strong);
+}
+
+.ok.warn {
+  background: var(--c-gold-tint);
+  color: var(--c-warn-text);
+}
+
+.spin {
+  inline-size: 34px;
+  block-size: 34px;
+  border-radius: 50%;
+  border: 3px solid currentcolor;
+  border-block-start-color: transparent;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spin {
+    animation: none;
+  }
+}
+
+h1 {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  margin-block: 0 10px;
+}
+
+.ref {
+  color: var(--c-muted-2);
+  margin-block: 0 8px;
+}
+
+.lede {
+  color: var(--c-text-2);
+  margin-block: 0 12px;
+}
+
+.due {
+  color: var(--c-muted-2);
+  font-size: 0.9rem;
+}
+
+.acts {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-block: 20px 0;
+}
+
+.receipt {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: 20px;
+  padding: 24px;
+  text-align: start;
+  margin-block-start: 28px;
+}
+
+.receipt .hd {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-block-end: 12px;
+  border-block-end: 1px dashed var(--c-border);
+  margin-block-end: 8px;
+}
+
+.receipt .ln {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-block: 8px;
+  font-size: 0.92rem;
+  border-block-end: 1px solid var(--c-border);
+}
+
+.receipt .ln a {
+  color: var(--c-accent-strong);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.receipt .ln.tot {
+  border-block-end: 0;
+  font-weight: 600;
+}
+
+.docs {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+  font-size: 0.88rem;
+  color: var(--c-text-2);
+}
+
+.docs li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.docs small {
+  color: var(--c-muted-2);
+}
+
+.dev {
+  margin-block-start: 28px;
+  padding: 16px;
+  border: 1px dashed var(--c-border);
+  border-radius: 14px;
+  font-size: 0.88rem;
+  color: var(--c-muted-2);
+}
+
+.dev .err {
+  color: var(--c-danger);
+}

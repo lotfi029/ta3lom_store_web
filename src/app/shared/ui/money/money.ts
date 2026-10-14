@@ -11,9 +11,12 @@ import { compare, type Money as MoneyValue } from '../../../core/money/money';
 @Component({
   selector: 'ta-money',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<bdi class="amt">{{ amount() }}</bdi><span class="cur">{{ cur }}</span>@if (was(); as w) {
+  template: `<bdi class="amt">{{ amount() }}</bdi
+    ><span class="cur">{{ cur }}</span>
+    @if (was(); as w) {
       <s
-        ><span class="visually-hidden" i18n="@@store.ui.was-price">بدلًا من</span> <bdi>{{ w }}</bdi></s
+        ><span class="visually-hidden" i18n="@@store.ui.was-price">بدلًا من</span>
+        <bdi>{{ w }}</bdi></s
       >
     }`,
   styles: `

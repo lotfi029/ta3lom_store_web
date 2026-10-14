@@ -11,11 +11,17 @@ import { SeoService } from '../../../core/seo/seo.service';
     <section class="nf wrap">
       <p class="code mono" aria-hidden="true">404</p>
       <h1 i18n="@@store.not-found.title">الصفحة غير موجودة</h1>
-      <p class="lede" i18n="@@store.not-found.lede">ربما نُقلت الصفحة أو لم تعد متاحة. تصفّح الدورات والكتب من هنا.</p>
+      <p class="lede" i18n="@@store.not-found.lede">
+        ربما نُقلت الصفحة أو لم تعد متاحة. تصفّح الدورات والكتب من هنا.
+      </p>
       <div class="cta">
         <ta-button routerLink="/" i18n="@@store.not-found.home">الصفحة الرئيسية للمتجر</ta-button>
-        <ta-button variant="ghost" routerLink="/courses" i18n="@@store.layout.nav-courses">الدورات</ta-button>
-        <ta-button variant="ghost" routerLink="/books" i18n="@@store.layout.nav-books">الكتب</ta-button>
+        <ta-button variant="ghost" routerLink="/courses" i18n="@@store.layout.nav-courses"
+          >الدورات</ta-button
+        >
+        <ta-button variant="ghost" routerLink="/books" i18n="@@store.layout.nav-books"
+          >الكتب</ta-button
+        >
       </div>
     </section>
   `,

@@ -13,8 +13,16 @@ export const errorToastInterceptor: HttpInterceptorFn = (req, next) => {
   const toast = inject(ToastService);
   return next(req).pipe(
     catchError((error: unknown) => {
-      if (isStoreApiUrl(req.url, api) && !req.context.get(SILENT) && error instanceof HttpErrorResponse && (error.status >= 500 || error.status === 0)) {
-        toast.show($localize`:@@store.error.toast-server:تعذّر الاتصال بالمتجر الآن. حاول مرة أخرى بعد قليل.`, 'error');
+      if (
+        isStoreApiUrl(req.url, api) &&
+        !req.context.get(SILENT) &&
+        error instanceof HttpErrorResponse &&
+        (error.status >= 500 || error.status === 0)
+      ) {
+        toast.show(
+          $localize`:@@store.error.toast-server:تعذّر الاتصال بالمتجر الآن. حاول مرة أخرى بعد قليل.`,
+          'error',
+        );
       }
       return throwError(() => error);
     }),

@@ -4,8 +4,13 @@ import { SeoService } from '../../../core/seo/seo.service';
 import { OtpSignIn } from './otp-sign-in';
 
 /** A same-site path to return to after sign-in; anything else (absolute, protocol-relative) falls back. */
-export function safeReturnUrl(value: string | null | undefined, fallback = '/account/courses'): string {
-  return value && value.startsWith('/') && !value.startsWith('//') && !value.startsWith('/\\') ? value : fallback;
+export function safeReturnUrl(
+  value: string | null | undefined,
+  fallback = '/account/courses',
+): string {
+  return value && value.startsWith('/') && !value.startsWith('//') && !value.startsWith('/\\')
+    ? value
+    : fallback;
 }
 
 /** `/login` (FR-S21): OTP sign-in, then back to `returnUrl`. Client-rendered, guest only, noindex. */
@@ -17,7 +22,9 @@ export function safeReturnUrl(value: string | null | undefined, fallback = '/acc
     <div class="ph">
       <div class="wrap">
         <h1 i18n="@@store.login.title">تسجيل الدخول</h1>
-        <p i18n="@@store.login.lede">برقم جوالك فقط — نرسل لك رمزًا برسالة نصية. أول دخول ينشئ حسابك تلقائيًا.</p>
+        <p i18n="@@store.login.lede">
+          برقم جوالك فقط — نرسل لك رمزًا برسالة نصية. أول دخول ينشئ حسابك تلقائيًا.
+        </p>
       </div>
     </div>
     <section class="login">

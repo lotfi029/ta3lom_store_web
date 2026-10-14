@@ -20,8 +20,18 @@ import { CatalogData, liveMap, pageOf, storeItems } from './catalog.data';
       <div class="wrap">
         <h1 i18n="@@store.search.title">البحث في المتجر</h1>
         <form class="sform" role="search" (submit)="submit($event, box)">
-          <label class="visually-hidden" for="search-q" i18n="@@store.layout.search-label">ابحث في المتجر</label>
-          <input #box id="search-q" type="search" name="q" [value]="query()" placeholder="ابحث عن دورة أو كتاب…" i18n-placeholder="@@store.layout.search-placeholder" />
+          <label class="visually-hidden" for="search-q" i18n="@@store.layout.search-label"
+            >ابحث في المتجر</label
+          >
+          <input
+            #box
+            id="search-q"
+            type="search"
+            name="q"
+            [value]="query()"
+            placeholder="ابحث عن دورة أو كتاب…"
+            i18n-placeholder="@@store.layout.search-placeholder"
+          />
           <button type="submit" i18n="@@store.layout.search-submit">بحث</button>
         </form>
       </div>
@@ -29,8 +39,14 @@ import { CatalogData, liveMap, pageOf, storeItems } from './catalog.data';
     <section class="list" aria-labelledby="results-h">
       <div class="wrap">
         @if (query()) {
-          <h2 id="results-h" class="count" aria-live="polite" i18n="@@store.search.results">نتائج «{{ query() }}»: {{ total() }}</h2>
-          <ta-resource-state [loading]="list.isLoading() && !list.hasValue()" [error]="!!list.error()" (retry)="list.reload()">
+          <h2 id="results-h" class="count" aria-live="polite" i18n="@@store.search.results">
+            نتائج «{{ query() }}»: {{ total() }}
+          </h2>
+          <ta-resource-state
+            [loading]="list.isLoading() && !list.hasValue()"
+            [error]="!!list.error()"
+            (retry)="list.reload()"
+          >
             @if (items().length > 0) {
               <ul class="cards c3">
                 @for (p of items(); track p.id) {
@@ -38,12 +54,21 @@ import { CatalogData, liveMap, pageOf, storeItems } from './catalog.data';
                 }
               </ul>
               @if (pages() > 1) {
-                <nav class="pager" aria-label="ترقيم الصفحات" i18n-aria-label="@@store.ui.data-table-pager-label">
+                <nav
+                  class="pager"
+                  aria-label="ترقيم الصفحات"
+                  i18n-aria-label="@@store.ui.data-table-pager-label"
+                >
                   @for (n of pageNumbers(); track n) {
                     @if (n === pageValue()) {
                       <span aria-current="page">{{ n }}</span>
                     } @else {
-                      <a routerLink="/search" [queryParams]="{ page: n === 1 ? null : n }" queryParamsHandling="merge">{{ n }}</a>
+                      <a
+                        routerLink="/search"
+                        [queryParams]="{ page: n === 1 ? null : n }"
+                        queryParamsHandling="merge"
+                        >{{ n }}</a
+                      >
                     }
                   }
                 </nav>
@@ -60,8 +85,12 @@ import { CatalogData, liveMap, pageOf, storeItems } from './catalog.data';
             }
           </ta-resource-state>
         } @else {
-          <h2 id="results-h" class="visually-hidden" i18n="@@store.search.title">البحث في المتجر</h2>
-          <p class="hint" i18n="@@store.search.hint">اكتب اسم دورة أو كتاب أو موضوعًا ثم اضغط «بحث».</p>
+          <h2 id="results-h" class="visually-hidden" i18n="@@store.search.title">
+            البحث في المتجر
+          </h2>
+          <p class="hint" i18n="@@store.search.hint">
+            اكتب اسم دورة أو كتاب أو موضوعًا ثم اضغط «بحث».
+          </p>
         }
       </div>
     </section>
@@ -129,13 +158,19 @@ export class SearchPage {
   protected readonly query = computed(() => (this.q() ?? '').trim());
   protected readonly pageValue = computed(() => pageOf(this.page()));
 
-  protected readonly list = this.data.listResource(() => (this.query() ? { q: this.query(), page: this.pageValue() } : undefined));
+  protected readonly list = this.data.listResource(() =>
+    this.query() ? { q: this.query(), page: this.pageValue() } : undefined,
+  );
   protected readonly items = computed(() => storeItems(valueOf(this.list)));
-  protected readonly total = computed(() => this.items().length === 0 ? 0 : Number(valueOf(this.list)?.total ?? 0));
+  protected readonly total = computed(() =>
+    this.items().length === 0 ? 0 : Number(valueOf(this.list)?.total ?? 0),
+  );
   protected readonly live = this.data.liveResource(() => this.items().map((p) => p.slug));
   protected readonly liveBySlug = computed(() => liveMap(this.live.value()));
   protected readonly pages = computed(() => pageCount(valueOf(this.list)));
-  protected readonly pageNumbers = computed(() => Array.from({ length: this.pages() }, (_, i) => i + 1));
+  protected readonly pageNumbers = computed(() =>
+    Array.from({ length: this.pages() }, (_, i) => i + 1),
+  );
 
   constructor() {
     effect(() => {

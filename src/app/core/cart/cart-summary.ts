@@ -26,7 +26,13 @@ export class CartSummary {
   async load(): Promise<number> {
     if (!this.browser) return 0;
     try {
-      this.state.set(await firstValueFrom(this.http.get<CartBadge>(`${this.api}/cart/summary`, { context: new HttpContext().set(SILENT, true) })));
+      this.state.set(
+        await firstValueFrom(
+          this.http.get<CartBadge>(`${this.api}/cart/summary`, {
+            context: new HttpContext().set(SILENT, true),
+          }),
+        ),
+      );
     } catch {
       /* the badge is decoration; a failure leaves the last value */
     }

@@ -11,7 +11,11 @@
        caption rather than inventing a second string for the same thing. -->
   <div class="data-table-scroll" tabindex="0" role="region" [attr.aria-label]="caption()">
     <table class="data-table">
-      <caption class="visually-hidden">{{ caption() }}</caption>
+      <caption class="visually-hidden">
+        {{
+          caption()
+        }}
+      </caption>
       @if (headerTemplate(); as header) {
         <thead>
           <ng-container [ngTemplateOutlet]="header" />
@@ -20,14 +24,21 @@
       <tbody>
         @for (item of data().items; track item.id) {
           <tr>
-            <ng-container [ngTemplateOutlet]="rowTemplate()" [ngTemplateOutletContext]="{ $implicit: item }" />
+            <ng-container
+              [ngTemplateOutlet]="rowTemplate()"
+              [ngTemplateOutletContext]="{ $implicit: item }"
+            />
           </tr>
         }
       </tbody>
     </table>
   </div>
 
-  <nav class="pager" aria-label="ترقيم الصفحات" i18n-aria-label="Pagination nav landmark label@@store.ui.data-table-pager-label">
+  <nav
+    class="pager"
+    aria-label="ترقيم الصفحات"
+    i18n-aria-label="Pagination nav landmark label@@store.ui.data-table-pager-label"
+  >
     <button
       type="button"
       class="pager-btn"

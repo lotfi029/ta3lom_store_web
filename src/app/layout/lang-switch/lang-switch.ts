@@ -16,7 +16,9 @@ export function localeHref(currentUrl: string, target: 'ar' | 'en'): string {
 @Component({
   selector: 'ta-lang-switch',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<a class="lang" [href]="href()" [attr.hreflang]="target" [attr.lang]="target">{{ label }}</a>`,
+  template: `<a class="lang" [href]="href()" [attr.hreflang]="target" [attr.lang]="target">{{
+    label
+  }}</a>`,
   styleUrl: './lang-switch.css',
 })
 export class LangSwitch {

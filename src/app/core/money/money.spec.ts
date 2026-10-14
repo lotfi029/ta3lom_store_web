@@ -1,4 +1,14 @@
-import { add, compare, fromHalalas, isZero, normalize, subtract, sum, times, toHalalas } from './money';
+import {
+  add,
+  compare,
+  fromHalalas,
+  isZero,
+  normalize,
+  subtract,
+  sum,
+  times,
+  toHalalas,
+} from './money';
 import { formatAmount, formatMoney } from './money-format';
 
 describe('money (halalas, never floats)', () => {
@@ -24,7 +34,8 @@ describe('money (halalas, never floats)', () => {
   });
 
   it('rejects anything that is not a plain decimal', () => {
-    for (const bad of ['1e3', '1,000.00', '12.345', 'abc', '']) expect(() => toHalalas(bad)).toThrow();
+    for (const bad of ['1e3', '1,000.00', '12.345', 'abc', ''])
+      expect(() => toHalalas(bad)).toThrow();
     expect(() => times('10.00', 1.5)).toThrow();
   });
 

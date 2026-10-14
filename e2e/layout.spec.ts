@@ -13,7 +13,10 @@ for (const locale of ['ar', 'en'] as const) {
       await expect(header.locator('.brand')).toHaveAttribute('href', /^https:\/\/ta3lom\.sa/);
       await expect(header.locator('a.cartbtn')).toHaveAttribute('href', `/${locale}/cart`);
       await expect(header.locator('a.signin')).toHaveAttribute('href', `/${locale}/login`);
-      await expect(header.locator('a.lang')).toHaveAttribute('href', locale === 'ar' ? '/en/' : '/ar/');
+      await expect(header.locator('a.lang')).toHaveAttribute(
+        'href',
+        locale === 'ar' ? '/en/' : '/ar/',
+      );
       await expect(page.locator('h1')).toHaveCount(1);
       await expect(page.locator('main#main')).toHaveCount(1);
       await expect(page.locator('footer')).toBeVisible();
@@ -46,7 +49,9 @@ for (const locale of ['ar', 'en'] as const) {
       await expect(page).toHaveURL(new RegExp(`/${locale}/search\\?q=`));
     });
 
-    test('mobile: burger opens the drawer, Escape closes it, no horizontal scroll at 320 px', async ({ page }) => {
+    test('mobile: burger opens the drawer, Escape closes it, no horizontal scroll at 320 px', async ({
+      page,
+    }) => {
       await page.setViewportSize({ width: 320, height: 720 });
       await page.goto(`/${locale}/`);
       await expectNoHorizontalScroll(page);
@@ -64,7 +69,10 @@ for (const locale of ['ar', 'en'] as const) {
     test('404 for an unknown path, noindex, keeps the chrome', async ({ page }) => {
       await page.goto(`/${locale}/no-such-page`);
       await expect(page.locator('h1')).toHaveCount(1);
-      await expect(page.locator('meta[name=robots]')).toHaveAttribute('content', 'noindex, nofollow');
+      await expect(page.locator('meta[name=robots]')).toHaveAttribute(
+        'content',
+        'noindex, nofollow',
+      );
       await expect(page.locator('header.hdr')).toBeVisible();
       await page.setViewportSize({ width: 320, height: 720 });
       await expectNoHorizontalScroll(page);
@@ -73,7 +81,10 @@ for (const locale of ['ar', 'en'] as const) {
 
     test('language switch keeps the path', async ({ page }) => {
       await page.goto(`/${locale}/no-such-page`);
-      await expect(page.locator('a.lang')).toHaveAttribute('href', `/${locale === 'ar' ? 'en' : 'ar'}/no-such-page`);
+      await expect(page.locator('a.lang')).toHaveAttribute(
+        'href',
+        `/${locale === 'ar' ? 'en' : 'ar'}/no-such-page`,
+      );
     });
   });
 }

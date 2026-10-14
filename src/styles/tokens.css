@@ -96,6 +96,7 @@
   /* Store web: success TEXT (status pills). --c-success on white is 4.14:1; this darker green is ≥ 4.5:1 on
      surface and on its own pill tint (scripts/contrast-check.mjs). */
   --c-success-text: #1d6e45;
+  --c-success-tint: #e6f4ec;
   --c-warn-text: var(--warn-on-tint);
 
   /* Brand FILLS — identical in both themes; they always carry --c-on-brand text.
@@ -259,6 +260,7 @@
   --c-danger: #ff8f86;
   --c-success: #5fd39b;
   --c-success-text: #5fd39b;
+  --c-success-tint: #173327;
   --c-warn-text: #f2b56e;
 
   /* Inverse pair — 15.12:1 */

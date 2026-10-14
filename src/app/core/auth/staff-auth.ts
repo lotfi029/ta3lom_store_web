@@ -2,7 +2,12 @@ import { isPlatformBrowser } from '@angular/common';
 import { HttpBackend, HttpClient } from '@angular/common/http';
 import { Injectable, PLATFORM_ID, computed, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import type { StaffLoginResponse, StaffMe, StaffSessionResponse, TotpEnrolResponse } from '../api/api.types';
+import type {
+  StaffLoginResponse,
+  StaffMe,
+  StaffSessionResponse,
+  TotpEnrolResponse,
+} from '../api/api.types';
 import { STORE_API_URL } from '../api/store-api-url';
 import { I18nService } from '../i18n/i18n';
 import { type StaffPolicy, rolesAllow } from './policies';
@@ -30,7 +35,13 @@ export class StaffAuth {
   private restoring: Promise<boolean> | null = null;
 
   private headers(bearer?: string | null) {
-    return { withCredentials: true, headers: { 'Accept-Language': this.i18n.locale, ...(bearer ? { Authorization: `Bearer ${bearer}` } : {}) } };
+    return {
+      withCredentials: true,
+      headers: {
+        'Accept-Language': this.i18n.locale,
+        ...(bearer ? { Authorization: `Bearer ${bearer}` } : {}),
+      },
+    };
   }
 
   can(policy: StaffPolicy): boolean {
@@ -39,20 +50,36 @@ export class StaffAuth {
 
   /** Step 1: password. Resolves whether TOTP is already enrolled (verify) or must be set up (enrol). */
   async login(email: string, password: string): Promise<StaffLoginResponse> {
-    const res = await firstValueFrom(this.http.post<StaffLoginResponse>(`${this.api}/admin/auth/login`, { email, password }, this.headers()));
+    const res = await firstValueFrom(
+      this.http.post<StaffLoginResponse>(
+        `${this.api}/admin/auth/login`,
+        { email, password },
+        this.headers(),
+      ),
+    );
     this.mfaToken = res.mfaToken;
     return res;
   }
 
   /** Step 2a (first sign-in): the secret and otpauth URI for the authenticator app. */
   enrol(): Promise<TotpEnrolResponse> {
-    return firstValueFrom(this.http.post<TotpEnrolResponse>(`${this.api}/admin/auth/totp/enrol`, null, this.headers(this.mfaToken)));
+    return firstValueFrom(
+      this.http.post<TotpEnrolResponse>(
+        `${this.api}/admin/auth/totp/enrol`,
+        null,
+        this.headers(this.mfaToken),
+      ),
+    );
   }
 
   /** Step 2b: the 6-digit code → session. */
   async verify(code: string): Promise<StaffSessionResponse> {
     const session = await firstValueFrom(
-      this.http.post<StaffSessionResponse>(`${this.api}/admin/auth/totp/verify`, { code }, this.headers(this.mfaToken)),
+      this.http.post<StaffSessionResponse>(
+        `${this.api}/admin/auth/totp/verify`,
+        { code },
+        this.headers(this.mfaToken),
+      ),
     );
     this.mfaToken = null;
     this.setSession(session);
@@ -61,7 +88,9 @@ export class StaffAuth {
 
   refresh(): Promise<string> {
     if (!this.browser) return Promise.reject(new Error('no session during prerender'));
-    this.refreshing ??= firstValueFrom(this.http.post<StaffSessionResponse>(`${this.api}/admin/auth/refresh`, null, this.headers()))
+    this.refreshing ??= firstValueFrom(
+      this.http.post<StaffSessionResponse>(`${this.api}/admin/auth/refresh`, null, this.headers()),
+    )
       .then((s) => {
         this.setSession(s);
         return s.accessToken;
