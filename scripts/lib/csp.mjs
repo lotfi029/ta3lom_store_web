@@ -16,10 +16,14 @@ export function readCsp() {
 
 export function directives(csp) {
   return Object.fromEntries(
-    csp.split(';').map((d) => d.trim()).filter(Boolean).map((d) => {
-      const [name, ...values] = d.split(/\s+/);
-      return [name, values];
-    }),
+    csp
+      .split(';')
+      .map((d) => d.trim())
+      .filter(Boolean)
+      .map((d) => {
+        const [name, ...values] = d.split(/\s+/);
+        return [name, values];
+      }),
   );
 }
 

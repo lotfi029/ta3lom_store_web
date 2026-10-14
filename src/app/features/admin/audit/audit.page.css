@@ -1,0 +1,26 @@
+.nowrap {
+  white-space: nowrap;
+}
+
+.id {
+  display: block;
+  font-size: 0.72rem;
+}
+
+pre {
+  margin-block: 8px 0;
+  max-inline-size: 420px;
+  overflow-x: auto;
+  font-size: 0.75rem;
+  background: var(--c-surface-2);
+  padding: 8px;
+  border-radius: 8px;
+  text-align: start;
+}
+
+.apager {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}

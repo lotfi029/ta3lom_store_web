@@ -1,0 +1,57 @@
+<ta-skip-link targetId="admin-main" />
+<header class="abar">
+  <a class="brand" routerLink="/admin">
+    <ta-icon name="box" [size]="22" />
+    <span i18n="@@store.admin.brand">إدارة المتجر</span>
+  </a>
+  <button
+    type="button"
+    class="menu-btn"
+    (click)="menuOpen.set(!menuOpen())"
+    [attr.aria-expanded]="menuOpen()"
+    aria-controls="admin-nav"
+  >
+    <ta-icon name="menu" [size]="20" /><span class="visually-hidden" i18n="@@store.admin.menu"
+      >القائمة</span
+    >
+  </button>
+  <div class="who">
+    <b>{{ auth.staff()?.name }}</b>
+    <small>{{ roles() }}</small>
+  </div>
+  <div class="tools">
+    <ta-lang-switch />
+    <ta-theme-toggle />
+    <button type="button" class="out" (click)="signOut()">
+      <ta-icon name="logout" [size]="18" /><span i18n="@@store.layout.sign-out">تسجيل الخروج</span>
+    </button>
+  </div>
+</header>
+<div class="abody">
+  <nav
+    id="admin-nav"
+    class="aside"
+    [class.open]="menuOpen()"
+    aria-label="أقسام الإدارة"
+    i18n-aria-label="@@store.admin.sections"
+  >
+    <ul>
+      @for (item of nav(); track item.path) {
+        <li>
+          <a
+            [routerLink]="item.path"
+            routerLinkActive="on"
+            [routerLinkActiveOptions]="{ exact: item.path === '/admin' }"
+            ariaCurrentWhenActive="page"
+            (click)="menuOpen.set(false)"
+          >
+            <ta-icon [name]="item.icon" [size]="18" /><span>{{ item.label() }}</span>
+          </a>
+        </li>
+      }
+    </ul>
+  </nav>
+  <main id="admin-main" tabindex="-1">
+    <router-outlet />
+  </main>
+</div>

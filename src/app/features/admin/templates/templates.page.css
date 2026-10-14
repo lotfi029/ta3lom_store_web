@@ -1,0 +1,56 @@
+.pick {
+  max-inline-size: 520px;
+}
+
+.tgrid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (width >= 1100px) {
+  .tgrid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+.tgrid .panel {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.tgrid .field {
+  margin: 0;
+}
+
+textarea {
+  font-family: inherit;
+}
+
+.prev,
+.sent {
+  background: var(--c-surface-2);
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.psub {
+  font-weight: 600;
+  margin-block: 0 6px;
+}
+
+.pbody {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.small {
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.testf {
+  display: grid;
+  gap: 10px;
+}

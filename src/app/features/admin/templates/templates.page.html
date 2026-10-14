@@ -1,0 +1,132 @@
+<div class="ahead">
+  <div>
+    <h1 i18n="@@store.admin.nav-templates">قوالب الرسائل</h1>
+    <p i18n="@@store.admin.templates-lede">
+      نصوص الرسائل النصية والبريد. تُستبدل المتغيرات بين القوسين المزدوجين عند الإرسال.
+    </p>
+  </div>
+  <ta-requires policy="staff:admin" />
+</div>
+<ta-resource-state
+  [loading]="data.templates.isLoading() && list().length === 0"
+  [error]="!!data.templates.error()"
+  (retry)="data.templates.reload()"
+>
+  <div class="field pick">
+    <label for="tp-pick" i18n="@@store.admin.template">القالب</label>
+    <select id="tp-pick" (change)="pick($event)">
+      @for (t of list(); track idOf(t)) {
+        <option [value]="idOf(t)" [selected]="selected() === t">{{ label(t) }}</option>
+      }
+    </select>
+  </div>
+
+  @if (selected(); as t) {
+    <div class="tgrid">
+      <form class="panel" (submit)="save($event)" novalidate>
+        <h2 i18n="@@store.admin.edit-template">تحرير القالب</h2>
+        @if (error(); as e) {
+          <p class="err" role="alert">{{ e }}</p>
+        }
+        @if (t.channel === 'email') {
+          <div class="field">
+            <label for="tp-subject" i18n="@@store.admin.subject">الموضوع</label>
+            <input
+              id="tp-subject"
+              [value]="subject()"
+              (input)="onSubject($event)"
+              [readonly]="!canEdit()"
+              [attr.dir]="t.locale === 'en' ? 'ltr' : 'rtl'"
+            />
+          </div>
+        }
+        <div class="field">
+          <label for="tp-body" i18n="@@store.admin.body">النص</label>
+          <textarea
+            id="tp-body"
+            rows="8"
+            [value]="body()"
+            (input)="onBody($event)"
+            [readonly]="!canEdit()"
+            [attr.dir]="t.locale === 'en' ? 'ltr' : 'rtl'"
+            aria-describedby="tp-vars"
+          ></textarea>
+          <p id="tp-vars" class="field-hint">
+            <span i18n="@@store.admin.variables">المتغيرات:</span>
+            <bdi dir="ltr" class="mono">{{ t.variables.join(', ') }}</bdi>
+          </p>
+        </div>
+        <p class="muted small">{{ i18n.formatDateTime(t.updatedAt) }}</p>
+        @if (canEdit()) {
+          <div>
+            <button
+              type="submit"
+              class="btn primary"
+              [disabled]="saving()"
+              [attr.aria-busy]="saving()"
+              i18n="@@store.account.save"
+            >
+              حفظ
+            </button>
+          </div>
+        }
+      </form>
+
+      <section class="panel" aria-labelledby="tp-prev-h">
+        <h2 id="tp-prev-h" i18n="@@store.admin.preview">معاينة</h2>
+        <div class="prev" [attr.dir]="t.locale === 'en' ? 'ltr' : 'rtl'" [attr.lang]="t.locale">
+          @if (t.channel === 'email') {
+            <p class="psub">{{ preview().subject }}</p>
+          }
+          <p class="pbody">{{ preview().body }}</p>
+        </div>
+
+        <form class="testf" (submit)="test($event)" novalidate>
+          <div class="field">
+            <label for="tp-to">
+              @if (t.channel === 'sms') {
+                <span i18n="@@store.admin.test-mobile">جوال الاختبار</span>
+              } @else {
+                <span i18n="@@store.admin.test-email">بريد الاختبار</span>
+              }
+            </label>
+            <input
+              id="tp-to"
+              dir="ltr"
+              [attr.inputmode]="t.channel === 'sms' ? 'tel' : 'email'"
+              [value]="recipient()"
+              (input)="onRecipient($event)"
+              [disabled]="!canEdit()"
+              aria-describedby="tp-test-why"
+            />
+          </div>
+          <div class="act">
+            <button
+              type="submit"
+              class="btn"
+              [disabled]="!canEdit() || testing()"
+              [attr.aria-busy]="testing()"
+              aria-describedby="tp-test-why"
+              i18n="@@store.admin.send-test"
+            >
+              إرسال تجريبي
+            </button>
+            <ta-requires id="tp-test-why" policy="staff:admin" />
+          </div>
+          @if (testError(); as e) {
+            <p class="err" role="alert">{{ e }}</p>
+          }
+          @if (testResult(); as r) {
+            <div class="sent" role="status">
+              <p i18n="@@store.admin.test-sent">أُرسلت الرسالة التجريبية:</p>
+              @if (r.rendered.subject) {
+                <p class="psub">{{ r.rendered.subject }}</p>
+              }
+              <p class="pbody">{{ r.rendered.body }}</p>
+            </div>
+          }
+        </form>
+      </section>
+    </div>
+  }
+</ta-resource-state>

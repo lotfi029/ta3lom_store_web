@@ -3,6 +3,7 @@ import { expect, type Page } from '@playwright/test';
 import { API } from './api';
 // Test tooling shared with the seed script (TOTP, staff credentials from .e2e/staff.json).
 import { readStaff, staffLogin } from '../../scripts/lib/store-api-client.mjs';
+import { totp } from '../../scripts/lib/totp.mjs';
 
 /** A fresh Saudi mobile per test (`055` + 7 digits), so OTP limits and carts never collide. */
 export function freshMobile(): string {
@@ -71,4 +72,26 @@ export async function staff(role: 'admin' | 'store_manager' | 'finance' | 'fulfi
   const entry = readStaff()[role];
   if (!entry) throw new Error(`no ${role} in .e2e/staff.json — run npm run api:seed`);
   return staffLogin(entry);
+}
+
+/** Signs a seeded staff user in through /admin/login (password, then the TOTP code from the stored secret). */
+export async function staffSignIn(
+  page: Page,
+  locale: 'ar' | 'en',
+  role: 'admin' | 'store_manager' | 'finance' | 'fulfilment' | 'viewer',
+  returnPath = '/admin',
+) {
+  const entry = readStaff()[role];
+  if (!entry?.secret)
+    throw new Error(`no enrolled ${role} in .e2e/staff.json — run npm run api:seed`);
+  await page.goto(
+    `/${locale}/admin/login${returnPath === '/admin' ? '' : `?returnUrl=${encodeURIComponent(returnPath)}`}`,
+  );
+  await page.locator('#al-email').fill(entry.email);
+  await page.locator('#al-password').fill(entry.password);
+  await page.locator('#al-password').press('Enter');
+  await expect(page.locator('#al-code')).toBeFocused();
+  await page.locator('#al-code').fill(totp(entry.secret));
+  await page.locator('#al-code').press('Enter');
+  await expect(page).toHaveURL(new RegExp(`/${locale}${returnPath.replace(/[?]/g, '\\?')}$`));
 }

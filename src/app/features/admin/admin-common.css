@@ -1,0 +1,190 @@
+/* Shared by the admin screens (styleUrls: ['../admin-common.css', …]). */
+.ahead {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-block-end: 18px;
+}
+
+.ahead h1 {
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.ahead p {
+  margin-block: 4px 0;
+  color: var(--c-muted-2);
+  font-size: 0.9rem;
+}
+
+.panel {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--rc);
+  padding: 18px;
+  margin-block-end: 18px;
+}
+
+.panel h2 {
+  font-size: 1.05rem;
+  margin-block: 0 12px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-block-size: 44px;
+  padding-inline: 16px;
+  border-radius: 10px;
+  border: 1px solid var(--c-border);
+  background: var(--c-surface);
+  color: var(--c-text);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn.primary {
+  background: var(--c-brand-strong);
+  border-color: var(--c-brand-strong);
+  color: var(--c-on-brand);
+}
+
+.btn.danger {
+  background: var(--c-danger-fill);
+  border-color: var(--c-danger-fill);
+  color: var(--c-on-brand);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn.sm {
+  min-block-size: 36px;
+  padding-inline: 10px;
+  font-size: 0.82rem;
+}
+
+.act {
+  display: inline-grid;
+  justify-items: start;
+}
+
+.err {
+  color: var(--c-danger);
+  font-size: 0.88rem;
+  margin: 0;
+}
+
+.muted {
+  color: var(--c-muted-2);
+}
+
+.tbl-wrap {
+  overflow-x: auto;
+}
+
+.atbl {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.atbl th {
+  text-align: start;
+  font-weight: 500;
+  font-size: 0.78rem;
+  color: var(--c-muted-2);
+  padding-block: 8px;
+  padding-inline: 10px;
+  border-block-end: 1px solid var(--c-border);
+  white-space: nowrap;
+}
+
+.atbl td {
+  padding-block: 10px;
+  padding-inline: 10px;
+  border-block-end: 1px solid var(--c-border);
+  vertical-align: top;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  align-items: flex-end;
+  margin-block-end: 14px;
+}
+
+.filters .field {
+  margin: 0;
+}
+
+.dlg {
+  display: grid;
+  gap: 14px;
+  padding: 22px;
+  inline-size: min(520px, 90vw);
+}
+
+.dlg h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.dlg .acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chk {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-block-size: 44px;
+  cursor: pointer;
+}
+
+.chk input {
+  inline-size: 18px;
+  block-size: 18px;
+  margin: 0;
+  accent-color: var(--c-brand);
+}
+
+.secret {
+  font-family: var(--fm);
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  padding: 10px 12px;
+  background: var(--c-surface-2);
+  border-radius: 10px;
+  overflow-wrap: anywhere;
+}
+
+.rowacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+fieldset.roles {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+fieldset.roles legend {
+  font-weight: 500;
+  font-size: 0.9rem;
+  margin-block-end: 4px;
+}
