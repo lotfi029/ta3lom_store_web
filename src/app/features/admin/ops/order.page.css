@@ -1,0 +1,91 @@
+.back {
+  margin: 0;
+  font-size: 0.88rem;
+}
+
+.back a {
+  color: var(--c-link);
+}
+
+.ogrid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (width >= 1100px) {
+  .ogrid {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  }
+}
+
+.ogrid .panel {
+  margin: 0;
+}
+
+.ogrid h3 {
+  font-size: 0.95rem;
+  margin-block: 14px 6px;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  font-size: 0.88rem;
+  color: var(--c-muted-2);
+}
+
+.kv {
+  margin: 12px 0 0;
+  display: grid;
+  gap: 6px;
+}
+
+.kv div {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 0.9rem;
+}
+
+.kv dt {
+  color: var(--c-muted-2);
+}
+
+.kv dd {
+  margin: 0;
+}
+
+.kv .t {
+  font-weight: 600;
+}
+
+.addr {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.tl,
+.plain {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+  font-size: 0.86rem;
+}
+
+.tl time {
+  color: var(--c-muted-2);
+  margin-inline-end: 6px;
+}
+
+.gform fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}

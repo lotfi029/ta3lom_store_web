@@ -60,6 +60,17 @@ export type StockMovement = Schemas['StockMovementResponse'];
 export type StockMovementPage = Schemas['PagedResultOfStockMovementResponse'];
 export type StockMovementRequest = Schemas['StockMovementRequest'];
 
+// Admin operations (#53, #85–#88, #94–#99, #117, #129–#132)
+export type Dashboard = Schemas['DashboardResponse'];
+export type AdminOrderRow = Schemas['AdminOrderRow'];
+export type AdminOrderPage = Schemas['PagedResultOfAdminOrderRow'];
+export type AdminOrderDetail = Schemas['AdminOrderDetailResponse'];
+export type Shipment = Schemas['ShipmentResponse'];
+export type ShipmentPage = Schemas['PagedResultOfShipmentResponse'];
+export type DownloadGrant = Schemas['DownloadGrantResponse'];
+export type CustomerRow = Schemas['CustomerRow'];
+export type Customer360 = Schemas['Customer360'];
+
 // Cart (#11)
 export type CartBadge = Schemas['CartBadgeResponse'];
 

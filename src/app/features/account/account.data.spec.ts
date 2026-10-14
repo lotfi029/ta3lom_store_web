@@ -4,7 +4,11 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { STORE_API_URL } from '../../core/api/store-api-url';
 import { StoreAuth } from '../../core/auth/store-auth';
 import { AccountData } from './account.data';
-import { documentKind, orderStatus, shipmentStatus } from './labels';
+import {
+  documentKind,
+  orderStatus,
+  shipmentStatus,
+} from '../../shared/ui/status-pill/status-labels';
 
 const API = 'https://store-api.test/v1';
 

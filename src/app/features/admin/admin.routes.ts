@@ -15,7 +15,7 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        loadComponent: () => import('./home/admin-home.page').then((m) => m.AdminHomePage),
+        loadComponent: () => import('./ops/dashboard.page').then((m) => m.DashboardPage),
       },
       {
         path: 'products',
@@ -33,6 +33,28 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: 'media',
         loadComponent: () => import('./catalog/media.page').then((m) => m.MediaPage),
+      },
+      {
+        path: 'orders',
+        loadComponent: () => import('./ops/orders.page').then((m) => m.AdminOrdersPage),
+      },
+      {
+        path: 'orders/:ref',
+        loadComponent: () => import('./ops/order.page').then((m) => m.AdminOrderPage),
+      },
+      {
+        path: 'shipments',
+        loadComponent: () => import('./ops/shipments.page').then((m) => m.ShipmentsPage),
+      },
+      { path: 'stock', loadComponent: () => import('./ops/stock.page').then((m) => m.StockPage) },
+      {
+        path: 'customers',
+        loadComponent: () => import('./ops/customers.page').then((m) => m.CustomersPage),
+      },
+      {
+        path: 'reports',
+        canActivate: [staffPolicyGuard('staff:finance')],
+        loadComponent: () => import('./ops/reports.page').then((m) => m.ReportsPage),
       },
       {
         path: 'staff',

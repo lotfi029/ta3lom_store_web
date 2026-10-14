@@ -1,0 +1,186 @@
+<div class="ahead">
+  <div>
+    <h1 i18n="@@store.admin.nav-customers">العملاء</h1>
+    <p i18n="@@store.admin.customers-lede">
+      بحث مطابق بالجوال أو البريد فقط؛ لا يمكن تصفّح قاعدة العملاء.
+    </p>
+  </div>
+</div>
+<form class="filters panel" (submit)="search($event)" novalidate>
+  <div class="field">
+    <label for="cu-q" i18n="@@store.admin.lookup">الجوال أو البريد</label>
+    <input
+      id="cu-q"
+      dir="ltr"
+      [value]="q()"
+      (input)="q.set(value($event))"
+      aria-describedby="cu-err"
+    />
+  </div>
+  <button type="submit" class="btn primary" i18n="@@store.admin.search">بحث</button>
+  <p id="cu-err" class="err lookup-err" role="alert">{{ error() }}</p>
+</form>
+
+@if (rows(); as list) {
+  @if (list.length === 0) {
+    <p class="muted" i18n="@@store.admin.no-results">لا نتائج.</p>
+  } @else {
+    <div class="panel tbl-wrap">
+      <table class="atbl">
+        <caption class="visually-hidden" i18n="@@store.admin.nav-customers">
+          العملاء
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col" i18n="@@store.admin.col-name">الاسم</th>
+            <th scope="col" i18n="@@store.otp.mobile-label">رقم الجوال</th>
+            <th scope="col" i18n="@@store.account.col-status">الحالة</th>
+            <th scope="col" i18n="@@store.admin.orders-count">الطلبات</th>
+            <th scope="col">
+              <span class="visually-hidden" i18n="@@store.admin.col-actions">الإجراءات</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (c of list; track c.id) {
+            <tr>
+              <td>
+                {{ c.fullName || '—' }} <small class="muted slug" dir="ltr">{{ c.email }}</small>
+              </td>
+              <td>
+                <bdi dir="ltr">{{ c.mobile }}</bdi>
+              </td>
+              <td>
+                @if (c.status === 'blocked') {
+                  <ta-status-pill tone="danger"
+                    ><span i18n="@@store.admin.blocked-status">موقوف</span></ta-status-pill
+                  >
+                } @else {
+                  <ta-status-pill tone="success"
+                    ><span i18n="@@store.admin.active">نشط</span></ta-status-pill
+                  >
+                }
+              </td>
+              <td>
+                <bdi>{{ int(c.ordersCount) }}</bdi>
+              </td>
+              <td>
+                <button type="button" class="btn sm" (click)="open(c)">
+                  <span i18n="@@store.admin.details">التفاصيل</span
+                  ><span class="visually-hidden"> {{ c.mobile }}</span>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+}
+
+@if (selected(); as s) {
+  <section class="panel c360" aria-labelledby="cu-h">
+    <div class="ahead">
+      <div>
+        <h2 id="cu-h">{{ s.customer.fullName || s.customer.mobile }}</h2>
+        <p>
+          <bdi dir="ltr">{{ s.customer.mobile }}</bdi> · {{ i18n.formatDate(s.customer.createdAt) }}
+        </p>
+      </div>
+      <div class="act">
+        @if (s.customer.status === 'blocked') {
+          <button
+            type="button"
+            class="btn"
+            (click)="unblock()"
+            [disabled]="!canBlock() || busy()"
+            aria-describedby="cu-why"
+            i18n="@@store.admin.unblock"
+          >
+            إعادة التفعيل
+          </button>
+        } @else {
+          <button
+            type="button"
+            class="btn danger"
+            (click)="askBlock()"
+            [disabled]="!canBlock()"
+            aria-describedby="cu-why"
+            i18n="@@store.admin.block"
+          >
+            إيقاف الحساب
+          </button>
+        }
+        <ta-requires id="cu-why" policy="staff:finance" />
+      </div>
+    </div>
+    <div class="cols">
+      <div>
+        <h3 i18n="@@store.admin.nav-orders">الطلبات</h3>
+        <ul class="plain">
+          @for (o of s.orders; track o.reference) {
+            <li>
+              <a [routerLink]="['/admin/orders', o.reference]"
+                ><bdi dir="ltr" class="mono">{{ o.reference }}</bdi></a
+              >
+              <ta-status-pill [tone]="status(o.status).tone">{{
+                status(o.status).label
+              }}</ta-status-pill>
+              <ta-money [value]="o.grandTotal" />
+            </li>
+          } @empty {
+            <li class="muted" i18n="@@store.admin.no-results">لا نتائج.</li>
+          }
+        </ul>
+      </div>
+      <div>
+        <h3 i18n="@@store.account.tab-courses">دوراتي</h3>
+        <ul class="plain">
+          @for (e of s.enrolments; track e.id) {
+            <li>
+              {{ title(e.product) }} · <bdi dir="ltr" class="mono">{{ e.status }}</bdi> ·
+              <bdi>{{ int(e.progressPct) }}%</bdi>
+            </li>
+          } @empty {
+            <li class="muted" i18n="@@store.admin.no-results">لا نتائج.</li>
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+}
+
+<ta-dialog [(open)]="blockOpen" labelledBy="cu-b-h" [lightDismiss]="false">
+  <form class="dlg" (submit)="block($event)" novalidate>
+    <h2 id="cu-b-h" i18n="@@store.admin.block">إيقاف الحساب</h2>
+    <p i18n="@@store.admin.block-lede">
+      لن يتمكن العميل من الدخول أو الشراء، وتُنهى جلساته الحالية. يُسجَّل السبب في سجل التدقيق.
+    </p>
+    <div class="field">
+      <label for="cu-reason" i18n="@@store.admin.reason">السبب</label>
+      <input id="cu-reason" [value]="reason()" (input)="reason.set(value($event))" />
+    </div>
+    @if (blockError(); as e) {
+      <p class="err" role="alert">{{ e }}</p>
+    }
+    <div class="acts">
+      <button
+        type="submit"
+        class="btn danger"
+        [disabled]="busy()"
+        [attr.aria-busy]="busy()"
+        i18n="@@store.admin.confirm"
+      >
+        تأكيد
+      </button>
+      <button
+        type="button"
+        class="btn"
+        (click)="blockOpen.set(false)"
+        i18n="@@store.account.cancel"
+      >
+        إلغاء
+      </button>
+    </div>
+  </form>
+</ta-dialog>
