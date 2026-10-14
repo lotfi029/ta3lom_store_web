@@ -18,6 +18,23 @@ export const ADMIN_ROUTES: Routes = [
         loadComponent: () => import('./home/admin-home.page').then((m) => m.AdminHomePage),
       },
       {
+        path: 'products',
+        loadComponent: () => import('./catalog/products.page').then((m) => m.ProductsPage),
+      },
+      {
+        path: 'products/:id',
+        loadComponent: () =>
+          import('./catalog/product-editor.page').then((m) => m.ProductEditorPage),
+      },
+      {
+        path: 'categories',
+        loadComponent: () => import('./catalog/categories.page').then((m) => m.CategoriesPage),
+      },
+      {
+        path: 'media',
+        loadComponent: () => import('./catalog/media.page').then((m) => m.MediaPage),
+      },
+      {
         path: 'staff',
         canActivate: [staffPolicyGuard('staff:admin')],
         loadComponent: () => import('./staff/staff.page').then((m) => m.StaffPage),

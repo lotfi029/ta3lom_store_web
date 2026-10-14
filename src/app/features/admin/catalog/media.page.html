@@ -1,0 +1,136 @@
+<div class="ahead">
+  <div>
+    <h1 i18n="@@store.admin.nav-media">الوسائط</h1>
+    <p i18n="@@store.admin.media-lede">
+      صور الأغلفة وملفات PDF. لكل صورة نص بديل بالعربية والإنجليزية.
+    </p>
+  </div>
+</div>
+
+<section class="panel" aria-labelledby="md-up-h">
+  <h2 id="md-up-h" i18n="@@store.admin.upload-new">رفع صورة جديدة</h2>
+  @if (canEdit()) {
+    <ta-media-upload kind="image" idPrefix="md" (uploaded)="uploaded()" />
+  } @else {
+    <ta-requires policy="staff:catalogue" />
+  }
+</section>
+
+<div class="filters">
+  <div class="field">
+    <label for="md-kind" i18n="@@store.admin.type">النوع</label>
+    <select id="md-kind" (change)="setKind($event)">
+      <option
+        value="image"
+        [selected]="data.mediaKind() === 'image'"
+        i18n="@@store.admin.kind-image"
+      >
+        صور
+      </option>
+      <option value="pdf" [selected]="data.mediaKind() === 'pdf'">PDF</option>
+      <option value="" [selected]="data.mediaKind() === ''" i18n="@@store.admin.all">الكل</option>
+    </select>
+  </div>
+</div>
+
+<ta-resource-state
+  [loading]="data.media.isLoading() && !page()"
+  [error]="!!data.media.error() && !page()"
+  (retry)="data.media.reload()"
+>
+  <ul class="mgrid">
+    @for (a of items(); track a.id) {
+      <li class="panel">
+        @if (a.url && a.kind === 'image') {
+          <img
+            [src]="a.url"
+            [alt]="i18n.pick(a.altAr ?? '', a.altEn)"
+            loading="lazy"
+            width="240"
+            height="160"
+          />
+        } @else {
+          <span class="file" aria-hidden="true">PDF</span>
+        }
+        <small class="muted"
+          >{{ a.mime }} · {{ size(a) }} · {{ i18n.formatDate(a.createdAt) }}</small
+        >
+        @if (a.kind === 'image') {
+          @if (editing() === a.id) {
+            <form class="altf" (submit)="saveAlt(a, $event)" novalidate>
+              <div class="field">
+                <label [for]="'alt-ar-' + a.id" i18n="@@store.admin.alt-ar"
+                  >النص البديل (عربي)</label
+                >
+                <input [id]="'alt-ar-' + a.id" [value]="alt().ar" (input)="setAlt('ar', $event)" />
+              </div>
+              <div class="field">
+                <label [for]="'alt-en-' + a.id" i18n="@@store.admin.alt-en"
+                  >النص البديل (إنجليزي)</label
+                >
+                <input
+                  [id]="'alt-en-' + a.id"
+                  dir="ltr"
+                  [value]="alt().en"
+                  (input)="setAlt('en', $event)"
+                />
+              </div>
+              @if (error(); as e) {
+                <p class="err" role="alert">{{ e }}</p>
+              }
+              <div class="rowacts">
+                <button type="submit" class="btn sm primary" i18n="@@store.account.save">
+                  حفظ
+                </button>
+                <button
+                  type="button"
+                  class="btn sm"
+                  (click)="editing.set(null)"
+                  i18n="@@store.account.cancel"
+                >
+                  إلغاء
+                </button>
+              </div>
+            </form>
+          } @else {
+            <p class="alt">
+              {{ a.altAr || '—' }}<br /><span dir="ltr">{{ a.altEn || '—' }}</span>
+            </p>
+            @if (canEdit()) {
+              <button type="button" class="btn sm" (click)="edit(a)">
+                <span i18n="@@store.admin.edit-alt">تعديل النص البديل</span>
+              </button>
+            }
+          }
+        }
+      </li>
+    } @empty {
+      <li class="muted" i18n="@@store.admin.no-results">لا نتائج.</li>
+    }
+  </ul>
+  @if (pages() > 1) {
+    <nav class="apager" aria-label="الصفحات" i18n-aria-label="@@store.ui.pagination">
+      <button
+        type="button"
+        class="btn sm"
+        (click)="go(data.mediaPage() - 1)"
+        [disabled]="data.mediaPage() <= 1"
+        i18n="@@store.account.prev"
+      >
+        السابق
+      </button>
+      <span
+        ><bdi>{{ data.mediaPage() }} / {{ pages() }}</bdi></span
+      >
+      <button
+        type="button"
+        class="btn sm"
+        (click)="go(data.mediaPage() + 1)"
+        [disabled]="data.mediaPage() >= pages()"
+        i18n="@@store.account.next"
+      >
+        التالي
+      </button>
+    </nav>
+  }
+</ta-resource-state>

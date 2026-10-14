@@ -39,6 +39,27 @@ export type TemplateTestResult = Schemas['TemplateTestResponse'];
 export type AuditEntry = Schemas['AuditEntry'];
 export type AuditPage = Schemas['PagedResultOfAuditEntry'];
 
+// Admin catalogue (#54–#62, #64–#66, #72–#80)
+export type AdminProductRow = Schemas['AdminProductRow'];
+export type AdminProductPage = Schemas['PagedResultOfAdminProductRow'];
+export type AdminProduct = Schemas['AdminProductResponse'];
+export type AdminFormat = Schemas['AdminBookFormat'];
+export type AdminModule = Schemas['AdminModule'];
+export type ProductInput = Schemas['ProductInput'];
+export type CourseDetailInput = Schemas['CourseDetailInput'];
+export type CourseModuleInput = Schemas['CourseModuleInput'];
+export type BookDetailInput = Schemas['BookDetailInput'];
+export type BookFormatInput = Schemas['BookFormatInput'];
+export type AdminCategory = Schemas['AdminCategoryResponse'];
+export type CategoryInput = Schemas['CategoryInput'];
+export type MediaAsset = Schemas['MediaAssetResponse'];
+export type MediaPage = Schemas['PagedResultOfMediaAssetResponse'];
+export type MediaAltInput = Schemas['MediaAltInput'];
+export type StockRow = Schemas['StockRow'];
+export type StockMovement = Schemas['StockMovementResponse'];
+export type StockMovementPage = Schemas['PagedResultOfStockMovementResponse'];
+export type StockMovementRequest = Schemas['StockMovementRequest'];
+
 // Cart (#11)
 export type CartBadge = Schemas['CartBadgeResponse'];
 

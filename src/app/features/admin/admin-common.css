@@ -188,3 +188,58 @@ fieldset.roles legend {
   font-size: 0.9rem;
   margin-block-end: 4px;
 }
+
+.btn.disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.atbl a {
+  color: var(--c-link);
+  font-weight: 500;
+}
+
+.slug {
+  display: block;
+  font-size: 0.75rem;
+}
+
+.apager {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.notice {
+  background: var(--c-tint);
+  color: var(--c-accent-strong);
+  border-radius: 12px;
+  padding-block: 10px;
+  padding-inline: 14px;
+  font-size: 0.88rem;
+  margin-block-end: 16px;
+}
+
+.grid2 {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (width >= 760px) {
+  .grid2 {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+.panel .field {
+  margin: 0;
+}
+
+.panel form:not(.filters),
+form.panel:not(.filters) {
+  display: grid;
+  gap: 14px;
+}
