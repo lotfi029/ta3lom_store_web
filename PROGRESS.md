@@ -1,5 +1,5 @@
 # Store web progress
-Next: W-11 — Hardening and release prep
+Next: — (all sessions done; final summary after W-11 merges and main CI is green)
 
 | Session | Status (todo/doing/done/blocked) | PR | Screens | Endpoints # | Tests (unit/e2e/a11y) | Notes |
 |---|---|---|---|---|---|---|
@@ -14,16 +14,16 @@ Next: W-11 — Hardening and release prep
 | W-07 Account | done | [#8](https://github.com/lotfi029/ta3lom_store_web/pull/8) | /account shell (side menu with counts); My courses (progress, Start/Resume, certificate link, access being prepared); My books (downloads with remaining count, shipments with tracking); Orders (paged list, detail, invoice PDF); Profile (details, language, marketing consent, address book CRUD + default, export JSON, sign out everywhere, delete with typed confirmation) | #20, #21–#32, #35–#39, #46 (+ #75 ship as e2e tooling) | 162 / 84 (14 account ar+en: guard → sign in, empty tabs, 320 px; launch (LMS mocked); download 5 → 4 left + shipment preparing → shipped; orders → detail → invoice PDF; profile + address book + export; delete account; sign out everywhere; axe each tab) / 34 × 2 | address model and `<ta-address-fields>` shared with checkout; 126 KB JS |
 | W-08 Admin shell and platform | done | [#9](https://github.com/lotfi029/ta3lom_store_web/pull/9) | /admin/login (password → TOTP enrol with setup key, or verify), admin shell (top bar, side nav filtered by `can()`, `<ta-requires>` reasons), home, team (list, create with one-time password, edit roles/active, reset password, reset TOTP, unlock), settings (typed per key, r4 allowlist), templates (r4 keys, edit, preview, test send), audit log (filters, diff) | #47–#52, #118–#128, #133 | 174 / 94 (10 admin ar+en: return URL + wrong password; viewer nav/read-only with reason, staff route refused; create member → first sign-in enrols TOTP → reset TOTP; settings typed save + invalid + audit filter; template preview + test send; axe each screen) / 36 × 2 | admin lazy chunk; 126.5 KB initial JS |
 | W-09 Admin catalogue | done | [#10](https://github.com/lotfi029/ta3lom_store_web/pull/10) | products list (type/status/category/text filters), product editor (general + SEO, cover picker with upload, course details + curriculum reorder, book details, print/digital formats with private file upload, print stock movements, publish/archive with confirmation and missing list, preview with the store card, freshness notice, type lock read-only), categories (create/edit, slug check), media library (upload with mandatory alt, MIME/size checks, alt edit) | #54–#62, #64–#66, #72–#80 | 185 / 102 (8 admin catalogue ar+en: store manager creates + publishes a course (cover, curriculum) → storefront client fallback; book with digital file + print stock → published; viewer read-only with reasons; categories + media alt; axe on every screen) / 36 × 2 | e2e products archived after each test; 126.6 KB JS |
-| W-10 Admin operations | done | #11 | dashboard (sales today/7/30, awaiting payment, top sellers, low stock, alerts), orders (search, detail with lines, contact/address, timeline from dates + gateway events + notifications, payments, documents; cancel with reason; resend documents; download reset by grant id), shipments queue (packing slip PDF, ship with carrier/tracking, deliver, return with restock), stock (low filter, movements, restock/adjust), customers (exact lookup, orders + courses, block/unblock), reports (sales, VAT, shipments; table + CSV) | #53, #78–#80, #85–#88, #94–#99, #117, #129–#132 | 196 / 118 (16 admin ops ar+en: dashboard + 320 px; fulfilment slip → ship → deliver; finance cancels unpaid order + store manager sees Cancel disabled with reason; viewer disabled + no reports; stock restock/adjust; customers block/unblock; reports + CSV; download reset; axe on every screen) / 36 × 2 | 127.8 KB JS |
-| W-11 Hardening and release prep | todo | | | | | |
+| W-10 Admin operations | done | [#11](https://github.com/lotfi029/ta3lom_store_web/pull/11) | dashboard (sales today/7/30, awaiting payment, top sellers, low stock, alerts), orders (search, detail with lines, contact/address, timeline from dates + gateway events + notifications, payments, documents; cancel with reason; resend documents; download reset by grant id), shipments queue (packing slip PDF, ship with carrier/tracking, deliver, return with restock), stock (low filter, movements, restock/adjust), customers (exact lookup, orders + courses, block/unblock), reports (sales, VAT, shipments; table + CSV) | #53, #78–#80, #85–#88, #94–#99, #117, #129–#132 | 196 / 118 (16 admin ops ar+en: dashboard + 320 px; fulfilment slip → ship → deliver; finance cancels unpaid order + store manager sees Cancel disabled with reason; viewer disabled + no reports; stock restock/adjust; customers block/unblock; reports + CSV; download reset; axe on every screen) / 36 × 2 | 127.8 KB JS |
+| W-11 Hardening and release prep | done | #12 | Empty-the-cart (#15); admin roles refresh (#52); deploy README; screenshots (56, app vs prototype); report | #15, #52 (+ all, C.1 table in docs/W-report.md) | 197 / 120 / 36 × 2; Lighthouse home/course/book LCP ≤ 0.92 s, CLS 0, TBT ≤ 13 ms | CLS 0.2–0.3 → 0 (hydration transfer cache + font preloads); DECISIONS.md rebuilt from history; docs/reference removed; 127.8 KB JS |
 
 ## Checklist
-- [ ] W-00 … W-11 done and merged
-- [ ] Every r4 web endpoint of plan §1 used by a screen and covered by an e2e test
-- [ ] axe clean on every route, ar/en, light/dark
-- [ ] Budgets met; Lighthouse: LCP <= 2.0 s, INP <= 200 ms, CLS <= 0.05 (home, a course, a book)
-- [ ] Prototype screenshots compared (docs/screenshots, ar/en, 1440 + 375 px)
-- [ ] reference/ removed; docs/W-report.md pushed
+- [x] W-00 … W-11 done and merged
+- [x] Every r4 web endpoint of plan §1 used by a screen and covered by an e2e test (exceptions listed in docs/W-report.md §3: #30, #88, #99 outcome)
+- [x] axe clean on every route, ar/en, light/dark
+- [x] Budgets met; Lighthouse: LCP <= 2.0 s, INP <= 200 ms, CLS <= 0.05 (home, a course, a book)
+- [x] Prototype screenshots compared (docs/screenshots, ar/en, 1440 + 375 px)
+- [x] reference/ removed; docs/W-report.md pushed
 
 ## Environment (resume notes)
 - `. scripts/dev-env.sh && npm run api:up && npm run api:seed` — API on :5080, staff in `.e2e/staff.json` (git-ignored).

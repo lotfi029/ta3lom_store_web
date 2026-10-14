@@ -25,6 +25,7 @@ import { CartStore } from '../../../core/cart/cart-store';
 import { CartSummary } from '../../../core/cart/cart-summary';
 import { addressLine } from '../../../core/address/address';
 import { valueOf } from '../../../core/http/resource-value';
+import { normalizeSaudiMobile } from '../../../core/i18n/western-digits';
 import { I18nService } from '../../../core/i18n/i18n';
 import { formatMoney } from '../../../core/money/money-format';
 import { SeoService } from '../../../core/seo/seo.service';
@@ -71,6 +72,10 @@ export class CheckoutPage {
 
   protected readonly model = signal(emptyCheckout());
   protected readonly needsAddress = computed(() => this.cart.hasPrint());
+  protected readonly mobile = computed(() => {
+    const m = this.auth.customer()?.mobile ?? '';
+    return normalizeSaudiMobile(m) ?? m;
+  });
   protected readonly f = checkoutForm(this.model, () => this.needsAddress());
 
   protected readonly quote = signal<Quote | null>(null);

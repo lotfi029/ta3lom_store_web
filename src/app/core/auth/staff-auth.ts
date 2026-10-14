@@ -113,6 +113,21 @@ export class StaffAuth {
     return this.restoring;
   }
 
+  /** #52: the current staff profile and roles (a role change by an admin applies without signing in again). */
+  async refreshMe(): Promise<StaffMe | null> {
+    const token = this.token();
+    if (!token) return null;
+    try {
+      const me = await firstValueFrom(
+        this.http.get<StaffMe>(`${this.api}/admin/me`, this.headers(token)),
+      );
+      this.staff.set(me);
+      return me;
+    } catch {
+      return null;
+    }
+  }
+
   async logout(): Promise<void> {
     try {
       await firstValueFrom(this.http.post(`${this.api}/admin/auth/logout`, null, this.headers()));

@@ -16,7 +16,8 @@ Everything the store web project (`lotfi029/ta3lom_store_web`, https://store.ta3
 | [11-api-contract.md](11-api-contract.md) + [openapi/store-api.v1.json](openapi/store-api.v1.json) | API contract; types generated from the JSON | API repo `store/11`, `openapi/v1.json` |
 | [database/00](database/00-store-database-design.md) | Database design v2 (33 tables) | `Docs\store\database\` |
 | [store-prototype.md](store-prototype.md) + [design/](design/) | Approved prototypes (strip giving, plan §2.6) | `D:\Freelance\ELAMS\design\` |
-| [reference/ta3lom-web/](reference/ta3lom-web/CLAUDE.md) | Reference kit from ta3lom-web: tokens, fonts, logo, layout, core helpers, shared UI, scripts, configs, conventions | `repos\ta3lom-web` (copied 14 Oct) |
+| ~~reference/ta3lom-web/~~ | Reference kit from ta3lom-web — ported in W-00…W-02 and removed in W-11 (plan §7) | — |
+| [W-report.md](W-report.md) + [screenshots/](screenshots/) | Build report (W-00…W-11) and the app-vs-prototype screenshots | this repo |
 
 **Refresh before the first session:** copy `..\StoreApi\openapi\v1.json` over `openapi/store-api.v1.json` after the API r4 session is merged (today's copy still lists the giving endpoints).
 **Copies, not masters:** edit specs in `D:\Freelance\ELAMS\Docs\store\` (or the API repo) and re-copy; the session never edits them except `11` deviations it logs.

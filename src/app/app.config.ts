@@ -7,7 +7,7 @@ import {
   provideZonelessChangeDetection,
 } from '@angular/core';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
-import { provideClientHydration, withNoHttpTransferCache } from '@angular/platform-browser';
+import { provideClientHydration, withHttpTransferCacheOptions } from '@angular/platform-browser';
 import { provideRouter, withComponentInputBinding, withInMemoryScrolling } from '@angular/router';
 import { routes } from './app.routes';
 import { errorToastInterceptor } from './core/http/error-toast.interceptor';
@@ -24,8 +24,12 @@ export const appConfig: ApplicationConfig = {
       withComponentInputBinding(),
       withInMemoryScrolling({ scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled' }),
     ),
-    // Prerendered public pages refetch after hydration (refresh-after-hydration); no build-time snapshot is replayed.
-    provideClientHydration(withNoHttpTransferCache()),
+    // The build-time responses embedded in each prerendered page are replayed during hydration, so the page keeps its
+    // content (no blank-and-refill layout shift); every public page then reloads its data once (refresh-after-hydration).
+    // `includeRequestsWithCredentials`: the store-API interceptor marks every API call `withCredentials` (refresh cookie),
+    // which would otherwise exclude the public catalogue reads from the transfer cache. Only GETs are cached, and the
+    // build has no session, so nothing personal can land in a prerendered page.
+    provideClientHydration(withHttpTransferCacheOptions({ includeRequestsWithCredentials: true })),
     // errorToast first (sees the final outcome), the store-API interceptor next (credentials, bearer, refresh),
     // the prerender cache last (a pass-through in the browser).
     provideHttpClient(

@@ -3,12 +3,20 @@
  * Runs after `ng build` (part of `npm run build`). For the dual-locale static output (dist/store-web/browser):
  *   - copies sitemap.xml, robots.txt and the favicons to the web root (the root has no locale of its own);
  *   - copies deploy/index.html to the web root: a script-free fallback page (Caddy redirects / → /ar/ before it is read);
- *   - preloads the Arabic Readex Pro face on every page (Angular fingerprints it, so index.html can't name it);
+ *   - preloads the Readex Pro faces and Plex Mono 400 on every page (Angular fingerprints them, so index.html can't);
  *   - rewrites Angular's inline event-dispatch bootstrap to ONE canonical superset call, so the site has exactly one
  *     CSP hash for it (its text otherwise varies by page content);
  *   - normalises modes (0644 files, 0755 dirs).
  */
-import { chmodSync, copyFileSync, existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import {
+  chmodSync,
+  copyFileSync,
+  existsSync,
+  readdirSync,
+  readFileSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs';
 import { join, relative } from 'node:path';
 
 const BROWSER_DIR = join(process.cwd(), 'dist', 'store-web', 'browser');
@@ -25,9 +33,22 @@ function copyToRoot(name, sourceDir = join(BROWSER_DIR, 'ar')) {
 for (const f of ['sitemap.xml', 'robots.txt', 'favicon.ico', 'favicon.svg']) copyToRoot(f);
 copyToRoot('index.html', join(process.cwd(), 'deploy'));
 
-const JSACTION_BUBBLE = ['click', 'dblclick', 'focusin', 'focusout', 'submit', 'input', 'change', 'keydown', 'keyup', 'pointerdown', 'pointerup'];
+const JSACTION_BUBBLE = [
+  'click',
+  'dblclick',
+  'focusin',
+  'focusout',
+  'submit',
+  'input',
+  'change',
+  'keydown',
+  'keyup',
+  'pointerdown',
+  'pointerup',
+];
 const JSACTION_CAPTURE = ['focus', 'blur'];
-const JSACTION_CALL = /window\.__jsaction_bootstrap\(document\.body,"ng",(\[[^\]]*\]),(\[[^\]]*\])\)/g;
+const JSACTION_CALL =
+  /window\.__jsaction_bootstrap\(document\.body,"ng",(\[[^\]]*\]),(\[[^\]]*\])\)/g;
 const CANONICAL = `window.__jsaction_bootstrap(document.body,"ng",${JSON.stringify(JSACTION_BUBBLE)},${JSON.stringify(JSACTION_CAPTURE)})`;
 const canonical = (html) =>
   html.replace(JSACTION_CALL, (call, bubble, capture) => {
@@ -41,27 +62,38 @@ const htmlFiles = (dir) =>
     return statSync(p).isDirectory() ? htmlFiles(p) : name.endsWith('.html') ? [p] : [];
   });
 
+// Preloaded faces: both Readex Pro subsets (Arabic text also uses the Latin face for spaces, digits and punctuation)
+// and Plex Mono 400 (references, codes). Without them the swap re-wraps the hero heading (CLS, Lighthouse W-11).
+const PRELOAD = [
+  /^readex-pro-arabic-wght-[A-Z0-9]+\.woff2$/,
+  /^readex-pro-latin-wght-[A-Z0-9]+\.woff2$/,
+  /^plex-mono-latin-400-[A-Z0-9]+\.woff2$/,
+];
+
 for (const locale of ['ar', 'en']) {
   const dir = join(BROWSER_DIR, locale);
   const media = join(dir, 'media');
-  const font = existsSync(media) ? readdirSync(media).find((n) => /^readex-pro-arabic-wght-[A-Z0-9]+\.woff2$/.test(n)) : undefined;
-  if (!font) {
-    console.error(`postbuild: no readex-pro-arabic-wght-*.woff2 in ${relative(process.cwd(), media)}`);
+  const names = existsSync(media) ? readdirSync(media) : [];
+  const fonts = PRELOAD.map((re) => names.find((n) => re.test(n)));
+  if (fonts.some((f) => !f)) {
+    console.error(`postbuild: a preloaded font is missing from ${relative(process.cwd(), media)}`);
     process.exitCode = 1;
     continue;
   }
-  const tag = `<link rel="preload" href="media/${font}" as="font" type="font/woff2" crossorigin>`;
+  const tags = fonts
+    .map((f) => `<link rel="preload" href="media/${f}" as="font" type="font/woff2" crossorigin>`)
+    .join('');
   let count = 0;
   for (const file of htmlFiles(dir)) {
     const original = readFileSync(file, 'utf8');
     let html = canonical(original);
-    if (!html.includes(tag) && html.includes('</head>')) {
-      html = html.replace('</head>', `${tag}</head>`);
+    if (!html.includes(tags) && html.includes('</head>')) {
+      html = html.replace('</head>', `${tags}</head>`);
       count += 1;
     }
     if (html !== original) writeFileSync(file, html);
   }
-  console.log(`postbuild: [${locale}] font preload added to ${count} page(s)`);
+  console.log(`postbuild: [${locale}] font preloads added to ${count} page(s)`);
 }
 
 const modes = (dir) => {

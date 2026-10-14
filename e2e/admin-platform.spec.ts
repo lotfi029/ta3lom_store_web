@@ -32,7 +32,9 @@ for (const locale of ['ar', 'en'] as const) {
     test('the side nav follows the role: viewer reads settings with the reason; no team or audit (RUL-62)', async ({
       page,
     }) => {
+      const me = page.waitForRequest((r) => r.url().endsWith('/v1/admin/me'));
       await staffSignIn(page, locale, 'viewer');
+      await me; // #52: the shell reads the current roles
       const nav = page.locator('#admin-nav');
       await expect(nav.getByRole('link', { name: t('الإعدادات', 'Settings') })).toBeVisible();
       await expect(nav.getByRole('link', { name: t('فريق العمل', 'Team') })).toHaveCount(0);
