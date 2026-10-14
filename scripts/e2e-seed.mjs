@@ -8,8 +8,9 @@
  *   3. Book formats: print stock topped up to ≥ 200; every digital format gets a private PDF file so downloads work.
  */
 import { execFileSync } from 'node:child_process';
-import { join } from 'node:path';
-import { Client, readStaff, staffLogin, writeStaff } from './lib/store-api-client.mjs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { Client, STAFF_FILE, readStaff, staffLogin, writeStaff } from './lib/store-api-client.mjs';
 
 const API_DIR = process.env.STORE_API_DIR ?? join(process.cwd(), '..', 'ta3lom_store_api');
 const DLL = join(API_DIR, 'src/Ta3lom.Store.Api/bin/Debug/net10.0/Ta3lom.Store.Api.dll');
@@ -25,10 +26,14 @@ async function ensureAdmin(staff) {
     }
   }
   const email = `e2e-admin-${Date.now().toString(36)}@store-web.test`;
-  const out = execFileSync('dotnet', [DLL, 'create-admin', '--email', email, '--name', 'E2E Admin'], {
-    cwd: join(API_DIR, 'src/Ta3lom.Store.Api'),
-    encoding: 'utf8',
-  });
+  const out = execFileSync(
+    'dotnet',
+    [DLL, 'create-admin', '--email', email, '--name', 'E2E Admin'],
+    {
+      cwd: join(API_DIR, 'src/Ta3lom.Store.Api'),
+      encoding: 'utf8',
+    },
+  );
   const password = out.match(/shown once\):\s*(\S+)/)?.[1];
   if (!password) throw new Error(`create-admin printed no password:\n${out}`);
   staff.admin = { email, password, roles: ['admin'] };
@@ -48,7 +53,11 @@ async function ensureRole(admin, staff, role) {
     }
   }
   const email = `e2e-${role.replace('_', '-')}-${Date.now().toString(36)}@store-web.test`;
-  const r = await admin.call('POST', '/v1/admin/staff', { email, name: `E2E ${role}`, roles: [role] });
+  const r = await admin.call('POST', '/v1/admin/staff', {
+    email,
+    name: `E2E ${role}`,
+    roles: [role],
+  });
   if (r.status !== 201) throw new Error(`create ${role}: ${r.status} ${JSON.stringify(r.body)}`);
   staff[role] = { email, password: r.body.oneTimePassword, roles: [role] };
   await staffLogin(staff[role]);
@@ -78,31 +87,49 @@ function minimalPdf() {
 
 async function catalogue(manager) {
   const list = await manager.call('GET', '/v1/admin/products?pageSize=100');
-  if (list.status !== 200) throw new Error(`admin products: ${list.status} ${JSON.stringify(list.body)}`);
+  if (list.status !== 200)
+    throw new Error(`admin products: ${list.status} ${JSON.stringify(list.body)}`);
   let archived = 0;
   for (const p of list.body.items) {
     if (p.type === 'cause' && p.status !== 'archived') {
       const r = await manager.call('POST', `/v1/admin/products/${p.id}/archive`);
-      if (r.status !== 200) throw new Error(`archive ${p.slug}: ${r.status} ${JSON.stringify(r.body)}`);
+      if (r.status !== 200)
+        throw new Error(`archive ${p.slug}: ${r.status} ${JSON.stringify(r.body)}`);
       archived += 1;
     }
   }
   log(`causes archived: ${archived} (r4 — courses and books only)`);
 
+  // The reference catalogue points digital formats at files (private/books/<slug>.pdf) that local storage does not hold,
+  // so every digital format gets a file uploaded by this seed; the asset ids are remembered to stay idempotent.
+  const seededFile = join(dirname(STAFF_FILE), 'seeded-files.json');
+  const seeded = new Set(
+    existsSync(seededFile) ? JSON.parse(readFileSync(seededFile, 'utf8')) : [],
+  );
   for (const p of list.body.items.filter((x) => x.type === 'book')) {
     const detail = await manager.call('GET', `/v1/admin/products/${p.id}`);
     for (const f of detail.body.formats ?? []) {
-      if (f.kind === 'digital' && !f.fileAssetId) {
+      if (f.kind === 'digital' && !seeded.has(f.fileAssetId)) {
         const form = new FormData();
         form.append('kind', 'book_file');
         form.append('file', new Blob([minimalPdf()], { type: 'application/pdf' }), `${p.slug}.pdf`);
         const asset = await manager.call('POST', '/v1/admin/media', form);
-        if (asset.status !== 201 && asset.status !== 200) throw new Error(`upload ${p.slug}: ${asset.status} ${JSON.stringify(asset.body)}`);
+        if (asset.status !== 201 && asset.status !== 200)
+          throw new Error(`upload ${p.slug}: ${asset.status} ${JSON.stringify(asset.body)}`);
         const upd = await manager.call('PUT', `/v1/admin/formats/${f.id}`, {
-          kind: f.kind, sku: f.sku, price: f.price, compareAtPrice: f.compareAtPrice ?? null, isActive: f.isActive ?? true,
-          weightGrams: f.weightGrams ?? null, lowStockThreshold: f.lowStockThreshold ?? null, fileAssetId: asset.body.id,
+          kind: f.kind,
+          sku: f.sku,
+          price: f.price,
+          compareAtPrice: f.compareAtPrice ?? null,
+          isActive: f.isActive ?? true,
+          weightGrams: f.weightGrams ?? null,
+          lowStockThreshold: f.lowStockThreshold ?? null,
+          fileAssetId: asset.body.id,
         });
-        if (upd.status !== 200) throw new Error(`link file ${p.slug}: ${upd.status} ${JSON.stringify(upd.body)}`);
+        if (upd.status !== 200)
+          throw new Error(`link file ${p.slug}: ${upd.status} ${JSON.stringify(upd.body)}`);
+        seeded.add(asset.body.id);
+        writeFileSync(seededFile, JSON.stringify([...seeded]));
         log(`digital file linked for ${p.slug}`);
       }
     }
@@ -113,8 +140,13 @@ async function stock(admin) {
   const rows = await admin.call('GET', '/v1/admin/stock');
   for (const row of rows.body ?? []) {
     if (row.available < 200) {
-      const r = await admin.call('POST', `/v1/admin/stock/${row.formatId}/movements`, { delta: 500, reason: 'restock', note: 'e2e seed' });
-      if (r.status !== 201) throw new Error(`restock ${row.sku}: ${r.status} ${JSON.stringify(r.body)}`);
+      const r = await admin.call('POST', `/v1/admin/stock/${row.formatId}/movements`, {
+        delta: 500,
+        reason: 'restock',
+        note: 'e2e seed',
+      });
+      if (r.status !== 201)
+        throw new Error(`restock ${row.sku}: ${r.status} ${JSON.stringify(r.body)}`);
       log(`restocked ${row.sku}`);
     }
   }

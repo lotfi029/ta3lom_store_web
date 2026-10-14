@@ -1,0 +1,91 @@
+<div class="tabh"><h2 i18n="@@store.account.tab-books">كتبي</h2></div>
+@if (error(); as e) {
+  <p class="banner err" role="alert">{{ e }}</p>
+}
+<ta-resource-state
+  [loading]="data.books.isLoading() && !books()"
+  [error]="!!data.books.error() && !books()"
+  (retry)="data.books.reload()"
+>
+  @if (books(); as b) {
+    @if (b.downloads.length === 0 && b.shipments.length === 0) {
+      <div class="acct-empty">
+        <h3 i18n="@@store.account.empty-title">لا شيء هنا بعد</h3>
+        <p i18n="@@store.account.empty-books">
+          الكتب الرقمية التي تشتريها تُنزَّل من هنا، وتتبّع شحن الكتب المطبوعة هنا أيضًا.
+        </p>
+        <a class="b primary" routerLink="/books" i18n="@@store.account.browse">تصفّح المتجر</a>
+      </div>
+    }
+    @if (b.downloads.length > 0) {
+      <h3 class="subh" i18n="@@store.account.digital">الكتب الرقمية</h3>
+      <ul class="lib">
+        @for (d of b.downloads; track d.grantId) {
+          <li class="libi dl">
+            <span class="th" aria-hidden="true"><ta-icon name="book" [size]="26" /></span>
+            <div class="bd">
+              <b>{{ title(d) }}</b>
+              @if (d.revoked) {
+                <ta-status-pill tone="danger"
+                  ><span i18n="@@store.account.download-revoked"
+                    >أُوقف التنزيل</span
+                  ></ta-status-pill
+                >
+              } @else {
+                <small class="left" i18n="@@store.account.downloads-left"
+                  >تبقّى {{ remaining(d) }} من {{ d.maxDownloads }} تنزيلات</small
+                >
+              }
+            </div>
+            <div class="acts">
+              <button
+                type="button"
+                class="b primary sm"
+                (click)="download(d)"
+                [disabled]="d.revoked || remaining(d) === 0 || busy() === d.grantId"
+                [attr.aria-busy]="busy() === d.grantId"
+              >
+                <ta-icon name="download" [size]="16" /><span i18n="@@store.account.download"
+                  >تنزيل</span
+                ><span class="visually-hidden">{{ title(d) }}</span>
+              </button>
+            </div>
+          </li>
+        }
+      </ul>
+    }
+    @if (b.shipments.length > 0) {
+      <h3 class="subh" i18n="@@store.account.print">الكتب المطبوعة</h3>
+      <ul class="lib">
+        @for (s of b.shipments; track s.orderRef) {
+          <li class="libi ship">
+            <span class="th" aria-hidden="true"><ta-icon name="truck" [size]="26" /></span>
+            <div class="bd">
+              @for (l of s.lines; track $index) {
+                <b
+                  >{{ title(l) }} <bdi>× {{ qty(l.quantity) }}</bdi></b
+                >
+              }
+              <ta-status-pill [tone]="status(s.status).tone">{{
+                status(s.status).label
+              }}</ta-status-pill>
+              <small>
+                <span i18n="@@store.thanks.reference">رقم الطلب</span>
+                <bdi class="mono" dir="ltr">{{ s.orderRef }}</bdi>
+                @if (date(s); as d) {
+                  · {{ d }}
+                }
+              </small>
+              @if (s.trackingNo) {
+                <small class="trk"
+                  >{{ s.carrier }} · <span i18n="@@store.account.tracking">رقم التتبّع</span>
+                  <bdi class="mono" dir="ltr">{{ s.trackingNo }}</bdi></small
+                >
+              }
+            </div>
+          </li>
+        }
+      </ul>
+    }
+  }
+</ta-resource-state>

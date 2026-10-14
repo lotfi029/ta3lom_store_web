@@ -1,0 +1,77 @@
+<div class="tabh"><h2 i18n="@@store.account.tab-orders">الطلبات والفواتير</h2></div>
+<ta-resource-state
+  [loading]="data.orders.isLoading() && !page()"
+  [error]="!!data.orders.error() && !page()"
+  (retry)="data.orders.reload()"
+>
+  @if (items().length === 0) {
+    <div class="acct-empty">
+      <h3 i18n="@@store.account.empty-title">لا شيء هنا بعد</h3>
+      <p i18n="@@store.account.empty-orders">طلباتك وفواتيرها تظهر هنا.</p>
+      <a class="b primary" routerLink="/" i18n="@@store.account.browse">تصفّح المتجر</a>
+    </div>
+  } @else {
+    <div class="tblwrap">
+      <table class="tbl orders">
+        <caption class="visually-hidden" i18n="@@store.account.tab-orders">
+          الطلبات والفواتير
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col" i18n="@@store.thanks.reference">رقم الطلب</th>
+            <th scope="col" i18n="@@store.account.col-date">التاريخ</th>
+            <th scope="col" i18n="@@store.account.col-items">العناصر</th>
+            <th scope="col" i18n="@@store.cart.total">الإجمالي</th>
+            <th scope="col" i18n="@@store.account.col-status">الحالة</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (o of items(); track o.reference) {
+            <tr>
+              <td>
+                <a [routerLink]="['/account/orders', o.reference]"
+                  ><bdi class="mono" dir="ltr">{{ o.reference }}</bdi></a
+                >
+              </td>
+              <td>{{ i18n.formatDate(o.placedAt) }}</td>
+              <td>
+                <bdi>{{ int(o.lineCount) }}</bdi>
+              </td>
+              <td><ta-money [value]="o.grandTotal" /></td>
+              <td>
+                <ta-status-pill [tone]="status(o.status).tone">{{
+                  status(o.status).label
+                }}</ta-status-pill>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    @if (pages() > 1) {
+      <nav class="pager" aria-label="الصفحات" i18n-aria-label="@@store.ui.pagination">
+        <button
+          type="button"
+          class="b ghost sm"
+          (click)="go(data.ordersPage() - 1)"
+          [disabled]="data.ordersPage() <= 1"
+          i18n="@@store.account.prev"
+        >
+          السابق
+        </button>
+        <span
+          ><bdi>{{ data.ordersPage() }} / {{ pages() }}</bdi></span
+        >
+        <button
+          type="button"
+          class="b ghost sm"
+          (click)="go(data.ordersPage() + 1)"
+          [disabled]="data.ordersPage() >= pages()"
+          i18n="@@store.account.next"
+        >
+          التالي
+        </button>
+      </nav>
+    }
+  }
+</ta-resource-state>

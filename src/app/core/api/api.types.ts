@@ -77,4 +77,15 @@ export type StatusPurchase = Schemas['StatusPurchase'];
 export type StatusDocument = Schemas['StatusDocument'];
 
 // Account (#21–#39)
+export type UpdateProfile = Schemas['UpdateProfileRequest'];
+export type LaunchResponse = Schemas['LaunchResponse'];
+export type BooksResponse = Schemas['BooksResponse'];
+export type BookDownload = Schemas['BookDownloadItem'];
+export type BookShipment = Schemas['BookShipmentItem'];
+export type DownloadLink = Schemas['DownloadLinkResponse'];
+export type OrderSummary = Schemas['OrderSummary'];
+export type OrderPage = Schemas['PagedResultOfOrderSummary'];
+export type OrderDetail = Schemas['OrderDetailResponse'];
+export type OrderLine = Schemas['OrderLineResponse'];
+export type OrderDocument = Schemas['OrderDocumentItem'];
 export type Enrolment = Schemas['EnrolmentItem'];

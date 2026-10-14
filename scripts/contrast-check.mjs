@@ -58,6 +58,7 @@ const PAIRS = [
   ['--c-warn-text', '--c-gold-tint', LARGE, 'thanks alert icon on its tint'],
   ['--c-on-brand', '--c-brand-strong', TEXT, 'primary button'],
   ['--c-on-brand', '--c-brand-deep', TEXT, 'deep brand fill'],
+  ['--c-on-brand', '--c-danger-fill', TEXT, 'destructive button (delete account)'],
   ['--c-on-gold', '--c-gold', TEXT, 'CTA button'],
   ['--c-on-inverse', '--c-inverse', TEXT, 'toast, active subnav pill'],
   ['--c-on-dark', '--c-surface-dark', TEXT, 'footer / sidebar text'],

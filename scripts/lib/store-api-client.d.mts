@@ -1,5 +1,6 @@
 // Types for the test-tooling client (used from Playwright TS specs).
 export declare const API_ORIGIN: string;
+export declare const STAFF_FILE: string;
 export declare class Client {
   token: string | null;
   call(method: string, path: string, body?: unknown, headers?: Record<string, string>): Promise<{ status: number; body: any; headers: Headers }>;
