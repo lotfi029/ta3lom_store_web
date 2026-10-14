@@ -482,3 +482,163 @@
   padding-inline: 10px;
   background: var(--c-surface);
 }
+
+/* Account tabs — prototype .lib / .libi / .tbl / empty state. */
+.tabh {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  margin-block: 0 16px;
+}
+
+.tabh h2 {
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.lib {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+@media (width >= 760px) {
+  .lib {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+.libi {
+  display: flex;
+  gap: 14px;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--rc);
+  padding: 14px;
+  align-items: center;
+}
+
+.libi .th {
+  inline-size: 72px;
+  block-size: 56px;
+  border-radius: 10px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  background: var(--c-tint);
+  color: var(--c-accent-strong);
+}
+
+.libi .bd {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+.libi b {
+  font-weight: 500;
+  display: block;
+  line-height: 1.35;
+  font-size: 0.95rem;
+}
+
+.libi small {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--c-muted-2);
+}
+
+.bar {
+  block-size: 6px;
+  margin-block: 8px 4px;
+  border-radius: 999px;
+  background: var(--c-surface-3);
+  overflow: hidden;
+}
+
+.bar > i {
+  display: block;
+  block-size: 100%;
+  background: var(--c-brand);
+}
+
+.tblwrap {
+  overflow-x: auto;
+}
+
+.tbl {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.tbl caption {
+  text-align: start;
+  font-weight: 600;
+  padding-block-end: 8px;
+}
+
+.tbl th {
+  background: var(--c-surface-2);
+  text-align: start;
+  font-weight: 500;
+  font-size: 0.8rem;
+  color: var(--c-muted-2);
+  padding-block: 10px;
+  padding-inline: 14px;
+}
+
+.tbl td {
+  padding-block: 12px;
+  padding-inline: 14px;
+  border-block-start: 1px solid var(--c-border);
+  vertical-align: top;
+}
+
+.acct-empty {
+  text-align: center;
+  padding-block: 40px;
+  padding-inline: 16px;
+  background: var(--c-surface-2);
+  border-radius: var(--rc);
+}
+
+.acct-empty p {
+  color: var(--c-muted-2);
+}
+
+.linkbtn {
+  background: none;
+  border: 0;
+  padding: 0;
+  min-block-size: 44px;
+  font: inherit;
+  color: var(--c-link);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.libi .acts {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: none;
+}
+
+.subh {
+  font-size: 1rem;
+  margin-block: 20px 10px;
+}
+
+.tbl a {
+  color: var(--c-link);
+  font-weight: 500;
+}

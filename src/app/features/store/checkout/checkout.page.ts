@@ -23,6 +23,7 @@ import { StoreAuth } from '../../../core/auth/store-auth';
 import { cartNoticeText } from '../../../core/cart/cart-notice-text';
 import { CartStore } from '../../../core/cart/cart-store';
 import { CartSummary } from '../../../core/cart/cart-summary';
+import { addressLine } from '../../../core/address/address';
 import { valueOf } from '../../../core/http/resource-value';
 import { I18nService } from '../../../core/i18n/i18n';
 import { formatMoney } from '../../../core/money/money-format';
@@ -31,15 +32,10 @@ import { Icon } from '../../../shared/ui/icon/icon';
 import { Money } from '../../../shared/ui/money/money';
 import { ResourceState } from '../../../shared/ui/resource-state/resource-state';
 import { Steps } from '../../../shared/ui/steps/steps';
+import { AddressFields } from '../../../shared/ui/address-fields/address-fields';
 import { OtpSignIn } from '../login/otp-sign-in';
 import { CheckoutData, type LineProblem } from './checkout.data';
-import {
-  PAYMENT_METHODS,
-  type PaymentMethod,
-  checkoutForm,
-  emptyCheckout,
-  normalizeShortAddress,
-} from './checkout.form';
+import { PAYMENT_METHODS, type PaymentMethod, checkoutForm, emptyCheckout } from './checkout.form';
 
 const METHOD_LABELS: Record<PaymentMethod, string> = {
   mada: 'mada',
@@ -56,7 +52,7 @@ const METHOD_LABELS: Record<PaymentMethod, string> = {
  */
 @Component({
   selector: 'ta-checkout-page',
-  imports: [RouterLink, FormField, Icon, Money, ResourceState, Steps, OtpSignIn],
+  imports: [RouterLink, FormField, AddressFields, Icon, Money, ResourceState, Steps, OtpSignIn],
   providers: [CheckoutData],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './checkout.page.html',
@@ -170,15 +166,6 @@ export class CheckoutPage {
           this.model.update((m) => ({ ...m, savedId: def.id }));
       });
     });
-    // Short address shown as it will be stored (upper case, Western digits).
-    effect(() => {
-      const raw = this.model().address.shortAddress;
-      const norm = normalizeShortAddress(raw);
-      if (norm !== raw)
-        untracked(() =>
-          this.model.update((m) => ({ ...m, address: { ...m.address, shortAddress: norm } })),
-        );
-    });
   }
 
   protected title(l: CartLine): string {
@@ -205,7 +192,7 @@ export class CheckoutPage {
   }
 
   protected addressLabel(a: Address): string {
-    return [a.recipientName, a.city, a.district, a.shortAddress].filter(Boolean).join(' · ');
+    return addressLine(a);
   }
 
   protected noticeText(n: CartNotice): string {

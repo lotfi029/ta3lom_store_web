@@ -1,0 +1,97 @@
+.tabh h2 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.back {
+  color: var(--c-link);
+  min-block-size: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+  margin-block-end: 16px;
+  font-size: 0.88rem;
+  color: var(--c-muted-2);
+}
+
+.fmt {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--c-muted-2);
+}
+
+.totals {
+  margin-block: 16px 0;
+  margin-inline: 0;
+  max-inline-size: 360px;
+  margin-inline-start: auto;
+}
+
+.totals div {
+  display: flex;
+  justify-content: space-between;
+  padding-block: 6px;
+  font-size: 0.93rem;
+}
+
+.totals dt {
+  color: var(--c-muted-2);
+}
+
+.totals dd {
+  margin: 0;
+}
+
+.totals .t {
+  border-block-start: 1px solid var(--c-border);
+  margin-block-start: 6px;
+  padding-block-start: 10px;
+  font-weight: 600;
+}
+
+.totals .t dt {
+  color: var(--c-text);
+}
+
+.ship {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.docs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.docs li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: 12px;
+}
+
+.docs li span {
+  flex: 1;
+}
+
+.docs small,
+.muted {
+  color: var(--c-muted-2);
+}

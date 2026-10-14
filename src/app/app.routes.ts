@@ -1,5 +1,10 @@
 import { Routes } from '@angular/router';
-import { cartNotEmptyGuard, guestOnlyGuard, thanksAccessGuard } from './core/guards/guards';
+import {
+  cartNotEmptyGuard,
+  customerGuard,
+  guestOnlyGuard,
+  thanksAccessGuard,
+} from './core/guards/guards';
 import { PublicLayout } from './layout/public-layout/public-layout';
 
 /** Plan §2.2. Every path sits under /{ar,en} (the locale build's base href); there is no /store prefix (ADR-S09). */
@@ -44,6 +49,13 @@ export const routes: Routes = [
         canActivate: [thanksAccessGuard],
         loadComponent: () =>
           import('./features/store/thanks/thanks.page').then((m) => m.ThanksPage),
+      },
+      {
+        path: 'account',
+        canActivate: [customerGuard],
+        loadComponent: () => import('./features/account/account-shell').then((m) => m.AccountShell),
+        loadChildren: () =>
+          import('./features/account/account.routes').then((m) => m.ACCOUNT_ROUTES),
       },
       {
         path: 'login',

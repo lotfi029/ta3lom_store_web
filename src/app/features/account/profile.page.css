@@ -1,0 +1,152 @@
+.card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--rc);
+  padding: 20px;
+  margin-block-end: 20px;
+}
+
+.card h3 {
+  font-size: 1.05rem;
+  margin-block: 0 14px;
+}
+
+.cardh {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-block-end: 10px;
+}
+
+.cardh h3 {
+  margin: 0;
+}
+
+.pform,
+.addr-form {
+  display: grid;
+  gap: 16px;
+}
+
+.addr-form {
+  margin-block-start: 16px;
+  padding-block-start: 16px;
+  border-block-start: 1px solid var(--c-border);
+}
+
+.addr-form h4 {
+  margin: 0;
+  font-size: 0.98rem;
+}
+
+.langs {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+}
+
+.langs legend {
+  font-weight: 500;
+  font-size: 0.9rem;
+  margin-block-end: 6px;
+}
+
+.chk {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-block-size: 44px;
+  font-size: 0.92rem;
+  cursor: pointer;
+}
+
+.chk input {
+  inline-size: 18px;
+  block-size: 18px;
+  margin: 0;
+  accent-color: var(--c-brand);
+}
+
+.addrs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.addrs li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 16px;
+  align-items: center;
+  padding-block: 10px;
+  padding-inline: 14px;
+  border: 1px solid var(--c-border);
+  border-radius: 12px;
+}
+
+.addrs .bd {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  font-size: 0.92rem;
+}
+
+.addrs .acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 14px;
+}
+
+.linkbtn.danger {
+  color: var(--c-danger);
+}
+
+.formacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.rights {
+  display: grid;
+  gap: 18px;
+}
+
+.rights p {
+  margin-block: 0 8px;
+  color: var(--c-text-2);
+  font-size: 0.92rem;
+}
+
+.b.danger {
+  background: var(--c-danger-fill);
+  color: var(--c-on-brand);
+}
+
+.muted {
+  color: var(--c-muted-2);
+}
+
+.del {
+  display: grid;
+  gap: 14px;
+  padding: 22px;
+  max-inline-size: 460px;
+}
+
+.del h3 {
+  margin: 0;
+}
+
+.del p {
+  margin: 0;
+  color: var(--c-text-2);
+}

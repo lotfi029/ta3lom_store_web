@@ -3,3 +3,6 @@ docs
 src/app/core/api/store-api.types.ts
 src/app/prerender-manifest.ts
 src/locales
+src/index.html
+src/styles/base.css
+src/styles/fonts.css
