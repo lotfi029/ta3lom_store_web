@@ -137,9 +137,20 @@
                 }
               </ul>
             </section>
-            <a class="b ghost sm" routerLink="/courses" i18n="@@store.cart.continue"
-              >متابعة التسوق</a
-            >
+            <div class="cfoot">
+              <a class="b ghost sm" routerLink="/courses" i18n="@@store.cart.continue"
+                >متابعة التسوق</a
+              >
+              <button
+                type="button"
+                class="rm"
+                (click)="clearAll()"
+                [disabled]="cart.pending() > 0"
+                i18n="@@store.cart.clear"
+              >
+                إفراغ السلة
+              </button>
+            </div>
           </div>
 
           <aside class="sumbox" aria-labelledby="sum-h">

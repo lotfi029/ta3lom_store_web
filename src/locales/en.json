@@ -711,5 +711,6 @@
   "store.admin.threshold": "Alert threshold",
   "store.admin.low": "Low",
   "store.admin.movements": "Movements",
-  "store.admin.reason-sale": "Sale"
+  "store.admin.reason-sale": "Sale",
+  "store.cart.clear": "Empty the cart"
 }

@@ -29,7 +29,7 @@
     "api:up": "bash scripts/api-up.sh",
     "api:seed": "bash scripts/api-seed-e2e.sh",
     "lhci": "lhci autorun",
-    "screenshots": "node scripts/screenshots.mjs"
+    "screenshots": "playwright test --config scripts/playwright.screenshots.config.ts"
   },
   "dependencies": {
     "@angular/aria": "^22.2.0",

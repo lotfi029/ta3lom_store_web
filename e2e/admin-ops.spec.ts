@@ -24,6 +24,12 @@ for (const locale of ['ar', 'en'] as const) {
       const ref = await buy(c, [{ slug: 'science-stars-book', format: 'print' }]);
       await staffSignIn(page, locale, 'fulfilment', '/admin/shipments');
       const card = page.locator('.ships > li', { hasText: ref });
+      await expect(page.locator('.ships > li').first()).toBeVisible();
+      // The queue is oldest first and paged: move on until this order's shipment shows.
+      for (let i = 0; i < 20 && !(await card.isVisible()); i++) {
+        await page.getByRole('button', { name: t('التالي', 'Next') }).click();
+        await page.waitForTimeout(300);
+      }
       await expect(card).toBeVisible();
       await expectNoA11yViolations(page, `/${locale}/admin/shipments`);
       const slip = page.waitForEvent('download');
@@ -43,6 +49,11 @@ for (const locale of ['ar', 'en'] as const) {
 
       await page.getByRole('button', { name: t('تم الشحن', 'Shipped') }).click();
       const shipped = page.locator('.ships > li', { hasText: ref });
+      await expect(page.locator('.ships > li').first()).toBeVisible();
+      for (let i = 0; i < 20 && !(await shipped.isVisible()); i++) {
+        await page.getByRole('button', { name: t('التالي', 'Next') }).click();
+        await page.waitForTimeout(300);
+      }
       await expect(shipped).toContainText('SA123456789');
       await shipped
         .getByRole('button', { name: new RegExp(t('تأكيد التسليم', 'Confirm delivery')) })
@@ -52,7 +63,13 @@ for (const locale of ['ar', 'en'] as const) {
         .getByRole('button', { name: t('تأكيد', 'Confirm') })
         .click();
       await page.getByRole('button', { name: t('تم التسليم', 'Delivered') }).click();
-      await expect(page.locator('.ships > li', { hasText: ref })).toBeVisible();
+      const delivered = page.locator('.ships > li', { hasText: ref });
+      await expect(page.locator('.ships > li').first()).toBeVisible();
+      for (let i = 0; i < 20 && !(await delivered.isVisible()); i++) {
+        await page.getByRole('button', { name: t('التالي', 'Next') }).click();
+        await page.waitForTimeout(300);
+      }
+      await expect(delivered).toBeVisible();
     });
 
     test('finance cancels an unpaid order; store manager sees Cancel disabled with its reason (#85–#87, RUL-29/62)', async ({

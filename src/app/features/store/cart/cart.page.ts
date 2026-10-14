@@ -93,6 +93,12 @@ export class CartPage {
     );
   }
 
+  protected clearAll(): void {
+    for (const t of this.timers.values()) clearTimeout(t);
+    this.timers.clear();
+    void this.cart.clear();
+  }
+
   protected remove(l: CartLine): void {
     clearTimeout(this.timers.get(l.id));
     void this.cart.remove(l.id);

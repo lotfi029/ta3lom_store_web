@@ -56,6 +56,18 @@ for (const locale of ['ar', 'en'] as const) {
       await expectNoA11yViolations(page, `/${locale}/cart empty`);
     });
 
+    test('empty the cart in one go (#15)', async ({ page }) => {
+      await page.goto(`/${locale}/p/letters-tales`);
+      await page.locator('ta-buy-box .acts .b.primary').click();
+      await expect(page.locator('a.cartbtn .n')).toHaveText('1');
+      await page.goto(`/${locale}/cart`);
+      await page.getByRole('button', { name: t('إفراغ السلة', 'Empty the cart') }).click();
+      await expect(page.locator('.empty')).toBeVisible();
+      await expect(page.locator('a.cartbtn .n')).toHaveCount(0);
+      await page.reload();
+      await expect(page.locator('.empty')).toBeVisible();
+    });
+
     test('the same course twice is refused with a link to the cart (RUL-13)', async ({ page }) => {
       await page.goto(`/${locale}/p/smart-study`);
       await page.locator('ta-buy-box .acts .b.primary').click();

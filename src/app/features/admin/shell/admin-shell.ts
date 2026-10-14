@@ -27,6 +27,11 @@ export class AdminShell {
   protected readonly roles = computed(() => this.auth.roles().map(roleLabel).join('، '));
   protected readonly menuOpen = signal(false);
 
+  constructor() {
+    // Roles may have changed since the session started (an admin edited them): read the profile once per visit.
+    void this.auth.refreshMe();
+  }
+
   protected async signOut(): Promise<void> {
     try {
       await this.auth.logout();

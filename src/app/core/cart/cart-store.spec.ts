@@ -234,6 +234,18 @@ describe('CartStore (plan §6)', () => {
     expect(store.lines().map((l) => l.id)).toEqual(['b']);
   });
 
+  it('clear() empties the cart with DELETE /cart and resets the badge (#15)', async () => {
+    const summary = TestBed.inject(CartSummary);
+    const done = store.clear();
+    expect(store.lines()).toEqual([]);
+    const req = http.expectOne((r) => r.method === 'DELETE' && r.url === `${API}/cart`);
+    req.flush(null, { status: 204, statusText: 'No Content' });
+    expect(await done).toBe(true);
+    expect(summary.count()).toBe(0);
+    TestBed.tick();
+    http.match(`${API}/cart`).forEach((r) => r.flush(cart([])));
+  });
+
   it('estimates totals in halalas during an edit (shipping only with print)', async () => {
     void store.setQuantity('a', 3);
     await tick();

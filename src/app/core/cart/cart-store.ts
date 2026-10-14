@@ -213,6 +213,26 @@ export class CartStore {
     );
   }
 
+  /** #15: empties the cart (204, no body); the view clears at once and the cart reloads. */
+  async clear(): Promise<boolean> {
+    const before = this.lines();
+    this.lines.set([]);
+    this.pending.update((n) => n + 1);
+    try {
+      await firstValueFrom(this.http.delete(`${this.api}/cart`));
+      this.summary.set({ lineCount: 0, grandTotal: '0.00' });
+      this.lastProblem.set(null);
+      this.load();
+      return true;
+    } catch (e) {
+      this.lines.set(before);
+      this.lastProblem.set(toProblem(e));
+      return false;
+    } finally {
+      this.pending.update((n) => n - 1);
+    }
+  }
+
   /** Reprices the current cart without writing (#40); failures are silent — checkout reprices again anyway. */
   async checkPrices(): Promise<void> {
     const cart = this.server();
