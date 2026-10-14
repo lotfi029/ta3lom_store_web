@@ -51,3 +51,16 @@ export async function printAvailable(slug: string): Promise<number> {
   const rows = await fulfilment.call('GET', '/v1/admin/stock');
   return rows.body.find((r: { formatId: string }) => r.formatId === format.id).available;
 }
+
+/** Archives the e2e products these tests publish, so the shared catalogue stays as seeded. */
+export async function archiveBySlug(slug: string): Promise<void> {
+  const manager = await staff('store_manager');
+  const list = await manager.call(
+    'GET',
+    `/v1/admin/products?q=${encodeURIComponent(slug)}&pageSize=10`,
+  );
+  for (const p of list.body?.items ?? []) {
+    if (p.slug === slug && p.status !== 'archived')
+      await manager.call('POST', `/v1/admin/products/${p.id}/archive`);
+  }
+}

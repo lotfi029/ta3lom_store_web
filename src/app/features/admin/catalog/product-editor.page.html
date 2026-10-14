@@ -1,0 +1,958 @@
+<div class="ahead">
+  <div>
+    <p class="back">
+      <a routerLink="/admin/products" i18n="@@store.admin.all-products">كل المنتجات</a>
+    </p>
+    <h1>
+      @if (isNew()) {
+        @if (general().type === 'book') {
+          <span i18n="@@store.admin.new-book">كتاب جديد</span>
+        } @else {
+          <span i18n="@@store.admin.new-course">دورة جديدة</span>
+        }
+      } @else {
+        {{ general().titleAr || product()?.titleAr }}
+      }
+    </h1>
+    @if (product(); as p) {
+      <p class="meta">
+        <span>{{ typeLabel(p.type) }}</span>
+        <ta-status-pill [tone]="status(p.status).tone">{{ status(p.status).label }}</ta-status-pill>
+        <bdi dir="ltr" class="mono">{{ p.slug }}</bdi>
+      </p>
+    }
+  </div>
+  @if (product(); as p) {
+    <div class="act">
+      <div class="rowacts">
+        <button type="button" class="btn" (click)="showPreview()" i18n="@@store.admin.preview">
+          معاينة
+        </button>
+        @if (p.status !== 'published') {
+          <button
+            type="button"
+            class="btn primary"
+            (click)="ask('publish')"
+            [disabled]="!canEdit()"
+            aria-describedby="pe-why"
+            i18n="@@store.admin.publish"
+          >
+            نشر
+          </button>
+        }
+        @if (p.status === 'published') {
+          <button
+            type="button"
+            class="btn"
+            (click)="ask('archive')"
+            [disabled]="!canEdit()"
+            aria-describedby="pe-why"
+            i18n="@@store.admin.archive"
+          >
+            أرشفة
+          </button>
+        }
+      </div>
+      <ta-requires id="pe-why" policy="staff:catalogue" />
+    </div>
+  }
+</div>
+
+@if (loadProblem(); as lp) {
+  <p class="err" role="alert">
+    <span i18n="@@store.error.catalog-product-not-found">هذا المنتج غير متاح.</span>
+  </p>
+} @else {
+  <p class="notice">{{ notice() }}</p>
+  @if (errors()['status']; as e) {
+    <div class="err-box" role="alert">
+      <p class="err">{{ e }}</p>
+      @if (missing().length > 0) {
+        <ul>
+          @for (m of missing(); track m) {
+            <li>
+              <bdi dir="ltr" class="mono">{{ m }}</bdi>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  }
+  @if (preview(); as card) {
+    <section class="panel prevbox" aria-labelledby="pe-prev-h">
+      <h2 id="pe-prev-h" i18n="@@store.admin.preview-title">كما يظهر في المتجر</h2>
+      <div class="card"><ta-product-card [product]="card" [headingLevel]="3" /></div>
+    </section>
+  }
+
+  <form class="panel" (submit)="saveGeneral($event)" novalidate aria-labelledby="pe-gen-h">
+    <h2 id="pe-gen-h" i18n="@@store.admin.general">البيانات الأساسية</h2>
+    <fieldset [disabled]="!canEdit()">
+      <legend class="visually-hidden" i18n="@@store.admin.general">البيانات الأساسية</legend>
+      <div class="grid2">
+        <div class="field">
+          <label for="pe-type" i18n="@@store.admin.type">النوع</label>
+          @if (product()?.typeLocked) {
+            <p class="ro">
+              {{ typeLabel(general().type) }}
+              <small class="muted" i18n="@@store.admin.type-locked"
+                >لا يتغير النوع بعد أول طلب.</small
+              >
+            </p>
+          } @else {
+            <select id="pe-type" (change)="setSelect('type', $event)">
+              <option
+                value="course"
+                [selected]="general().type === 'course'"
+                i18n="@@store.admin.type-course"
+              >
+                دورة
+              </option>
+              <option
+                value="book"
+                [selected]="general().type === 'book'"
+                i18n="@@store.admin.type-book"
+              >
+                كتاب
+              </option>
+            </select>
+          }
+        </div>
+        <div class="field">
+          <label for="pe-slug">Slug</label>
+          <input
+            id="pe-slug"
+            dir="ltr"
+            [formField]="gf.slug"
+            [attr.aria-invalid]="gf.slug().touched() && gf.slug().invalid()"
+            aria-describedby="pe-slug-err"
+          />
+          <ul id="pe-slug-err" class="field-errors">
+            @if (gf.slug().touched()) {
+              @for (x of gf.slug().errors(); track x.kind) {
+                <li>{{ x.message }}</li>
+              }
+            }
+          </ul>
+        </div>
+        <div class="field">
+          <label for="pe-title-ar" i18n="@@store.admin.title-ar">العنوان بالعربية</label>
+          <input
+            id="pe-title-ar"
+            [formField]="gf.titleAr"
+            [attr.aria-invalid]="gf.titleAr().touched() && gf.titleAr().invalid()"
+            aria-describedby="pe-title-ar-err"
+          />
+          <ul id="pe-title-ar-err" class="field-errors">
+            @if (gf.titleAr().touched()) {
+              @for (x of gf.titleAr().errors(); track x.kind) {
+                <li>{{ x.message }}</li>
+              }
+            }
+          </ul>
+        </div>
+        <div class="field">
+          <label for="pe-title-en" i18n="@@store.admin.title-en">العنوان بالإنجليزية</label>
+          <input id="pe-title-en" dir="ltr" [formField]="gf.titleEn" />
+        </div>
+        <div class="field">
+          <label for="pe-sum-ar" i18n="@@store.admin.summary-ar">الملخص بالعربية</label>
+          <textarea
+            id="pe-sum-ar"
+            rows="3"
+            [formField]="gf.summaryAr"
+            [attr.aria-invalid]="gf.summaryAr().touched() && gf.summaryAr().invalid()"
+            aria-describedby="pe-sum-ar-err"
+          ></textarea>
+          <ul id="pe-sum-ar-err" class="field-errors">
+            @if (gf.summaryAr().touched()) {
+              @for (x of gf.summaryAr().errors(); track x.kind) {
+                <li>{{ x.message }}</li>
+              }
+            }
+          </ul>
+        </div>
+        <div class="field">
+          <label for="pe-sum-en" i18n="@@store.admin.summary-en">الملخص بالإنجليزية</label>
+          <textarea id="pe-sum-en" rows="3" dir="ltr" [formField]="gf.summaryEn"></textarea>
+        </div>
+        <div class="field">
+          <label for="pe-body-ar" i18n="@@store.admin.body-ar">الوصف بالعربية</label>
+          <textarea id="pe-body-ar" rows="6" [formField]="gf.bodyAr"></textarea>
+        </div>
+        <div class="field">
+          <label for="pe-body-en" i18n="@@store.admin.body-en">الوصف بالإنجليزية</label>
+          <textarea id="pe-body-en" rows="6" dir="ltr" [formField]="gf.bodyEn"></textarea>
+        </div>
+        <div class="field">
+          <label for="pe-cat" i18n="@@store.admin.category">التصنيف</label>
+          <select id="pe-cat" (change)="setSelect('categoryId', $event)">
+            <option value="" [selected]="general().categoryId === ''" i18n="@@store.admin.none">
+              بلا
+            </option>
+            @for (c of categories(); track c.id) {
+              <option [value]="c.id" [selected]="general().categoryId === c.id">
+                {{ i18n.pick(c.nameAr, c.nameEn) }}
+              </option>
+            }
+          </select>
+        </div>
+        <div class="field">
+          <label for="pe-badge" i18n="@@store.admin.badge">الشارة</label>
+          <select id="pe-badge" (change)="setSelect('badge', $event)">
+            <option value="" [selected]="general().badge === ''" i18n="@@store.admin.none">
+              بلا
+            </option>
+            <option
+              value="best"
+              [selected]="general().badge === 'best'"
+              i18n="@@store.card.badge-best"
+            >
+              الأكثر طلبًا
+            </option>
+            <option
+              value="new"
+              [selected]="general().badge === 'new'"
+              i18n="@@store.card.badge-new"
+            >
+              جديد
+            </option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="pe-sort" i18n="@@store.admin.col-sort">الترتيب</label>
+          <input
+            id="pe-sort"
+            inputmode="numeric"
+            dir="ltr"
+            [formField]="gf.sort"
+            [attr.aria-invalid]="gf.sort().touched() && gf.sort().invalid()"
+            aria-describedby="pe-sort-err"
+          />
+          <ul id="pe-sort-err" class="field-errors">
+            @if (gf.sort().touched()) {
+              @for (x of gf.sort().errors(); track x.kind) {
+                <li>{{ x.message }}</li>
+              }
+            }
+          </ul>
+        </div>
+        <div class="field">
+          <span class="lbl" id="pe-cover-l" i18n="@@store.admin.cover">صورة الغلاف</span>
+          <div class="cover" aria-labelledby="pe-cover-l">
+            @if (cover(); as c) {
+              <img
+                [src]="c.url"
+                [alt]="i18n.pick(c.altAr ?? '', c.altEn)"
+                width="120"
+                height="80"
+              />
+            } @else if (general().coverAssetId) {
+              <span class="muted" i18n="@@store.admin.cover-set">محددة</span>
+            } @else {
+              <span class="muted" i18n="@@store.admin.cover-none">لا صورة</span>
+            }
+            <button
+              type="button"
+              class="btn sm"
+              (click)="pickerOpen.set(true)"
+              i18n="@@store.admin.choose-cover"
+            >
+              اختيار صورة الغلاف
+            </button>
+            @if (general().coverAssetId) {
+              <button
+                type="button"
+                class="btn sm"
+                (click)="clearCover()"
+                i18n="@@store.admin.remove-cover"
+              >
+                إزالة
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+      <details class="seo">
+        <summary i18n="@@store.admin.seo">نصوص محركات البحث (اختياري)</summary>
+        <div class="grid2">
+          <div class="field">
+            <label for="pe-seo-ta" i18n="@@store.admin.seo-title-ar">عنوان البحث بالعربية</label>
+            <input id="pe-seo-ta" [formField]="gf.seoTitleAr" />
+          </div>
+          <div class="field">
+            <label for="pe-seo-te" i18n="@@store.admin.seo-title-en">عنوان البحث بالإنجليزية</label>
+            <input id="pe-seo-te" dir="ltr" [formField]="gf.seoTitleEn" />
+          </div>
+          <div class="field">
+            <label for="pe-seo-da" i18n="@@store.admin.seo-desc-ar">وصف البحث بالعربية</label>
+            <textarea id="pe-seo-da" rows="2" [formField]="gf.seoDescAr"></textarea>
+          </div>
+          <div class="field">
+            <label for="pe-seo-de" i18n="@@store.admin.seo-desc-en">وصف البحث بالإنجليزية</label>
+            <textarea id="pe-seo-de" rows="2" dir="ltr" [formField]="gf.seoDescEn"></textarea>
+          </div>
+        </div>
+      </details>
+      @if (errors()['general']; as e) {
+        <p class="err" role="alert">{{ e }}</p>
+      }
+      <div>
+        <button
+          type="submit"
+          class="btn primary"
+          [disabled]="busy() === 'general'"
+          [attr.aria-busy]="busy() === 'general'"
+          i18n="@@store.account.save"
+        >
+          حفظ
+        </button>
+      </div>
+    </fieldset>
+  </form>
+
+  @if (product(); as p) {
+    @if (general().type === 'course') {
+      <form class="panel" (submit)="saveCourse($event)" novalidate aria-labelledby="pe-course-h">
+        <h2 id="pe-course-h" i18n="@@store.admin.course-details">تفاصيل الدورة</h2>
+        <fieldset [disabled]="!canEdit()">
+          <legend class="visually-hidden" i18n="@@store.admin.course-details">تفاصيل الدورة</legend>
+          <div class="grid2">
+            @for (
+              fld of [
+                { k: 'price', id: 'pe-price' },
+                { k: 'compareAtPrice', id: 'pe-compare' },
+                { k: 'lessons', id: 'pe-lessons' },
+                { k: 'durationMinutes', id: 'pe-minutes' },
+                { k: 'accessDays', id: 'pe-access' },
+                { k: 'learnerCount', id: 'pe-learners' },
+              ];
+              track fld.k
+            ) {
+              <div class="field">
+                <label [for]="fld.id">
+                  @switch (fld.k) {
+                    @case ('price') {
+                      <span i18n="@@store.admin.price">السعر (ر.س)</span>
+                    }
+                    @case ('compareAtPrice') {
+                      <span i18n="@@store.admin.compare-at">السعر قبل الخصم (اختياري)</span>
+                    }
+                    @case ('lessons') {
+                      <span i18n="@@store.admin.lessons">عدد الدروس</span>
+                    }
+                    @case ('durationMinutes') {
+                      <span i18n="@@store.admin.duration">المدة (دقائق)</span>
+                    }
+                    @case ('accessDays') {
+                      <span i18n="@@store.admin.access-days">مدة الوصول بالأيام (فارغ = دائم)</span>
+                    }
+                    @default {
+                      <span i18n="@@store.admin.learners">عدد المتعلمين المعروض</span>
+                    }
+                  }
+                </label>
+                @switch (fld.k) {
+                  @case ('price') {
+                    <input
+                      [id]="fld.id"
+                      inputmode="decimal"
+                      dir="ltr"
+                      [formField]="cf.price"
+                      [attr.aria-invalid]="cf.price().touched() && cf.price().invalid()"
+                      [attr.aria-describedby]="fld.id + '-err'"
+                    />
+                  }
+                  @case ('compareAtPrice') {
+                    <input
+                      [id]="fld.id"
+                      inputmode="decimal"
+                      dir="ltr"
+                      [formField]="cf.compareAtPrice"
+                      [attr.aria-invalid]="
+                        cf.compareAtPrice().touched() && cf.compareAtPrice().invalid()
+                      "
+                      [attr.aria-describedby]="fld.id + '-err'"
+                    />
+                  }
+                  @case ('lessons') {
+                    <input
+                      [id]="fld.id"
+                      inputmode="numeric"
+                      dir="ltr"
+                      [formField]="cf.lessons"
+                      [attr.aria-invalid]="cf.lessons().touched() && cf.lessons().invalid()"
+                      [attr.aria-describedby]="fld.id + '-err'"
+                    />
+                  }
+                  @case ('durationMinutes') {
+                    <input
+                      [id]="fld.id"
+                      inputmode="numeric"
+                      dir="ltr"
+                      [formField]="cf.durationMinutes"
+                      [attr.aria-invalid]="
+                        cf.durationMinutes().touched() && cf.durationMinutes().invalid()
+                      "
+                      [attr.aria-describedby]="fld.id + '-err'"
+                    />
+                  }
+                  @case ('accessDays') {
+                    <input
+                      [id]="fld.id"
+                      inputmode="numeric"
+                      dir="ltr"
+                      [formField]="cf.accessDays"
+                      [attr.aria-invalid]="cf.accessDays().touched() && cf.accessDays().invalid()"
+                      [attr.aria-describedby]="fld.id + '-err'"
+                    />
+                  }
+                  @default {
+                    <input
+                      [id]="fld.id"
+                      inputmode="numeric"
+                      dir="ltr"
+                      [formField]="cf.learnerCount"
+                      [attr.aria-invalid]="
+                        cf.learnerCount().touched() && cf.learnerCount().invalid()
+                      "
+                      [attr.aria-describedby]="fld.id + '-err'"
+                    />
+                  }
+                }
+                <ul [id]="fld.id + '-err'" class="field-errors">
+                  @switch (fld.k) {
+                    @case ('price') {
+                      @if (cf.price().touched()) {
+                        @for (x of cf.price().errors(); track x.kind) {
+                          <li>{{ x.message }}</li>
+                        }
+                      }
+                    }
+                    @case ('compareAtPrice') {
+                      @if (cf.compareAtPrice().touched()) {
+                        @for (x of cf.compareAtPrice().errors(); track x.kind) {
+                          <li>{{ x.message }}</li>
+                        }
+                      }
+                    }
+                    @case ('lessons') {
+                      @if (cf.lessons().touched()) {
+                        @for (x of cf.lessons().errors(); track x.kind) {
+                          <li>{{ x.message }}</li>
+                        }
+                      }
+                    }
+                    @case ('durationMinutes') {
+                      @if (cf.durationMinutes().touched()) {
+                        @for (x of cf.durationMinutes().errors(); track x.kind) {
+                          <li>{{ x.message }}</li>
+                        }
+                      }
+                    }
+                    @case ('accessDays') {
+                      @if (cf.accessDays().touched()) {
+                        @for (x of cf.accessDays().errors(); track x.kind) {
+                          <li>{{ x.message }}</li>
+                        }
+                      }
+                    }
+                    @default {
+                      @if (cf.learnerCount().touched()) {
+                        @for (x of cf.learnerCount().errors(); track x.kind) {
+                          <li>{{ x.message }}</li>
+                        }
+                      }
+                    }
+                  }
+                </ul>
+              </div>
+            }
+            <div class="field">
+              <label for="pe-instr-ar" i18n="@@store.admin.instructor-ar">المدرّب بالعربية</label>
+              <input
+                id="pe-instr-ar"
+                [formField]="cf.instructorAr"
+                [attr.aria-invalid]="cf.instructorAr().touched() && cf.instructorAr().invalid()"
+                aria-describedby="pe-instr-ar-err"
+              />
+              <ul id="pe-instr-ar-err" class="field-errors">
+                @if (cf.instructorAr().touched()) {
+                  @for (x of cf.instructorAr().errors(); track x.kind) {
+                    <li>{{ x.message }}</li>
+                  }
+                }
+              </ul>
+            </div>
+            <div class="field">
+              <label for="pe-instr-en" i18n="@@store.admin.instructor-en"
+                >المدرّب بالإنجليزية</label
+              >
+              <input id="pe-instr-en" dir="ltr" [formField]="cf.instructorEn" />
+            </div>
+            <div class="field">
+              <label for="pe-level-ar" i18n="@@store.admin.level-ar">المستوى بالعربية</label>
+              <input id="pe-level-ar" [formField]="cf.levelAr" />
+            </div>
+            <div class="field">
+              <label for="pe-level-en" i18n="@@store.admin.level-en">المستوى بالإنجليزية</label>
+              <input id="pe-level-en" dir="ltr" [formField]="cf.levelEn" />
+            </div>
+            <div class="field">
+              <label for="pe-lms" i18n="@@store.admin.lms-ref">معرّف الدورة في منصة التعلم</label>
+              <input id="pe-lms" dir="ltr" [formField]="cf.lmsCourseRef" />
+            </div>
+          </div>
+          @if (errors()['course']; as e) {
+            <p class="err" role="alert">{{ e }}</p>
+          }
+          <div>
+            <button
+              type="submit"
+              class="btn primary"
+              [disabled]="busy() === 'course'"
+              [attr.aria-busy]="busy() === 'course'"
+              i18n="@@store.account.save"
+            >
+              حفظ
+            </button>
+          </div>
+        </fieldset>
+      </form>
+
+      <section class="panel" aria-labelledby="pe-mod-h">
+        <h2 id="pe-mod-h" i18n="@@store.admin.curriculum">المنهج</h2>
+        <fieldset [disabled]="!canEdit()">
+          <legend class="visually-hidden" i18n="@@store.admin.curriculum">المنهج</legend>
+          <ol class="mods">
+            @for (
+              m of modules();
+              track m.id;
+              let i = $index;
+              let first = $first;
+              let last = $last
+            ) {
+              <li>
+                <span class="n" aria-hidden="true">{{ i + 1 }}</span>
+                <div class="field">
+                  <label [for]="'mod-ar-' + i" i18n="@@store.admin.module-title-ar"
+                    >عنوان الوحدة بالعربية</label
+                  >
+                  <input
+                    [id]="'mod-ar-' + i"
+                    [value]="m.titleAr"
+                    (input)="setModule(i, 'titleAr', $event)"
+                  />
+                </div>
+                <div class="field">
+                  <label [for]="'mod-en-' + i" i18n="@@store.admin.module-title-en"
+                    >بالإنجليزية</label
+                  >
+                  <input
+                    [id]="'mod-en-' + i"
+                    dir="ltr"
+                    [value]="m.titleEn"
+                    (input)="setModule(i, 'titleEn', $event)"
+                  />
+                </div>
+                <div class="field min">
+                  <label [for]="'mod-min-' + i" i18n="@@store.admin.minutes">دقائق</label>
+                  <input
+                    [id]="'mod-min-' + i"
+                    inputmode="numeric"
+                    dir="ltr"
+                    [value]="m.minutes"
+                    (input)="setModule(i, 'minutes', $event)"
+                  />
+                </div>
+                <div class="rowacts">
+                  <button
+                    type="button"
+                    class="btn sm"
+                    [id]="'mod-' + i + '-up'"
+                    (click)="moveModule(i, -1)"
+                    [disabled]="first"
+                  >
+                    <span aria-hidden="true">↑</span
+                    ><span class="visually-hidden" i18n="@@store.ui.move-up">نقل للأعلى</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn sm"
+                    [id]="'mod-' + i + '-down'"
+                    (click)="moveModule(i, 1)"
+                    [disabled]="last"
+                  >
+                    <span aria-hidden="true">↓</span
+                    ><span class="visually-hidden" i18n="@@store.ui.move-down">نقل للأسفل</span>
+                  </button>
+                  <button type="button" class="btn sm" (click)="removeModule(i)">
+                    <span i18n="@@store.cart.remove">حذف</span
+                    ><span class="visually-hidden"> {{ i + 1 }}</span>
+                  </button>
+                </div>
+              </li>
+            }
+          </ol>
+          @if (errors()['modules']; as e) {
+            <p class="err" role="alert">{{ e }}</p>
+          }
+          <div class="rowacts">
+            <button type="button" class="btn" (click)="addModule()" i18n="@@store.admin.add-module">
+              إضافة وحدة
+            </button>
+            <button
+              type="button"
+              class="btn primary"
+              (click)="saveModules()"
+              [disabled]="busy() === 'modules'"
+              [attr.aria-busy]="busy() === 'modules'"
+              i18n="@@store.admin.save-curriculum"
+            >
+              حفظ المنهج
+            </button>
+          </div>
+        </fieldset>
+      </section>
+    } @else {
+      <form class="panel" (submit)="saveBook($event)" novalidate aria-labelledby="pe-book-h">
+        <h2 id="pe-book-h" i18n="@@store.admin.book-details">تفاصيل الكتاب</h2>
+        <fieldset [disabled]="!canEdit()">
+          <legend class="visually-hidden" i18n="@@store.admin.book-details">تفاصيل الكتاب</legend>
+          <div class="grid2">
+            <div class="field">
+              <label for="pe-author-ar" i18n="@@store.admin.author-ar">المؤلف بالعربية</label>
+              <input
+                id="pe-author-ar"
+                [formField]="bf.authorAr"
+                [attr.aria-invalid]="bf.authorAr().touched() && bf.authorAr().invalid()"
+                aria-describedby="pe-author-ar-err"
+              />
+              <ul id="pe-author-ar-err" class="field-errors">
+                @if (bf.authorAr().touched()) {
+                  @for (x of bf.authorAr().errors(); track x.kind) {
+                    <li>{{ x.message }}</li>
+                  }
+                }
+              </ul>
+            </div>
+            <div class="field">
+              <label for="pe-author-en" i18n="@@store.admin.author-en">المؤلف بالإنجليزية</label>
+              <input id="pe-author-en" dir="ltr" [formField]="bf.authorEn" />
+            </div>
+            <div class="field">
+              <label for="pe-pages" i18n="@@store.admin.pages">عدد الصفحات</label>
+              <input
+                id="pe-pages"
+                inputmode="numeric"
+                dir="ltr"
+                [formField]="bf.pages"
+                [attr.aria-invalid]="bf.pages().touched() && bf.pages().invalid()"
+                aria-describedby="pe-pages-err"
+              />
+              <ul id="pe-pages-err" class="field-errors">
+                @if (bf.pages().touched()) {
+                  @for (x of bf.pages().errors(); track x.kind) {
+                    <li>{{ x.message }}</li>
+                  }
+                }
+              </ul>
+            </div>
+            <div class="field">
+              <label for="pe-isbn">ISBN</label>
+              <input id="pe-isbn" dir="ltr" [formField]="bf.isbn" />
+            </div>
+            <div class="field">
+              <label for="pe-year" i18n="@@store.admin.published-year">سنة النشر</label>
+              <input
+                id="pe-year"
+                inputmode="numeric"
+                dir="ltr"
+                [formField]="bf.publishedYear"
+                [attr.aria-invalid]="bf.publishedYear().touched() && bf.publishedYear().invalid()"
+                aria-describedby="pe-year-err"
+              />
+              <ul id="pe-year-err" class="field-errors">
+                @if (bf.publishedYear().touched()) {
+                  @for (x of bf.publishedYear().errors(); track x.kind) {
+                    <li>{{ x.message }}</li>
+                  }
+                }
+              </ul>
+            </div>
+          </div>
+          @if (errors()['book']; as e) {
+            <p class="err" role="alert">{{ e }}</p>
+          }
+          <div>
+            <button
+              type="submit"
+              class="btn primary"
+              [disabled]="busy() === 'book'"
+              [attr.aria-busy]="busy() === 'book'"
+              i18n="@@store.account.save"
+            >
+              حفظ
+            </button>
+          </div>
+        </fieldset>
+      </form>
+
+      <section class="panel" aria-labelledby="pe-fmt-h">
+        <h2 id="pe-fmt-h" i18n="@@store.admin.formats">النسخ</h2>
+        @for (f of formats(); track fkey(f); let i = $index) {
+          <div class="fmt">
+            <h3>
+              @if (f.kind === 'print') {
+                <span i18n="@@store.card.format-print">نسخة مطبوعة</span>
+              } @else {
+                <span i18n="@@store.card.format-digital">نسخة رقمية PDF</span>
+              }
+            </h3>
+            <fieldset [disabled]="!canEdit()">
+              <legend class="visually-hidden">{{ f.kind }}</legend>
+              <div class="grid2">
+                <div class="field">
+                  <label [for]="'f-sku-' + i">SKU</label>
+                  <input
+                    [id]="'f-sku-' + i"
+                    dir="ltr"
+                    [value]="f.sku"
+                    (input)="setFormat(i, 'sku', $event)"
+                  />
+                </div>
+                <div class="field">
+                  <label [for]="'f-price-' + i" i18n="@@store.admin.price">السعر (ر.س)</label>
+                  <input
+                    [id]="'f-price-' + i"
+                    inputmode="decimal"
+                    dir="ltr"
+                    [value]="f.price"
+                    (input)="setFormat(i, 'price', $event)"
+                  />
+                </div>
+                <div class="field">
+                  <label [for]="'f-cmp-' + i" i18n="@@store.admin.compare-at"
+                    >السعر قبل الخصم (اختياري)</label
+                  >
+                  <input
+                    [id]="'f-cmp-' + i"
+                    inputmode="decimal"
+                    dir="ltr"
+                    [value]="f.compareAtPrice"
+                    (input)="setFormat(i, 'compareAtPrice', $event)"
+                  />
+                </div>
+                @if (f.kind === 'print') {
+                  <div class="field">
+                    <label [for]="'f-w-' + i" i18n="@@store.admin.weight">الوزن (غرام)</label>
+                    <input
+                      [id]="'f-w-' + i"
+                      inputmode="numeric"
+                      dir="ltr"
+                      [value]="f.weightGrams"
+                      (input)="setFormat(i, 'weightGrams', $event)"
+                    />
+                  </div>
+                  <div class="field">
+                    <label [for]="'f-low-' + i" i18n="@@store.admin.low-threshold"
+                      >حد التنبيه للمخزون (فارغ = الإعداد العام)</label
+                    >
+                    <input
+                      [id]="'f-low-' + i"
+                      inputmode="numeric"
+                      dir="ltr"
+                      [value]="f.lowStockThreshold"
+                      (input)="setFormat(i, 'lowStockThreshold', $event)"
+                    />
+                  </div>
+                } @else {
+                  <div class="field">
+                    <span class="lbl" i18n="@@store.admin.book-file">ملف الكتاب (خاص)</span>
+                    <p class="ro">
+                      @if (f.fileAssetId) {
+                        <span i18n="@@store.admin.file-linked">مرفوع</span>
+                      } @else {
+                        <span class="muted" i18n="@@store.admin.file-missing">لم يُرفع بعد</span>
+                      }
+                    </p>
+                  </div>
+                }
+                <label class="chk"
+                  ><input
+                    type="checkbox"
+                    [checked]="f.isActive"
+                    (change)="setFormat(i, 'isActive', $event)"
+                  />
+                  <span i18n="@@store.admin.format-active">متاحة للبيع</span></label
+                >
+              </div>
+              @if (f.kind === 'digital' && canEdit()) {
+                <details class="upl">
+                  <summary i18n="@@store.admin.upload-book-file">رفع ملف الكتاب</summary>
+                  <ta-media-upload
+                    kind="book_file"
+                    [idPrefix]="'f-up-' + i"
+                    (uploaded)="setFile(i, $event)"
+                  />
+                </details>
+              }
+              @for (e of formatErrors()[fkey(f)] ?? []; track e) {
+                <p class="err" role="alert">{{ e }}</p>
+              }
+              <div>
+                <button
+                  type="button"
+                  class="btn primary"
+                  (click)="saveFormat(i)"
+                  [disabled]="busy() === fkey(f)"
+                  [attr.aria-busy]="busy() === fkey(f)"
+                >
+                  <span i18n="@@store.account.save">حفظ</span
+                  ><span class="visually-hidden"> {{ f.kind }}</span>
+                </button>
+              </div>
+            </fieldset>
+
+            @if (f.kind === 'print' && f.id) {
+              <div class="stock">
+                @if (stock()[f.id]; as s) {
+                  <dl class="nums">
+                    <div>
+                      <dt i18n="@@store.admin.on-hand">في المخزن</dt>
+                      <dd>{{ int(s.onHand) }}</dd>
+                    </div>
+                    <div>
+                      <dt i18n="@@store.admin.reserved">محجوز</dt>
+                      <dd>{{ int(s.reserved) }}</dd>
+                    </div>
+                    <div>
+                      <dt i18n="@@store.admin.available">متاح</dt>
+                      <dd>{{ int(s.available) }}</dd>
+                    </div>
+                  </dl>
+                }
+                <form class="movef" (submit)="move(f.id, $event)" novalidate>
+                  <fieldset [disabled]="!canStock()">
+                    <legend i18n="@@store.admin.stock-movement">حركة مخزون</legend>
+                    <div class="filters">
+                      <div class="field">
+                        <label for="mv-delta" i18n="@@store.admin.delta">الكمية (+/-)</label>
+                        <input
+                          id="mv-delta"
+                          inputmode="numeric"
+                          dir="ltr"
+                          [value]="movement().delta"
+                          (input)="setMovement('delta', $event)"
+                        />
+                      </div>
+                      <div class="field">
+                        <label for="mv-reason" i18n="@@store.admin.reason">السبب</label>
+                        <select id="mv-reason" (change)="setMovement('reason', $event)">
+                          <option
+                            value="restock"
+                            [selected]="movement().reason === 'restock'"
+                            i18n="@@store.admin.reason-restock"
+                          >
+                            توريد
+                          </option>
+                          <option
+                            value="adjustment"
+                            [selected]="movement().reason === 'adjustment'"
+                            i18n="@@store.admin.reason-adjustment"
+                          >
+                            تسوية جرد
+                          </option>
+                          <option
+                            value="return"
+                            [selected]="movement().reason === 'return'"
+                            i18n="@@store.admin.reason-return"
+                          >
+                            مرتجع
+                          </option>
+                        </select>
+                      </div>
+                      <div class="field">
+                        <label for="mv-note" i18n="@@store.admin.note">ملاحظة</label>
+                        <input
+                          id="mv-note"
+                          [value]="movement().note"
+                          (input)="setMovement('note', $event)"
+                        />
+                      </div>
+                      <button
+                        type="submit"
+                        class="btn"
+                        [disabled]="busy() === 'stock'"
+                        [attr.aria-busy]="busy() === 'stock'"
+                        aria-describedby="mv-why"
+                        i18n="@@store.admin.record"
+                      >
+                        تسجيل
+                      </button>
+                    </div>
+                  </fieldset>
+                  <ta-requires id="mv-why" policy="staff:stock" />
+                  @if (errors()['stock']; as e) {
+                    <p class="err" role="alert">{{ e }}</p>
+                  }
+                </form>
+              </div>
+            }
+          </div>
+        }
+        @if (canEdit()) {
+          <div class="rowacts">
+            @for (k of missingKinds(); track k) {
+              <button type="button" class="btn" (click)="addFormat(k)">
+                @if (k === 'print') {
+                  <span i18n="@@store.admin.add-print">إضافة نسخة مطبوعة</span>
+                } @else {
+                  <span i18n="@@store.admin.add-digital">إضافة نسخة رقمية</span>
+                }
+              </button>
+            }
+          </div>
+        }
+      </section>
+    }
+  }
+}
+
+<ta-media-picker [(open)]="pickerOpen" (picked)="pickCover($event)" />
+
+<ta-dialog [(open)]="confirmOpen" labelledBy="pe-cf-h">
+  <div class="dlg">
+    <h2 id="pe-cf-h" i18n="@@store.admin.confirm-title">تأكيد الإجراء</h2>
+    @if (confirm() === 'publish') {
+      <p i18n="@@store.admin.confirm-publish">
+        سيظهر المنتج في المتجر ويمكن شراؤه. تظهر صفحته فورًا وتُضاف إلى الصفحات المولّدة في البناء
+        التالي.
+      </p>
+    } @else {
+      <p i18n="@@store.admin.confirm-archive">
+        سيختفي المنتج من المتجر ولن يمكن شراؤه. تبقى الطلبات السابقة كما هي.
+      </p>
+    }
+    <div class="acts">
+      <button
+        type="button"
+        class="btn primary"
+        (click)="runConfirm()"
+        [disabled]="busy() === 'status'"
+        [attr.aria-busy]="busy() === 'status'"
+        i18n="@@store.admin.confirm"
+      >
+        تأكيد
+      </button>
+      <button
+        type="button"
+        class="btn"
+        (click)="confirmOpen.set(false)"
+        i18n="@@store.account.cancel"
+      >
+        إلغاء
+      </button>
+    </div>
+  </div>
+</ta-dialog>

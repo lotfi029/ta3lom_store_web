@@ -1,0 +1,165 @@
+<div class="ahead">
+  <div>
+    <h1 i18n="@@store.admin.nav-categories">التصنيفات</h1>
+    <p i18n="@@store.admin.categories-lede">
+      تصنيفات الدورات والكتب كما تظهر في المتجر. يُوقف التصنيف ولا يُحذف.
+    </p>
+  </div>
+  <div class="act">
+    <button
+      type="button"
+      class="btn primary"
+      (click)="startCreate()"
+      [disabled]="!canEdit()"
+      aria-describedby="ct-why"
+      i18n="@@store.admin.add-category"
+    >
+      إضافة تصنيف
+    </button>
+    <ta-requires id="ct-why" policy="staff:catalogue" />
+  </div>
+</div>
+<ta-resource-state
+  [loading]="data.categories.isLoading() && list().length === 0"
+  [error]="!!data.categories.error()"
+  (retry)="data.categories.reload()"
+>
+  <div class="panel tbl-wrap">
+    <table class="atbl">
+      <caption class="visually-hidden" i18n="@@store.admin.nav-categories">
+        التصنيفات
+      </caption>
+      <thead>
+        <tr>
+          <th scope="col" i18n="@@store.admin.col-name">الاسم</th>
+          <th scope="col">Slug</th>
+          <th scope="col" i18n="@@store.admin.col-sort">الترتيب</th>
+          <th scope="col" i18n="@@store.account.col-status">الحالة</th>
+          <th scope="col">
+            <span class="visually-hidden" i18n="@@store.admin.col-actions">الإجراءات</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (c of list(); track c.id) {
+          <tr>
+            <td>
+              {{ c.nameAr }}<small class="muted slug" dir="ltr">{{ c.nameEn }}</small>
+            </td>
+            <td>
+              <bdi dir="ltr" class="mono">{{ c.slug }}</bdi>
+            </td>
+            <td>
+              <bdi>{{ c.sort }}</bdi>
+            </td>
+            <td>
+              @if (c.isActive) {
+                <ta-status-pill tone="success"
+                  ><span i18n="@@store.admin.active">نشط</span></ta-status-pill
+                >
+              } @else {
+                <ta-status-pill tone="neutral"
+                  ><span i18n="@@store.admin.inactive">موقوف</span></ta-status-pill
+                >
+              }
+            </td>
+            <td>
+              <button type="button" class="btn sm" (click)="startEdit(c)" [disabled]="!canEdit()">
+                <span i18n="@@store.account.edit">تعديل</span
+                ><span class="visually-hidden"> {{ c.nameAr }}</span>
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</ta-resource-state>
+
+<ta-dialog [(open)]="open" labelledBy="ct-dlg-h" [lightDismiss]="false">
+  <form class="dlg" (submit)="save($event)" novalidate>
+    <h2 id="ct-dlg-h">
+      @if (editing() === 'new') {
+        <span i18n="@@store.admin.add-category">إضافة تصنيف</span>
+      } @else {
+        <span i18n="@@store.admin.edit-category">تعديل التصنيف</span>
+      }
+    </h2>
+    @if (error(); as e) {
+      <p class="err" role="alert">{{ e }}</p>
+    }
+    <div class="field">
+      <label for="ct-ar" i18n="@@store.admin.name-ar">الاسم بالعربية</label>
+      <input
+        id="ct-ar"
+        [formField]="f.nameAr"
+        [attr.aria-invalid]="f.nameAr().touched() && f.nameAr().invalid()"
+        aria-describedby="ct-ar-err"
+      />
+      <ul id="ct-ar-err" class="field-errors">
+        @if (f.nameAr().touched()) {
+          @for (x of f.nameAr().errors(); track x.kind) {
+            <li>{{ x.message }}</li>
+          }
+        }
+      </ul>
+    </div>
+    <div class="field">
+      <label for="ct-en" i18n="@@store.admin.name-en">الاسم بالإنجليزية</label>
+      <input id="ct-en" dir="ltr" [formField]="f.nameEn" />
+    </div>
+    <div class="field">
+      <label for="ct-slug">Slug</label>
+      <input
+        id="ct-slug"
+        dir="ltr"
+        [formField]="f.slug"
+        [attr.aria-invalid]="f.slug().touched() && f.slug().invalid()"
+        aria-describedby="ct-slug-err"
+      />
+      <ul id="ct-slug-err" class="field-errors">
+        @if (f.slug().touched()) {
+          @for (x of f.slug().errors(); track x.kind) {
+            <li>{{ x.message }}</li>
+          }
+        }
+      </ul>
+    </div>
+    <div class="field">
+      <label for="ct-sort" i18n="@@store.admin.col-sort">الترتيب</label>
+      <input
+        id="ct-sort"
+        inputmode="numeric"
+        dir="ltr"
+        [formField]="f.sort"
+        [attr.aria-invalid]="f.sort().touched() && f.sort().invalid()"
+        aria-describedby="ct-sort-err"
+      />
+      <ul id="ct-sort-err" class="field-errors">
+        @if (f.sort().touched()) {
+          @for (x of f.sort().errors(); track x.kind) {
+            <li>{{ x.message }}</li>
+          }
+        }
+      </ul>
+    </div>
+    <label class="chk"
+      ><input type="checkbox" [checked]="model().isActive" (change)="setActive($event)" />
+      <span i18n="@@store.admin.active">نشط</span></label
+    >
+    <div class="acts">
+      <button
+        type="submit"
+        class="btn primary"
+        [disabled]="busy()"
+        [attr.aria-busy]="busy()"
+        i18n="@@store.account.save"
+      >
+        حفظ
+      </button>
+      <button type="button" class="btn" (click)="open.set(false)" i18n="@@store.account.cancel">
+        إلغاء
+      </button>
+    </div>
+  </form>
+</ta-dialog>

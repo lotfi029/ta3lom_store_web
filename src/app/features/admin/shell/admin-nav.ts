@@ -18,6 +18,24 @@ export const ADMIN_NAV: readonly AdminNavItem[] = [
     policy: 'staff:read',
   },
   {
+    path: '/admin/products',
+    label: () => $localize`:@@store.admin.nav-products:المنتجات`,
+    icon: 'book',
+    policy: 'staff:read',
+  },
+  {
+    path: '/admin/categories',
+    label: () => $localize`:@@store.admin.nav-categories:التصنيفات`,
+    icon: 'tag',
+    policy: 'staff:read',
+  },
+  {
+    path: '/admin/media',
+    label: () => $localize`:@@store.admin.nav-media:الوسائط`,
+    icon: 'image',
+    policy: 'staff:read',
+  },
+  {
     path: '/admin/staff',
     label: () => $localize`:@@store.admin.nav-staff:فريق العمل`,
     icon: 'users',
