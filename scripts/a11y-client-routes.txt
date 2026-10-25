@@ -11,3 +11,5 @@
 /en/cart
 /ar/admin/login
 /en/admin/login
+/ar/orders/T3-26-000001
+/en/orders/T3-26-000001

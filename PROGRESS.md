@@ -1,5 +1,5 @@
 # Store web progress
-Next: R5 donations — W-M6 (e2e, a11y, CI, close-out)
+Next: review of PR "Store web — R5 donations" (lotfi029/ta3lom_store_web#13); then R5-Payments (flip `paymentsEnabled`, gateway redirect)
 
 ## R5 — donations (one PR "Store web — R5 donations", API `792521a`)
 
@@ -11,7 +11,21 @@ Next: R5 donations — W-M6 (e2e, a11y, CI, close-out)
 | W-M3 Quick donate, cart, checkout, order | done | W-M3 | quick-donate modal (header, menu, hero, side button ≥ 1320 px), `/cart` (3 line kinds, inline problems + fixes, limits, clear), `/checkout` (inline OTP, contact saved to profile, quote summary, C-3 notice, body-bound Idempotency-Key), `/orders/:ref` (pending = end state, token stripped, no-referrer, sign-in state) | 205 / 31 smoke incl. the full donate journey on the stub (+ real API: `/me` updated) / 24 × 2 | 127.8 KB JS |
 | W-M4 Account | done | W-M4 | `/account` shell; My donations (paged) + detail; Profile (edit, export JSON, sign out everywhere, delete with typed confirmation) | 212 / 35 smoke (+ account, sign-in on the real API) / 24 × 2 | W-2 name + mobile in menu and shell |
 | W-M5 Admin | done | W-M5 | `/admin/password` (forced + self); dashboard; categories (reorder, image, gifts); projects list + editor (details, options editor, publish/archive/preview, unsaved guard, conflict dialog); media (images); donors (block/unblock); orders (search, detail, cancel) | 239 / smoke (stub) / 24 × 2 | API-1, API-2, API-3 workarounds; placeholder removed |
-| W-M6 e2e, a11y, CI, docs | todo | | | | |
+| W-M6 e2e, a11y, CI, docs | done | W-M6 | — | 240 / 65 on the real API (35 smoke on the stub) / 26 × 2 | refresh-after-hydration fix (reload when stable); admin e2e clean up after themselves; i18n staleness check; order page in the a11y sweep; `docs/W-report-r5.md` + `docs/screenshots/r5/`; `.session/` moved to `docs/r5/` |
+
+### API follow-ups (open at `792521a`; client workarounds in place)
+
+| # | Issue | Web workaround |
+|---|---|---|
+| API-1 | `order.cancel_not_allowed` adds an extension named `status` that collides with the RFC `status` | Only `code` is read |
+| API-2 | Public order status and `/me/donations/{ref}` match references case-sensitively | References upper-cased client-side |
+| API-3 | `PUT /admin/projects/{id}/options` with a null list or label likely 500s | Options editor never sends one |
+| API-4 | **Production CORS also lists `store-staging.ta3lom.sa` — production blocker on the API side** | — |
+| API-5 | `CartSummaryResponse.totalAmount` is not re-priced | Badge shows the line count only (C-2) |
+| API-6 | Validation `errors{}` are English only | Mapped by field in `problem-message.ts` |
+| API-7 | No published OpenAPI artifact | Local snapshot `docs/openapi/store-api.v1.json` (`api:openapi`) |
+| API-8 (optional) | OTP caps are code constants; no Development override | e2e clears `store.otp_challenge` (guarded to the local DB) |
+| API-9 | `ProjectCard` has no options | Each card with `fromAmount` loads its project detail |
 
 ## r4 (history)
 

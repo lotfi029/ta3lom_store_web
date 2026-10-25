@@ -1,4 +1,4 @@
-import { afterNextRender } from '@angular/core';
+import { ApplicationRef, afterNextRender, inject } from '@angular/core';
 
 /** Anything with a `reload()` — every `HttpResourceRef` qualifies. Typed narrowly on purpose so
  *  this has no dependency on `@angular/common/http`'s resource types. */
@@ -27,11 +27,17 @@ interface Reloadable {
  * flight, so nothing disappears — the view simply becomes current a moment after paint, with no
  * flash for the common case where nothing actually changed.
  *
- * Call this from a component constructor — `afterNextRender` needs an injection context unless
- * an `Injector` is passed explicitly, and a component constructor always has one.
+ * The reload must wait until the application is STABLE: until then the transfer cache still answers every matching
+ * GET from the embedded state, so a reload fired right after the first render was served the build-time response
+ * again and never reached the network (found by the R5 e2e: archived projects stayed on the prerendered home).
+ *
+ * Call this from a constructor (component or root service) — it needs an injection context.
  */
 export function refreshAfterHydration(...resources: Reloadable[]): void {
+  const app = inject(ApplicationRef);
   afterNextRender(() => {
-    for (const resource of resources) resource.reload();
+    void app.whenStable().then(() => {
+      for (const resource of resources) resource.reload();
+    });
   });
 }

@@ -6,7 +6,7 @@ projects with options and open amounts, general gifts to categories (DECISIONS r
 API at `https://store-api.ta3lom.sa/v1` (repo `lotfi029/ta3lom_store_api`, R5-Core).
 
 Bilingual Arabic/English, **Arabic-first, right-to-left**. Same conventions, tokens, fonts and look as `ta3lom-web`
-(copied, not shared). Plan: [docs/store-web-plan.md](docs/store-web-plan.md).
+(copied, not shared). R5 plan and contract: [docs/r5/](docs/r5/); report: [docs/W-report-r5.md](docs/W-report-r5.md) (r4 plan: [docs/store-web-plan.md](docs/store-web-plan.md)).
 
 ## Stack
 

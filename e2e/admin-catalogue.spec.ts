@@ -1,12 +1,19 @@
 import { expect, type Page, test } from '@playwright/test';
 import { expectNoA11yViolations, expectNoHorizontalScroll } from './support/a11y';
 import { staffSignIn } from './support/auth';
+import { hideE2eCatalogue } from './support/cleanup';
 import { png } from './support/png';
 
 /**
  * W-M5/W-M6 — the catalogue admin on the real API: a category with general gifts, a project with options → publish →
  * visible in the store; a slug change keeps the old link as a redirect; a viewer reads only.
  */
+// What this spec publishes would change the storefront the other specs check against the prerendered pages.
+test.afterAll(async () => {
+  test.setTimeout(90_000); // a staff sign-in may wait for the next TOTP step
+  await hideE2eCatalogue();
+});
+
 for (const locale of ['ar', 'en'] as const) {
   const t = (ar: string, en: string) => (locale === 'ar' ? ar : en);
   const toast = (page: Page) => page.locator('ta-toast');
