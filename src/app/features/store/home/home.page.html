@@ -1,0 +1,140 @@
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow-hero" i18n="@@store.home.eyebrow-r5"
+      >متجر تبرعات جمعية التعلم الإلكتروني</span
+    >
+    <h1 i18n="@@store.home.headline-r5">تبرّعك <em>يصنع أثرًا</em> يبقى.</h1>
+    <p class="lede" i18n="@@store.home.lede-r5">
+      اختر مشروعًا وتبرّع بأحد خياراته أو بالمبلغ الذي تريد، أو تبرّع لتصنيف عام يُصرف على مشاريعه.
+    </p>
+    <form class="hsearch" role="search" (submit)="search($event, hq)">
+      <label class="visually-hidden" for="home-q" i18n="@@store.listing.search-label"
+        >ابحث في المشاريع</label
+      >
+      <input
+        #hq
+        id="home-q"
+        type="search"
+        name="q"
+        [value]="query().q"
+        placeholder="ابحث عن مشروع…"
+        i18n-placeholder="@@store.layout.search-placeholder-r5"
+        autocomplete="off"
+      />
+      <button type="submit" i18n="@@store.layout.search-submit">بحث</button>
+    </form>
+  </div>
+</section>
+
+<section id="projects" class="list" aria-labelledby="list-h" tabindex="-1">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 id="list-h" class="sec-title">
+        @if (activeCategory(); as c) {
+          {{ categoryName(c) }}
+        } @else {
+          <ng-container i18n="@@store.listing.title">مشاريع التبرع</ng-container>
+        }
+      </h2>
+      @if (query().q) {
+        <p class="sec-lede" i18n="@@store.listing.results-for">
+          نتائج البحث عن «<bdi>{{ query().q }}</bdi
+          >»
+        </p>
+      }
+    </div>
+
+    <div class="toolbar">
+      <nav
+        class="filters"
+        aria-label="التصنيفات"
+        i18n-aria-label="@@store.listing.categories-label"
+      >
+        <a
+          routerLink="/"
+          [queryParams]="{ category: null, page: null }"
+          queryParamsHandling="merge"
+          fragment="projects"
+          [attr.aria-current]="!query().category ? 'true' : null"
+          i18n="@@store.listing.all-categories"
+          >الكل</a
+        >
+        @for (c of data.categoryList(); track c.slug) {
+          <a
+            routerLink="/"
+            [queryParams]="{ category: c.slug, page: null }"
+            queryParamsHandling="merge"
+            fragment="projects"
+            [attr.aria-current]="query().category === c.slug ? 'true' : null"
+            >{{ categoryName(c) }}</a
+          >
+        }
+      </nav>
+      <div class="sort">
+        <label for="sort" i18n="@@store.listing.sort-label">الترتيب</label>
+        <select id="sort" (change)="onSort($any($event.target).value)">
+          @for (s of sorts; track s) {
+            <option [value]="s" [selected]="s === query().sort">{{ sortLabel(s) }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <ta-resource-state
+      [loading]="data.listing.isLoading() && !data.listing.hasValue()"
+      [error]="!!data.listing.error() && !data.listing.hasValue()"
+      (retry)="data.listing.reload()"
+    >
+      @if (data.items().length > 0) {
+        <ul class="cards c3">
+          @for (p of data.items(); track p.id) {
+            <li><ta-project-card [project]="p" /></li>
+          }
+        </ul>
+        @if (data.pages() > 1) {
+          <nav
+            class="pager"
+            aria-label="ترقيم الصفحات"
+            i18n-aria-label="@@store.ui.data-table-pager-label"
+          >
+            @for (n of pageNumbers(); track n) {
+              @if (n === query().page) {
+                <span aria-current="page">{{ n }}</span>
+              } @else {
+                <a
+                  routerLink="/"
+                  [queryParams]="{ page: n === 1 ? null : n }"
+                  queryParamsHandling="merge"
+                  fragment="projects"
+                  >{{ n }}</a
+                >
+              }
+            }
+          </nav>
+        }
+      } @else if (data.listing.hasValue()) {
+        <div class="empty">
+          <h3 i18n="@@store.listing.empty-title">لا توجد مشاريع مطابقة</h3>
+          @if (filtered()) {
+            <p i18n="@@store.listing.empty-lede">جرّب كلمة أخرى أو تصنيفًا آخر.</p>
+            <a class="reset" routerLink="/" fragment="projects" i18n="@@store.listing.show-all"
+              >عرض كل المشاريع</a
+            >
+          } @else {
+            <p i18n="@@store.listing.empty-none">لا توجد مشاريع منشورة الآن. عُد قريبًا.</p>
+          }
+        </div>
+      }
+    </ta-resource-state>
+  </div>
+</section>
+
+<section class="trust">
+  <div class="wrap">
+    <p>
+      <ta-icon name="lock" [size]="16" /><span i18n="@@store.home.trust"
+        >تبرعك يصل إلى المشروع أو التصنيف الذي تختاره كاملًا.</span
+      >
+    </p>
+  </div>
+</section>

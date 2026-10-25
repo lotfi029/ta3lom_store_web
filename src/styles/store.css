@@ -552,20 +552,6 @@
   color: var(--c-muted-2);
 }
 
-.bar {
-  block-size: 6px;
-  margin-block: 8px 4px;
-  border-radius: 999px;
-  background: var(--c-surface-3);
-  overflow: hidden;
-}
-
-.bar > i {
-  display: block;
-  block-size: 100%;
-  background: var(--c-brand);
-}
-
 .tblwrap {
   overflow-x: auto;
 }

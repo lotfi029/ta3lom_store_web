@@ -1,12 +1,12 @@
 # Store web progress
-Next: R5 donations — W-M1 (home/listing + project card)
+Next: R5 donations — W-M2 (project page)
 
 ## R5 — donations (one PR "Store web — R5 donations", API `792521a`)
 
 | Phase | Status | Commit | Screens | Tests (unit / e2e / a11y routes) | Notes |
 |---|---|---|---|---|---|
 | W-M0 Foundation and clean-up | done | W-M0 | placeholders for the screens rebuilt in W-M1…W-M5; login, 404, admin login/shell, staff, settings, templates, audit adapted | 159 / 17 smoke (stub) / 24 × 2 themes | OpenAPI snapshot + types; check-no-commerce; r4 code deleted; W-1…W-5 fixed with tests; StoreConfig; payments flag + prod guard; problem messages R5; stub (stateful); routes.mjs → projects; C-1; seed R5; 124 KB JS |
-| W-M1 Home/listing + card | todo | | | | |
+| W-M1 Home/listing + card | done | W-M1 | home = hero + search + category chips (API) + sort + paged grid; project card (image, share bar, chips → stepper, open amount, اضافة / تبرع); shared `amount-input`, `option-picker`, `qty-stepper` | 183 / 23 smoke (+ listing ar/en on the real API) / 24 × 2 | C-4 SEO, U-2 API order, JSON-LD NGO + ItemList; 126.5 KB JS |
 | W-M2 Project page | todo | | | | |
 | W-M3 Quick donate, cart, checkout, order | todo | | | | |
 | W-M4 Account | todo | | | | |

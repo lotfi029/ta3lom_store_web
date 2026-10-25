@@ -19,7 +19,10 @@ export const routes: Routes = [
     path: '',
     component: PublicLayout,
     children: [
-      { path: '', loadComponent: placeholder },
+      {
+        path: '',
+        loadComponent: () => import('./features/store/home/home.page').then((m) => m.HomePage),
+      },
       { path: 'cart', loadComponent: placeholder },
       { path: 'checkout', canActivate: [cartNotEmptyGuard], loadComponent: placeholder },
       { path: 'orders/:ref', loadComponent: placeholder },

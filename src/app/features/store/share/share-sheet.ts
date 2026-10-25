@@ -2,10 +2,11 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, signal } f
 import { ToastService } from '../../../core/ui/toast.service';
 import { Dialog } from '../../../shared/ui/dialog/dialog';
 import { Icon } from '../../../shared/ui/icon/icon';
+import { shareLinks } from './share-links';
 
 /**
  * Prototype "مشاركة": the system share sheet where the browser has one (phones), otherwise a dialog with WhatsApp,
- * X and copy-link. Nothing is loaded from a third party; the links open in a new tab.
+ * X, Facebook and copy-link. Nothing is loaded from a third party; the links open in a new tab.
  */
 @Component({
   selector: 'ta-share-sheet',
@@ -18,7 +19,7 @@ import { Icon } from '../../../shared/ui/icon/icon';
     <ta-dialog [(open)]="open" labelledBy="share-h">
       <div class="sheet">
         <div class="hd">
-          <h2 id="share-h" i18n="@@store.share.title">مشاركة المنتج</h2>
+          <h2 id="share-h" i18n="@@store.share.title-project">مشاركة المشروع</h2>
           <button
             type="button"
             class="x"
@@ -32,6 +33,7 @@ import { Icon } from '../../../shared/ui/icon/icon';
         <ul class="ways">
           <li><a [href]="whatsapp()" target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
           <li><a [href]="xUrl()" target="_blank" rel="noopener noreferrer">X</a></li>
+          <li><a [href]="facebookUrl()" target="_blank" rel="noopener noreferrer">Facebook</a></li>
           <li>
             <button type="button" (click)="copy()">
               <ta-icon name="copy" [size]="18" /><span i18n="@@store.share.copy">نسخ الرابط</span>
@@ -122,13 +124,10 @@ export class ShareSheet {
   readonly url = input.required<string>();
   readonly title = input.required<string>();
   protected readonly open = signal(false);
-  protected readonly whatsapp = computed(
-    () => `https://wa.me/?text=${encodeURIComponent(`${this.title()} ${this.url()}`)}`,
-  );
-  protected readonly xUrl = computed(
-    () =>
-      `https://x.com/intent/post?text=${encodeURIComponent(this.title())}&url=${encodeURIComponent(this.url())}`,
-  );
+  private readonly links = computed(() => shareLinks(this.url(), this.title()));
+  protected readonly whatsapp = computed(() => this.links().whatsapp);
+  protected readonly xUrl = computed(() => this.links().x);
+  protected readonly facebookUrl = computed(() => this.links().facebook);
 
   protected async share(): Promise<void> {
     if (typeof navigator !== 'undefined' && 'share' in navigator) {
