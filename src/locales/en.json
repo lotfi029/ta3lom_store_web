@@ -298,5 +298,12 @@
   "store.ui.was-price": "instead of",
   "store.donate.open-amount": "Open amount",
   "store.ui.qty-decrease": "Decrease quantity",
-  "store.ui.qty-increase": "Increase quantity"
+  "store.ui.qty-increase": "Increase quantity",
+  "store.project.unavailable-title": "This project is not available",
+  "store.project.unavailable-lede": "It may have been archived or not published yet.",
+  "store.ui.breadcrumb": "Breadcrumb",
+  "store.project.donate-heading": "Donate to this project",
+  "store.share.button": "Share",
+  "store.share.title-project": "Share the project",
+  "store.share.copy": "Copy link"
 }

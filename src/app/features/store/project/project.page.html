@@ -1,0 +1,82 @@
+@if (notFound()) {
+  <section class="gone wrap">
+    <h1 i18n="@@store.project.unavailable-title">هذا المشروع غير متاح</h1>
+    <p i18n="@@store.project.unavailable-lede">ربما أُرشف هذا المشروع أو لم يُنشر بعد.</p>
+    <p class="links">
+      <a routerLink="/" fragment="projects" i18n="@@store.listing.show-all">عرض كل المشاريع</a>
+    </p>
+  </section>
+} @else if (p(); as p) {
+  <div class="crumbs-row">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="مسار التنقل" i18n-aria-label="@@store.ui.breadcrumb">
+        <ol>
+          <li><a routerLink="/" i18n="@@store.layout.nav-home">الرئيسية</a></li>
+          <li>
+            <span aria-hidden="true">/</span
+            ><a routerLink="/" [queryParams]="{ category: p.category.slug }" fragment="projects">{{
+              categoryName()
+            }}</a>
+          </li>
+          <li>
+            <span aria-hidden="true">/</span><span aria-current="page">{{ title() }}</span>
+          </li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+  <section class="pp">
+    <div class="wrap">
+      <div class="pgrid">
+        <div class="main">
+          <div class="hero-media">
+            @if (p.coverUrl; as src) {
+              <ta-image [src]="src" [alt]="alt()" [width]="1200" [height]="750" [priority]="true" />
+            }
+          </div>
+          <div class="tagrow">
+            @if (p.badge === 'urgent') {
+              <span class="tag gold" i18n="@@store.card.badge-urgent">عاجل</span>
+            } @else if (p.badge === 'new') {
+              <span class="tag green" i18n="@@store.card.badge-new">جديد</span>
+            }
+            <span class="tag grey">{{ categoryName() }}</span>
+            <span class="spacer"></span>
+            <ta-share-sheet [url]="canonical()" [title]="title()" />
+          </div>
+          <h1>{{ title() }}</h1>
+          @if (summary()) {
+            <p class="lede">{{ summary() }}</p>
+          }
+          @if (body()) {
+            <div class="prose">
+              <ta-markdown [source]="body()" />
+            </div>
+          }
+        </div>
+
+        <aside class="buybox" aria-labelledby="donate-h">
+          <h2 id="donate-h" class="bh" i18n="@@store.project.donate-heading">تبرّع لهذا المشروع</h2>
+          @if (donate(); as d) {
+            <ta-donate-box [project]="d" idPrefix="pp" size="page" />
+          }
+        </aside>
+      </div>
+    </div>
+  </section>
+} @else {
+  <ta-resource-state
+    [loading]="data.resource.isLoading() || !data.resource.error()"
+    [error]="!!data.resource.error()"
+    (retry)="data.resource.reload()"
+  >
+    <section class="wrap loading" aria-busy="true">
+      <h1 class="visually-hidden" i18n="@@store.ui.loading">جارٍ التحميل…</h1>
+      <div class="pgrid">
+        <div class="skel sk-media"></div>
+        <div class="skel sk-box"></div>
+      </div>
+    </section>
+  </ta-resource-state>
+}

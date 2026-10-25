@@ -36,7 +36,11 @@ export const routes: Routes = [
         canActivate: [guestOnlyGuard],
         loadComponent: () => import('./features/store/login/login.page').then((m) => m.LoginPage),
       },
-      { path: 'p/:slug', loadComponent: placeholder },
+      {
+        path: 'p/:slug',
+        loadComponent: () =>
+          import('./features/store/project/project.page').then((m) => m.ProjectPage),
+      },
       {
         path: '**',
         loadComponent: () =>

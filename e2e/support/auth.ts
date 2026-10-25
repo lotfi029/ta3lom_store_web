@@ -37,12 +37,32 @@ export function resetOtpChallenges(): void {
   if (/localhost:3000/.test(API)) return;
   const host = process.env['PGHOST'] ?? 'localhost';
   const db = process.env['PGDATABASE'] ?? 'ta3lom_store_dev';
-  if (!['localhost', '127.0.0.1', '::1'].includes(host) || db !== 'ta3lom_store_dev' || !/\/\/localhost:5080\//.test(API))
-    throw new Error(`resetOtpChallenges: refusing to touch ${host}/${db} (local dev database only)`);
+  if (
+    !['localhost', '127.0.0.1', '::1'].includes(host) ||
+    db !== 'ta3lom_store_dev' ||
+    !/\/\/localhost:5080\//.test(API)
+  )
+    throw new Error(
+      `resetOtpChallenges: refusing to touch ${host}/${db} (local dev database only)`,
+    );
   execFileSync(
     'psql',
-    ['-h', host, '-p', process.env['PGPORT'] ?? '5440', '-U', 'postgres', '-d', db, '-qc', 'DELETE FROM store.otp_challenge'],
-    { env: { ...process.env, PGPASSWORD: process.env['PGPASSWORD'] ?? 'postgres' }, stdio: 'ignore' },
+    [
+      '-h',
+      host,
+      '-p',
+      process.env['PGPORT'] ?? '5440',
+      '-U',
+      'postgres',
+      '-d',
+      db,
+      '-qc',
+      'DELETE FROM store.otp_challenge',
+    ],
+    {
+      env: { ...process.env, PGPASSWORD: process.env['PGPASSWORD'] ?? 'postgres' },
+      stdio: 'ignore',
+    },
   );
 }
 
@@ -79,7 +99,8 @@ export async function staffSignIn(
   returnPath = '/admin',
 ) {
   const entry = readStaff()[role];
-  if (!entry?.secret) throw new Error(`no ${role} with TOTP in e2e/.auth/staff.json — run npm run api:seed`);
+  if (!entry?.secret)
+    throw new Error(`no ${role} with TOTP in e2e/.auth/staff.json — run npm run api:seed`);
   await page.goto(
     `/${locale}/admin/login${returnPath === '/admin' ? '' : `?returnUrl=${encodeURIComponent(returnPath)}`}`,
   );

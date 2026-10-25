@@ -9,6 +9,19 @@ import { NgOptimizedImage } from '@angular/common';
   selector: 'ta-image',
   imports: [NgOptimizedImage],
   templateUrl: './image.html',
+  // Fills its box (the cards' and the project page's fixed-ratio media frames), cropping to cover.
+  styles: `
+    :host {
+      display: block;
+      block-size: 100%;
+    }
+    img {
+      display: block;
+      inline-size: 100%;
+      block-size: 100%;
+      object-fit: cover;
+    }
+  `,
 })
 export class Image {
   readonly src = input.required<string>();

@@ -24,7 +24,7 @@ import { ShareBar } from '../share/share-bar';
     <article class="pcard" [attr.aria-labelledby]="'pc-' + project().id">
       <div class="media">
         @if (project().coverUrl; as src) {
-          <ta-image [src]="src" [alt]="alt()" [width]="800" [height]="500" imgClass="cover" />
+          <ta-image [src]="src" [alt]="alt()" [width]="800" [height]="500" />
         } @else {
           <div class="cover ph" aria-hidden="true"></div>
         }
@@ -76,7 +76,6 @@ import { ShareBar } from '../share/share-bar';
       overflow: hidden;
       background: var(--c-surface-2);
     }
-    .media ::ng-deep .cover,
     .cover {
       inline-size: 100%;
       block-size: 100%;
