@@ -133,8 +133,8 @@ export class OrderData {
     const signedIn = this.auth.isSignedIn();
     if (!signedIn && !this.token()) return 'signIn';
     const s = this.errorStatus();
-    if (s === 404 || s === 401)
-      return signedIn || this.token() ? (signedIn ? 'notFound' : 'signIn') : 'signIn';
+    // R3-2: a 404 (or 401) for a signed-out visitor means "sign in to view", not "no such donation".
+    if (s === 404 || s === 401) return signedIn ? 'notFound' : 'signIn';
     if (s !== null) return 'error';
     return 'loading';
   });

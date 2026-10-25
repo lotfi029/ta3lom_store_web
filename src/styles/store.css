@@ -433,6 +433,17 @@
   border: 1px solid transparent;
 }
 
+button.b {
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.b.danger {
+  background: var(--c-danger-fill);
+  color: var(--c-on-brand);
+}
+
 .b.sm {
   min-block-size: 44px;
   font-size: 0.9rem;

@@ -1,0 +1,118 @@
+/* Prototype .cline (44 px targets); the cart shell is in src/styles/store.css. */
+.cline {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  gap: 14px;
+  padding-block: 16px;
+  padding-inline: 18px;
+}
+
+.cline.bad {
+  background: color-mix(in srgb, var(--c-danger-fill) 4%, var(--c-surface));
+}
+
+.th {
+  inline-size: 56px;
+  block-size: 56px;
+  border-radius: 12px;
+  background: var(--c-tint);
+  color: var(--c-accent-strong);
+  display: grid;
+  place-items: center;
+}
+
+.bd {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-inline-size: 0;
+}
+
+.top {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.top .t {
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--c-text);
+  text-decoration: none;
+}
+
+.top .t:hover {
+  text-decoration: underline;
+}
+
+.lp {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  align-items: center;
+  font-size: 0.84rem;
+  color: var(--c-muted-2);
+}
+
+.acts {
+  align-items: flex-end;
+}
+
+.amt {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.amt ta-amount-input {
+  inline-size: 180px;
+}
+
+.upd,
+.fixb {
+  min-block-size: 44px;
+  padding-inline: 14px;
+  border-radius: var(--rp);
+  border: 1px solid var(--c-link);
+  background: var(--c-surface);
+  color: var(--c-link);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.amt .upd {
+  margin-block-start: 22px;
+}
+
+.issue {
+  margin: 0;
+  font-size: 0.84rem;
+  color: var(--c-danger);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.rm {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: 0;
+  color: var(--c-danger);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  min-block-size: 44px;
+  padding-inline: 4px;
+  margin-inline-start: auto;
+}

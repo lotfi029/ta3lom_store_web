@@ -69,6 +69,10 @@
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
           <context context-type="linenumber">53</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/order/order.page.html</context>
+          <context context-type="linenumber">90,91</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="store.error.network-error" datatype="html">
         <source>تعذّر الاتصال بالمتجر. تحقّق من اتصالك ثم أعد المحاولة.</source>
@@ -457,6 +461,10 @@
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
           <context context-type="linenumber">169</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/order/order.page.html</context>
+          <context context-type="linenumber">80,82</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="store.error.order-cancel-not-allowed" datatype="html">
         <source>لا يمكن إلغاء هذا الطلب في حالته الحالية.</source>
@@ -690,6 +698,22 @@
           <context context-type="linenumber">32</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="store.cart.notice-dropped" datatype="html">
+        <source>أزلنا من سلتك تبرعًا لم يعد متاحًا أو تجاوز حدود السلة.</source>
+        <target state="translated">We removed a donation from your cart that is no longer available or went over the cart limits.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/cart/cart-notice-text.ts</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.cart.notice-combined" datatype="html">
+        <source>دمجنا تبرعات سلتك السابقة مع سلتك الحالية.</source>
+        <target state="translated">We combined the donations from your earlier cart with this one.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/cart/cart-notice-text.ts</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="store.error.toast-server" datatype="html">
         <source>تعذّر الاتصال بالمتجر الآن. حاول مرة أخرى بعد قليل.</source>
         <target state="translated">Can’t reach the store right now. Please try again shortly.</target>
@@ -888,6 +912,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/staff/staff.page.html</context>
           <context context-type="linenumber">103,105</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
+          <context context-type="linenumber">104,105</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.password" datatype="html">
@@ -1517,6 +1545,10 @@
           <context context-type="sourcefile">src/app/features/admin/staff/staff.page.ts</context>
           <context context-type="linenumber">61</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.ts</context>
+          <context context-type="linenumber">90</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="store.admin.roles-required" datatype="html">
         <source>اختر دورًا واحدًا على الأقل.</source>
@@ -1702,6 +1734,486 @@
           <context context-type="linenumber">16,17</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="store.cart.general-gift" datatype="html">
+        <source>تبرع عام</source>
+        <target state="translated">General gift</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart-line.ts</context>
+          <context context-type="linenumber">48,49</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.donate.open-amount" datatype="html">
+        <source>تبرع مفتوح</source>
+        <target state="translated">Open amount</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart-line.ts</context>
+          <context context-type="linenumber">61,64</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/option-picker/option-picker.ts</context>
+          <context context-type="linenumber">48,51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.cart.fix-amount" datatype="html">
+        <source> تعديل المبلغ </source>
+        <target state="translated">Change the amount</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart-line.ts</context>
+          <context context-type="linenumber">74,75</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.cart.update" datatype="html">
+        <source>تحديث</source>
+        <target state="translated">Update</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart-line.ts</context>
+          <context context-type="linenumber">102,103</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.cart.remove" datatype="html">
+        <source>حذف</source>
+        <target state="translated">Remove</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart-line.ts</context>
+          <context context-type="linenumber">109,110</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.cart.qty-for" datatype="html">
+        <source>كمية <x id="title" equiv-text="this.title()"/></source>
+        <target state="translated">Quantity of <x id="title" equiv-text="this.title()"/></target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart-line.ts</context>
+          <context context-type="linenumber">137</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.cart.amount-for" datatype="html">
+        <source>مبلغ <x id="title" equiv-text="this.title()"/></source>
+        <target state="translated">Amount for <x id="title" equiv-text="this.title()"/></target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart-line.ts</context>
+          <context context-type="linenumber">140</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.ui.breadcrumb" datatype="html">
+        <source>مسار التنقل</source>
+        <target state="translated">Breadcrumb</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart.page.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/project/project.page.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.nav-home" datatype="html">
+        <source>الرئيسية</source>
+        <target state="translated">Home</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart.page.html</context>
+          <context context-type="linenumber">5,7</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
+          <context context-type="linenumber">5,7</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/project/project.page.html</context>
+          <context context-type="linenumber">14,16</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">20,22</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">114,118</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.cart.title-r5" datatype="html">
+        <source>سلة التبرعات</source>
+        <target state="translated">Donations cart</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart.page.html</context>
+          <context context-type="linenumber">8,11</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart.page.html</context>
+          <context context-type="linenumber">12,16</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart.page.ts</context>
+          <context context-type="linenumber">57</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart.page.ts</context>
+          <context context-type="linenumber">58</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
+          <context context-type="linenumber">8,11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.ui.toast-dismiss" datatype="html">
+        <source> إخفاء </source>
+        <target state="translated">Dismiss</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart.page.html</context>
+          <context context-type="linenumber">32,34</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/share/share-sheet.ts</context>
+          <context context-type="linenumber">28</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/toast/toast.ts</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.cart.empty-title" datatype="html">
+        <source>سلتك فارغة</source>
+        <target state="translated">Your cart is empty</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart.page.html</context>
+          <context context-type="linenumber">39,40</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
+          <context context-type="linenumber">24,26</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.cart.empty-lede-r5" datatype="html">
+        <source> اختر مشروعًا من المشاريع، أو تبرّع سريعًا لتصنيف عام. </source>
+        <target state="translated">Choose one of the projects, or make a quick gift to a general category.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart.page.html</context>
+          <context context-type="linenumber">41,43</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.nav-projects" datatype="html">
+        <source>المشاريع</source>
+        <target state="translated">Projects</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart.page.html</context>
+          <context context-type="linenumber">49,52</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
+          <context context-type="linenumber">27,30</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/footer/footer.html</context>
+          <context context-type="linenumber">22,23</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">22,25</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">122,124</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.quick.title" datatype="html">
+        <source> تبرع سريع </source>
+        <target state="translated">Quick donate</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart.page.html</context>
+          <context context-type="linenumber">57,58</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
+          <context context-type="linenumber">11,13</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/quick-donate/quick-donate.ts</context>
+          <context context-type="linenumber">37,39</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">47,49</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">125,127</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/public-layout/public-layout.ts</context>
+          <context context-type="linenumber">28,29</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.cart.group-r5" datatype="html">
+        <source>تبرعاتك</source>
+        <target state="translated">Your donations</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart.page.html</context>
+          <context context-type="linenumber">73,75</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.cart.count-label-r5" datatype="html">
+        <source>عدد التبرعات:</source>
+        <target state="translated">Number of donations:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart.page.html</context>
+          <context context-type="linenumber">77,79</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.cart.continue-r5" datatype="html">
+        <source>متابعة التبرع</source>
+        <target state="translated">Keep donating</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart.page.html</context>
+          <context context-type="linenumber">104,106</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.cart.clear" datatype="html">
+        <source> إفراغ السلة </source>
+        <target state="translated">Empty the cart</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart.page.html</context>
+          <context context-type="linenumber">113,114</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart.page.html</context>
+          <context context-type="linenumber">164,166</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.cart.summary-r5" datatype="html">
+        <source>ملخص التبرعات</source>
+        <target state="translated">Donations summary</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart.page.html</context>
+          <context context-type="linenumber">119,121</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
+          <context context-type="linenumber">150,151</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.cart.lines" datatype="html">
+        <source>عدد التبرعات</source>
+        <target state="translated">Donations</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart.page.html</context>
+          <context context-type="linenumber">121,122</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/order/order.page.html</context>
+          <context context-type="linenumber">39,40</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.cart.total" datatype="html">
+        <source>الإجمالي</source>
+        <target state="translated">Total</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart.page.html</context>
+          <context context-type="linenumber">125,126</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
+          <context context-type="linenumber">180,181</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/order/order.page.html</context>
+          <context context-type="linenumber">35,36</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.cart.checkout-r5" datatype="html">
+        <source>إتمام التبرع</source>
+        <target state="translated">Complete your donation</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart.page.html</context>
+          <context context-type="linenumber">135,136</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.cart.fix-issues-r5" datatype="html">
+        <source> صحّح التبرعات المميّزة قبل إتمام التبرع. </source>
+        <target state="translated">Fix the highlighted donations before you continue.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart.page.html</context>
+          <context context-type="linenumber">140,142</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.cart.clear-title" datatype="html">
+        <source>إفراغ السلة؟</source>
+        <target state="translated">Empty the cart?</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart.page.html</context>
+          <context context-type="linenumber">152,153</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.cart.clear-lede" datatype="html">
+        <source>ستُحذف كل التبرعات من سلتك.</source>
+        <target state="translated">Every donation will be removed from your cart.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart.page.html</context>
+          <context context-type="linenumber">153,155</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.ui.cancel" datatype="html">
+        <source> إلغاء </source>
+        <target state="translated">Cancel</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/cart/cart.page.html</context>
+          <context context-type="linenumber">161,163</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.checkout.title-r5" datatype="html">
+        <source>إتمام التبرع</source>
+        <target state="translated">Complete your donation</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
+          <context context-type="linenumber">12,15</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
+          <context context-type="linenumber">16,20</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.ts</context>
+          <context context-type="linenumber">104</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.ts</context>
+          <context context-type="linenumber">105</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.checkout.identity" datatype="html">
+        <source>تأكيد رقم الجوال</source>
+        <target state="translated">Confirm your mobile number</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
+          <context context-type="linenumber">45,47</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.checkout.identity-lede-r5" datatype="html">
+        <source> نرسل رمز تحقق إلى جوالك، ثم نكمل بياناتك. تبقى تبرعاتك في سلتك. </source>
+        <target state="translated">We send a verification code to your mobile, then you complete your details. Your donations stay in your cart.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
+          <context context-type="linenumber">48,50</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.checkout.back-to-cart-r5" datatype="html">
+        <source>العودة إلى السلة لتصحيحها</source>
+        <target state="translated">Back to the cart to fix them</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
+          <context context-type="linenumber">65,67</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.ui.retry" datatype="html">
+        <source> إعادة المحاولة </source>
+        <target state="translated">Retry</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
+          <context context-type="linenumber">70,71</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/order/order.page.html</context>
+          <context context-type="linenumber">92,93</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/resource-state/resource-state.html</context>
+          <context context-type="linenumber">18,21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.checkout.details" datatype="html">
+        <source>بياناتك</source>
+        <target state="translated">Your details</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
+          <context context-type="linenumber">77,78</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.checkout.name" datatype="html">
+        <source>الاسم الكامل</source>
+        <target state="translated">Full name</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
+          <context context-type="linenumber">81,82</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.otp.mobile-label" datatype="html">
+        <source>رقم الجوال</source>
+        <target state="translated">Mobile number</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
+          <context context-type="linenumber">95,97</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/login/otp-sign-in.html</context>
+          <context context-type="linenumber">10,12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.checkout.saved-to-profile" datatype="html">
+        <source> نحفظ الاسم والبريد في ملفك الشخصي لتبرعاتك القادمة، ويمكنك تعديلهما من حسابك. </source>
+        <target state="translated">We save your name and e-mail to your profile for your next donations; you can change them in your account.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
+          <context context-type="linenumber">120,122</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.checkout.payments-soon" datatype="html">
+        <source> الدفع الإلكتروني قريبًا: نسجّل تبرعك الآن برقم مرجعي، ونرسل لك رابط الدفع عند تفعيله. </source>
+        <target state="translated">Online payment is coming soon: we register your donation now with a reference number and send you the payment link once it is available.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
+          <context context-type="linenumber">127,129</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.checkout.pay" datatype="html">
+        <source>ادفع الآن</source>
+        <target state="translated">Pay now</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
+          <context context-type="linenumber">140,141</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.checkout.register" datatype="html">
+        <source>تأكيد التبرع</source>
+        <target state="translated">Confirm the donation</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
+          <context context-type="linenumber">142,144</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.checkout.other-donations" datatype="html">
+        <source> سلتك تحتوي على تبرعات أخرى </source>
+        <target state="translated">Your cart contains other donations</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
+          <context context-type="linenumber">153,156</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.checkout.edit-cart" datatype="html">
+        <source>تعديل السلة</source>
+        <target state="translated">Edit the cart</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
+          <context context-type="linenumber">187,189</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.checkout.name-required" datatype="html">
+        <source>أدخل الاسم الكامل.</source>
+        <target state="translated">Enter your full name.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.ts</context>
+          <context context-type="linenumber">80</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.checkout.email-required-r5" datatype="html">
+        <source>أدخل البريد الإلكتروني لإرسال تأكيد التبرع.</source>
+        <target state="translated">Enter your e-mail so we can send the confirmation.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.ts</context>
+          <context context-type="linenumber">87</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="store.donate.add" datatype="html">
         <source>اضافة</source>
         <target state="translated">Add</target>
@@ -1724,6 +2236,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/donate/donate-box.ts</context>
           <context context-type="linenumber">173</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/quick-donate/quick-donate.ts</context>
+          <context context-type="linenumber">182</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.donate.options-legend" datatype="html">
@@ -1819,7 +2335,7 @@
         <target state="translated">Search projects</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
-          <context context-type="linenumber">12,16</context>
+          <context context-type="linenumber">15,19</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.search-placeholder-r5" datatype="html">
@@ -1827,7 +2343,7 @@
         <target state="translated">Search for a project…</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
-          <context context-type="linenumber">20,21</context>
+          <context context-type="linenumber">23,24</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
@@ -1835,7 +2351,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">99,100</context>
+          <context context-type="linenumber">104,105</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.search-submit" datatype="html">
@@ -1843,7 +2359,7 @@
         <target state="translated">Search</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
-          <context context-type="linenumber">24,27</context>
+          <context context-type="linenumber">27,30</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
@@ -1851,7 +2367,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">105,108</context>
+          <context context-type="linenumber">110,113</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.listing.title" datatype="html">
@@ -1859,7 +2375,7 @@
         <target state="translated">Donation projects</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
-          <context context-type="linenumber">36,38</context>
+          <context context-type="linenumber">39,41</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.listing.results-for" datatype="html">
@@ -1869,7 +2385,7 @@
           &gt;"/>”</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
-          <context context-type="linenumber">41,44</context>
+          <context context-type="linenumber">44,47</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.listing.categories-label" datatype="html">
@@ -1877,7 +2393,7 @@
         <target state="translated">Categories</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
-          <context context-type="linenumber">50,51</context>
+          <context context-type="linenumber">53,54</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.listing.all-categories" datatype="html">
@@ -1885,7 +2401,7 @@
         <target state="translated">All</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
-          <context context-type="linenumber">61,62</context>
+          <context context-type="linenumber">64,65</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.listing.sort-label" datatype="html">
@@ -1893,7 +2409,7 @@
         <target state="translated">Sort</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
-          <context context-type="linenumber">74,75</context>
+          <context context-type="linenumber">77,78</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.ui.data-table-pager-label" datatype="html">
@@ -1901,7 +2417,7 @@
         <target state="translated">Pagination</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
-          <context context-type="linenumber">97,98</context>
+          <context context-type="linenumber">100,101</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.listing.empty-title" datatype="html">
@@ -1909,7 +2425,7 @@
         <target state="translated">No matching projects</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
-          <context context-type="linenumber">117,119</context>
+          <context context-type="linenumber">120,122</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.listing.empty-lede" datatype="html">
@@ -1917,7 +2433,7 @@
         <target state="translated">Try another word or another category.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
-          <context context-type="linenumber">119,120</context>
+          <context context-type="linenumber">122,123</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.listing.show-all" datatype="html">
@@ -1925,7 +2441,7 @@
         <target state="translated">Show all projects</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
-          <context context-type="linenumber">121,123</context>
+          <context context-type="linenumber">124,126</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/project/project.page.html</context>
@@ -1937,7 +2453,7 @@
         <target state="translated">No projects are published right now. Come back soon.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
-          <context context-type="linenumber">124,127</context>
+          <context context-type="linenumber">127,130</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.home.trust" datatype="html">
@@ -1945,7 +2461,7 @@
         <target state="translated">Your gift reaches the project or category you choose in full.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.html</context>
-          <context context-type="linenumber">136,139</context>
+          <context context-type="linenumber">139,142</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.listing.sort-newest" datatype="html">
@@ -1953,7 +2469,7 @@
         <target state="translated">Newest</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.ts</context>
-          <context context-type="linenumber">79</context>
+          <context context-type="linenumber">81</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.listing.sort-title" datatype="html">
@@ -1961,7 +2477,7 @@
         <target state="translated">By name</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.ts</context>
-          <context context-type="linenumber">81</context>
+          <context context-type="linenumber">83</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.listing.sort-featured" datatype="html">
@@ -1969,7 +2485,7 @@
         <target state="translated">Featured</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.ts</context>
-          <context context-type="linenumber">83</context>
+          <context context-type="linenumber">85</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.association" datatype="html">
@@ -1977,7 +2493,7 @@
         <target state="translated">E-Learning Association</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.ts</context>
-          <context context-type="linenumber">116</context>
+          <context context-type="linenumber">122</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/project/project.page.ts</context>
@@ -1997,7 +2513,7 @@
         <target state="translated">Search results for “<x id="q" equiv-text="q"/>”</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.ts</context>
-          <context context-type="linenumber">134</context>
+          <context context-type="linenumber">140</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.listing.seo-category" datatype="html">
@@ -2005,7 +2521,7 @@
         <target state="translated"><x id="category" equiv-text="this.categoryName(cat)"/> projects</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.ts</context>
-          <context context-type="linenumber">136</context>
+          <context context-type="linenumber">142</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.home.seo-description" datatype="html">
@@ -2013,7 +2529,7 @@
         <target state="translated">Give to the E-Learning Association's projects or to a general category: sponsorships, water, printing and spreading knowledge. Quick, secure donations in Saudi riyals.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.ts</context>
-          <context context-type="linenumber">138</context>
+          <context context-type="linenumber">144</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.card.badge-urgent" datatype="html">
@@ -2070,14 +2586,6 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/login/login.page.ts</context>
           <context context-type="linenumber">56</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="store.otp.mobile-label" datatype="html">
-        <source>رقم الجوال</source>
-        <target state="translated">Mobile number</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/store/login/otp-sign-in.html</context>
-          <context context-type="linenumber">10,12</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.otp.mobile-hint" datatype="html">
@@ -2248,6 +2756,110 @@
           <context context-type="linenumber">54</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="store.order.title" datatype="html">
+        <source>تبرعك</source>
+        <target state="translated">Your donation</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/order/order.page.html</context>
+          <context context-type="linenumber">3,5</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/order/order.page.ts</context>
+          <context context-type="linenumber">65</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/order/order.page.ts</context>
+          <context context-type="linenumber">66</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.order.reference" datatype="html">
+        <source>الرقم المرجعي</source>
+        <target state="translated">Reference</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/order/order.page.html</context>
+          <context context-type="linenumber">5,6</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/order/order.page.html</context>
+          <context context-type="linenumber">29,31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.order.registered" datatype="html">
+        <source>تم تسجيل تبرعك — الدفع الإلكتروني قريبًا</source>
+        <target state="translated">Your donation is registered — online payment is coming soon</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/order/order.page.html</context>
+          <context context-type="linenumber">19,20</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.order.registered-lede" datatype="html">
+        <source> شكرًا لك. سجّلنا تبرعك برقمه المرجعي، وسنرسل لك رابط الدفع حين يُفعَّل الدفع الإلكتروني. </source>
+        <target state="translated">Thank you. We registered your donation under its reference and will send you the payment link once online payment is available.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/order/order.page.html</context>
+          <context context-type="linenumber">21,23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.order.status" datatype="html">
+        <source>الحالة</source>
+        <target state="translated">Status</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/order/order.page.html</context>
+          <context context-type="linenumber">43,45</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.order.created" datatype="html">
+        <source>التاريخ</source>
+        <target state="translated">Date</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/order/order.page.html</context>
+          <context context-type="linenumber">49,50</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.my-donations" datatype="html">
+        <source>تبرعاتي</source>
+        <target state="translated">My donations</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/order/order.page.html</context>
+          <context context-type="linenumber">59,62</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/order/order.page.html</context>
+          <context context-type="linenumber">83,86</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/account-menu/account-menu.ts</context>
+          <context context-type="linenumber">50,53</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/footer/footer.html</context>
+          <context context-type="linenumber">24,28</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.order.more" datatype="html">
+        <source>تبرّع لمشروع آخر</source>
+        <target state="translated">Give to another project</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/order/order.page.html</context>
+          <context context-type="linenumber">63,65</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.order.sign-in-title" datatype="html">
+        <source>سجّل الدخول لعرض هذا التبرع</source>
+        <target state="translated">Sign in to see this donation</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/order/order.page.html</context>
+          <context context-type="linenumber">71,72</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.order.sign-in-lede" datatype="html">
+        <source> استخدم رقم الجوال الذي تبرّعت به، أو افتح الرابط الذي وصلك في الرسالة. </source>
+        <target state="translated">Use the mobile number you donated with, or open the link from your message.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/order/order.page.html</context>
+          <context context-type="linenumber">73,75</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="store.project.unavailable-title" datatype="html">
         <source>هذا المشروع غير متاح</source>
         <target state="translated">This project is not available</target>
@@ -2272,30 +2884,6 @@
           <context context-type="linenumber">113</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="store.ui.breadcrumb" datatype="html">
-        <source>مسار التنقل</source>
-        <target state="translated">Breadcrumb</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/store/project/project.page.html</context>
-          <context context-type="linenumber">12</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="store.layout.nav-home" datatype="html">
-        <source>الرئيسية</source>
-        <target state="translated">Home</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/store/project/project.page.html</context>
-          <context context-type="linenumber">14,16</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">20,22</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">109,113</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="store.project.donate-heading" datatype="html">
         <source>تبرّع لهذا المشروع</source>
         <target state="translated">Donate to this project</target>
@@ -2318,6 +2906,54 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/ui/resource-state/resource-state.html</context>
           <context context-type="linenumber">2,4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.ui.close" datatype="html">
+        <source>إغلاق</source>
+        <target state="translated">Close</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/quick-donate/quick-donate.ts</context>
+          <context context-type="linenumber">44</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.quick.lede" datatype="html">
+        <source>تبرّع لتصنيف عام، ويُصرف تبرعك على مشاريعه.</source>
+        <target state="translated">Give to a general category; your gift is spent on its projects.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/quick-donate/quick-donate.ts</context>
+          <context context-type="linenumber">49,50</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.quick.category" datatype="html">
+        <source>التصنيف</source>
+        <target state="translated">Category</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/quick-donate/quick-donate.ts</context>
+          <context context-type="linenumber">51,53</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.quick.choose" datatype="html">
+        <source>اختر</source>
+        <target state="translated">Choose</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/quick-donate/quick-donate.ts</context>
+          <context context-type="linenumber">58,59</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.quick.submit" datatype="html">
+        <source>تبرع الآن</source>
+        <target state="translated">Donate now</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/quick-donate/quick-donate.ts</context>
+          <context context-type="linenumber">86,88</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.quick.category-required" datatype="html">
+        <source>اختر التصنيف.</source>
+        <target state="translated">Choose the category.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/quick-donate/quick-donate.ts</context>
+          <context context-type="linenumber">194</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.share.bar-label" datatype="html">
@@ -2380,18 +3016,6 @@
           <context context-type="linenumber">22,24</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="store.ui.toast-dismiss" datatype="html">
-        <source>إغلاق</source>
-        <target state="translated">Dismiss</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/store/share/share-sheet.ts</context>
-          <context context-type="linenumber">28</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/shared/ui/toast/toast.ts</context>
-          <context context-type="linenumber">31</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="store.share.copy" datatype="html">
         <source>نسخ الرابط</source>
         <target state="translated">Copy link</target>
@@ -2409,7 +3033,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">129,132</context>
+          <context context-type="linenumber">137,140</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.donor" datatype="html">
@@ -2418,18 +3042,6 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/account-menu/account-menu.ts</context>
           <context context-type="linenumber">43,45</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="store.layout.my-donations" datatype="html">
-        <source>تبرعاتي</source>
-        <target state="translated">My donations</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/layout/account-menu/account-menu.ts</context>
-          <context context-type="linenumber">50,53</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/layout/footer/footer.html</context>
-          <context context-type="linenumber">24,28</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.my-profile" datatype="html">
@@ -2472,22 +3084,6 @@
           <context context-type="linenumber">21,22</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="store.layout.nav-projects" datatype="html">
-        <source>المشاريع</source>
-        <target state="translated">Projects</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/layout/footer/footer.html</context>
-          <context context-type="linenumber">22,23</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">22,25</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">117,119</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="store.layout.nav-cart" datatype="html">
         <source>السلة</source>
         <target state="translated">Cart</target>
@@ -2497,7 +3093,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">121,122</context>
+          <context context-type="linenumber">129,130</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.footer-association" datatype="html">
@@ -2517,11 +3113,11 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">47,50</context>
+          <context context-type="linenumber">52,55</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">139,142</context>
+          <context context-type="linenumber">147,150</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.footer-about-link" datatype="html">
@@ -2581,7 +3177,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">92,95</context>
+          <context context-type="linenumber">97,100</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.sign-in" datatype="html">
@@ -2589,11 +3185,11 @@
         <target state="translated">Sign in</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">65,68</context>
+          <context context-type="linenumber">70,73</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">137,139</context>
+          <context context-type="linenumber">145,147</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.menu" datatype="html">
@@ -2601,7 +3197,7 @@
         <target state="translated">Menu</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">78,80</context>
+          <context context-type="linenumber">83,85</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.mobile-nav-label" datatype="html">
@@ -2609,7 +3205,7 @@
         <target state="translated">Mobile menu</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">87,88</context>
+          <context context-type="linenumber">92,93</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.cart-label-r5" datatype="html">
@@ -2617,7 +3213,7 @@
         <target state="translated">Donations cart, <x id="count" equiv-text="n"/> donations</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.ts</context>
-          <context context-type="linenumber">81</context>
+          <context context-type="linenumber">83</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.skip-link" datatype="html">
@@ -2684,14 +3280,6 @@
           <context context-type="linenumber">18,19</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="store.donate.open-amount" datatype="html">
-        <source>تبرع مفتوح</source>
-        <target state="translated">Open amount</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/shared/ui/option-picker/option-picker.ts</context>
-          <context context-type="linenumber">48,51</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="store.ui.qty-decrease" datatype="html">
         <source>إنقاص الكمية</source>
         <target state="translated">Decrease quantity</target>
@@ -2716,12 +3304,44 @@
           <context context-type="linenumber">8,11</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="store.ui.retry" datatype="html">
-        <source>إعادة المحاولة</source>
-        <target state="translated">Retry</target>
+      <trans-unit id="store.order.status-pending" datatype="html">
+        <source>بانتظار الدفع</source>
+        <target state="translated">Awaiting payment</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/shared/ui/resource-state/resource-state.html</context>
-          <context context-type="linenumber">18,21</context>
+          <context context-type="sourcefile">src/app/shared/ui/status-pill/status-labels.ts</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.order.status-paid" datatype="html">
+        <source>مدفوع</source>
+        <target state="translated">Paid</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/status-pill/status-labels.ts</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.order.status-review" datatype="html">
+        <source>قيد المراجعة</source>
+        <target state="translated">Under review</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/status-pill/status-labels.ts</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.order.status-expired" datatype="html">
+        <source>منتهي المهلة</source>
+        <target state="translated">Expired</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/status-pill/status-labels.ts</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.order.status-cancelled" datatype="html">
+        <source>ملغى</source>
+        <target state="translated">Cancelled</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/status-pill/status-labels.ts</context>
+          <context context-type="linenumber">15</context>
         </context-group>
       </trans-unit>
     </body>

@@ -229,7 +229,8 @@ function route(req, url, body) {
 
   // donor auth
   if (method === 'POST' && path === '/auth/otp/request') {
-    state.sms.push({ sentAt: new Date().toISOString(), to: body?.mobile, body: 'رمز الدخول لمتجر تعلّم: 123456 — صالح 5 دقائق.' });
+    const to = `+9665${String(body?.mobile ?? '').replace(/\D/g, '').slice(-8)}`;
+    state.sms.push({ sentAt: new Date().toISOString(), to, body: 'رمز الدخول لمتجر تعلّم: 123456 — صالح 5 دقائق.' });
     return [202, { expiresInSeconds: 300 }];
   }
   if (method === 'POST' && path === '/auth/otp/verify') {

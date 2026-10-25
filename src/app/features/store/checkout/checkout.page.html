@@ -1,0 +1,193 @@
+<div class="ph">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="مسار التنقل" i18n-aria-label="@@store.ui.breadcrumb">
+      <ol>
+        <li><a routerLink="/" i18n="@@store.layout.nav-home">الرئيسية</a></li>
+        <li>
+          <span aria-hidden="true">/</span
+          ><a routerLink="/cart" i18n="@@store.cart.title-r5">سلة التبرعات</a>
+        </li>
+        <li>
+          <span aria-hidden="true">/</span
+          ><span aria-current="page" i18n="@@store.checkout.title-r5">إتمام التبرع</span>
+        </li>
+      </ol>
+    </nav>
+    <h1 i18n="@@store.checkout.title-r5">إتمام التبرع</h1>
+  </div>
+</div>
+
+<section class="cartsec">
+  <div class="wrap">
+    @if (cartEmpty()) {
+      <div class="empty">
+        <h2 i18n="@@store.cart.empty-title">سلتك فارغة</h2>
+        <p class="links">
+          <a class="b primary" routerLink="/" fragment="projects" i18n="@@store.layout.nav-projects"
+            >المشاريع</a
+          >
+        </p>
+      </div>
+    } @else {
+      @if (cart.notices().length > 0) {
+        <div class="banner info" role="status">
+          <ul>
+            @for (n of cart.notices(); track $index) {
+              <li>{{ noticeText(n) }}</li>
+            }
+          </ul>
+        </div>
+      }
+      <div class="cgrid">
+        <div class="co-main">
+          @if (!auth.isSignedIn()) {
+            <section class="cgroup" aria-labelledby="co-id-h">
+              <h2 id="co-id-h" i18n="@@store.checkout.identity">تأكيد رقم الجوال</h2>
+              <div class="pad">
+                <p class="lede" i18n="@@store.checkout.identity-lede-r5">
+                  نرسل رمز تحقق إلى جوالك، ثم نكمل بياناتك. تبقى تبرعاتك في سلتك.
+                </p>
+                <ta-otp-sign-in />
+              </div>
+            </section>
+          } @else {
+            <form class="co" (submit)="submit($event)" novalidate>
+              @if (error(); as e) {
+                <div class="banner err co-err" role="alert" tabindex="-1">
+                  <p>{{ e }}</p>
+                  @if (invalid().length > 0) {
+                    <ul>
+                      @for (p of invalid(); track $index) {
+                        <li>{{ problemText(p) }}</li>
+                      }
+                    </ul>
+                    <a routerLink="/cart" i18n="@@store.checkout.back-to-cart-r5"
+                      >العودة إلى السلة لتصحيحها</a
+                    >
+                  }
+                  @if (inProgress()) {
+                    <button type="submit" class="linkbtn" i18n="@@store.ui.retry">
+                      إعادة المحاولة
+                    </button>
+                  }
+                </div>
+              }
+
+              <section class="cgroup" aria-labelledby="co-details-h">
+                <h2 id="co-details-h" i18n="@@store.checkout.details">بياناتك</h2>
+                <div class="pad grid">
+                  <div class="row2">
+                    <div class="field">
+                      <label for="co-name" i18n="@@store.checkout.name">الاسم الكامل</label>
+                      <input
+                        id="co-name"
+                        autocomplete="name"
+                        maxlength="120"
+                        [value]="name()"
+                        (input)="setName($event)"
+                        [attr.aria-invalid]="!!nameError()"
+                        aria-describedby="co-name-err co-saved"
+                      />
+                      <p id="co-name-err" class="field-errors" role="alert">{{ nameError() }}</p>
+                    </div>
+                    <div class="field">
+                      <span class="lbl" id="co-mobile-l" i18n="@@store.otp.mobile-label"
+                        >رقم الجوال</span
+                      >
+                      <p class="ro" aria-labelledby="co-mobile-l">
+                        <bdi dir="ltr">{{ auth.customer()?.mobile }}</bdi>
+                        <ta-icon name="check" [size]="16" />
+                      </p>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label for="co-email" i18n="@@store.checkout.email">البريد الإلكتروني</label>
+                    <input
+                      id="co-email"
+                      type="email"
+                      inputmode="email"
+                      autocomplete="email"
+                      dir="ltr"
+                      maxlength="254"
+                      [value]="email()"
+                      (input)="setEmail($event)"
+                      [attr.aria-invalid]="!!emailError()"
+                      aria-describedby="co-email-err co-saved"
+                    />
+                    <p id="co-email-err" class="field-errors" role="alert">{{ emailError() }}</p>
+                  </div>
+                  <p id="co-saved" class="note" i18n="@@store.checkout.saved-to-profile">
+                    نحفظ الاسم والبريد في ملفك الشخصي لتبرعاتك القادمة، ويمكنك تعديلهما من حسابك.
+                  </p>
+                </div>
+              </section>
+
+              @if (!paymentsEnabled) {
+                <p class="banner info" role="note" i18n="@@store.checkout.payments-soon">
+                  الدفع الإلكتروني قريبًا: نسجّل تبرعك الآن برقم مرجعي، ونرسل لك رابط الدفع عند
+                  تفعيله.
+                </p>
+              }
+
+              <button
+                type="submit"
+                class="b cta pay-btn"
+                [disabled]="busy() || quoteLoading() || lines().length === 0"
+                [attr.aria-busy]="busy()"
+              >
+                <ta-icon name="heart" [size]="18" />
+                @if (paymentsEnabled) {
+                  <span i18n="@@store.checkout.pay">ادفع الآن</span>
+                } @else {
+                  <span i18n="@@store.checkout.register">تأكيد التبرع</span>
+                }
+              </button>
+            </form>
+          }
+        </div>
+
+        <aside class="sumbox" aria-labelledby="co-sum-h">
+          <h2 id="co-sum-h" i18n="@@store.cart.summary-r5">ملخص التبرعات</h2>
+          @if (othersNotice()) {
+            <p class="banner info others" role="status" i18n="@@store.checkout.other-donations">
+              سلتك تحتوي على تبرعات أخرى
+            </p>
+          }
+          <ta-resource-state
+            [loading]="quoteLoading() && !quote()"
+            [error]="quoteFailed()"
+            (retry)="loadQuote()"
+          >
+            <ul class="sumlines">
+              @for (l of lines(); track l.id) {
+                <li [class.bad]="l.problems.length > 0">
+                  <span class="t"
+                    >{{ title(l) }}
+                    @if (optionLabel(l); as o) {
+                      <small
+                        >{{ o }} × <bdi>{{ l.quantity }}</bdi></small
+                      >
+                    }
+                  </span>
+                  <b><ta-money [value]="l.amount" /></b>
+                </li>
+              }
+            </ul>
+            @for (p of quote()?.problems ?? []; track $index) {
+              <p class="issue" role="alert">{{ problemText(p) }}</p>
+            }
+            <div class="r t">
+              <span i18n="@@store.cart.total">الإجمالي</span>
+              <b aria-live="polite">
+                @if (quote(); as q) {
+                  <ta-money [value]="q.totalAmount" />
+                }
+              </b>
+            </div>
+            <a class="edit" routerLink="/cart" i18n="@@store.checkout.edit-cart">تعديل السلة</a>
+          </ta-resource-state>
+        </aside>
+      </div>
+    }
+  </div>
+</section>

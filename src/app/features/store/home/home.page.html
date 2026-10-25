@@ -7,6 +7,9 @@
     <p class="lede" i18n="@@store.home.lede-r5">
       اختر مشروعًا وتبرّع بأحد خياراته أو بالمبلغ الذي تريد، أو تبرّع لتصنيف عام يُصرف على مشاريعه.
     </p>
+    <button type="button" class="hquick" (click)="openQuick($event)">
+      <ta-icon name="gift" [size]="20" /><span i18n="@@store.quick.title">تبرع سريع</span>
+    </button>
     <form class="hsearch" role="search" (submit)="search($event, hq)">
       <label class="visually-hidden" for="home-q" i18n="@@store.listing.search-label"
         >ابحث في المشاريع</label

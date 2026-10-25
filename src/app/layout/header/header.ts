@@ -13,6 +13,7 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { StoreAuth } from '../../core/auth/store-auth';
 import { CartSummary } from '../../core/cart/cart-summary';
+import { QuickDonate } from '../../core/ui/quick-donate.service';
 import { Icon } from '../../shared/ui/icon/icon';
 import { AccountMenu } from '../account-menu/account-menu';
 import { LangSwitch } from '../lang-switch/lang-switch';
@@ -34,6 +35,7 @@ import { ThemeToggle } from '../theme-toggle/theme-toggle';
 export class Header {
   protected readonly auth = inject(StoreAuth);
   protected readonly cart = inject(CartSummary);
+  protected readonly quick = inject(QuickDonate);
   private readonly router = inject(Router);
   protected readonly mainSite = environment.mainSiteUrl;
 

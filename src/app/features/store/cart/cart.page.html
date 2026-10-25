@@ -1,0 +1,168 @@
+<div class="ph">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="مسار التنقل" i18n-aria-label="@@store.ui.breadcrumb">
+      <ol>
+        <li><a routerLink="/" i18n="@@store.layout.nav-home">الرئيسية</a></li>
+        <li>
+          <span aria-hidden="true">/</span
+          ><span aria-current="page" i18n="@@store.cart.title-r5">سلة التبرعات</span>
+        </li>
+      </ol>
+    </nav>
+    <h1 i18n="@@store.cart.title-r5">سلة التبرعات</h1>
+  </div>
+</div>
+
+<section class="cartsec">
+  <div class="wrap">
+    <ta-resource-state [loading]="cart.loading()" [error]="cart.loadError()" (retry)="cart.load()">
+      @if (cart.notices().length > 0) {
+        <div class="banner info" role="status">
+          <ul>
+            @for (n of cart.notices(); track $index) {
+              <li>{{ noticeText(n) }}</li>
+            }
+          </ul>
+          <button
+            type="button"
+            class="linkbtn"
+            (click)="cart.dismissNotices()"
+            i18n="@@store.ui.toast-dismiss"
+          >
+            إخفاء
+          </button>
+        </div>
+      }
+      @if (cart.isEmpty()) {
+        <div class="empty">
+          <ta-icon name="heart" [size]="56" class="ic" />
+          <h2 i18n="@@store.cart.empty-title">سلتك فارغة</h2>
+          <p i18n="@@store.cart.empty-lede-r5">
+            اختر مشروعًا من المشاريع، أو تبرّع سريعًا لتصنيف عام.
+          </p>
+          <p class="links">
+            <a
+              class="b primary"
+              routerLink="/"
+              fragment="projects"
+              i18n="@@store.layout.nav-projects"
+              >المشاريع</a
+            >
+            <button
+              type="button"
+              class="b ghost"
+              (click)="openQuick($event)"
+              i18n="@@store.quick.title"
+            >
+              تبرع سريع
+            </button>
+          </p>
+        </div>
+      } @else if (cart.lines().length > 0) {
+        @if (lastProblem(); as p) {
+          <div class="banner err" role="alert">{{ p }}</div>
+        }
+        @for (p of cartProblems(); track p) {
+          <div class="banner err" role="alert">{{ p }}</div>
+        }
+        <div class="cgrid">
+          <div>
+            <section class="cgroup" aria-labelledby="grp-h">
+              <h2 id="grp-h">
+                <ta-icon name="heart" [size]="18" /><span i18n="@@store.cart.group-r5"
+                  >تبرعاتك</span
+                >
+                <span class="tag"
+                  ><span class="visually-hidden" i18n="@@store.cart.count-label-r5"
+                    >عدد التبرعات:</span
+                  >
+                  {{ cart.count() }}</span
+                >
+              </h2>
+              <ul class="lines">
+                @for (l of cart.lines(); track l.id) {
+                  <li>
+                    <ta-cart-line
+                      [line]="l"
+                      [limits]="limits()"
+                      [maxQuantity]="cart.maxQuantity()"
+                      [busy]="l.id.startsWith('pending-')"
+                      (quantity)="setQuantity(l, $event)"
+                      (amount)="setAmount(l, $event)"
+                      (remove)="remove(l)"
+                    />
+                  </li>
+                }
+              </ul>
+            </section>
+            <div class="cfoot">
+              <a
+                class="b ghost sm"
+                routerLink="/"
+                fragment="projects"
+                i18n="@@store.cart.continue-r5"
+                >متابعة التبرع</a
+              >
+              <button
+                type="button"
+                class="rm"
+                (click)="confirmClear.set(true)"
+                [disabled]="cart.pending() > 0"
+                i18n="@@store.cart.clear"
+              >
+                إفراغ السلة
+              </button>
+            </div>
+          </div>
+
+          <aside class="sumbox" aria-labelledby="sum-h">
+            <h2 id="sum-h" i18n="@@store.cart.summary-r5">ملخص التبرعات</h2>
+            <div class="r">
+              <span i18n="@@store.cart.lines">عدد التبرعات</span>
+              <b>{{ cart.count() }}</b>
+            </div>
+            <div class="r t">
+              <span i18n="@@store.cart.total">الإجمالي</span>
+              <b aria-live="polite"><ta-money [value]="cart.total()" /></b>
+            </div>
+            <a
+              class="b cta"
+              routerLink="/checkout"
+              [class.dis]="blocked()"
+              [attr.aria-disabled]="blocked() ? 'true' : null"
+              (click)="checkout($event)"
+            >
+              <span i18n="@@store.cart.checkout-r5">إتمام التبرع</span>
+              <ta-icon name="arrow" [size]="18" />
+            </a>
+            @if (cart.hasProblems()) {
+              <p class="note" i18n="@@store.cart.fix-issues-r5">
+                صحّح التبرعات المميّزة قبل إتمام التبرع.
+              </p>
+            }
+          </aside>
+        </div>
+      }
+    </ta-resource-state>
+  </div>
+</section>
+
+<ta-dialog [(open)]="confirmClear" labelledBy="clr-h">
+  <div class="confirm">
+    <h2 id="clr-h" i18n="@@store.cart.clear-title">إفراغ السلة؟</h2>
+    <p i18n="@@store.cart.clear-lede">ستُحذف كل التبرعات من سلتك.</p>
+    <div class="cacts">
+      <button
+        type="button"
+        class="b ghost"
+        (click)="confirmClear.set(false)"
+        i18n="@@store.ui.cancel"
+      >
+        إلغاء
+      </button>
+      <button type="button" class="b danger" (click)="clear()" i18n="@@store.cart.clear">
+        إفراغ السلة
+      </button>
+    </div>
+  </div>
+</ta-dialog>

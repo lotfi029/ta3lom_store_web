@@ -12,6 +12,7 @@ import type { Category, CatalogSort } from '../../../core/api/api.types';
 import { CATALOG_SORTS } from '../../../core/api/api.types';
 import { refreshAfterHydration } from '../../../core/http/refresh-after-hydration';
 import { I18nService } from '../../../core/i18n/i18n';
+import { QuickDonate } from '../../../core/ui/quick-donate.service';
 import { type JsonLd, SeoService, siteName } from '../../../core/seo/seo.service';
 import { Icon } from '../../../shared/ui/icon/icon';
 import { ResourceState } from '../../../shared/ui/resource-state/resource-state';
@@ -37,6 +38,7 @@ export class HomePage {
   protected readonly i18n = inject(I18nService);
   private readonly seo = inject(SeoService);
   private readonly router = inject(Router);
+  private readonly quick = inject(QuickDonate);
 
   readonly q = input<string>();
   readonly category = input<string>();
@@ -82,6 +84,10 @@ export class HomePage {
       default:
         return $localize`:@@store.listing.sort-featured:المميّزة`;
     }
+  }
+
+  protected openQuick(event: Event): void {
+    this.quick.show(event.currentTarget);
   }
 
   protected search(event: Event, input: HTMLInputElement): void {

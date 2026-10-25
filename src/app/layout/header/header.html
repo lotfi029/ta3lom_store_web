@@ -42,6 +42,11 @@
     </form>
 
     <div class="acts">
+      <button type="button" class="quick" (click)="quick.show($event.currentTarget)">
+        <ta-icon name="gift" [size]="18" /><span class="lbl" i18n="@@store.quick.title"
+          >تبرع سريع</span
+        >
+      </button>
       <a class="backsite" [href]="mainSite"
         ><ta-icon name="arrow" [size]="14" /><span i18n="@@store.layout.main-site"
           >الموقع الرئيسي</span
@@ -116,6 +121,9 @@
       i18n="@@store.layout.nav-projects"
       >المشاريع</a
     >
+    <button type="button" class="quick mquick" (click)="mobileOpen.set(false); quick.show(burger)">
+      <ta-icon name="gift" [size]="18" /><span i18n="@@store.quick.title">تبرع سريع</span>
+    </button>
     <a class="ml" routerLink="/cart" (click)="mobileOpen.set(false)" i18n="@@store.layout.nav-cart"
       >السلة</a
     >

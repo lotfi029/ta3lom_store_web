@@ -23,9 +23,20 @@ export const routes: Routes = [
         path: '',
         loadComponent: () => import('./features/store/home/home.page').then((m) => m.HomePage),
       },
-      { path: 'cart', loadComponent: placeholder },
-      { path: 'checkout', canActivate: [cartNotEmptyGuard], loadComponent: placeholder },
-      { path: 'orders/:ref', loadComponent: placeholder },
+      {
+        path: 'cart',
+        loadComponent: () => import('./features/store/cart/cart.page').then((m) => m.CartPage),
+      },
+      {
+        path: 'checkout',
+        canActivate: [cartNotEmptyGuard],
+        loadComponent: () =>
+          import('./features/store/checkout/checkout.page').then((m) => m.CheckoutPage),
+      },
+      {
+        path: 'orders/:ref',
+        loadComponent: () => import('./features/store/order/order.page').then((m) => m.OrderPage),
+      },
       {
         path: 'account',
         canActivate: [customerGuard],
