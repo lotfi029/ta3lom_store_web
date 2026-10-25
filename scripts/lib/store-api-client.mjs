@@ -1,7 +1,9 @@
 /**
  * Minimal store-API client for test tooling (seed script, Playwright helpers): JSON calls, cookie jar, bearer.
- * Never imported by the app. Staff credentials live in .e2e/staff.json (git-ignored, local dev data only).
+ * Never imported by the app. Staff credentials and TOTP secrets live in e2e/.auth/staff.json (git-ignored, local dev
+ * data only — E-4).
  */
+import { randomBytes } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -15,9 +17,13 @@ export const STAFF_FILE = join(
   dirname(fileURLToPath(import.meta.url)),
   '..',
   '..',
-  '.e2e',
+  'e2e',
+  '.auth',
   'staff.json',
 );
+
+/** A strong password for test staff (24 characters, never on the common-password list). */
+export const strongPassword = () => `E2e-${randomBytes(15).toString('base64url')}`;
 
 export class Client {
   constructor() {
@@ -67,7 +73,11 @@ export function writeStaff(staff) {
   writeFileSync(STAFF_FILE, JSON.stringify(staff, null, 2));
 }
 
-/** Signs a staff user in (password, then TOTP; enrols on first sign-in and records the secret). */
+/**
+ * Signs a staff user in: password, then TOTP (sets it up on first sign-in and records the secret), then — when the API
+ * forces a password change (new or reset staff: `mustChangePassword`) — changes it to a new strong password, records
+ * it, and continues with the fresh session. `entry` is updated in place; the caller saves it.
+ */
 export async function staffLogin(entry) {
   const c = new Client();
   const login = await c.call('POST', '/v1/admin/auth/login', {
@@ -88,6 +98,18 @@ export async function staffLogin(entry) {
     throw new Error(`totp verify ${entry.email}: ${verify.status} ${JSON.stringify(verify.body)}`);
   c.token = verify.body.accessToken;
   c.session = verify.body;
+  if (verify.body.staff?.mustChangePassword) {
+    const next = strongPassword();
+    const change = await c.call('POST', '/v1/admin/auth/password', {
+      currentPassword: entry.password,
+      newPassword: next,
+    });
+    if (change.status !== 200)
+      throw new Error(`password change ${entry.email}: ${change.status} ${JSON.stringify(change.body)}`);
+    entry.password = next;
+    c.token = change.body.accessToken;
+    c.session = change.body;
+  }
   return c;
 }
 
@@ -96,5 +118,5 @@ export async function latestOtp(mobile05) {
   const e164 = `+966${mobile05.slice(1)}`;
   const { body } = await new Client().call('GET', '/dev/sms?count=50');
   const msg = (body ?? []).find((m) => m.to === e164);
-  return msg?.body.match(/\d{6}/)?.[0] ?? null;
+  return msg?.body.match(/\b\d{6}\b/)?.[0] ?? null;
 }

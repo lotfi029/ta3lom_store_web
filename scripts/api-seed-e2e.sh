@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Seeds the running local store API for e2e (staff per role, r4 catalogue, stock, digital files). Idempotent.
+# Seeds the running local R5 store API for e2e (staff per role, TOTP, forced password change). Idempotent.
 set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 . "$HERE/dev-env.sh"

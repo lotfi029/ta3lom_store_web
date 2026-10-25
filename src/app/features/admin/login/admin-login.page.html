@@ -65,9 +65,9 @@
       </form>
     } @else {
       <form (submit)="submitCode($event)" novalidate class="lform">
-        @if (step() === 'enrol' && enrolment(); as en) {
-          <div class="enrol">
-            <p i18n="@@store.admin.enrol-lede">
+        @if (step() === 'setup' && setup(); as en) {
+          <div class="totp-setup">
+            <p i18n="@@store.admin.totp-setup-lede">
               أول دخول: فعّل التحقق بخطوتين. أضف هذا المفتاح في تطبيق المصادقة (Google Authenticator
               أو Microsoft Authenticator)، ثم أدخل الرمز الذي يظهر.
             </p>

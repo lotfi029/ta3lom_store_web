@@ -13,11 +13,11 @@
     "prebuild": "node scripts/routes.mjs",
     "build": "ng build --configuration production,local && npm run postbuild:checks",
     "build:ci": "node scripts/routes.mjs && ng build --configuration production,ci && npm run postbuild:checks",
-    "build:prod": "node scripts/routes.mjs && ng build --configuration production && npm run postbuild:checks",
+    "build:prod": "node scripts/check-payments-flag.mjs && node scripts/routes.mjs && ng build --configuration production && EXPECT_API_URL=https://store-api.ta3lom.sa/v1 npm run postbuild:checks",
     "postbuild:checks": "node scripts/postbuild.mjs && node scripts/check-deploy-output.mjs && node scripts/check-csp.mjs && node scripts/check-bundle-budget.mjs",
     "watch": "ng build --watch --configuration development",
     "typecheck": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.spec.json --noEmit",
-    "lint": "eslint . && stylelint \"src/**/*.css\" && node scripts/contrast-check.mjs && node scripts/check-no-giving.mjs && node scripts/i18n-merge.mjs --check",
+    "lint": "eslint . && stylelint \"src/**/*.css\" && node scripts/contrast-check.mjs && node scripts/check-no-commerce.mjs && node scripts/i18n-merge.mjs --check",
     "format": "prettier --write \"src/**/*.{ts,html,css}\"",
     "test": "ng test --watch=false",
     "e2e": "playwright test",
@@ -29,7 +29,9 @@
     "api:up": "bash scripts/api-up.sh",
     "api:seed": "bash scripts/api-seed-e2e.sh",
     "lhci": "lhci autorun",
-    "screenshots": "playwright test --config scripts/playwright.screenshots.config.ts"
+    "screenshots": "playwright test --config scripts/playwright.screenshots.config.ts",
+    "api:openapi": "node scripts/api-openapi.mjs && npm run types:gen",
+    "stub-capture": "node scripts/stub-capture.mjs"
   },
   "dependencies": {
     "@angular/aria": "^22.2.0",

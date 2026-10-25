@@ -10,8 +10,8 @@ import type {
   Setting,
   StaffUser,
   TemplateTest,
+  TemplateInput,
   TemplateTestResult,
-  TemplateUpdate,
   UpdateStaff,
 } from '../../core/api/api.types';
 import { STORE_API_URL } from '../../core/api/store-api-url';
@@ -21,16 +21,16 @@ export interface AuditFilter {
   actor: string;
   entity: string;
   action: string;
-  from: string;
-  to: string;
+  entityId: string;
   page: number;
 }
 
-export const AUDIT_PAGE_SIZE = 25;
+export const AUDIT_PAGE_SIZE = 50;
 
 /**
- * Admin platform data (#118–#128, #133): staff users, settings, message templates, audit log. Every read waits for the
- * staff session; the policies are checked by the API (and mirrored by the screens for disabled actions).
+ * Admin platform data (contract 15 §2.8–§2.9): staff users, settings, message templates, audit log. Every read waits
+ * for the staff session and the screen's policy (settings and audit: `staff:admin`; templates: `staff:templates`); the
+ * API enforces the same table.
  */
 @Injectable({ providedIn: 'root' })
 export class PlatformData {
@@ -38,34 +38,33 @@ export class PlatformData {
   private readonly api = inject(STORE_API_URL);
   private readonly auth = inject(StaffAuth);
   private readonly isAdmin = computed(() => this.auth.isSignedIn() && this.auth.can('staff:admin'));
-  private readonly signedIn = computed(() => this.auth.isSignedIn());
+  private readonly canTemplates = computed(
+    () => this.auth.isSignedIn() && this.auth.can('staff:templates'),
+  );
 
   readonly staff = httpResource<StaffUser[]>(() =>
     this.isAdmin() ? `${this.api}/admin/staff` : undefined,
   );
   readonly settings = httpResource<Setting[]>(() =>
-    this.signedIn() ? `${this.api}/admin/settings` : undefined,
+    this.isAdmin() ? `${this.api}/admin/settings` : undefined,
   );
   readonly templates = httpResource<MessageTemplate[]>(() =>
-    this.signedIn() ? `${this.api}/admin/templates` : undefined,
+    this.canTemplates() ? `${this.api}/admin/templates` : undefined,
   );
 
   readonly auditFilter = signal<AuditFilter>({
     actor: '',
     entity: '',
     action: '',
-    from: '',
-    to: '',
+    entityId: '',
     page: 1,
   });
   readonly audit = httpResource<AuditPage>(() => {
     if (!this.isAdmin()) return undefined;
     const f = this.auditFilter();
     const params: Record<string, string | number> = { page: f.page, pageSize: AUDIT_PAGE_SIZE };
-    for (const k of ['actor', 'entity', 'action'] as const)
+    for (const k of ['actor', 'entity', 'action', 'entityId'] as const)
       if (f[k].trim()) params[k] = f[k].trim();
-    if (f.from) params['from'] = `${f.from}T00:00:00+03:00`;
-    if (f.to) params['to'] = `${f.to}T23:59:59+03:00`;
     return { url: `${this.api}/admin/audit`, params };
   });
 
@@ -109,18 +108,18 @@ export class PlatformData {
 
   async saveTemplate(
     t: Pick<MessageTemplate, 'key' | 'channel' | 'locale'>,
-    body: TemplateUpdate,
+    body: TemplateInput,
   ): Promise<MessageTemplate> {
     const r = await firstValueFrom(this.http.put<MessageTemplate>(this.templateUrl(t), body));
     this.templates.reload();
     return r;
   }
 
-  testTemplate(
-    t: Pick<MessageTemplate, 'key' | 'channel' | 'locale'>,
-    body: TemplateTest,
-  ): Promise<TemplateTestResult> {
-    return firstValueFrom(this.http.post<TemplateTestResult>(`${this.templateUrl(t)}/test`, body));
+  /** `POST /admin/templates/test`: renders the text with sample values and sends it (5 per hour per member). */
+  testTemplate(body: TemplateTest): Promise<TemplateTestResult> {
+    return firstValueFrom(
+      this.http.post<TemplateTestResult>(`${this.api}/admin/templates/test`, body),
+    );
   }
 
   private templateUrl(t: Pick<MessageTemplate, 'key' | 'channel' | 'locale'>): string {

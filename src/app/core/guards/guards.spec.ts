@@ -6,19 +6,27 @@ import {
   UrlTree,
   provideRouter,
 } from '@angular/router';
+import { StaffAuth } from '../auth/staff-auth';
 import { StoreAuth } from '../auth/store-auth';
 import { CartSummary } from '../cart/cart-summary';
-import { cartNotEmptyGuard, thanksAccessGuard } from './guards';
+import {
+  cartNotEmptyGuard,
+  guestOnlyGuard,
+  safeReturnUrl,
+  staffGuard,
+  staffPolicyGuard,
+} from './guards';
 
 const state = (url: string) => ({ url }) as RouterStateSnapshot;
-const route = (t: string | null) =>
-  ({
-    queryParamMap: { get: (k: string) => (k === 't' ? t : null) },
-  }) as unknown as ActivatedRouteSnapshot;
+const route = (q: Record<string, string> = {}) =>
+  ({ queryParamMap: { get: (k: string) => q[k] ?? null } }) as unknown as ActivatedRouteSnapshot;
 
 describe('guards', () => {
   let signedIn = false;
   let count = 0;
+  let staffIn = true;
+  let mustChange = false;
+  let canDo = true;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -27,11 +35,19 @@ describe('guards', () => {
         // Resolve asynchronously, like the real services: inject() after an await would throw NG0203.
         { provide: StoreAuth, useValue: { ensureSession: () => Promise.resolve(signedIn) } },
         { provide: CartSummary, useValue: { load: () => Promise.resolve(count) } },
+        {
+          provide: StaffAuth,
+          useValue: {
+            ensureSession: () => Promise.resolve(staffIn),
+            mustChangePassword: () => mustChange,
+            can: () => canDo,
+          },
+        },
       ],
     });
   });
 
-  const run = (guard: typeof cartNotEmptyGuard, r = route(null), url = '/checkout') =>
+  const run = (guard: typeof cartNotEmptyGuard, r = route(), url = '/checkout') =>
     TestBed.runInInjectionContext(() => guard(r, state(url))) as Promise<boolean | UrlTree>;
   const path = (v: boolean | UrlTree) =>
     v instanceof UrlTree ? TestBed.inject(Router).serializeUrl(v) : v;
@@ -43,13 +59,43 @@ describe('guards', () => {
     expect(await run(cartNotEmptyGuard)).toBe(true);
   });
 
-  it('thanks: the session, else a status token, else sign in first', async () => {
+  it('login: a signed-in donor goes to a safe return URL, else to their donations', async () => {
     signedIn = true;
-    expect(await run(thanksAccessGuard, route(null), '/orders/T3-1/thanks')).toBe(true);
+    expect(path(await run(guestOnlyGuard, route({ returnUrl: '/checkout' })))).toBe('/checkout');
+    expect(path(await run(guestOnlyGuard, route({ returnUrl: '//evil.example' })))).toBe(
+      '/account/donations',
+    );
     signedIn = false;
-    expect(await run(thanksAccessGuard, route('st'), '/orders/T3-1/thanks?t=st')).toBe(true);
-    expect(path(await run(thanksAccessGuard, route(null), '/orders/T3-1/thanks'))).toBe(
-      '/login?returnUrl=%2Forders%2FT3-1%2Fthanks',
+    expect(await run(guestOnlyGuard)).toBe(true);
+  });
+
+  it('return URLs stay on this site', () => {
+    expect(safeReturnUrl('/a?b=1', '/x')).toBe('/a?b=1');
+    for (const bad of ['//evil', '/\\evil', 'https://evil', '', null])
+      expect(safeReturnUrl(bad, '/x')).toBe('/x');
+  });
+
+  it('C-6: a pending password change sends every admin screen to /admin/password (also after a reload)', async () => {
+    staffIn = true;
+    mustChange = true;
+    expect(path(await run(staffGuard, route(), '/admin/projects'))).toBe('/admin/password');
+    expect(path(await run(staffPolicyGuard('staff:admin'), route(), '/admin/staff'))).toBe(
+      '/admin/password',
+    );
+    mustChange = false;
+    expect(await run(staffGuard, route(), '/admin')).toBe(true);
+  });
+
+  it('staff: no session → login with return URL; missing policy → dashboard', async () => {
+    staffIn = false;
+    expect(path(await run(staffGuard, route(), '/admin/orders'))).toBe(
+      '/admin/login?returnUrl=%2Fadmin%2Forders',
+    );
+    staffIn = true;
+    mustChange = false;
+    canDo = false;
+    expect(path(await run(staffPolicyGuard('staff:admin'), route(), '/admin/audit'))).toBe(
+      '/admin',
     );
   });
 });

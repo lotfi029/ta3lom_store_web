@@ -1,6 +1,8 @@
 /**
- * Named aliases over the GENERATED `store-api.types.ts` (openapi-typescript, `npm run types:gen`). Nothing here is a
- * hand-written shape — every alias points into `components['schemas']` or `paths`. Add aliases as screens need them.
+ * Named aliases over the GENERATED `store-api.types.ts` (openapi-typescript, `npm run types:gen`, snapshot from the R5
+ * store API — DECISIONS D-W1). Nothing here is a hand-written shape — every alias points into `components['schemas']`
+ * or `paths`. The wire-value unions below only name the string values the contract lists for fields the OpenAPI
+ * document types as plain `string` (contract 15 §1.9).
  */
 import type { components, paths } from './store-api.types';
 
@@ -14,66 +16,6 @@ export type RequestBody<P extends keyof paths, M extends keyof paths[P]> = paths
   ? B
   : never;
 
-// Auth (#16–#20, #47–#52)
-export type SessionResponse = Schemas['SessionResponse'];
-export type CustomerSession = Schemas['CustomerSessionResponse'];
-export type AccessTokenResponse = Schemas['AccessTokenResponse'];
-export type OtpRequestedResponse = Schemas['OtpRequestedResponse'];
-export type CartNotice = Schemas['CartNoticeResponse'];
-export type StaffLoginResponse = Schemas['StaffLoginResponse'];
-export type StaffSessionResponse = Schemas['StaffSessionResponse'];
-export type StaffMe = Schemas['StaffMeResponse'];
-export type TotpEnrolResponse = Schemas['TotpEnrolResponse'];
-
-// Admin platform (#118–#128, #133)
-export type StaffUser = Schemas['StaffUserResponse'];
-export type CreateStaff = Schemas['CreateStaffRequest'];
-export type UpdateStaff = Schemas['UpdateStaffRequest'];
-export type CreateStaffResult = Schemas['CreateStaffResponse'];
-export type OneTimePassword = Schemas['OneTimePasswordResponse'];
-export type Setting = Schemas['SettingResponse'];
-export type MessageTemplate = Schemas['TemplateResponse'];
-export type TemplateUpdate = Schemas['TemplateUpdateRequest'];
-export type TemplateTest = Schemas['TemplateTestRequest'];
-export type TemplateTestResult = Schemas['TemplateTestResponse'];
-export type AuditEntry = Schemas['AuditEntry'];
-export type AuditPage = Schemas['PagedResultOfAuditEntry'];
-
-// Admin catalogue (#54–#62, #64–#66, #72–#80)
-export type AdminProductRow = Schemas['AdminProductRow'];
-export type AdminProductPage = Schemas['PagedResultOfAdminProductRow'];
-export type AdminProduct = Schemas['AdminProductResponse'];
-export type AdminFormat = Schemas['AdminBookFormat'];
-export type AdminModule = Schemas['AdminModule'];
-export type ProductInput = Schemas['ProductInput'];
-export type CourseDetailInput = Schemas['CourseDetailInput'];
-export type CourseModuleInput = Schemas['CourseModuleInput'];
-export type BookDetailInput = Schemas['BookDetailInput'];
-export type BookFormatInput = Schemas['BookFormatInput'];
-export type AdminCategory = Schemas['AdminCategoryResponse'];
-export type CategoryInput = Schemas['CategoryInput'];
-export type MediaAsset = Schemas['MediaAssetResponse'];
-export type MediaPage = Schemas['PagedResultOfMediaAssetResponse'];
-export type MediaAltInput = Schemas['MediaAltInput'];
-export type StockRow = Schemas['StockRow'];
-export type StockMovement = Schemas['StockMovementResponse'];
-export type StockMovementPage = Schemas['PagedResultOfStockMovementResponse'];
-export type StockMovementRequest = Schemas['StockMovementRequest'];
-
-// Admin operations (#53, #85–#88, #94–#99, #117, #129–#132)
-export type Dashboard = Schemas['DashboardResponse'];
-export type AdminOrderRow = Schemas['AdminOrderRow'];
-export type AdminOrderPage = Schemas['PagedResultOfAdminOrderRow'];
-export type AdminOrderDetail = Schemas['AdminOrderDetailResponse'];
-export type Shipment = Schemas['ShipmentResponse'];
-export type ShipmentPage = Schemas['PagedResultOfShipmentResponse'];
-export type DownloadGrant = Schemas['DownloadGrantResponse'];
-export type CustomerRow = Schemas['CustomerRow'];
-export type Customer360 = Schemas['Customer360'];
-
-// Cart (#11)
-export type CartBadge = Schemas['CartBadgeResponse'];
-
 /** The API serialises int32 as `number | string` (OpenAPI pattern) — read them through this. */
 export function toInt(value: number | string | null | undefined, fallback = 0): number {
   if (value === null || value === undefined || value === '') return fallback;
@@ -81,57 +23,106 @@ export function toInt(value: number | string | null | undefined, fallback = 0): 
   return Number.isFinite(n) ? n : fallback;
 }
 
-// Catalogue (#1–#5, #9)
+// Wire values (contract 15 §1.9)
+export type ProjectStatus = 'draft' | 'published' | 'archived';
+export type ProjectBadge = 'new' | 'urgent';
+export type OrderStatusValue =
+  'pending_payment' | 'paid' | 'payment_review' | 'cancelled' | 'expired';
+export type CustomerStatus = 'active' | 'blocked' | 'anonymised';
+export type TargetKind = 'project' | 'category';
+export type CatalogSort = 'featured' | 'newest' | 'title';
+export const CATALOG_SORTS: readonly CatalogSort[] = ['featured', 'newest', 'title'];
+
+// Catalogue (public)
 export type HomeResponse = Schemas['HomeResponse'];
-export type ProductCard = Schemas['ProductCardResponse'];
-export type ProductPage = Schemas['PagedResultOfProductCardResponse'];
-export type ProductDetail = Schemas['ProductDetailResponse'];
-export type CourseBlock = Schemas['CourseBlock'];
-export type BookBlock = Schemas['BookBlock'];
-export type BookFormat = Schemas['BookFormatResponse'];
-export type CourseModule = Schemas['CourseModuleResponse'];
-export type RelatedProduct = Schemas['RelatedProduct'];
-export type Category = Schemas['CategoryResponse'];
+export type Category = Schemas['CategorySummary'];
 export type CategoryRef = Schemas['CategoryRef'];
-export type CoverImage = Schemas['ImageResponse'];
-export type LiveFigures = Schemas['LiveFiguresResponse'];
-export type LiveItem = Schemas['LiveItem'];
-export type LiveFormat = Schemas['LiveFormat'];
+export type ProjectCard = Schemas['ProjectCard'];
+export type ProjectPage = Paged<ProjectCard>;
+export type ProjectDetail = Schemas['ProjectDetail'];
+export type ProjectOption = Schemas['ProjectOptionView'];
+export type SlugRedirect = Schemas['SlugRedirectResponse'];
+export type ProjectSlugs = Schemas['ProjectSlugsResponse'];
 export type CatalogConfig = Schemas['CatalogConfigResponse'];
 
-/** r4: the storefront sells these two product types only. */
-export type StoreProductType = 'course' | 'book';
-export const isStoreProduct = (p: { type: string }): boolean =>
-  p.type === 'course' || p.type === 'book';
+/** The list envelope `{ items, total, page, pageSize }` (contract 15 §1.5). */
+export interface Paged<T> {
+  items: T[];
+  total: number | string;
+  page: number | string;
+  pageSize: number | string;
+}
 
-// Cart (#10–#15)
+// Donor auth
+export type SessionResponse = Schemas['SessionResponse'];
+export type CustomerSession = Schemas['CustomerSessionResponse'];
+export type AccessTokenResponse = Schemas['AccessTokenResponse'];
+export type OtpRequestedResponse = Schemas['OtpRequestedResponse'];
+export type CartNotice = Schemas['CartNoticeResponse'];
+
+// Cart, checkout, order status
 export type Cart = Schemas['CartResponse'];
 export type CartLine = Schemas['CartLineResponse'];
-export type CartTotals = Schemas['CartSummaryResponse'];
+export type CartProblem = Schemas['CartProblemResponse'];
+export type CartBadge = Schemas['CartSummaryResponse'];
 export type AddCartLine = Schemas['AddCartLineRequest'];
-
-// Checkout (#40–#41)
-export type Quote = Schemas['QuoteResponse'];
-export type QuoteLine = Schemas['QuoteLine'];
+export type UpdateCartLine = Schemas['UpdateCartLineRequest'];
 export type CheckoutRequest = Schemas['CheckoutRequest'];
 export type CheckoutResponse = Schemas['CheckoutResponse'];
-export type AddressInput = Schemas['AddressInput'];
-export type Address = Schemas['AddressResponse'];
-export type Profile = Schemas['ProfileResponse'];
 export type OrderStatus = Schemas['OrderStatusResponse'];
-export type StatusPurchase = Schemas['StatusPurchase'];
-export type StatusDocument = Schemas['StatusDocument'];
 
-// Account (#21–#39)
-export type UpdateProfile = Schemas['UpdateProfileRequest'];
-export type LaunchResponse = Schemas['LaunchResponse'];
-export type BooksResponse = Schemas['BooksResponse'];
-export type BookDownload = Schemas['BookDownloadItem'];
-export type BookShipment = Schemas['BookShipmentItem'];
-export type DownloadLink = Schemas['DownloadLinkResponse'];
-export type OrderSummary = Schemas['OrderSummary'];
-export type OrderPage = Schemas['PagedResultOfOrderSummary'];
-export type OrderDetail = Schemas['OrderDetailResponse'];
-export type OrderLine = Schemas['OrderLineResponse'];
-export type OrderDocument = Schemas['OrderDocumentItem'];
-export type Enrolment = Schemas['EnrolmentItem'];
+// Me
+export type Me = Schemas['MeResponse'];
+export type UpdateMe = Schemas['UpdateMeRequest'];
+export type DonationSummary = Schemas['DonationSummary'];
+export type DonationPage = Schemas['PagedResultOfDonationSummary'];
+export type DonationDetail = Schemas['DonationDetail'];
+export type DonationLine = Schemas['DonationLineResponse'];
+export type MeExport = Schemas['MeExportResponse'];
+
+// Staff auth
+export type StaffLoginResponse = Schemas['StaffLoginResponse'];
+export type StaffSessionResponse = Schemas['StaffSessionResponse'];
+export type StaffMe = Schemas['StaffMeResponse'];
+export type TotpSetupResponse = Schemas['TotpEnrolResponse'];
+export type ChangePassword = Schemas['ChangePasswordRequest'];
+
+// Admin catalogue
+export type AdminCategory = Schemas['AdminCategoryResponse'];
+export type CategoryInput = Schemas['CategoryInput'];
+export type CategoryOrderInput = Schemas['CategoryOrderInput'];
+export type AdminProjectRow = Schemas['AdminProjectRow'];
+export type AdminProjectPage = Schemas['PagedResultOfAdminProjectRow'];
+export type AdminProject = Schemas['AdminProjectResponse'];
+export type AdminProjectOption = Schemas['AdminProjectOption'];
+export type ProjectInput = Schemas['ProjectInput'];
+export type ProjectOptionsInput = Schemas['ProjectOptionsInput'];
+export type ProjectOptionInput = Schemas['ProjectOptionInputItem'];
+export type MediaAsset = Schemas['MediaAssetResponse'];
+export type MediaPage = Schemas['PagedResultOfMediaAssetResponse'];
+export type MediaAltInput = Schemas['MediaAltInput'];
+
+// Admin operations
+export type Dashboard = Schemas['DashboardResponse'];
+export type DashboardProject = Schemas['DashboardProject'];
+export type AdminCustomerRow = Schemas['AdminCustomerRow'];
+export type AdminCustomerPage = Schemas['PagedResultOfAdminCustomerRow'];
+export type AdminCustomer = Schemas['AdminCustomerDetail'];
+export type AdminOrderRow = Schemas['AdminOrderRow'];
+export type AdminOrderPage = Schemas['PagedResultOfAdminOrderRow'];
+export type AdminOrderDetail = Schemas['AdminOrderDetail'];
+export type AdminOrderLine = Schemas['AdminOrderLine'];
+export type Setting = Schemas['SettingResponse'];
+export type MessageTemplate = Schemas['TemplateResponse'];
+export type TemplateInput = Schemas['TemplateInput'];
+export type TemplateTest = Schemas['TemplateTestRequest'];
+export type TemplateTestResult = Schemas['TemplateTestResponse'];
+export type AuditRow = Schemas['AuditRow'];
+export type AuditPage = Schemas['PagedResultOfAuditRow'];
+
+// Staff
+export type StaffUser = Schemas['StaffUserResponse'];
+export type CreateStaff = Schemas['CreateStaffRequest'];
+export type UpdateStaff = Schemas['UpdateStaffRequest'];
+export type CreateStaffResult = Schemas['CreateStaffResponse'];
+export type OneTimePassword = Schemas['OneTimePasswordResponse'];

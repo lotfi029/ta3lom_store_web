@@ -7,7 +7,9 @@ import { STORE_API_URL } from '../api/store-api-url';
 import { SILENT } from '../http/error-toast.interceptor';
 
 /**
- * The header cart badge (11 §3.3, #11) — part of the initial bundle, so it stays tiny. The full cart (CartStore) is a
+ * The header cart badge (`GET /v1/cart/summary`) — part of the initial bundle, so it stays tiny. It shows the LINE COUNT
+ * only (C-2): the summary's `totalAmount` uses stored amounts and may differ from the re-priced cart (API-5), so totals
+ * are shown on the cart and checkout pages only. The full cart (CartStore) is a
  * lazy feature service that calls `set()` after every change; the server is the truth (plan §2.4). Browser only: the
  * prerendered page never shows a badge count.
  */
@@ -19,7 +21,6 @@ export class CartSummary {
 
   private readonly state = signal<CartBadge | null>(null);
   readonly count = computed(() => toInt(this.state()?.lineCount));
-  readonly grandTotal = computed(() => this.state()?.grandTotal ?? '0.00');
   /** Increments on every change that adds items — the header plays its "bump" on it. */
   readonly bumps = signal(0);
 

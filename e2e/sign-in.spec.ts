@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { expectNoA11yViolations, expectNoHorizontalScroll } from './support/a11y';
-import { freshMobile, otpFor, resetOtpLimits, signIn, staff } from './support/auth';
+import { freshMobile, otpFor, resetOtpChallenges, signIn, staff } from './support/auth';
 
 /** W-04 — OTP sign-in (#16–#20) against the real API. Arabic first. */
 for (const locale of ['ar', 'en'] as const) {
@@ -8,7 +8,7 @@ for (const locale of ['ar', 'en'] as const) {
     test('OTP: wrong number, wrong code with attempts left, then the right code', async ({
       page,
     }) => {
-      await page.goto(`/${locale}/login?returnUrl=/books`);
+      await page.goto(`/${locale}/login?returnUrl=/cart`);
       await expect(page.locator('h1')).toHaveCount(1);
       await expect(page.locator('meta[name=robots]')).toHaveAttribute(
         'content',
@@ -24,7 +24,7 @@ for (const locale of ['ar', 'en'] as const) {
       await expect(page.locator('#otp-mobile')).toHaveAttribute('aria-invalid', 'true');
 
       const mobile = freshMobile();
-      resetOtpLimits();
+      resetOtpChallenges();
       const started = Date.now() - 50;
       await page.locator('#otp-mobile').fill(mobile);
       await page
@@ -40,7 +40,7 @@ for (const locale of ['ar', 'en'] as const) {
       await expect(page.locator('[role=alert]')).toContainText('4');
 
       await page.locator('#otp-code').fill(code);
-      await expect(page).toHaveURL(new RegExp(`/${locale}/books`));
+      await expect(page).toHaveURL(new RegExp(`/${locale}/cart`));
       await expect(page.locator('ta-account-menu')).toBeVisible();
     });
 
@@ -50,8 +50,8 @@ for (const locale of ['ar', 'en'] as const) {
       await signIn(page, locale);
       await page.reload();
       await expect(page.locator('ta-account-menu')).toBeVisible();
-      await page.goto(`/${locale}/login?returnUrl=/books`);
-      await expect(page).toHaveURL(new RegExp(`/${locale}/books`));
+      await page.goto(`/${locale}/login?returnUrl=/cart`);
+      await expect(page).toHaveURL(new RegExp(`/${locale}/cart`));
     });
 
     test('sign out, and sign out everywhere', async ({ page, browser }) => {
@@ -111,7 +111,7 @@ for (const locale of ['ar', 'en'] as const) {
       ).toBeLessThan(300);
 
       await page.goto(`/${locale}/login`);
-      resetOtpLimits();
+      resetOtpChallenges();
       const started = Date.now() - 50;
       await page.locator('#otp-mobile').fill(mobile);
       await page.locator('#otp-mobile').press('Enter');

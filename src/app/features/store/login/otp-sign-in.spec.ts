@@ -3,7 +3,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { STORE_API_URL } from '../../../core/api/store-api-url';
 import { OtpSignIn } from './otp-sign-in';
-import { safeReturnUrl } from './login.page';
+import { safeReturnUrl } from '../../../core/guards/guards';
 
 const API = 'https://store-api.test/v1';
 const tick = () => new Promise((r) => setTimeout(r));
@@ -118,10 +118,10 @@ describe('OtpSignIn (10 §7.3, RUL-60)', () => {
 
 describe('safeReturnUrl', () => {
   it('only accepts same-site paths', () => {
-    expect(safeReturnUrl('/checkout')).toBe('/checkout');
-    expect(safeReturnUrl('//evil.com')).toBe('/account/courses');
-    expect(safeReturnUrl('https://evil.com')).toBe('/account/courses');
-    expect(safeReturnUrl('/\\evil.com')).toBe('/account/courses');
-    expect(safeReturnUrl(undefined)).toBe('/account/courses');
+    expect(safeReturnUrl('/checkout', '/account/donations')).toBe('/checkout');
+    expect(safeReturnUrl('//evil.com', '/account/donations')).toBe('/account/donations');
+    expect(safeReturnUrl('https://evil.com', '/account/donations')).toBe('/account/donations');
+    expect(safeReturnUrl('/\\evil.com', '/account/donations')).toBe('/account/donations');
+    expect(safeReturnUrl(undefined, '/account/donations')).toBe('/account/donations');
   });
 });

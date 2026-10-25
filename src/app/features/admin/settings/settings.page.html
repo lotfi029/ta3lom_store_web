@@ -16,32 +16,30 @@
     @for (r of rows(); track r.def.key) {
       <li class="panel">
         <div class="field">
-          @if (r.def.kind === 'boolean') {
-            <label class="chk">
-              <input
-                type="checkbox"
-                [id]="'set-' + r.def.key"
-                [checked]="value(r.def.key) === true"
-                (change)="onInput(r.def.key, $event)"
-                [disabled]="!canEdit()"
-              />
-              {{ r.def.label() }}
-            </label>
-          } @else {
-            <label [for]="'set-' + r.def.key">{{ r.def.label() }}</label>
-            <input
-              [id]="'set-' + r.def.key"
-              [attr.inputmode]="
-                r.def.kind === 'text' ? null : r.def.kind === 'money' ? 'decimal' : 'numeric'
-              "
-              dir="ltr"
-              [value]="value(r.def.key)"
-              (input)="onInput(r.def.key, $event)"
-              [readonly]="!canEdit()"
-              [attr.aria-invalid]="!!errors()[r.def.key]"
-              [attr.aria-describedby]="'set-' + r.def.key + '-err'"
-            />
+          <label [for]="'set-' + r.def.key">{{ r.def.label() }}</label>
+          @if (r.def.hint; as hint) {
+            <small class="muted" [id]="'set-' + r.def.key + '-hint'">{{ hint() }}</small>
           }
+          <input
+            [id]="'set-' + r.def.key"
+            [attr.inputmode]="
+              r.def.kind === 'money' || r.def.kind === 'money-list'
+                ? 'decimal'
+                : r.def.kind === 'integer'
+                  ? 'numeric'
+                  : r.def.kind === 'mobile'
+                    ? 'tel'
+                    : null
+            "
+            [attr.dir]="r.def.kind === 'text' ? null : 'ltr'"
+            [value]="value(r.def.key)"
+            (input)="onInput(r.def.key, $event)"
+            [readonly]="!canEdit()"
+            [attr.aria-invalid]="!!errors()[r.def.key]"
+            [attr.aria-describedby]="
+              'set-' + r.def.key + '-err' + (r.def.hint ? ' set-' + r.def.key + '-hint' : '')
+            "
+          />
           <p class="field-errors" [id]="'set-' + r.def.key + '-err'" role="alert">
             {{ errors()[r.def.key] }}
           </p>

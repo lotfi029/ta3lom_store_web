@@ -19,8 +19,9 @@ import { LangSwitch } from '../lang-switch/lang-switch';
 import { ThemeToggle } from '../theme-toggle/theme-toggle';
 
 /**
- * Store header (prototype `.hdr`, plan W-02): logo → ta3lom.sa, store nav (home, courses, books), search, cart badge
- * with bump, account menu or sign-in, language switch keeping the path, theme toggle, mobile drawer.
+ * Store header (prototype `.hdr`): logo → ta3lom.sa, store nav (home, projects), search (→ the home listing's `?q=`),
+ * cart badge (line count, C-2) with bump, account menu or sign-in, language switch keeping the path, theme toggle,
+ * mobile drawer.
  * After the first render (browser only) it restores the customer session and loads the cart badge.
  */
 @Component({
@@ -72,11 +73,11 @@ export class Header {
     event.preventDefault();
     const q = input.value.trim();
     this.mobileOpen.set(false);
-    void this.router.navigate(['/search'], { queryParams: q ? { q } : {} });
+    void this.router.navigate(['/'], { queryParams: q ? { q } : {}, fragment: 'projects' });
   }
 
   protected cartLabel(): string {
     const n = this.cart.count();
-    return $localize`:@@store.layout.cart-label:السلة، ${n}:count: عنصر`;
+    return $localize`:@@store.layout.cart-label-r5:سلة التبرعات، ${n}:count: تبرع`;
   }
 }

@@ -492,10 +492,10 @@ html[dir='ltr'] .admin-nav-group {
 /* Global for the same reason as .rtl-mirror/.admin-nav-group above: Toast UI Editor
    (shared/ui/markdown-editor) builds its own toolbar via document.createElement, entirely
    outside Angular's template compiler, so no component-scoped stylesheet can reach it —
-   including markdown-editor.css itself. Its stock buttons default to 32x32px
+   including markdown-editor.css itself. Its built-in buttons default to 32x32px
    (node_modules/@toast-ui/editor/dist/toastui-editor.css), under the 44x44px minimum
    (non-negotiable #7) — a11y-auditor finding, Session 2 Part 2. Raises every toolbar button,
-   stock and the two custom h2/h3 ones alike, without touching the library's own stylesheet. */
+   built-in and the two custom h2/h3 ones alike, without touching the library's own stylesheet. */
 
 /* Scoped through .toastui-editor-defaultUI purely to outrank the library's own
    `.toastui-editor-defaultUI-toolbar button` rule, which sets padding/width/height and — being
@@ -519,7 +519,7 @@ html[dir='ltr'] .admin-nav-group {
 
   /* The library's own buttons are display:block; the two custom ones this app builds with
      createElement default to inline-block, which puts them on the group's text baseline and
-     dropped H2/H3/H4 14px below every stock icon. Same declaration for both, so they line up. */
+     dropped H2/H3/H4 14px below every built-in icon. Same declaration for both, so they line up. */
   display: block;
 
   /* Toast UI's 7px block margins are sized for its 32px button inside a 45px bar; with a 44px
@@ -530,7 +530,7 @@ html[dir='ltr'] .admin-nav-group {
 
 /* Same escape-hatch reasoning as the rule above — Toast UI's DOM is built imperatively, so no
    component stylesheet can reach it. These bring the editor in line with the rest of the form
-   controls instead of leaving the library's stock chrome sitting inside our own. */
+   controls instead of leaving the library's built-in chrome sitting inside our own. */
 /* stylelint-disable selector-class-pattern -- third-party class names, not ours to rename */
 
 /* Rebuilding the prototype's editor layout (its .md-wrap/.md-bar/.md-split, line 386-399) out of
@@ -579,7 +579,7 @@ html[dir='ltr'] .admin-nav-group {
      not fit would otherwise be pushed out of view — it would not: Toast UI measures the toolbar
      itself and moves whatever overflows into its "more" dropdown. Wrapping on top of that put a
      second row inside a bar the library fixes at 45px, so the wrapped buttons were clipped to
-     slivers and the custom H2/H3/H4 group sat 7px below the stock icons. */
+     slivers and the custom H2/H3/H4 group sat 7px below the built-in icons. */
   flex-wrap: nowrap;
 
   /* The library sizes this bar for its own 32px buttons. Ours are 44px for non-negotiable #7,
@@ -593,9 +593,9 @@ html[dir='ltr'] .admin-nav-group {
 }
 
 /* Toast UI puts CUSTOM toolbar items (our H2/H3/H4 and the media-picker image button) inside a
-   wrapper div it fixes at 32px to match its own button size, while stock items sit directly in
+   wrapper div it fixes at 32px to match its own button size, while built-in items sit directly in
    the flex group. With a 44px button that wrapper is 14px too short, so the button overflowed it
-   and the custom group rendered 7px below every stock icon. Sizing the wrapper to its content
+   and the custom group rendered 7px below every built-in icon. Sizing the wrapper to its content
    puts both kinds of item on the same line. */
 .toastui-editor-defaultUI .toastui-editor-toolbar-item-wrapper {
   block-size: auto;
@@ -607,7 +607,7 @@ html[dir='ltr'] .admin-nav-group {
   outline-offset: -2px;
 }
 
-/* The editor writes Arabic far more often than English, and the library's stock stack has no
+/* The editor writes Arabic far more often than English, and the library's built-in stack has no
    Arabic face — text fell back to a system font that does not match the rest of the admin. */
 .toastui-editor-defaultUI .ProseMirror,
 .toastui-editor-defaultUI .toastui-editor-md-container {

@@ -1,5 +1,19 @@
 # Store web progress
-Next: — (all sessions done; final summary after W-11 merges and main CI is green)
+Next: R5 donations — W-M1 (home/listing + project card)
+
+## R5 — donations (one PR "Store web — R5 donations", API `792521a`)
+
+| Phase | Status | Commit | Screens | Tests (unit / e2e / a11y routes) | Notes |
+|---|---|---|---|---|---|
+| W-M0 Foundation and clean-up | done | W-M0 | placeholders for the screens rebuilt in W-M1…W-M5; login, 404, admin login/shell, staff, settings, templates, audit adapted | 159 / 17 smoke (stub) / 24 × 2 themes | OpenAPI snapshot + types; check-no-commerce; r4 code deleted; W-1…W-5 fixed with tests; StoreConfig; payments flag + prod guard; problem messages R5; stub (stateful); routes.mjs → projects; C-1; seed R5; 124 KB JS |
+| W-M1 Home/listing + card | todo | | | | |
+| W-M2 Project page | todo | | | | |
+| W-M3 Quick donate, cart, checkout, order | todo | | | | |
+| W-M4 Account | todo | | | | |
+| W-M5 Admin | todo | | | | |
+| W-M6 e2e, a11y, CI, docs | todo | | | | |
+
+## r4 (history)
 
 | Session | Status (todo/doing/done/blocked) | PR | Screens | Endpoints # | Tests (unit/e2e/a11y) | Notes |
 |---|---|---|---|---|---|---|
@@ -26,6 +40,7 @@ Next: — (all sessions done; final summary after W-11 merges and main CI is gre
 - [x] reference/ removed; docs/W-report.md pushed
 
 ## Environment (resume notes)
-- `. scripts/dev-env.sh && npm run api:up && npm run api:seed` — API on :5080, staff in `.e2e/staff.json` (git-ignored).
-- PostgreSQL may need `pg_ctlcluster 16 main start` after a container restart (`api:up` does it).
+- `. scripts/dev-env.sh && npm run api:up && npm run api:seed` — API on :5080 (postgres:18 in docker `t3s-pg` on
+  :5440; `api:up` starts `dockerd` and the container), staff in `e2e/.auth/staff.json` (git-ignored).
+- Node 24 lives in `/opt/node24` (dev-env.sh puts it first on PATH).
 - Never `pkill -f` with a pattern that appears in your own command line; stop servers by port (`fuser -k 4320/tcp`).

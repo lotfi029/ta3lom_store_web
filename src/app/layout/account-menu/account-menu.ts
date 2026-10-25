@@ -35,17 +35,19 @@ import { Icon } from '../../shared/ui/icon/icon';
       </button>
       @if (open()) {
         <ul id="account-menu-list" class="acc-list">
+          @if (auth.customer(); as c) {
+            <li class="who">
+              @if (c.fullName) {
+                <b>{{ c.fullName }}</b>
+              } @else {
+                <b i18n="@@store.layout.donor">متبرع</b>
+              }
+              <bdi dir="ltr" class="mono">{{ c.mobile }}</bdi>
+            </li>
+          }
           <li>
-            <a routerLink="/account/courses" (click)="close()" i18n="@@store.layout.my-courses"
-              >دوراتي</a
-            >
-          </li>
-          <li>
-            <a routerLink="/account/books" (click)="close()" i18n="@@store.layout.my-books">كتبي</a>
-          </li>
-          <li>
-            <a routerLink="/account/orders" (click)="close()" i18n="@@store.layout.my-orders"
-              >طلباتي</a
+            <a routerLink="/account/donations" (click)="close()" i18n="@@store.layout.my-donations"
+              >تبرعاتي</a
             >
           </li>
           <li>
@@ -74,7 +76,7 @@ import { Icon } from '../../shared/ui/icon/icon';
   styleUrl: './account-menu.css',
 })
 export class AccountMenu {
-  private readonly auth = inject(StoreAuth);
+  protected readonly auth = inject(StoreAuth);
   private readonly cart = inject(CartSummary);
   private readonly router = inject(Router);
   private readonly host = inject(ElementRef<HTMLElement>);
@@ -98,7 +100,7 @@ export class AccountMenu {
     this.open.set(false);
   }
 
-  /** #20: revokes every session of the customer (all devices). */
+  /** Revokes every session of the customer (all devices). */
   protected async signOutEverywhere(): Promise<void> {
     this.open.set(false);
     try {

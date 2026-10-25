@@ -1,8 +1,10 @@
 // Types for the test-tooling client (used from Playwright TS specs).
 export declare const API_ORIGIN: string;
 export declare const STAFF_FILE: string;
+export declare function strongPassword(): string;
 export declare class Client {
   token: string | null;
+  session?: { accessToken: string; staff: { mustChangePassword: boolean; roles: string[] } };
   call(
     method: string,
     path: string,

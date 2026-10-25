@@ -1,11 +1,9 @@
 /**
- * Store UI glyphs — 24×24, stroke `currentColor`, 1.8 width, round caps, as in the approved prototype (its cart, book and
- * play paths are copied verbatim). Inline in the markup, so they paint with the first frame.
+ * Store UI glyphs — 24×24, stroke `currentColor`, 1.8 width, round caps, as in the approved prototype (its cart path is
+ * copied verbatim). Inline in the markup, so they paint with the first frame.
  */
 export const ICONS = {
   cart: '<path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6.2"/><circle cx="10" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/>',
-  book: '<path d="M4 4.5h6a2 2 0 0 1 2 2V20a2 2 0 0 0-2-2H4zM20 4.5h-6a2 2 0 0 0-2 2V20a2 2 0 0 1 2-2h6z"/>',
-  play: '<rect x="3" y="4.5" width="18" height="15" rx="2.5"/><path d="M10 9v6l5-3z"/>',
   search: '<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/>',
   user: '<circle cx="12" cy="8" r="4"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/>',
   sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/>',
@@ -23,9 +21,6 @@ export const ICONS = {
   clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
   layers:
     '<path d="m12 3.5 8.5 4.5-8.5 4.5L3.5 8z"/><path d="m3.5 12 8.5 4.5 8.5-4.5M3.5 16l8.5 4.5 8.5-4.5"/>',
-  award: '<circle cx="12" cy="9" r="5.5"/><path d="M8.5 13.5 7 21l5-2.5 5 2.5-1.5-7.5"/>',
-  truck:
-    '<path d="M2.5 6.5h11v9h-11zM13.5 9.5h4l3 3v3h-7z"/><circle cx="6.5" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/>',
   lock: '<rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/>',
   external: '<path d="M14 4.5h5.5V10M19.5 4.5 11 13M18 14v5.5H4.5V6H10"/>',
   menu: '<path d="M4 6.5h16M4 12h16M4 17.5h16"/>',
@@ -35,7 +30,6 @@ export const ICONS = {
   copy: '<rect x="8.5" y="8.5" width="11" height="11" rx="2"/><path d="M15.5 8.5V5.5a1 1 0 0 0-1-1h-9a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h3"/>',
   logout: '<path d="M14 4.5h4.5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H14M10 8l-4 4 4 4M6 12h10"/>',
   grid: '<rect x="4" y="4" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1"/>',
-  box: '<path d="m12 3 8.5 4.5v9L12 21l-8.5-4.5v-9z"/><path d="m3.5 7.5 8.5 4.5 8.5-4.5M12 12v9"/>',
   users:
     '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.8a3.5 3.5 0 0 1 0 6.4M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/>',
   settings:
@@ -46,6 +40,15 @@ export const ICONS = {
   image:
     '<rect x="3.5" y="4.5" width="17" height="15" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="m20.5 16-5-5-8 8.5"/>',
   edit: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>',
+  heart:
+    '<path d="M12 20.5s-7.5-4.6-7.5-10A4.5 4.5 0 0 1 12 7.6a4.5 4.5 0 0 1 7.5 2.9c0 5.4-7.5 10-7.5 10z"/>',
+  gift: '<rect x="3.5" y="8" width="17" height="4" rx="1"/><path d="M5 12v8.5h14V12M12 8v12.5M12 8C10 8 7 7.5 7.5 5.5S11 5 12 8zm0 0c2 0 5-.5 4.5-2.5S13 5 12 8z"/>',
+  link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+  whatsapp:
+    '<path d="M4 20.5l1.3-4A8.5 8.5 0 1 1 8.4 19z"/><path d="M9 8.5c-.3 3.2 3.3 6.8 6.5 6.5l.8-1.6-2-1-1 .9a4 4 0 0 1-2.1-2.1l.9-1-1-2z"/>',
+  xlogo: '<path d="M4.5 4h4.2l10.8 16h-4.2zM19.5 4l-6.4 7.3M4.5 20l6.4-7.3"/>',
+  facebook:
+    '<path d="M14.5 20.5v-7H17l.5-3h-3V8.6c0-.9.4-1.6 1.6-1.6h1.6V4.3a14 14 0 0 0-2.3-.2c-2.4 0-3.9 1.4-3.9 4v2.4H8.8v3h2.7v7"/>',
 } as const;
 
 export type IconName = keyof typeof ICONS;

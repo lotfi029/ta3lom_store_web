@@ -1,76 +1,112 @@
 import { isPlatformBrowser } from '@angular/common';
-import { HttpClient, HttpContext, httpResource } from '@angular/common/http';
+import { HttpClient, httpResource } from '@angular/common/http';
 import { Injectable, PLATFORM_ID, computed, inject, linkedSignal, signal } from '@angular/core';
-import { type Observable, firstValueFrom } from 'rxjs';
-import type { Cart, CartLine, CartNotice, Quote, QuoteLine } from '../api/api.types';
+import { type Observable, firstValueFrom, map } from 'rxjs';
+import type { AddCartLine, Cart, CartLine, CartNotice } from '../api/api.types';
 import { toInt } from '../api/api.types';
-import { PURCHASE_LINE } from '../api/pre-r4';
 import { type StoreProblem, toProblem } from '../api/problem';
 import { STORE_API_URL } from '../api/store-api-url';
+import { StoreConfig } from '../api/store-config';
 import { StoreAuth } from '../auth/store-auth';
-import { SILENT } from '../http/error-toast.interceptor';
 import { valueOf } from '../http/resource-value';
-import { add, sum, times, toHalalas } from '../money/money';
+import { normalize, sum, times } from '../money/money';
 import { CartSummary } from './cart-summary';
 
-export interface CartDraft {
-  productId: string;
-  bookFormatId: string | null;
-  quantity: number;
-  /** What the buyer saw, for the optimistic line (the server's answer replaces it). */
-  preview?: {
-    slug: string;
-    type: string;
-    titleAr: string;
-    titleEn: string | null;
-    unitPrice: string;
-    formatKind: string | null;
-  };
+/** What the donor saw, for the optimistic line (the server's answer replaces it). */
+export interface LinePreview {
+  titleAr: string;
+  titleEn: string | null;
+  slug: string | null;
+  optionLabelAr?: string | null;
+  optionLabelEn?: string | null;
 }
 
-/** RUL-14 on the client: the same product + format merges into one line; otherwise a provisional line is appended. */
-export function mergeOrAppend(lines: readonly CartLine[], draft: CartDraft): readonly CartLine[] {
-  const same = lines.find(
-    (l) => l.productId === draft.productId && (l.bookFormat?.id ?? null) === draft.bookFormatId,
-  );
-  if (same) {
-    const q = Math.min(toInt(same.maxQuantity, 20) || 20, toInt(same.quantity, 1) + draft.quantity);
-    return lines.map((l) =>
-      l === same ? { ...l, quantity: q, amount: times(l.unitPrice, q) } : l,
-    );
+/** The three gift-line shapes of D-01 (contract 15 §2.3 `AddCartLineRequest`). */
+export type CartDraft =
+  | {
+      kind: 'option';
+      projectId: string;
+      optionId: string;
+      quantity: number;
+      unitAmount: string;
+      preview: LinePreview;
+    }
+  | { kind: 'project'; projectId: string; amount: string; preview: LinePreview }
+  | { kind: 'category'; categoryId: string; amount: string; preview: LinePreview };
+
+/**
+ * The request body for a draft: exactly one shape per kind (the other members are sent as null, which the API reads
+ * like absent ones). Amounts are normalised `"50.00"` strings.
+ */
+export function lineBody(draft: CartDraft): AddCartLine {
+  const none = { projectId: null, optionId: null, categoryId: null, amount: null, quantity: null };
+  switch (draft.kind) {
+    case 'option':
+      return {
+        ...none,
+        projectId: draft.projectId,
+        optionId: draft.optionId,
+        quantity: draft.quantity,
+      };
+    case 'project':
+      return { ...none, projectId: draft.projectId, amount: normalize(draft.amount) };
+    case 'category':
+      return { ...none, categoryId: draft.categoryId, amount: normalize(draft.amount) };
+  }
+}
+
+export const lineKind = (l: CartLine): 'option' | 'project' | 'category' =>
+  l.targetKind === 'category' ? 'category' : l.optionId ? 'option' : 'project';
+
+/**
+ * The optimistic view of an add: the same option adds to its existing line (the API does the same); every amount line is
+ * a new line. `maxQuantity` comes from `/catalog/config` (W-5).
+ */
+export function mergeOrAppend(
+  lines: readonly CartLine[],
+  draft: CartDraft,
+  maxQuantity: number,
+): readonly CartLine[] {
+  if (draft.kind === 'option') {
+    const same = lines.find((l) => l.optionId === draft.optionId);
+    if (same) {
+      const q = Math.min(maxQuantity, toInt(same.quantity, 1) + draft.quantity);
+      return lines.map((l) =>
+        l === same ? { ...l, quantity: q, amount: times(l.unitAmount, q) } : l,
+      );
+    }
   }
   const p = draft.preview;
-  if (!p) return lines;
-  const provisional = {
-    id: `pending-${draft.productId}-${draft.bookFormatId ?? ''}`,
-    productId: draft.productId,
-    slug: p.slug,
-    type: p.type,
-    kind: 'buy',
-    mode: 'units',
+  const unit = draft.kind === 'option' ? draft.unitAmount : normalize(draft.amount);
+  const quantity = draft.kind === 'option' ? draft.quantity : 1;
+  const provisional: CartLine = {
+    id: `pending-${lines.length}-${draft.kind}`,
+    targetKind: draft.kind === 'category' ? 'category' : 'project',
+    projectId: draft.kind === 'category' ? null : draft.projectId,
+    projectSlug: draft.kind === 'category' ? null : p.slug,
+    categoryId: draft.kind === 'category' ? draft.categoryId : null,
+    categorySlug: draft.kind === 'category' ? p.slug : null,
+    optionId: draft.kind === 'option' ? draft.optionId : null,
     titleAr: p.titleAr,
     titleEn: p.titleEn,
-    bookFormat:
-      draft.bookFormatId && p.formatKind ? { id: draft.bookFormatId, kind: p.formatKind } : null,
-    quantity: draft.quantity,
-    maxQuantity: p.formatKind === 'print' ? 20 : 1,
-    unitPrice: p.unitPrice,
-    amount: times(p.unitPrice, draft.quantity),
-    unitLabelAr: null,
-    unitLabelEn: null,
-    seatEquivalent: null,
-    intent: null,
-    dedication: null,
-    issues: [],
-  } as CartLine;
+    optionLabelAr: p.optionLabelAr ?? null,
+    optionLabelEn: p.optionLabelEn ?? null,
+    quantity,
+    unitAmount: unit,
+    amount: times(unit, quantity),
+    problems: [],
+  };
   return [...lines, provisional];
 }
 
+const EMPTY_CART: Cart = { lines: [], lineCount: 0, totalAmount: '0.00', problems: [] };
+
 /**
- * The cart (10 §6, 11 §3, #10–#15). The server is the source of truth: every response REPLACES the local view; edits
- * are optimistic, serialised (a slow response never overwrites a newer one) and rolled back on failure, with the
- * problem in `lastProblem`. Lazily loaded: only cart, checkout and product pages import it. r4: purchases only
- * (a pre-r4 API's `gifts` group is never shown).
+ * The donation cart (contract 15 §2.3). The server is the source of truth: every response REPLACES the local view.
+ * Every write — add, quantity, amount, remove, clear — and every refresh goes through ONE queue (W-3), so a slow
+ * response never overwrites a newer one and an in-flight add can't bring cleared lines back. Edits are optimistic and
+ * rolled back on failure, with the problem in `lastProblem`. `GET /v1/cart` is already re-priced and carries the
+ * per-line and cart-level `problems`.
  */
 @Injectable({ providedIn: 'root' })
 export class CartStore {
@@ -78,131 +114,84 @@ export class CartStore {
   private readonly api = inject(STORE_API_URL);
   private readonly summary = inject(CartSummary);
   private readonly auth = inject(StoreAuth);
+  private readonly config = inject(StoreConfig);
   private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
 
   private readonly enabled = signal(false);
   private readonly remote = httpResource<Cart>(() =>
     this.browser && this.enabled() ? `${this.api}/cart` : undefined,
   );
-  /** The last cart the server sent (from GET or from a mutation). */
+  /** The last cart the server sent (from GET or from a write). */
   private readonly server = linkedSignal<Cart | undefined>(() => valueOf(this.remote));
 
   /** Local view: resets to the server's lines whenever the server answers; optimistic edits write here. */
-  readonly lines = linkedSignal<readonly CartLine[]>(() => this.server()?.purchases ?? []);
+  readonly lines = linkedSignal<readonly CartLine[]>(() => this.server()?.lines ?? []);
   readonly loading = computed(() => this.enabled() && this.remote.isLoading() && !this.server());
   readonly loadError = computed(() => !!this.remote.error() && !this.server());
   readonly pending = signal(0);
   readonly lastProblem = signal<StoreProblem | null>(null);
-  /**
-   * RUL-15: the cart keeps the price the visitor saw; only the checkout quote reprices. The cart page asks for a quote
-   * (`checkPrices`) and shows what moved. Any new server cart invalidates it.
-   */
-  readonly quote = linkedSignal<Cart | undefined, Quote | null>({
-    source: () => this.server(),
-    computation: () => null,
-  });
-  readonly priceChanged = computed(() =>
-    (this.quote()?.lines ?? []).filter((l) => l.status === 'changed').map((l) => l.lineId),
-  );
 
   readonly count = computed(() => this.lines().length);
   readonly isEmpty = computed(() => this.server() !== undefined && this.lines().length === 0);
-  readonly hasPrint = computed(() => this.lines().some((l) => l.bookFormat?.kind === 'print'));
-  readonly issues = computed(() => this.lines().filter((l) => l.issues.length > 0));
-  /** Merge notices (RUL-17) from the last sign-in plus the server's own cart notices. */
-  readonly notices = computed<CartNotice[]>(() => [
-    ...this.auth.cartNotices(),
-    ...(this.server()?.notices ?? []),
-  ]);
-
-  /**
-   * Totals. With no edit in flight these are the server's own figures; during an optimistic edit they are estimated in
-   * halalas from the local lines (shipping = the server's flat fee when a print line exists, RUL-26).
-   */
-  readonly totals = computed(() => {
-    const s = this.server()?.summary;
-    const q = this.quote();
-    const purchases = sum(this.lines().map((l) => l.amount));
-    if (s && q?.priceChanged && this.pending() === 0) {
-      return {
-        purchases: q.purchasesTotal,
-        shipping: q.shippingTotal,
-        vat: q.vatTotal,
-        grand: add(q.purchasesTotal, q.shippingTotal),
-        requiresShipping: q.requiresShipping,
-      };
-    }
-    if (s && this.pending() === 0) {
-      return {
-        purchases: s.purchasesTotal,
-        shipping: s.shippingTotal,
-        vat: s.vatIncluded,
-        grand: s.grandTotal,
-        requiresShipping: s.requiresShipping,
-      };
-    }
-    const shipping = this.hasPrint()
-      ? s && toHalalas(s.shippingTotal) > 0
-        ? s.shippingTotal
-        : this.lastShippingFee
-      : '0.00';
-    return {
-      purchases,
-      shipping,
-      vat: s?.vatIncluded ?? '0.00',
-      grand: add(purchases, shipping),
-      requiresShipping: this.hasPrint(),
-    };
+  /** Cart-level problems (`lineId: null`: too many lines, total exceeded) from the last server answer. */
+  readonly cartProblems = computed(() =>
+    (this.server()?.problems ?? []).filter((p) => !p.lineId).map((p) => p.code),
+  );
+  readonly hasProblems = computed(
+    () => this.cartProblems().length > 0 || this.lines().some((l) => l.problems.length > 0),
+  );
+  /** Merge notices from the last sign-in (`cartNotices`). */
+  readonly notices = computed<CartNotice[]>(() => this.auth.cartNotices());
+  /** The server's total when no edit is in flight; during one, the local lines' sum (halalas). */
+  readonly total = computed(() => {
+    const s = this.server();
+    return s && this.pending() === 0 ? s.totalAmount : sum(this.lines().map((l) => l.amount));
   });
+  /** The maximum option quantity (config, W-5); 999 is the contract value until the config answers. */
+  readonly maxQuantity = computed(() => this.config.maxQuantity() ?? 999);
 
-  private lastShippingFee = '25.00';
   private queue: Promise<unknown> = Promise.resolve();
 
-  /** Starts loading (or reloads) the cart — cart, checkout and product pages call this. */
+  /** Starts loading (or reloads) the cart — cart, checkout and project pages call this. */
   load(): void {
     if (!this.browser) return;
     if (this.enabled()) this.remote.reload();
     else this.enabled.set(true);
   }
 
-  reload(): void {
-    this.load();
-  }
-
-  /** Fetches the cart now and replaces the view (after sign-in the guest cart was merged server-side, RUL-17). */
-  async refresh(): Promise<void> {
-    if (!this.browser) return;
-    try {
-      this.accept(await firstValueFrom(this.http.get<Cart>(`${this.api}/cart`)), false);
-    } catch {
-      this.load();
-    }
+  /** Fetches the cart now, in the queue, and replaces the view (after sign-in the guest cart was merged server-side). */
+  refresh(): Promise<boolean> {
+    if (!this.browser) return Promise.resolve(false);
+    return this.mutate(
+      (lines) => lines,
+      () => this.http.get<Cart>(`${this.api}/cart`),
+    );
   }
 
   add(draft: CartDraft): Promise<boolean> {
-    const body = {
-      ...PURCHASE_LINE,
-      productId: draft.productId,
-      bookFormatId: draft.bookFormatId,
-      quantity: draft.quantity,
-    };
     return this.mutate(
-      (lines) => mergeOrAppend(lines, draft),
-      () => this.http.post<Cart>(`${this.api}/cart/lines`, body),
+      (lines) => mergeOrAppend(lines, draft, this.maxQuantity()),
+      () => this.http.post<Cart>(`${this.api}/cart/lines`, lineBody(draft)),
       true,
     );
   }
 
   setQuantity(lineId: string, quantity: number): Promise<boolean> {
-    const line = this.lines().find((l) => l.id === lineId);
-    const max = line ? toInt(line.maxQuantity, 20) || 20 : 20;
-    const q = Math.min(Math.max(Math.trunc(quantity) || 1, 1), max);
+    const q = Math.min(Math.max(Math.trunc(quantity) || 1, 1), this.maxQuantity());
     return this.mutate(
       (lines) =>
         lines.map((l) =>
-          l.id === lineId ? { ...l, quantity: q, amount: times(l.unitPrice, q) } : l,
+          l.id === lineId ? { ...l, quantity: q, amount: times(l.unitAmount, q) } : l,
         ),
       () => this.http.patch<Cart>(`${this.api}/cart/lines/${lineId}`, { quantity: q }),
+    );
+  }
+
+  setAmount(lineId: string, amount: string): Promise<boolean> {
+    const a = normalize(amount);
+    return this.mutate(
+      (lines) => lines.map((l) => (l.id === lineId ? { ...l, unitAmount: a, amount: a } : l)),
+      () => this.http.patch<Cart>(`${this.api}/cart/lines/${lineId}`, { amount: a }),
     );
   }
 
@@ -213,47 +202,18 @@ export class CartStore {
     );
   }
 
-  /** #15: empties the cart (204, no body); the view clears at once and the cart reloads. */
-  async clear(): Promise<boolean> {
-    const before = this.lines();
-    this.lines.set([]);
-    this.pending.update((n) => n + 1);
-    try {
-      await firstValueFrom(this.http.delete(`${this.api}/cart`));
-      this.summary.set({ lineCount: 0, grandTotal: '0.00' });
-      this.lastProblem.set(null);
-      this.load();
-      return true;
-    } catch (e) {
-      this.lines.set(before);
-      this.lastProblem.set(toProblem(e));
-      return false;
-    } finally {
-      this.pending.update((n) => n - 1);
-    }
+  /** Empties the cart (`DELETE /v1/cart`, 204) — in the queue (W-3); the view clears at once. */
+  clear(): Promise<boolean> {
+    return this.mutate(
+      () => [],
+      () => this.http.delete(`${this.api}/cart`).pipe(map(() => EMPTY_CART)),
+    );
   }
 
-  /** Reprices the current cart without writing (#40); failures are silent — checkout reprices again anyway. */
-  async checkPrices(): Promise<void> {
-    const cart = this.server();
-    if (!this.browser || !cart || cart.purchases.length === 0 || this.pending() > 0) return;
-    try {
-      const q = await firstValueFrom(
-        this.http.post<Quote>(
-          `${this.api}/checkout/quote`,
-          {},
-          { context: new HttpContext().set(SILENT, true) },
-        ),
-      );
-      if (this.server() === cart) this.quote.set(q);
-    } catch {
-      // The cart page stays on the stored prices.
-    }
-  }
-
-  /** The repriced line when the quote moved its price, else null. */
-  repriced(lineId: string): QuoteLine | null {
-    return this.quote()?.lines.find((l) => l.lineId === lineId && l.status === 'changed') ?? null;
+  /** After account deletion or sign-out: forget the local view without calling the API. */
+  reset(): void {
+    this.server.set(EMPTY_CART);
+    this.summary.set({ lineCount: 0, totalAmount: '0.00' });
   }
 
   /** Forget the merge notices once shown. */
@@ -291,14 +251,9 @@ export class CartStore {
   private accept(cart: Cart, bump: boolean): void {
     this.enabled.set(true);
     this.server.set(cart);
-    if (toHalalas(cart.summary.shippingTotal) > 0)
-      this.lastShippingFee = cart.summary.shippingTotal;
-    this.summary.set(
-      { lineCount: cart.summary.lineCount, grandTotal: cart.summary.grandTotal },
-      bump,
-    );
+    this.summary.set({ lineCount: cart.lineCount, totalAmount: cart.totalAmount }, bump);
   }
 
-  /** The current server cart (checkout reads the line ids and the requires-shipping flag). */
+  /** The current server cart. */
   readonly snapshot = computed(() => this.server());
 }

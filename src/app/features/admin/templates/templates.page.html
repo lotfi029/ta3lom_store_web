@@ -5,7 +5,7 @@
       نصوص الرسائل النصية والبريد. تُستبدل المتغيرات بين القوسين المزدوجين عند الإرسال.
     </p>
   </div>
-  <ta-requires policy="staff:admin" />
+  <ta-requires policy="staff:templates" />
 </div>
 <ta-resource-state
   [loading]="data.templates.isLoading() && list().length === 0"
@@ -53,7 +53,7 @@
           ></textarea>
           <p id="tp-vars" class="field-hint">
             <span i18n="@@store.admin.variables">المتغيرات:</span>
-            <bdi dir="ltr" class="mono">{{ t.variables.join(', ') }}</bdi>
+            <bdi dir="ltr" class="mono">{{ variables }}</bdi>
           </p>
         </div>
         <p class="muted small">{{ i18n.formatDateTime(t.updatedAt) }}</p>
@@ -83,22 +83,22 @@
 
         <form class="testf" (submit)="test($event)" novalidate>
           <div class="field">
-            <label for="tp-to">
-              @if (t.channel === 'sms') {
-                <span i18n="@@store.admin.test-mobile">جوال الاختبار</span>
-              } @else {
-                <span i18n="@@store.admin.test-email">بريد الاختبار</span>
-              }
-            </label>
-            <input
-              id="tp-to"
-              dir="ltr"
-              [attr.inputmode]="t.channel === 'sms' ? 'tel' : 'email'"
-              [value]="recipient()"
-              (input)="onRecipient($event)"
-              [disabled]="!canEdit()"
-              aria-describedby="tp-test-why"
-            />
+            @if (t.channel === 'sms') {
+              <label for="tp-to" i18n="@@store.admin.test-mobile">جوال الاختبار</label>
+              <input
+                id="tp-to"
+                dir="ltr"
+                inputmode="tel"
+                [value]="recipient()"
+                (input)="onRecipient($event)"
+                [disabled]="!canEdit()"
+                aria-describedby="tp-test-why"
+              />
+            } @else {
+              <p class="muted" i18n="@@store.admin.test-email-self">
+                يُرسل البريد التجريبي إلى بريدك أنت.
+              </p>
+            }
           </div>
           <div class="act">
             <button
@@ -111,18 +111,22 @@
             >
               إرسال تجريبي
             </button>
-            <ta-requires id="tp-test-why" policy="staff:admin" />
+            <ta-requires id="tp-test-why" policy="staff:templates" />
           </div>
           @if (testError(); as e) {
             <p class="err" role="alert">{{ e }}</p>
           }
           @if (testResult(); as r) {
             <div class="sent" role="status">
-              <p i18n="@@store.admin.test-sent">أُرسلت الرسالة التجريبية:</p>
-              @if (r.rendered.subject) {
-                <p class="psub">{{ r.rendered.subject }}</p>
+              @if (r.sent) {
+                <p i18n="@@store.admin.test-sent">أُرسلت الرسالة التجريبية:</p>
+              } @else {
+                <p i18n="@@store.admin.test-not-sent">عُرضت الرسالة ولم تُرسل:</p>
               }
-              <p class="pbody">{{ r.rendered.body }}</p>
+              @if (r.subject) {
+                <p class="psub">{{ r.subject }}</p>
+              }
+              <p class="pbody">{{ r.body }}</p>
             </div>
           }
         </form>

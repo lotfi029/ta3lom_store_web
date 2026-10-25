@@ -6,7 +6,7 @@
       </svg>
       <span class="nm">
         <ng-container i18n="@@store.layout.association">جمعية التعلم الإلكتروني</ng-container>
-        <span class="sub" i18n="@@store.layout.store-tagline">المتجر · دورات وكتب</span>
+        <span class="sub" i18n="@@store.layout.store-tagline-r5">متجر التبرعات</span>
       </span>
     </a>
 
@@ -19,20 +19,7 @@
         i18n="@@store.layout.nav-home"
         >الرئيسية</a
       >
-      <a
-        routerLink="/courses"
-        routerLinkActive="on"
-        ariaCurrentWhenActive="page"
-        i18n="@@store.layout.nav-courses"
-        >الدورات</a
-      >
-      <a
-        routerLink="/books"
-        routerLinkActive="on"
-        ariaCurrentWhenActive="page"
-        i18n="@@store.layout.nav-books"
-        >الكتب</a
-      >
+      <a routerLink="/" fragment="projects" i18n="@@store.layout.nav-projects">المشاريع</a>
     </nav>
 
     <form class="hsearch" role="search" (submit)="search($event, q)">
@@ -44,8 +31,8 @@
         id="hdr-q"
         name="q"
         type="search"
-        placeholder="ابحث عن دورة أو كتاب…"
-        i18n-placeholder="@@store.layout.search-placeholder"
+        placeholder="ابحث عن مشروع…"
+        i18n-placeholder="@@store.layout.search-placeholder-r5"
         autocomplete="off"
       />
       <button type="submit" class="hsearch-btn">
@@ -109,8 +96,8 @@
         id="m-q"
         name="q"
         type="search"
-        placeholder="ابحث عن دورة أو كتاب…"
-        i18n-placeholder="@@store.layout.search-placeholder"
+        placeholder="ابحث عن مشروع…"
+        i18n-placeholder="@@store.layout.search-placeholder-r5"
         autocomplete="off"
       />
       <button type="submit" class="hsearch-btn">
@@ -123,17 +110,11 @@
     >
     <a
       class="ml"
-      routerLink="/courses"
+      routerLink="/"
+      fragment="projects"
       (click)="mobileOpen.set(false)"
-      i18n="@@store.layout.nav-courses"
-      >الدورات</a
-    >
-    <a
-      class="ml"
-      routerLink="/books"
-      (click)="mobileOpen.set(false)"
-      i18n="@@store.layout.nav-books"
-      >الكتب</a
+      i18n="@@store.layout.nav-projects"
+      >المشاريع</a
     >
     <a class="ml" routerLink="/cart" (click)="mobileOpen.set(false)" i18n="@@store.layout.nav-cart"
       >السلة</a
@@ -141,7 +122,7 @@
     @if (auth.isSignedIn()) {
       <a
         class="ml"
-        routerLink="/account/courses"
+        routerLink="/account/donations"
         (click)="mobileOpen.set(false)"
         i18n="@@store.layout.account"
         >حسابي</a

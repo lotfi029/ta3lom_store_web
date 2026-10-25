@@ -32,7 +32,7 @@ describe('SeoService', () => {
       title: 'x',
       description: 'd',
       path: '/p/x',
-      jsonLd: { '@context': 'https://schema.org', '@type': 'Course' },
+      jsonLd: { '@context': 'https://schema.org', '@type': 'Article' },
     });
     seo.set({ title: 'السلة', description: 'd', path: '/cart', noindex: true });
     expect(doc.querySelector('meta[name=robots]')?.getAttribute('content')).toBe(

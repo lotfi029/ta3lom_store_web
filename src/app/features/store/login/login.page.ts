@@ -1,17 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
+import { safeReturnUrl } from '../../../core/guards/guards';
 import { SeoService } from '../../../core/seo/seo.service';
 import { OtpSignIn } from './otp-sign-in';
-
-/** A same-site path to return to after sign-in; anything else (absolute, protocol-relative) falls back. */
-export function safeReturnUrl(
-  value: string | null | undefined,
-  fallback = '/account/courses',
-): string {
-  return value && value.startsWith('/') && !value.startsWith('//') && !value.startsWith('/\\')
-    ? value
-    : fallback;
-}
 
 /** `/login` (FR-S21): OTP sign-in, then back to `returnUrl`. Client-rendered, guest only, noindex. */
 @Component({
@@ -69,6 +60,6 @@ export class LoginPage {
   }
 
   protected done(): void {
-    void this.router.navigateByUrl(safeReturnUrl(this.returnUrl()));
+    void this.router.navigateByUrl(safeReturnUrl(this.returnUrl(), '/account/donations'));
   }
 }

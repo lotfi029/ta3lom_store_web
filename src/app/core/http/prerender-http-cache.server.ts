@@ -1,5 +1,32 @@
 import { HttpEvent, HttpInterceptorFn, HttpResponse } from '@angular/common/http';
 import { Observable, filter, map, shareReplay, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
+
+/**
+ * C-1: the API the prerender READS (build-time data) is separate from the API the app TALKS to at runtime
+ * (`environment.apiUrl`, compiled in). `PRERENDER_API_URL` (CI: the stub; default: environment.apiUrl) replaces the
+ * runtime origin on every build-time request; the hydration transfer cache still keys the response by the runtime URL,
+ * so the browser replays it.
+ */
+export function prerenderUrl(
+  url: string,
+  runtime = environment.apiUrl,
+  target = prerenderApiUrl(),
+): string {
+  const from = runtime.replace(/\/$/, '');
+  const to = target?.replace(/\/$/, '');
+  return to &&
+    to !== from &&
+    (url === from || url.startsWith(`${from}/`) || url.startsWith(`${from}?`))
+    ? to + url.slice(from.length)
+    : url;
+}
+
+function prerenderApiUrl(): string | undefined {
+  return (globalThis as { process?: { env: Record<string, string | undefined> } }).process?.env[
+    'PRERENDER_API_URL'
+  ];
+}
 
 /**
  * Build-time only: every GET is fetched once per prerender worker, and every later route that asks
@@ -26,7 +53,9 @@ import { Observable, filter, map, shareReplay, tap } from 'rxjs';
 export function createPrerenderHttpCache(): HttpInterceptorFn {
   const cache = new Map<string, Observable<HttpResponse<unknown>>>();
 
-  return (req, next) => {
+  return (original, next) => {
+    const url = prerenderUrl(original.url);
+    const req = url === original.url ? original : original.clone({ url });
     if (req.method !== 'GET') return next(req);
 
     const key = req.urlWithParams;

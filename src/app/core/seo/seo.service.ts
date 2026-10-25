@@ -15,11 +15,13 @@ export interface SeoData {
   description: string;
   /** Path inside the locale, starting with `/` (`/p/smart-study`); canonical = https://store.ta3lom.sa/{locale}{path}. */
   path: string;
-  /** Plan §2.2: cart, checkout, account, admin, search, login, thanks and 404 are `noindex`. */
+  /** Cart, checkout, account, admin, login, order and 404 are `noindex` (`nofollow` too unless `follow`). */
   noindex?: boolean;
+  /** With `noindex`: `noindex, follow` — a listing page past the first (C-4) whose project links still count. */
+  follow?: boolean;
   /** Absolute image URL for Open Graph / Twitter. */
   image?: string | null;
-  ogType?: 'website' | 'product' | 'book';
+  ogType?: 'website' | 'article';
   jsonLd?: JsonLd | JsonLd[];
 }
 
@@ -45,7 +47,11 @@ export class SeoService {
     this.meta.updateTag({ name: 'description', content: data.description });
     this.meta.updateTag({
       name: 'robots',
-      content: data.noindex ? 'noindex, nofollow' : 'index, follow',
+      content: data.noindex
+        ? data.follow
+          ? 'noindex, follow'
+          : 'noindex, nofollow'
+        : 'index, follow',
     });
     this.meta.updateTag({ property: 'og:type', content: data.ogType ?? 'website' });
     this.meta.updateTag({ property: 'og:site_name', content: site });

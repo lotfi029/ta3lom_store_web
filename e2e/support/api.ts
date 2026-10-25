@@ -6,12 +6,3 @@ export async function apiGet<T>(path: string): Promise<T> {
   if (!res.ok) throw new Error(`${path} -> ${res.status}`);
   return (await res.json()) as T;
 }
-
-export interface CardLite {
-  slug: string;
-  type: string;
-  titleAr: string;
-  titleEn: string | null;
-  category: { slug: string } | null;
-  price: string | null;
-}

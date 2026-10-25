@@ -21,6 +21,8 @@ export const NO_REFRESH = new HttpContextToken<boolean>(() => false);
  *   - `withCredentials` (cart cookie, refresh cookies) and `Accept-Language` on every store API call;
  *   - bearer: the staff token for `/admin/**`, the customer token otherwise;
  *   - 401 → one single-flight refresh → one retry. A failed staff refresh sends the user to /admin/login.
+ *   - 403 `auth.password_change_required` on a staff request → /admin/password (backstop of the `pwd_change` claim
+ *     check in the guards, C-6).
  */
 export const storeApiInterceptor: HttpInterceptorFn = (req, next) => {
   const api = inject(STORE_API_URL);
@@ -42,6 +44,15 @@ export const storeApiInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(prepare(req, auth.accessToken())).pipe(
     catchError((error: unknown) => {
+      if (
+        staffRequest &&
+        error instanceof HttpErrorResponse &&
+        error.status === 403 &&
+        (error.error as { code?: unknown } | null)?.code === 'auth.password_change_required'
+      ) {
+        void router.navigateByUrl('/admin/password');
+        return throwError(() => error);
+      }
       const refreshable =
         error instanceof HttpErrorResponse &&
         error.status === 401 &&

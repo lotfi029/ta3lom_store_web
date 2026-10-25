@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { FormField, form, required, validate } from '@angular/forms/signals';
 import { Router } from '@angular/router';
-import type { TotpEnrolResponse } from '../../../core/api/api.types';
+import type { TotpSetupResponse } from '../../../core/api/api.types';
 import { problemMessage } from '../../../core/api/problem-message';
 import { toProblem } from '../../../core/api/problem';
 import { StaffAuth } from '../../../core/auth/staff-auth';
@@ -21,7 +21,7 @@ import { LangSwitch } from '../../../layout/lang-switch/lang-switch';
 import { ThemeToggle } from '../../../layout/theme-toggle/theme-toggle';
 import { Icon } from '../../../shared/ui/icon/icon';
 
-type Step = 'password' | 'enrol' | 'code';
+type Step = 'password' | 'setup' | 'code';
 
 /** Only same-site admin paths are honoured after sign-in (no open redirect). */
 export function safeAdminReturn(url: string | null | undefined): string {
@@ -42,9 +42,9 @@ export const groupSecret = (s: string): string =>
     .trim();
 
 /**
- * `/admin/login` (RUL-62, FR-S70, 11 §9.1): email + password → a 5-minute MFA token → TOTP enrolment (first sign-in:
- * the setup key to type into an authenticator app) or the 6-digit code → staff session. Five failures lock the account
- * for an hour (the API's rule; its message is shown).
+ * `/admin/login` (contract 15 §1.6): email + password → a 5-minute MFA token → TOTP set-up (first sign-in or after a
+ * reset: the key to type into an authenticator app) or the 6-digit code → staff session. A session whose token carries
+ * `pwd_change` goes to /admin/password first (C-6). Five failures lock the account for an hour (the API's rule).
  */
 @Component({
   selector: 'ta-admin-login',
@@ -64,7 +64,7 @@ export class AdminLoginPage {
   protected readonly step = signal<Step>('password');
   protected readonly busy = signal(false);
   protected readonly error = signal<string | null>(null);
-  protected readonly enrolment = signal<TotpEnrolResponse | null>(null);
+  protected readonly setup = signal<TotpSetupResponse | null>(null);
   protected readonly group = groupSecret;
 
   protected readonly creds = signal({ email: '', password: '' });
@@ -108,8 +108,8 @@ export class AdminLoginPage {
       if (res.totpEnrolled) {
         this.step.set('code');
       } else {
-        this.enrolment.set(await this.auth.enrol());
-        this.step.set('enrol');
+        this.setup.set(await this.auth.setupTotp());
+        this.step.set('setup');
       }
       this.code.set({ code: '' });
       afterNextRender(() => this.codeInput()?.nativeElement.focus(), { injector: this.injector });
@@ -128,12 +128,15 @@ export class AdminLoginPage {
     this.error.set(null);
     try {
       await this.auth.verify(westernDigits(this.code().code).trim());
-      await this.router.navigateByUrl(safeAdminReturn(this.returnUrl()));
+      await this.router.navigateByUrl(
+        this.auth.mustChangePassword() ? '/admin/password' : safeAdminReturn(this.returnUrl()),
+      );
     } catch (e) {
       const p = toProblem(e);
       this.error.set(problemMessage(p));
       // The MFA token lasts 5 minutes; after it expires the password step starts again.
-      if (p.code === 'auth.unauthenticated' || p.code === 'auth.account_locked') this.restart();
+      if (['auth.unauthenticated', 'auth.account_locked', 'auth.totp_required'].includes(p.code))
+        this.restart();
       else this.code.set({ code: '' });
     } finally {
       this.busy.set(false);
@@ -142,7 +145,7 @@ export class AdminLoginPage {
 
   protected restart(): void {
     this.step.set('password');
-    this.enrolment.set(null);
+    this.setup.set(null);
     this.creds.update((c) => ({ ...c, password: '' }));
   }
 }

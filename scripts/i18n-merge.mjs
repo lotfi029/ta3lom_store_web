@@ -4,6 +4,7 @@
  *   node scripts/i18n-merge.mjs           merge: new ids get <target state="needs-translation"> (the Arabic copied in),
  *                                          ids no longer in the source are dropped, existing English is kept
  *   node scripts/i18n-merge.mjs --check   fail when any id is missing, untranslated, or not named @@store.<area>.<element>
+ *   node scripts/i18n-merge.mjs --prune   also drop en.json entries whose id is no longer in the source (R5 clean-up)
  * Plan §4.1: every string has an id `@@store.<area>.<element>` and the English XLF is filled.
  */
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
@@ -66,6 +67,12 @@ if (!check) {
 }
 // Ids authored ahead of the code that uses them (e.g. problem messages before their first screen) are only reported.
 const unused = Object.keys(map).filter((id) => !src.has(id));
+if (process.argv.includes('--prune') && !check && unused.length) {
+  for (const id of unused) delete map[id];
+  writeFileSync(MAP, `${JSON.stringify(map, null, 2)}\n`);
+  console.log(`i18n-merge: pruned ${unused.length} unused id(s) from ${MAP}`);
+  unused.length = 0;
+}
 if (unused.length && !check) console.log(`i18n-merge: ${unused.length} id(s) in ${MAP} not used yet (kept): ${unused.slice(0, 5).join(', ')}${unused.length > 5 ? ' …' : ''}`);
 if (problems.length) {
   for (const p of problems) console[check ? 'error' : 'log'](`  - ${p}`);

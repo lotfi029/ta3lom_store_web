@@ -1,11 +1,18 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
+import { CanActivateFn, CanDeactivateFn, Router } from '@angular/router';
 import { StaffAuth } from '../auth/staff-auth';
 import { StoreAuth } from '../auth/store-auth';
 import type { StaffPolicy } from '../auth/policies';
 import { CartSummary } from '../cart/cart-summary';
 
-/** Signed-in customer, else /login?returnUrl=… (plan §2.2: account, orders). */
+/** A same-site path the app may navigate back to (`/…`, never `//host` or `/\host`), else the fallback. */
+export function safeReturnUrl(value: string | null | undefined, fallback: string): string {
+  return value && value.startsWith('/') && !value.startsWith('//') && !value.startsWith('/\\')
+    ? value
+    : fallback;
+}
+
+/** Signed-in donor, else /login?returnUrl=… (account pages). */
 export const customerGuard: CanActivateFn = async (_route, state) => {
   const router = inject(Router);
   return (await inject(StoreAuth).ensureSession())
@@ -13,19 +20,14 @@ export const customerGuard: CanActivateFn = async (_route, state) => {
     : router.createUrlTree(['/login'], { queryParams: { returnUrl: state.url } });
 };
 
-/** /login only for visitors who aren't signed in; a signed-in customer goes to the return URL or their account. */
+/** /login only for visitors who aren't signed in; a signed-in donor goes to the return URL or their donations. */
 export const guestOnlyGuard: CanActivateFn = async (route) => {
   const router = inject(Router);
   if (!(await inject(StoreAuth).ensureSession())) return true;
-  const back = route.queryParamMap.get('returnUrl');
-  return router.parseUrl(
-    back && back.startsWith('/') && !back.startsWith('//') && !back.startsWith('/\\')
-      ? back
-      : '/account/courses',
-  );
+  return router.parseUrl(safeReturnUrl(route.queryParamMap.get('returnUrl'), '/account/donations'));
 };
 
-/** Checkout needs something to pay for (plan §2.2). */
+/** Checkout needs something to donate (the cart badge's line count, C-2). */
 export const cartNotEmptyGuard: CanActivateFn = async () => {
   const router = inject(Router);
   const summary = inject(CartSummary); // inject before the first await (NG0203)
@@ -35,19 +37,20 @@ export const cartNotEmptyGuard: CanActivateFn = async () => {
 };
 
 /**
- * Thanks page (10 §9, r1-15): the customer's session when it can be restored, else the order's status token (`?t=`);
- * with neither, sign in first.
+ * Any signed-in staff member, else /admin/login. While a forced password change is pending (the token's `pwd_change`
+ * claim, C-6) every admin screen redirects to /admin/password — also after a reload, because the restored token
+ * carries the claim again.
  */
-export const thanksAccessGuard: CanActivateFn = async (route, state) => {
+export const staffGuard: CanActivateFn = async (_route, state) => {
   const router = inject(Router);
-  if (await inject(StoreAuth).ensureSession()) return true;
-  return route.queryParamMap.get('t')
-    ? true
-    : router.createUrlTree(['/login'], { queryParams: { returnUrl: state.url } });
+  const auth = inject(StaffAuth);
+  if (!(await auth.ensureSession()))
+    return router.createUrlTree(['/admin/login'], { queryParams: { returnUrl: state.url } });
+  return auth.mustChangePassword() ? router.parseUrl('/admin/password') : true;
 };
 
-/** Any signed-in staff user, else /admin/login. */
-export const staffGuard: CanActivateFn = async (_route, state) => {
+/** /admin/password: needs a staff session (forced or self-service change). */
+export const staffSessionGuard: CanActivateFn = async (_route, state) => {
   const router = inject(Router);
   return (await inject(StaffAuth).ensureSession())
     ? true
@@ -61,6 +64,19 @@ export function staffPolicyGuard(policy: StaffPolicy): CanActivateFn {
     const auth = inject(StaffAuth);
     if (!(await auth.ensureSession()))
       return router.createUrlTree(['/admin/login'], { queryParams: { returnUrl: state.url } });
+    if (auth.mustChangePassword()) return router.parseUrl('/admin/password');
     return auth.can(policy) ? true : router.parseUrl('/admin');
   };
 }
+
+/** A screen with edits that are not saved yet. */
+export interface HasUnsavedChanges {
+  hasUnsavedChanges(): boolean;
+}
+
+/** Asks before leaving a screen with unsaved edits (the project editor's per-section dirty state). */
+export const unsavedChangesGuard: CanDeactivateFn<HasUnsavedChanges> = (component) =>
+  !component.hasUnsavedChanges() ||
+  confirm(
+    $localize`:@@store.admin.unsaved-leave:لديك تعديلات غير محفوظة. هل تريد مغادرة الصفحة وتجاهلها؟`,
+  );
