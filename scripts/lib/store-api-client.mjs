@@ -78,7 +78,7 @@ export function writeStaff(staff) {
  * forces a password change (new or reset staff: `mustChangePassword`) — changes it to a new strong password, records
  * it, and continues with the fresh session. `entry` is updated in place; the caller saves it.
  */
-export async function staffLogin(entry) {
+export async function staffLogin(entry, retried = false) {
   const c = new Client();
   const login = await c.call('POST', '/v1/admin/auth/login', {
     email: entry.email,
@@ -94,6 +94,11 @@ export async function staffLogin(entry) {
     entry.secret = enrol.body.secretBase32;
   }
   const verify = await c.call('POST', '/v1/admin/auth/totp/verify', { code: totp(entry.secret) });
+  if (verify.status === 401 && verify.body?.code === 'auth.totp_invalid' && !retried) {
+    // A TOTP step is never accepted twice: a second sign-in within the same 30 s step waits for the next one.
+    await new Promise((r) => setTimeout(r, 30_000 - (Date.now() % 30_000) + 1000));
+    return staffLogin(entry, true);
+  }
   if (verify.status !== 200)
     throw new Error(`totp verify ${entry.email}: ${verify.status} ${JSON.stringify(verify.body)}`);
   c.token = verify.body.accessToken;

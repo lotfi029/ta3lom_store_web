@@ -1,0 +1,164 @@
+<div class="tabh"><h2 i18n="@@store.account.tab-profile">الملف الشخصي</h2></div>
+
+<section class="card" aria-labelledby="pf-h">
+  <h3 id="pf-h" i18n="@@store.account.details">بياناتي</h3>
+  <ta-resource-state
+    [loading]="data.profile.isLoading() && !data.profile.hasValue()"
+    [error]="!!data.profile.error()"
+    (retry)="data.profile.reload()"
+  >
+    <form class="pform" (submit)="save($event)" novalidate>
+      @if (profileError(); as e) {
+        <p class="banner err" role="alert">{{ e }}</p>
+      }
+      <div class="row2">
+        <div class="field">
+          <label for="pf-name" i18n="@@store.checkout.name">الاسم الكامل</label>
+          <input
+            id="pf-name"
+            autocomplete="name"
+            maxlength="120"
+            [value]="model().fullName"
+            (input)="set('fullName', text($event))"
+          />
+        </div>
+        <div class="field">
+          <label for="pf-email" i18n="@@store.checkout.email">البريد الإلكتروني</label>
+          <input
+            id="pf-email"
+            type="email"
+            inputmode="email"
+            autocomplete="email"
+            dir="ltr"
+            maxlength="254"
+            [value]="model().email"
+            (input)="set('email', text($event))"
+            [attr.aria-invalid]="!!emailError()"
+            aria-describedby="pf-email-err"
+          />
+          <p id="pf-email-err" class="field-errors" role="alert">{{ emailError() }}</p>
+        </div>
+      </div>
+      <div class="field">
+        <span class="lbl" id="pf-mobile-l" i18n="@@store.otp.mobile-label">رقم الجوال</span>
+        <p class="ro" aria-labelledby="pf-mobile-l">
+          <bdi dir="ltr">{{ data.me()?.mobile }}</bdi>
+        </p>
+      </div>
+      <fieldset class="langs">
+        <legend i18n="@@store.account.language">لغة الرسائل</legend>
+        <label class="chk"
+          ><input
+            type="radio"
+            name="pf-locale"
+            value="ar"
+            [checked]="model().locale === 'ar'"
+            (change)="set('locale', 'ar')"
+          />
+          العربية</label
+        >
+        <label class="chk"
+          ><input
+            type="radio"
+            name="pf-locale"
+            value="en"
+            [checked]="model().locale === 'en'"
+            (change)="set('locale', 'en')"
+          />
+          <span lang="en">English</span></label
+        >
+      </fieldset>
+      <label class="chk">
+        <input
+          type="checkbox"
+          [checked]="model().marketingOptIn"
+          (change)="set('marketingOptIn', checked($event))"
+        />
+        <span i18n="@@store.account.marketing-r5">أرسلوا لي أخبار المشاريع الجديدة</span>
+      </label>
+      <div>
+        <button
+          type="submit"
+          class="b primary"
+          [disabled]="saving()"
+          [attr.aria-busy]="saving()"
+          i18n="@@store.account.save"
+        >
+          حفظ
+        </button>
+      </div>
+    </form>
+  </ta-resource-state>
+</section>
+
+<section class="card" aria-labelledby="dr-h">
+  <h3 id="dr-h" i18n="@@store.account.data-rights">بياناتك وخصوصيتك</h3>
+  <div class="rights">
+    <div>
+      <p i18n="@@store.account.export-lede-r5">نزّل نسخة من بياناتك وتبرعاتك لدى المتجر (JSON).</p>
+      <button
+        type="button"
+        class="b ghost"
+        (click)="exportData()"
+        [disabled]="exporting()"
+        [attr.aria-busy]="exporting()"
+      >
+        <ta-icon name="download" [size]="16" /><span i18n="@@store.account.export"
+          >تصدير بياناتي</span
+        >
+      </button>
+    </div>
+    <div>
+      <p i18n="@@store.account.logout-all-lede">سجّل الخروج من كل الأجهزة التي دخلت منها.</p>
+      <button type="button" class="b ghost" (click)="logoutAll()">
+        <ta-icon name="logout" [size]="16" /><span i18n="@@store.layout.sign-out-all"
+          >الخروج من كل الأجهزة</span
+        >
+      </button>
+    </div>
+    <div>
+      <p i18n="@@store.account.delete-lede-r5">
+        يحذف اسمك وبريدك وجوالك من المتجر ويلغي جلساتك. تبقى تبرعاتك مسجّلة بلا بيانات شخصية.
+      </p>
+      <button type="button" class="b danger" (click)="openDelete()" i18n="@@store.account.delete">
+        حذف حسابي
+      </button>
+    </div>
+  </div>
+</section>
+
+<ta-dialog [(open)]="deleteOpen" labelledBy="del-h" [lightDismiss]="false">
+  <form class="del" (submit)="confirmDelete($event)" novalidate>
+    <h3 id="del-h" i18n="@@store.account.delete-title">حذف الحساب</h3>
+    <p i18n="@@store.account.delete-body-r5">
+      سنحذف اسمك وبريدك وجوالك ونلغي جلساتك وسلتك. تبقى تبرعاتك في سجلات الجمعية بلا بيانات شخصية،
+      ولا يمكن التراجع عن الحذف.
+    </p>
+    <div class="field">
+      <label for="del-word" i18n="@@store.account.delete-type">للتأكيد اكتب «{{ word }}»</label>
+      <input id="del-word" autocomplete="off" [value]="typed()" (input)="typed.set(text($event))" />
+    </div>
+    @if (deleteError(); as e) {
+      <p class="banner err" role="alert">{{ e }}</p>
+    }
+    <div class="formacts">
+      <button
+        type="submit"
+        class="b danger"
+        [disabled]="!canDelete() || deleting()"
+        [attr.aria-busy]="deleting()"
+        i18n="@@store.account.delete-confirm"
+      >
+        احذف حسابي نهائيًا
+      </button>
+      <button
+        type="button"
+        class="b ghost"
+        (click)="deleteOpen.set(false)"
+        i18n="@@store.ui.cancel"
+      >
+        إلغاء
+      </button>
+    </div>
+  </form>
+</ta-dialog>

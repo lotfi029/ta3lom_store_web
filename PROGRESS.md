@@ -1,5 +1,5 @@
 # Store web progress
-Next: R5 donations — W-M4 (donor account)
+Next: R5 donations — W-M5 (admin)
 
 ## R5 — donations (one PR "Store web — R5 donations", API `792521a`)
 
@@ -9,7 +9,7 @@ Next: R5 donations — W-M4 (donor account)
 | W-M1 Home/listing + card | done | W-M1 | home = hero + search + category chips (API) + sort + paged grid; project card (image, share bar, chips → stepper, open amount, اضافة / تبرع); shared `amount-input`, `option-picker`, `qty-stepper` | 183 / 23 smoke (+ listing ar/en on the real API) / 24 × 2 | C-4 SEO, U-2 API order, JSON-LD NGO + ItemList; 126.5 KB JS |
 | W-M2 Project page | done | W-M2 | `/p/:slug`: cover, title, summary, Markdown story (`<ta-markdown>`, own safe renderer), large donate box with presets, share sheet (+ Facebook), not-found (noindex), old-slug redirect (replaceUrl) | 195 / 27 smoke (+ project ar/en on the real API) / 24 × 2 | JSON-LD DonateAction + BreadcrumbList; prerendered + refreshed after hydration |
 | W-M3 Quick donate, cart, checkout, order | done | W-M3 | quick-donate modal (header, menu, hero, side button ≥ 1320 px), `/cart` (3 line kinds, inline problems + fixes, limits, clear), `/checkout` (inline OTP, contact saved to profile, quote summary, C-3 notice, body-bound Idempotency-Key), `/orders/:ref` (pending = end state, token stripped, no-referrer, sign-in state) | 205 / 31 smoke incl. the full donate journey on the stub (+ real API: `/me` updated) / 24 × 2 | 127.8 KB JS |
-| W-M4 Account | todo | | | | |
+| W-M4 Account | done | W-M4 | `/account` shell; My donations (paged) + detail; Profile (edit, export JSON, sign out everywhere, delete with typed confirmation) | 212 / 35 smoke (+ account, sign-in on the real API) / 24 × 2 | W-2 name + mobile in menu and shell |
 | W-M5 Admin | todo | | | | |
 | W-M6 e2e, a11y, CI, docs | todo | | | | |
 

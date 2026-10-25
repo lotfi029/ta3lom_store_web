@@ -1,0 +1,42 @@
+<div class="ph">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="مسار التنقل" i18n-aria-label="@@store.ui.breadcrumb">
+      <ol>
+        <li><a routerLink="/" i18n="@@store.layout.nav-home">الرئيسية</a></li>
+        <li>
+          <span aria-hidden="true">/</span
+          ><span aria-current="page" i18n="@@store.account.title">حسابي</span>
+        </li>
+      </ol>
+    </nav>
+    <h1 i18n="@@store.account.title">حسابي</h1>
+  </div>
+</div>
+
+<section class="acctsec">
+  <div class="wrap acct">
+    <nav class="acct-side" aria-label="أقسام الحساب" i18n-aria-label="@@store.account.sections">
+      <div class="who">
+        <span class="avatar" aria-hidden="true">{{ initial() }}</span>
+        <div>
+          <b>{{ name() }}</b>
+          <span
+            ><bdi dir="ltr">{{ mobile() }}</bdi></span
+          >
+        </div>
+      </div>
+      <a routerLink="donations" routerLinkActive="on" ariaCurrentWhenActive="page">
+        <span i18n="@@store.layout.my-donations">تبرعاتي</span>
+        @if (data.donationsTotal() !== null) {
+          <span class="c">{{ data.donationsTotal() }}</span>
+        }
+      </a>
+      <a routerLink="profile" routerLinkActive="on" ariaCurrentWhenActive="page">
+        <span i18n="@@store.account.tab-profile">الملف الشخصي</span>
+      </a>
+    </nav>
+    <div class="acct-main">
+      <router-outlet />
+    </div>
+  </div>
+</section>

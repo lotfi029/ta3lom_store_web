@@ -2,9 +2,6 @@ import { Routes } from '@angular/router';
 import { cartNotEmptyGuard, customerGuard, guestOnlyGuard } from './core/guards/guards';
 import { PublicLayout } from './layout/public-layout/public-layout';
 
-const placeholder = () =>
-  import('./features/store/placeholder/placeholder.page').then((m) => m.PlaceholderPage);
-
 /**
  * D-W3: every path sits under /{ar,en} (the locale build's base href); there is no /store prefix (ADR-S09).
  * `/` is home + listing (?q&category&sort&page), `/p/:slug` a project; r4's catalogue and search routes are gone (D-W4).
@@ -40,7 +37,9 @@ export const routes: Routes = [
       {
         path: 'account',
         canActivate: [customerGuard],
-        children: [{ path: '**', loadComponent: placeholder }],
+        loadComponent: () => import('./features/account/account-shell').then((m) => m.AccountShell),
+        loadChildren: () =>
+          import('./features/account/account.routes').then((m) => m.ACCOUNT_ROUTES),
       },
       {
         path: 'login',

@@ -103,12 +103,11 @@ for (const locale of ['ar', 'en'] as const) {
       await page
         .getByRole('button', { name: locale === 'ar' ? 'تسجيل الخروج' : 'Sign out', exact: true })
         .click();
-      const finance = await staff('finance');
-      const found = await finance.call('GET', `/v1/admin/customers?mobile=${mobile}`);
-      const id = (found.body.items ?? found.body)[0].id;
-      expect(
-        (await finance.call('POST', `/v1/admin/customers/${id}/block`, { reason: 'e2e' })).status,
-      ).toBeLessThan(300);
+      // R5: blocking needs staff:customers (admin, store_manager); the search is `q` (a mobile matches exactly).
+      const manager = await staff('store_manager');
+      const found = await manager.call('GET', `/v1/admin/customers?q=${mobile}`);
+      const id = found.body.items[0].id;
+      expect((await manager.call('POST', `/v1/admin/customers/${id}/block`)).status).toBe(204);
 
       await page.goto(`/${locale}/login`);
       resetOtpChallenges();
@@ -119,7 +118,7 @@ for (const locale of ['ar', 'en'] as const) {
       await expect(page.locator('[role=alert]')).toContainText(
         locale === 'ar' ? 'تواصل مع الجمعية' : 'Contact the association',
       );
-      await finance.call('POST', `/v1/admin/customers/${id}/unblock`, {});
+      await manager.call('POST', `/v1/admin/customers/${id}/unblock`);
     });
   });
 }
