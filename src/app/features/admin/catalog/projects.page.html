@@ -1,0 +1,145 @@
+<div class="ahead">
+  <div>
+    <h1 i18n="@@store.admin.nav-projects">المشاريع</h1>
+    <p i18n="@@store.admin.projects-lede">مشاريع التبرع: المسودات والمنشور والمؤرشف.</p>
+  </div>
+  <div class="act">
+    @if (canEdit()) {
+      <a class="btn primary" routerLink="/admin/projects/new" i18n="@@store.admin.new-project"
+        >مشروع جديد</a
+      >
+    } @else {
+      <button
+        type="button"
+        class="btn primary"
+        disabled
+        aria-describedby="pr-why"
+        i18n="@@store.admin.new-project"
+      >
+        مشروع جديد
+      </button>
+    }
+    <ta-requires id="pr-why" policy="staff:catalogue" />
+  </div>
+</div>
+
+<form class="filters panel" (submit)="apply($event)" novalidate>
+  <div class="field">
+    <label for="pf-q" i18n="@@store.admin.search">بحث</label>
+    <input id="pf-q" type="search" maxlength="100" [value]="draft().q" (input)="set('q', $event)" />
+  </div>
+  <div class="field">
+    <label for="pf-status" i18n="@@store.account.col-status">الحالة</label>
+    <select id="pf-status" (change)="set('status', $event)">
+      <option value="" [selected]="draft().status === ''" i18n="@@store.admin.all">الكل</option>
+      <option
+        value="draft"
+        [selected]="draft().status === 'draft'"
+        i18n="@@store.admin.status-draft"
+      >
+        مسودة
+      </option>
+      <option
+        value="published"
+        [selected]="draft().status === 'published'"
+        i18n="@@store.admin.status-published"
+      >
+        منشور
+      </option>
+      <option
+        value="archived"
+        [selected]="draft().status === 'archived'"
+        i18n="@@store.admin.status-archived"
+      >
+        مؤرشف
+      </option>
+    </select>
+  </div>
+  <div class="field">
+    <label for="pf-cat" i18n="@@store.admin.category">التصنيف</label>
+    <select id="pf-cat" (change)="set('category', $event)">
+      <option value="" [selected]="draft().category === ''" i18n="@@store.admin.all">الكل</option>
+      @for (c of categories(); track c.id) {
+        <option [value]="c.id" [selected]="draft().category === c.id">
+          {{ i18n.pick(c.nameAr, c.nameEn) }}
+        </option>
+      }
+    </select>
+  </div>
+  <button type="submit" class="btn primary" i18n="@@store.admin.apply">تطبيق</button>
+</form>
+
+<ta-resource-state
+  [loading]="data.projects.isLoading() && !page()"
+  [error]="!!data.projects.error() && !page()"
+  (retry)="data.projects.reload()"
+>
+  @if (items().length === 0) {
+    <p class="muted" i18n="@@store.admin.no-results">لا نتائج.</p>
+  } @else {
+    <div class="panel tbl-wrap">
+      <table class="atbl">
+        <caption class="visually-hidden" i18n="@@store.admin.nav-projects">
+          المشاريع
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col" i18n="@@store.admin.col-title">العنوان</th>
+            <th scope="col" i18n="@@store.admin.category">التصنيف</th>
+            <th scope="col" i18n="@@store.account.col-status">الحالة</th>
+            <th scope="col" i18n="@@store.admin.col-options">الخيارات</th>
+            <th scope="col" i18n="@@store.admin.col-updated">آخر تعديل</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of items(); track p.id) {
+            <tr>
+              <td>
+                <a [routerLink]="['/admin/projects', p.id]">{{ p.titleAr }}</a>
+                <small class="muted slug" dir="ltr">{{ p.slug }}</small>
+              </td>
+              <td>{{ p.categoryNameAr }}</td>
+              <td>
+                <ta-status-pill [tone]="status(p.status).tone">{{
+                  status(p.status).label
+                }}</ta-status-pill>
+              </td>
+              <td>
+                <bdi>{{ toInt(p.activeOptionCount) }}</bdi>
+                @if (p.allowOpenAmount) {
+                  <small class="muted slug" i18n="@@store.admin.open-amount">+ مبلغ مفتوح</small>
+                }
+              </td>
+              <td>{{ i18n.formatDate(p.updatedAt) }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    @if (pages() > 1) {
+      <nav class="apager" aria-label="الصفحات" i18n-aria-label="@@store.ui.pagination">
+        <button
+          type="button"
+          class="btn sm"
+          (click)="go(data.filter().page - 1)"
+          [disabled]="data.filter().page <= 1"
+          i18n="@@store.account.prev"
+        >
+          السابق
+        </button>
+        <span
+          ><bdi>{{ data.filter().page }} / {{ pages() }}</bdi></span
+        >
+        <button
+          type="button"
+          class="btn sm"
+          (click)="go(data.filter().page + 1)"
+          [disabled]="data.filter().page >= pages()"
+          i18n="@@store.account.next"
+        >
+          التالي
+        </button>
+      </nav>
+    }
+  }
+</ta-resource-state>

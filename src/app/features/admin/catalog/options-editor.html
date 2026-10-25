@@ -1,0 +1,140 @@
+<form (submit)="save($event)" novalidate class="oform">
+  <span class="visually-hidden" role="status" aria-live="polite">{{ announcement() }}</span>
+  @if (error(); as e) {
+    <div class="err" role="alert">
+      <p>{{ e }}</p>
+      @if (missing().length) {
+        <ul>
+          @for (m of missing(); track m) {
+            <li>{{ missingLabel(m) }}</li>
+          }
+        </ul>
+      }
+    </div>
+  }
+  @if (tried() && listProblem(); as lp) {
+    <p class="err" role="alert">{{ lp }}</p>
+  }
+  <ol class="olist">
+    @for (r of rows(); track r.key; let i = $index, count = $count) {
+      <li class="orow" [attr.data-key]="r.key" [class.off]="!r.isActive">
+        <span class="num" aria-hidden="true">{{ i + 1 }}</span>
+        <div class="field">
+          <label [for]="'op-ar-' + r.key" i18n="@@store.admin.option-label-ar"
+            >الاسم بالعربية</label
+          >
+          <input
+            [id]="'op-ar-' + r.key"
+            maxlength="60"
+            [value]="r.labelAr"
+            [disabled]="!canEdit()"
+            (input)="set(r.key, 'labelAr', $event)"
+            [attr.aria-invalid]="!!problemFor(r.key, 'labelAr')"
+            [attr.aria-describedby]="'op-ar-err-' + r.key"
+          />
+          <small class="ferr" [id]="'op-ar-err-' + r.key">{{ problemFor(r.key, 'labelAr') }}</small>
+        </div>
+        <div class="field">
+          <label [for]="'op-en-' + r.key" i18n="@@store.admin.option-label-en"
+            >الاسم بالإنجليزية</label
+          >
+          <input
+            [id]="'op-en-' + r.key"
+            dir="ltr"
+            maxlength="60"
+            [value]="r.labelEn"
+            [disabled]="!canEdit()"
+            (input)="set(r.key, 'labelEn', $event)"
+            [attr.aria-invalid]="!!problemFor(r.key, 'labelEn')"
+            [attr.aria-describedby]="'op-en-err-' + r.key"
+          />
+          <small class="ferr" [id]="'op-en-err-' + r.key">{{ problemFor(r.key, 'labelEn') }}</small>
+        </div>
+        <div class="field amt">
+          <label [for]="'op-amt-' + r.key" i18n="@@store.admin.option-amount">المبلغ (ر.س)</label>
+          <input
+            [id]="'op-amt-' + r.key"
+            inputmode="decimal"
+            dir="ltr"
+            [value]="r.amount"
+            [disabled]="!canEdit()"
+            (input)="set(r.key, 'amount', $event)"
+            [attr.aria-invalid]="!!problemFor(r.key, 'amount')"
+            [attr.aria-describedby]="'op-amt-err-' + r.key"
+          />
+          <small class="ferr" [id]="'op-amt-err-' + r.key">{{ problemFor(r.key, 'amount') }}</small>
+        </div>
+        <label class="chk"
+          ><input
+            type="checkbox"
+            [checked]="r.isActive"
+            [disabled]="!canEdit()"
+            (change)="setActive(r.key, $event)"
+          /><span i18n="@@store.admin.active">نشط</span></label
+        >
+        <span class="rowacts">
+          <button
+            type="button"
+            class="btn sm"
+            data-move="up"
+            [attr.aria-disabled]="!canEdit() || i === 0 || null"
+            (click)="canEdit() && move(r.key, -1)"
+          >
+            <span aria-hidden="true">↑</span
+            ><span class="visually-hidden" i18n="@@store.admin.option-up"
+              >نقل الخيار {{ r.labelAr }} للأعلى</span
+            >
+          </button>
+          <button
+            type="button"
+            class="btn sm"
+            data-move="down"
+            [attr.aria-disabled]="!canEdit() || i === count - 1 || null"
+            (click)="canEdit() && move(r.key, 1)"
+          >
+            <span aria-hidden="true">↓</span
+            ><span class="visually-hidden" i18n="@@store.admin.option-down"
+              >نقل الخيار {{ r.labelAr }} للأسفل</span
+            >
+          </button>
+          <button type="button" class="btn sm" [disabled]="!canEdit()" (click)="remove(r.key)">
+            <span i18n="@@store.admin.remove">إزالة</span
+            ><span class="visually-hidden"> {{ r.labelAr }}</span>
+          </button>
+        </span>
+      </li>
+    } @empty {
+      <li class="muted" i18n="@@store.admin.no-options">
+        لا خيارات. أضف خيارًا أو اسمح بالمبلغ المفتوح في بيانات المشروع.
+      </li>
+    }
+  </ol>
+  <p class="muted note" i18n="@@store.admin.options-note">
+    الخيار المحذوف الذي وصلته تبرعات يُوقف بدل حذفه. الحد الأقصى {{ max }} خيارًا.
+  </p>
+  <div class="rowacts">
+    <button
+      type="button"
+      class="btn add"
+      [disabled]="!canEdit() || rows().length >= max"
+      (click)="add()"
+      i18n="@@store.admin.option-add"
+    >
+      إضافة خيار
+    </button>
+    <button
+      type="submit"
+      class="btn primary"
+      [disabled]="!canEdit() || busy() || !dirty()"
+      [attr.aria-busy]="busy()"
+      i18n="@@store.admin.options-save"
+    >
+      حفظ الخيارات
+    </button>
+    @if (dirty()) {
+      <button type="button" class="btn" (click)="discard()" i18n="@@store.admin.discard">
+        تجاهل التعديلات
+      </button>
+    }
+  </div>
+</form>

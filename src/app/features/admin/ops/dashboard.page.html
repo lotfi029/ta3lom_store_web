@@ -1,0 +1,90 @@
+<div class="ahead">
+  <div>
+    <h1 i18n="@@store.admin.home-title">لوحة إدارة المتجر</h1>
+    <p><span i18n="@@store.admin.your-roles">أدوارك:</span> {{ roles() }}</p>
+  </div>
+</div>
+
+<ta-resource-state
+  [loading]="data.dashboard.isLoading() && !d()"
+  [error]="!!data.dashboard.error() && !d()"
+  (retry)="data.dashboard.reload()"
+>
+  @if (d(); as x) {
+    <section aria-labelledby="db-stats-h">
+      <h2 id="db-stats-h" class="sub" i18n="@@store.admin.overview">نظرة عامة</h2>
+      <ul class="stats">
+        <li class="panel">
+          <span i18n="@@store.admin.pending-today">تبرعات بانتظار الدفع اليوم</span>
+          <b
+            ><a routerLink="/admin/orders" [queryParams]="{ status: 'pending_payment' }">{{
+              int(x.pendingOrdersToday)
+            }}</a></b
+          >
+        </li>
+        <li class="panel">
+          <span i18n="@@store.admin.pending-week">بانتظار الدفع هذا الأسبوع</span>
+          <b>{{ int(x.pendingOrdersThisWeek) }}</b>
+        </li>
+        <li class="panel">
+          <span i18n="@@store.admin.published-projects">مشاريع منشورة</span>
+          <b
+            ><a routerLink="/admin/projects">{{ int(x.publishedProjects) }}</a></b
+          >
+        </li>
+        <li class="panel">
+          <span i18n="@@store.admin.active-categories">تصنيفات نشطة</span>
+          <b
+            ><a routerLink="/admin/categories">{{ int(x.activeCategories) }}</a></b
+          >
+        </li>
+        <li class="panel">
+          <span i18n="@@store.admin.active-donors">متبرعون نشطون</span>
+          <b
+            ><a routerLink="/admin/donors">{{ int(x.activeDonors) }}</a></b
+          >
+        </li>
+      </ul>
+    </section>
+
+    <div class="cols">
+      <section class="panel" aria-labelledby="db-top-h">
+        <h2 id="db-top-h" i18n="@@store.admin.top-projects">المشاريع الأعلى في المبالغ المنتظرة</h2>
+        @if (x.topProjectsByPendingAmount.length === 0) {
+          <p class="muted" i18n="@@store.admin.no-results">لا نتائج.</p>
+        } @else {
+          <ol class="list">
+            @for (t of x.topProjectsByPendingAmount; track t.projectId) {
+              <li>
+                <span
+                  ><a [routerLink]="['/admin/projects', t.projectId]">{{ t.titleAr }}</a>
+                  <small class="muted" i18n="@@store.admin.pending-count"
+                    >({{ int(t.pendingOrders) }} طلب)</small
+                  ></span
+                ><ta-money [value]="t.pendingAmount" />
+              </li>
+            }
+          </ol>
+        }
+      </section>
+      <section class="panel" aria-labelledby="db-pay-h">
+        <h2 id="db-pay-h" i18n="@@store.admin.payments-off-title">الدفع الإلكتروني</h2>
+        <p class="muted" i18n="@@store.admin.payments-off">
+          لم يُفعَّل الدفع الإلكتروني بعد: كل التبرعات المسجلة بانتظار الدفع، ولا تُحسب مبالغ
+          مدفوعة.
+        </p>
+      </section>
+    </div>
+  }
+</ta-resource-state>
+
+<h2 class="sub" i18n="@@store.admin.sections">أقسام الإدارة</h2>
+<ul class="tiles">
+  @for (item of links(); track item.path) {
+    <li>
+      <a class="panel" [routerLink]="item.path"
+        ><ta-icon [name]="item.icon" [size]="20" /><span>{{ item.label() }}</span></a
+      >
+    </li>
+  }
+</ul>

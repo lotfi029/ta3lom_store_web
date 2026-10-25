@@ -1,0 +1,254 @@
+<div class="ahead">
+  <div>
+    <h1 i18n="@@store.admin.nav-categories">التصنيفات</h1>
+    <p i18n="@@store.admin.categories-lede">
+      تصنيفات المشاريع كما تظهر في المتجر. اسحب أو استخدم الأسهم لتغيير الترتيب. يُوقف التصنيف ولا
+      يُحذف.
+    </p>
+  </div>
+  <div class="act">
+    <button
+      type="button"
+      class="btn primary"
+      (click)="startCreate()"
+      [disabled]="!canEdit()"
+      aria-describedby="ct-why"
+      i18n="@@store.admin.add-category"
+    >
+      إضافة تصنيف
+    </button>
+    <ta-requires id="ct-why" policy="staff:catalogue" />
+  </div>
+</div>
+
+<ta-resource-state
+  [loading]="data.categories.isLoading() && list().length === 0"
+  [error]="!!data.categories.error() && list().length === 0"
+  (retry)="data.categories.reload()"
+>
+  <div class="panel">
+    <ta-reorder-list
+      [items]="list()"
+      caption="ترتيب التصنيفات"
+      i18n-caption="@@store.admin.categories-order"
+      [busy]="reordering() || !canEdit()"
+      (reordered)="reorder($event)"
+    >
+      <ng-template #item let-c>
+        <div class="crow">
+          <div class="cname">
+            <b>{{ c.nameAr }}</b>
+            @if (c.nameEn) {
+              <small class="muted" dir="ltr">{{ c.nameEn }}</small>
+            }
+            <small class="muted"
+              ><bdi dir="ltr">{{ c.slug }}</bdi> ·
+              <span i18n="@@store.admin.project-count">{{ c.projectCount }} مشروع</span></small
+            >
+          </div>
+          <div class="pills">
+            @if (c.isActive) {
+              <ta-status-pill tone="success"
+                ><span i18n="@@store.admin.active">نشط</span></ta-status-pill
+              >
+            } @else {
+              <ta-status-pill tone="neutral"
+                ><span i18n="@@store.admin.inactive">موقوف</span></ta-status-pill
+              >
+            }
+            @if (c.acceptsGeneralGifts) {
+              <ta-status-pill tone="info"
+                ><span i18n="@@store.admin.general-gifts">يقبل التبرع العام</span></ta-status-pill
+              >
+            }
+          </div>
+          <button type="button" class="btn sm" (click)="startEdit(c)" [disabled]="!canEdit()">
+            <span i18n="@@store.account.edit">تعديل</span
+            ><span class="visually-hidden"> {{ c.nameAr }}</span>
+          </button>
+        </div>
+      </ng-template>
+    </ta-reorder-list>
+  </div>
+</ta-resource-state>
+
+<ta-dialog [(open)]="open" labelledBy="ct-dlg-h" [lightDismiss]="false">
+  <form class="dlg wide" (submit)="save($event)" novalidate>
+    <h2 id="ct-dlg-h">
+      @if (editing() === 'new') {
+        <span i18n="@@store.admin.add-category">إضافة تصنيف</span>
+      } @else {
+        <span i18n="@@store.admin.edit-category">تعديل التصنيف</span>
+      }
+    </h2>
+    @if (error(); as e) {
+      <p class="err" role="alert">{{ e }}</p>
+    }
+    <div class="grid2">
+      <div class="field">
+        <label for="ct-ar" i18n="@@store.admin.name-ar">الاسم بالعربية</label>
+        <input
+          id="ct-ar"
+          [formField]="f.nameAr"
+          [attr.aria-invalid]="f.nameAr().touched() && f.nameAr().invalid()"
+          aria-describedby="ct-ar-err"
+        />
+        <ul id="ct-ar-err" class="field-errors">
+          @if (f.nameAr().touched()) {
+            @for (x of f.nameAr().errors(); track x.kind) {
+              <li>{{ x.message }}</li>
+            }
+          }
+        </ul>
+      </div>
+      <div class="field">
+        <label for="ct-en" i18n="@@store.admin.name-en">الاسم بالإنجليزية</label>
+        <input
+          id="ct-en"
+          dir="ltr"
+          [formField]="f.nameEn"
+          [attr.aria-invalid]="f.nameEn().touched() && f.nameEn().invalid()"
+          aria-describedby="ct-en-err"
+        />
+        <ul id="ct-en-err" class="field-errors">
+          @if (f.nameEn().touched()) {
+            @for (x of f.nameEn().errors(); track x.kind) {
+              <li>{{ x.message }}</li>
+            }
+          }
+        </ul>
+      </div>
+    </div>
+    <div class="field">
+      <label for="ct-dar" i18n="@@store.admin.description-ar">الوصف بالعربية</label>
+      <textarea
+        id="ct-dar"
+        rows="3"
+        [formField]="f.descriptionAr"
+        [attr.aria-invalid]="f.descriptionAr().touched() && f.descriptionAr().invalid()"
+        aria-describedby="ct-dar-err"
+      ></textarea>
+      <ul id="ct-dar-err" class="field-errors">
+        @if (f.descriptionAr().touched()) {
+          @for (x of f.descriptionAr().errors(); track x.kind) {
+            <li>{{ x.message }}</li>
+          }
+        }
+      </ul>
+    </div>
+    <div class="field">
+      <label for="ct-den" i18n="@@store.admin.description-en">الوصف بالإنجليزية</label>
+      <textarea
+        id="ct-den"
+        rows="3"
+        dir="ltr"
+        [formField]="f.descriptionEn"
+        [attr.aria-invalid]="f.descriptionEn().touched() && f.descriptionEn().invalid()"
+        aria-describedby="ct-den-err"
+      ></textarea>
+      <ul id="ct-den-err" class="field-errors">
+        @if (f.descriptionEn().touched()) {
+          @for (x of f.descriptionEn().errors(); track x.kind) {
+            <li>{{ x.message }}</li>
+          }
+        }
+      </ul>
+    </div>
+    <div class="grid2">
+      <div class="field">
+        <label for="ct-slug" i18n="@@store.admin.slug">الرابط (slug)</label>
+        <input
+          id="ct-slug"
+          dir="ltr"
+          [formField]="f.slug"
+          [attr.aria-invalid]="f.slug().touched() && f.slug().invalid()"
+          aria-describedby="ct-slug-err"
+        />
+        <ul id="ct-slug-err" class="field-errors">
+          @if (f.slug().touched()) {
+            @for (x of f.slug().errors(); track x.kind) {
+              <li>{{ x.message }}</li>
+            }
+          }
+        </ul>
+      </div>
+      <div class="field">
+        <label for="ct-sort" i18n="@@store.admin.col-sort">الترتيب</label>
+        <input
+          id="ct-sort"
+          inputmode="numeric"
+          dir="ltr"
+          [formField]="f.sort"
+          [attr.aria-invalid]="f.sort().touched() && f.sort().invalid()"
+          aria-describedby="ct-sort-err"
+        />
+        <ul id="ct-sort-err" class="field-errors">
+          @if (f.sort().touched()) {
+            @for (x of f.sort().errors(); track x.kind) {
+              <li>{{ x.message }}</li>
+            }
+          }
+        </ul>
+      </div>
+    </div>
+    <div class="imgf">
+      <p class="lbl" i18n="@@store.admin.image">الصورة</p>
+      @if (model().imageUrl; as url) {
+        <img [src]="url" [alt]="model().imageAlt" width="180" height="120" />
+      } @else {
+        <p class="muted" i18n="@@store.admin.no-image">بلا صورة.</p>
+      }
+      <div class="rowacts">
+        <button
+          type="button"
+          class="btn sm"
+          (click)="pickerOpen.set(true)"
+          i18n="@@store.admin.choose-image"
+        >
+          اختيار صورة
+        </button>
+        @if (model().imageAssetId) {
+          <button
+            type="button"
+            class="btn sm"
+            (click)="clearImage()"
+            i18n="@@store.admin.remove-image"
+          >
+            إزالة الصورة
+          </button>
+        }
+      </div>
+    </div>
+    <label class="chk"
+      ><input
+        type="checkbox"
+        [checked]="model().acceptsGeneralGifts"
+        (change)="setFlag('acceptsGeneralGifts', $event)"
+      />
+      <span i18n="@@store.admin.accepts-general-gifts"
+        >يقبل التبرع العام (التبرع السريع)</span
+      ></label
+    >
+    <label class="chk"
+      ><input type="checkbox" [checked]="model().isActive" (change)="setFlag('isActive', $event)" />
+      <span i18n="@@store.admin.active">نشط</span></label
+    >
+    <div class="acts">
+      <button
+        type="submit"
+        class="btn primary"
+        [disabled]="busy()"
+        [attr.aria-busy]="busy()"
+        i18n="@@store.account.save"
+      >
+        حفظ
+      </button>
+      <button type="button" class="btn" (click)="open.set(false)" i18n="@@store.account.cancel">
+        إلغاء
+      </button>
+    </div>
+  </form>
+</ta-dialog>
+
+<ta-media-picker idPrefix="ct-mp" [(open)]="pickerOpen" (picked)="picked($event)" />
+<ta-conflict-dialog idPrefix="ct-cf" [(open)]="conflictOpen" (reload)="reloadLatest()" />

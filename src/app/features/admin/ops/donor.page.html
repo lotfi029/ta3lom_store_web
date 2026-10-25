@@ -1,0 +1,169 @@
+<p class="back">
+  <a routerLink="/admin/donors" i18n="@@store.admin.back-to-donors">العودة إلى المتبرعين</a>
+</p>
+@if (notFound()) {
+  <div class="ahead">
+    <h1 i18n="@@store.admin.donor-not-found">لم نجد هذا المتبرع.</h1>
+  </div>
+} @else {
+  <ta-resource-state
+    [loading]="data.donor.isLoading() && !c()"
+    [error]="!!data.donor.error() && !c()"
+    (retry)="data.donor.reload()"
+  >
+    @if (c(); as x) {
+      <div class="ahead">
+        <div>
+          <h1>{{ x.fullName || '—' }}</h1>
+          <p>
+            <ta-status-pill [tone]="label(x.status).tone">{{
+              label(x.status).label
+            }}</ta-status-pill>
+          </p>
+        </div>
+        @if (x.status !== 'anonymised') {
+          <div class="act">
+            <button
+              type="button"
+              class="btn"
+              [class.danger]="x.status === 'active'"
+              [disabled]="!canBlock()"
+              aria-describedby="dn-why"
+              (click)="error.set(null); confirmOpen.set(true)"
+            >
+              @if (x.status === 'active') {
+                <span i18n="@@store.admin.block">إيقاف الحساب</span>
+              } @else {
+                <span i18n="@@store.admin.unblock">إعادة التفعيل</span>
+              }
+            </button>
+            <ta-requires id="dn-why" policy="staff:customers" />
+          </div>
+        }
+      </div>
+      <div class="ogrid">
+        <section class="panel" aria-labelledby="dn-o-h">
+          <h2 id="dn-o-h" i18n="@@store.admin.recent-orders">آخر الطلبات</h2>
+          @if (x.recentOrders.length === 0) {
+            <p class="muted" i18n="@@store.admin.no-results">لا نتائج.</p>
+          } @else {
+            <div class="tbl-wrap">
+              <table class="atbl">
+                <thead>
+                  <tr>
+                    <th scope="col" i18n="@@store.order.reference">الرقم المرجعي</th>
+                    <th scope="col" i18n="@@store.admin.col-date">التاريخ</th>
+                    <th scope="col" i18n="@@store.cart.total">الإجمالي</th>
+                    <th scope="col" i18n="@@store.account.col-status">الحالة</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (o of x.recentOrders; track o.reference) {
+                    <tr>
+                      <td>
+                        <a [routerLink]="['/admin/orders', o.reference]"
+                          ><bdi dir="ltr" class="mono">{{ o.reference }}</bdi></a
+                        >
+                      </td>
+                      <td>{{ i18n.formatDate(o.createdAt) }}</td>
+                      <td><ta-money [value]="o.totalAmount" /></td>
+                      <td>
+                        <ta-status-pill [tone]="orderLabel(o.status).tone">{{
+                          orderLabel(o.status).label
+                        }}</ta-status-pill>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </section>
+        <section class="panel" aria-labelledby="dn-p-h">
+          <h2 id="dn-p-h" i18n="@@store.admin.profile">البيانات</h2>
+          <dl class="kv">
+            <div>
+              <dt i18n="@@store.admin.donor-mobile">جوال المتبرع</dt>
+              <dd>
+                <bdi dir="ltr">{{ x.mobile || '—' }}</bdi>
+              </dd>
+            </div>
+            <div>
+              <dt i18n="@@store.checkout.email">البريد الإلكتروني</dt>
+              <dd>
+                <bdi dir="ltr">{{ x.email || '—' }}</bdi>
+              </dd>
+            </div>
+            <div>
+              <dt i18n="@@store.admin.locale">لغة الرسائل</dt>
+              <dd>{{ x.locale === 'en' ? 'English' : 'العربية' }}</dd>
+            </div>
+            <div>
+              <dt i18n="@@store.admin.marketing">رسائل تسويقية</dt>
+              <dd>
+                @if (x.marketingOptIn) {
+                  <span i18n="@@store.admin.yes">نعم</span>
+                } @else {
+                  <span i18n="@@store.admin.no">لا</span>
+                }
+              </dd>
+            </div>
+            <div>
+              <dt i18n="@@store.admin.consent">الموافقة على سياسة الخصوصية</dt>
+              <dd>{{ x.pdplConsentAt ? i18n.formatDate(x.pdplConsentAt) : '—' }}</dd>
+            </div>
+            <div>
+              <dt i18n="@@store.admin.joined">انضم في</dt>
+              <dd>{{ i18n.formatDate(x.createdAt) }}</dd>
+            </div>
+            <div>
+              <dt i18n="@@store.admin.last-login">آخر دخول</dt>
+              <dd>{{ x.lastLoginAt ? i18n.formatDateTime(x.lastLoginAt) : '—' }}</dd>
+            </div>
+          </dl>
+        </section>
+      </div>
+
+      <ta-dialog [(open)]="confirmOpen" labelledBy="dn-c-h" [lightDismiss]="false">
+        <div class="dlg">
+          @if (x.status === 'active') {
+            <h2 id="dn-c-h" i18n="@@store.admin.block-q">إيقاف حساب هذا المتبرع؟</h2>
+            <p i18n="@@store.admin.block-lede">
+              لن يستطيع الدخول ولا التبرع، وتُغلق جلساته الحالية. تبقى طلباته كما هي.
+            </p>
+          } @else {
+            <h2 id="dn-c-h" i18n="@@store.admin.unblock-q">إعادة تفعيل حساب هذا المتبرع؟</h2>
+          }
+          @if (error(); as e) {
+            <p class="err" role="alert">{{ e }}</p>
+          }
+          <div class="acts">
+            <button
+              type="button"
+              class="btn"
+              [class.danger]="x.status === 'active'"
+              [class.primary]="x.status !== 'active'"
+              [disabled]="busy()"
+              [attr.aria-busy]="busy()"
+              (click)="toggle()"
+            >
+              @if (x.status === 'active') {
+                <span i18n="@@store.admin.block">إيقاف الحساب</span>
+              } @else {
+                <span i18n="@@store.admin.unblock">إعادة التفعيل</span>
+              }
+            </button>
+            <button
+              type="button"
+              class="btn"
+              (click)="confirmOpen.set(false)"
+              i18n="@@store.admin.keep"
+            >
+              رجوع
+            </button>
+          </div>
+        </div>
+      </ta-dialog>
+    }
+  </ta-resource-state>
+}

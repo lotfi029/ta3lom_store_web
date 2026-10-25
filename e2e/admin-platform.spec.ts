@@ -3,7 +3,7 @@ import { expectNoA11yViolations, expectNoHorizontalScroll } from './support/a11y
 import { freshMobile, staffSignIn } from './support/auth';
 import { totp } from '../scripts/lib/totp.mjs';
 
-/** W-08 — staff sign-in, the admin shell and the platform screens (#47–#52, #118–#128, #133) on the real API. */
+/** Staff sign-in, the admin shell and the platform screens (settings, templates, audit, team) on the real API (R5). */
 for (const locale of ['ar', 'en'] as const) {
   const t = (ar: string, en: string) => (locale === 'ar' ? ar : en);
 
@@ -29,30 +29,34 @@ for (const locale of ['ar', 'en'] as const) {
       await expect(page.locator('h1')).toHaveText(t('الإعدادات', 'Settings'));
     });
 
-    test('the side nav follows the role: viewer reads settings with the reason; no team or audit (RUL-62)', async ({
+    test('the side nav follows the role: a viewer reads the catalogue and orders; no settings, team, templates or audit', async ({
       page,
     }) => {
       const me = page.waitForRequest((r) => r.url().endsWith('/v1/admin/me'));
       await staffSignIn(page, locale, 'viewer');
-      await me; // #52: the shell reads the current roles
+      await me; // the shell reads the current roles
       const nav = page.locator('#admin-nav');
-      await expect(nav.getByRole('link', { name: t('الإعدادات', 'Settings') })).toBeVisible();
-      await expect(nav.getByRole('link', { name: t('فريق العمل', 'Team') })).toHaveCount(0);
-      await expect(nav.getByRole('link', { name: t('سجل التدقيق', 'Audit log') })).toHaveCount(0);
+      for (const [ar, en] of [
+        ['المشاريع', 'Projects'],
+        ['الطلبات', 'Orders'],
+        ['المتبرعون', 'Donors'],
+      ])
+        await expect(nav.getByRole('link', { name: t(ar, en) })).toBeVisible();
+      for (const [ar, en] of [
+        ['الإعدادات', 'Settings'],
+        ['فريق العمل', 'Team'],
+        ['قوالب الرسائل', 'Message templates'],
+        ['سجل التدقيق', 'Audit log'],
+      ])
+        await expect(nav.getByRole('link', { name: t(ar, en) })).toHaveCount(0);
       await expectNoA11yViolations(page, `/${locale}/admin home (viewer)`);
-      await nav.getByRole('link', { name: t('الإعدادات', 'Settings') }).click();
-      await expect(page.locator('#set-shipping_flat_fee')).toHaveAttribute('readonly', '');
-      await expect(page.locator('ta-requires').first()).toContainText(
-        t('يتطلب دور مدير النظام', 'Requires the administrator role'),
-      );
-      await expectNoA11yViolations(page, `/${locale}/admin/settings (viewer)`);
-      await page.goto(`/${locale}/admin/staff`);
+      await page.goto(`/${locale}/admin/settings`);
       await expect(page).toHaveURL(new RegExp(`/${locale}/admin$`));
       await page.setViewportSize({ width: 320, height: 800 });
       await expectNoHorizontalScroll(page);
     });
 
-    test('team: create a member (one-time password once) → first sign-in enrols TOTP → reset TOTP (#123–#127)', async ({
+    test('team: create a member (one-time password once) → first sign-in sets up TOTP → forced password change → reset TOTP', async ({
       page,
       browser,
     }) => {
@@ -84,10 +88,28 @@ for (const locale of ['ar', 'en'] as const) {
       await other.locator('#al-password').fill(password);
       await other.locator('#al-password').press('Enter');
       const secret = (await other.getByTestId('totp-secret').textContent())!.replace(/\s+/g, '');
-      await expectNoA11yViolations(other, `/${locale}/admin/login enrol`);
+      await expectNoA11yViolations(other, `/${locale}/admin/login TOTP setup`);
       await other.locator('#al-code').fill(totp(secret));
       await other.locator('#al-code').press('Enter');
+      // C-6: the one-time password must be changed first; every other screen sends back here, also after a reload.
+      await expect(other).toHaveURL(new RegExp(`/${locale}/admin/password$`));
+      await expect(other.locator('h1')).toHaveText(t('تغيير كلمة المرور', 'Change password'));
+      await other.reload();
+      await expect(other).toHaveURL(new RegExp(`/${locale}/admin/password$`));
+      await other.goto(`/${locale}/admin/projects`);
+      await expect(other).toHaveURL(new RegExp(`/${locale}/admin/password$`));
+      await expectNoA11yViolations(other, `/${locale}/admin/password (forced)`);
+      await other.locator('#ap-current').fill(password);
+      await other.locator('#ap-new').fill('short');
+      await other.locator('#ap-confirm').fill('short');
+      await other.locator('#ap-confirm').press('Enter');
+      await expect(other.locator('.form-error li').first()).toBeVisible(); // auth.password_weak reasons
+      const next = `E2e-${Date.now()}-strong-pass`;
+      await other.locator('#ap-new').fill(next);
+      await other.locator('#ap-confirm').fill(next);
+      await other.locator('#ap-confirm').press('Enter');
       await expect(other).toHaveURL(new RegExp(`/${locale}/admin$`));
+      await expect(other.locator('h1')).toHaveText(t('لوحة إدارة المتجر', 'Store admin'));
       await ctx.close();
 
       await page.reload();
@@ -102,28 +124,25 @@ for (const locale of ['ar', 'en'] as const) {
       await expect(row).toContainText(t('بلا تحقق بخطوتين', 'No two-step verification'));
     });
 
-    test('settings: admin saves a typed value; invalid input is refused (#118–#119)', async ({
-      page,
-    }) => {
+    test('settings: admin saves a typed value; invalid input is refused', async ({ page }) => {
       await staffSignIn(page, locale, 'admin', '/admin/settings');
-      const input = page.locator('#set-low_stock_default_threshold');
+      const input = page.locator('#set-cart_max_lines');
       const before = await input.inputValue();
       const save = page.locator('li', { has: input }).getByRole('button');
       await input.fill('1.5');
       await save.click();
-      await expect(page.locator('#set-low_stock_default_threshold-err')).toContainText(
+      await expect(page.locator('#set-cart_max_lines-err')).toContainText(
         t('عددًا صحيحًا', 'whole number'),
       );
-      await input.fill(String(Number(before) + 1));
+      const changed = String(Number(before) >= 50 ? Number(before) - 1 : Number(before) + 1);
+      await input.fill(changed);
       await save.click();
       await expect(page.locator('.toast')).toContainText(t('حُفظت التغييرات', 'Changes saved'));
       await page.reload();
-      await expect(page.locator('#set-low_stock_default_threshold')).toHaveValue(
-        String(Number(before) + 1),
-      );
-      await page.locator('#set-low_stock_default_threshold').fill(before);
+      await expect(page.locator('#set-cart_max_lines')).toHaveValue(changed);
+      await page.locator('#set-cart_max_lines').fill(before);
       await page
-        .locator('li', { has: page.locator('#set-low_stock_default_threshold') })
+        .locator('li', { has: page.locator('#set-cart_max_lines') })
         .getByRole('button')
         .click();
       await expect(page.locator('.toast')).toContainText(t('حُفظت التغييرات', 'Changes saved'));
@@ -137,12 +156,12 @@ for (const locale of ['ar', 'en'] as const) {
       await expectNoA11yViolations(page, `/${locale}/admin/audit`);
     });
 
-    test('templates: preview fills variables; test send shows the rendered text (#120–#122)', async ({
+    test('templates: preview fills variables; test send shows the rendered text', async ({
       page,
     }) => {
       await staffSignIn(page, locale, 'admin', '/admin/templates');
-      await page.locator('#tp-pick').selectOption('order_paid/sms/ar');
-      await expect(page.locator('.prev .pbody')).toContainText('[reference]');
+      await page.locator('#tp-pick').selectOption('otp/sms/ar');
+      await expect(page.locator('.prev .pbody')).toContainText('[code]');
       await expectNoA11yViolations(page, `/${locale}/admin/templates`);
       await page.locator('#tp-to').fill(freshMobile());
       await page.getByRole('button', { name: t('إرسال تجريبي', 'Send a test') }).click();

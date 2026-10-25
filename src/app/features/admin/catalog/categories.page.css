@@ -1,0 +1,41 @@
+.crow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  align-items: center;
+}
+
+.cname {
+  display: grid;
+  flex: 1 1 200px;
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.wide {
+  inline-size: min(720px, 92vw);
+  max-block-size: 88vh;
+  overflow-y: auto;
+}
+
+.imgf {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+}
+
+.imgf img {
+  border-radius: 8px;
+  object-fit: cover;
+  background: var(--c-surface-2);
+}
+
+.lbl {
+  margin: 0;
+  font-weight: 500;
+  font-size: 0.9rem;
+}

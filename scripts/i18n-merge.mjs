@@ -60,8 +60,11 @@ for (const [id, body] of src) {
   );
 }
 
+const xml = `<?xml version="1.0" encoding="UTF-8" ?>\n<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">\n  <file source-language="ar" target-language="en" datatype="plaintext" original="ng2.template">\n    <body>\n${out.join('\n')}\n    </body>\n  </file>\n</xliff>\n`;
+// The build reads messages.en.xlf, not en.json: a stale file ships untranslated English.
+if (check && (!existsSync(EN) || readFileSync(EN, 'utf8') !== xml))
+  problems.push(`${EN} is stale — run node scripts/i18n-merge.mjs`);
 if (!check) {
-  const xml = `<?xml version="1.0" encoding="UTF-8" ?>\n<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">\n  <file source-language="ar" target-language="en" datatype="plaintext" original="ng2.template">\n    <body>\n${out.join('\n')}\n    </body>\n  </file>\n</xliff>\n`;
   writeFileSync(EN, xml);
   console.log(`i18n-merge: ${src.size} units → ${EN}${problems.length ? ` (${problems.length} to translate/review)` : ''}`);
 }

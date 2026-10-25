@@ -22,6 +22,13 @@
   <div class="tools">
     <ta-lang-switch />
     <ta-theme-toggle />
+    <a class="out" routerLink="/admin/password">
+      <ta-icon name="lock" [size]="18" /><span
+        class="visually-hidden"
+        i18n="@@store.admin.password-title"
+        >تغيير كلمة المرور</span
+      >
+    </a>
     <button type="button" class="out" (click)="signOut()">
       <ta-icon name="logout" [size]="18" /><span i18n="@@store.layout.sign-out">تسجيل الخروج</span>
     </button>

@@ -1,33 +1,11 @@
 import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
-import { Client } from '../scripts/lib/store-api-client.mjs';
 import { expectNoA11yViolations, expectNoHorizontalScroll } from './support/a11y';
-import { apiGet, resetStub } from './support/api';
-import { freshMobile, otpFor, resetOtpChallenges, signIn } from './support/auth';
+import { resetStub } from './support/api';
+import { donate } from './support/donate';
+import { freshMobile, signIn } from './support/auth';
 
 test.beforeEach(resetStub);
-
-/** A donation for this mobile, placed through the API (its own session): a category gift of 50. */
-async function donate(mobile: string, locale: 'ar' | 'en'): Promise<string> {
-  resetOtpChallenges();
-  const c = new Client();
-  const t0 = Date.now() - 50;
-  await c.call('POST', '/v1/auth/otp/request', { mobile, locale });
-  const s = await c.call('POST', '/v1/auth/otp/verify', { mobile, code: await otpFor(mobile, t0) });
-  c.token = s.body.accessToken;
-  const cats = await apiGet<{ id: string; acceptsGeneralGifts: boolean }[]>('/catalog/categories');
-  const cat = cats.find((x) => x.acceptsGeneralGifts)!;
-  const add = await c.call('POST', '/v1/cart/lines', { categoryId: cat.id, amount: '50' });
-  expect(add.status).toBe(200);
-  const order = await c.call(
-    'POST',
-    '/v1/checkout',
-    { fullName: 'متبرع تجريبي', email: `acct-${Date.now()}@example.com`, locale },
-    { 'Idempotency-Key': `e2e-${Date.now()}-${Math.random().toString(36).slice(2)}` },
-  );
-  expect(order.status).toBe(201);
-  return order.body.reference as string;
-}
 
 /** W-M4 — donor account: donations list + detail, profile, export, sign out everywhere, delete. */
 for (const locale of ['ar', 'en'] as const) {

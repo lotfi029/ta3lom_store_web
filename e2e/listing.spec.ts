@@ -87,7 +87,8 @@ for (const locale of ['ar', 'en'] as const) {
       const api = await apiGet<Page>('/catalog/projects?page=1&pageSize=12');
       const amountOnly = api.items.find((c) => c.fromAmount === null)!;
       const config = await apiGet<{ minGiftAmount: string }>('/catalog/config');
-      await page.goto(`/${locale}/`);
+      // Prerendered: typing before hydration finishes can be lost; hydration ends with the config refresh.
+      await page.goto(`/${locale}/`, { waitUntil: 'networkidle' });
       const card = page.locator('ta-project-card', {
         hasText: locale === 'en' && amountOnly.titleEn ? amountOnly.titleEn : amountOnly.titleAr,
       });

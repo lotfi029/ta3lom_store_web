@@ -1,0 +1,156 @@
+<p class="back">
+  <a routerLink="/admin/orders" i18n="@@store.admin.back-to-orders">العودة إلى الطلبات</a>
+</p>
+@if (notFound()) {
+  <div class="ahead">
+    <h1 i18n="@@store.error.order-not-found">لم نجد هذا التبرع.</h1>
+  </div>
+} @else {
+  <ta-resource-state
+    [loading]="data.order.isLoading() && !o()"
+    [error]="!!data.order.error() && !o()"
+    (retry)="data.order.reload()"
+  >
+    @if (o(); as x) {
+      <div class="ahead">
+        <div>
+          <h1>
+            <span i18n="@@store.admin.order-title">الطلب</span>
+            <bdi dir="ltr" class="mono">{{ x.reference }}</bdi>
+          </h1>
+          <p>
+            <ta-status-pill [tone]="label(x.status).tone">{{
+              label(x.status).label
+            }}</ta-status-pill>
+          </p>
+        </div>
+        @if (x.status === 'pending_payment') {
+          <div class="act">
+            <button
+              type="button"
+              class="btn danger"
+              [disabled]="!canCancel()"
+              aria-describedby="ao-why"
+              (click)="error.set(null); confirmOpen.set(true)"
+              i18n="@@store.admin.cancel-order"
+            >
+              إلغاء الطلب
+            </button>
+            <ta-requires id="ao-why" policy="staff:orders" />
+          </div>
+        }
+      </div>
+      @if (error(); as e) {
+        <p class="err panel" role="alert">{{ e }}</p>
+      }
+      <div class="ogrid">
+        <section class="panel" aria-labelledby="ao-lines-h">
+          <h2 id="ao-lines-h" i18n="@@store.admin.col-lines">التبرعات</h2>
+          <div class="tbl-wrap">
+            <table class="atbl">
+              <thead>
+                <tr>
+                  <th scope="col" i18n="@@store.admin.col-target">التبرع</th>
+                  <th scope="col" i18n="@@store.admin.col-qty">الكمية</th>
+                  <th scope="col" i18n="@@store.admin.col-unit">المبلغ للوحدة</th>
+                  <th scope="col" i18n="@@store.cart.total">الإجمالي</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (l of x.lines; track l.lineNo) {
+                  <tr>
+                    <td>{{ title(l) }}</td>
+                    <td>
+                      <bdi>{{ int(l.quantity) }}</bdi>
+                    </td>
+                    <td><ta-money [value]="l.unitAmount" /></td>
+                    <td><ta-money [value]="l.amount" /></td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          <dl class="kv">
+            <div>
+              <dt i18n="@@store.cart.total">الإجمالي</dt>
+              <dd class="t"><ta-money [value]="x.totalAmount" /></dd>
+            </div>
+          </dl>
+        </section>
+        <section class="panel" aria-labelledby="ao-donor-h">
+          <h2 id="ao-donor-h" i18n="@@store.admin.donor">المتبرع</h2>
+          <dl class="kv">
+            <div>
+              <dt i18n="@@store.admin.col-name">الاسم</dt>
+              <dd>
+                <a [routerLink]="['/admin/donors', x.customerId]">{{ x.donorName }}</a>
+              </dd>
+            </div>
+            <div>
+              <dt i18n="@@store.admin.donor-mobile">جوال المتبرع</dt>
+              <dd>
+                <bdi dir="ltr">{{ x.donorMobile }}</bdi>
+              </dd>
+            </div>
+            <div>
+              <dt i18n="@@store.checkout.email">البريد الإلكتروني</dt>
+              <dd>
+                <bdi dir="ltr">{{ x.donorEmail }}</bdi>
+              </dd>
+            </div>
+            <div>
+              <dt i18n="@@store.admin.locale">لغة الرسائل</dt>
+              <dd>{{ x.locale === 'en' ? 'English' : 'العربية' }}</dd>
+            </div>
+            <div>
+              <dt i18n="@@store.admin.col-date">التاريخ</dt>
+              <dd>{{ i18n.formatDateTime(x.createdAt) }}</dd>
+            </div>
+            <div>
+              <dt i18n="@@store.admin.payment-due">مهلة الدفع</dt>
+              <dd>{{ i18n.formatDateTime(x.paymentDueAt) }}</dd>
+            </div>
+            @if (x.cancelledAt) {
+              <div>
+                <dt i18n="@@store.admin.cancelled-at">أُلغي في</dt>
+                <dd>
+                  {{ i18n.formatDateTime(x.cancelledAt) }}
+                  @if (x.cancelledBy) {
+                    · <bdi dir="ltr">{{ x.cancelledBy }}</bdi>
+                  }
+                </dd>
+              </div>
+            }
+          </dl>
+        </section>
+      </div>
+    }
+  </ta-resource-state>
+}
+
+<ta-dialog [(open)]="confirmOpen" labelledBy="ao-c-h" [lightDismiss]="false">
+  <div class="dlg">
+    <h2 id="ao-c-h" i18n="@@store.admin.cancel-order-q">إلغاء هذا الطلب؟</h2>
+    <p i18n="@@store.admin.cancel-order-lede">
+      يُلغى الطلب ويُبلَّغ المتبرع. لا يمكن التراجع عن الإلغاء.
+    </p>
+    @if (error(); as e) {
+      <p class="err" role="alert">{{ e }}</p>
+    }
+    <div class="acts">
+      <button
+        type="button"
+        class="btn danger"
+        [disabled]="busy()"
+        [attr.aria-busy]="busy()"
+        (click)="cancel()"
+        i18n="@@store.admin.cancel-order"
+      >
+        إلغاء الطلب
+      </button>
+      <button type="button" class="btn" (click)="confirmOpen.set(false)" i18n="@@store.admin.keep">
+        رجوع
+      </button>
+    </div>
+  </div>
+</ta-dialog>

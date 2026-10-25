@@ -1,0 +1,75 @@
+.crumb {
+  margin: 0 0 4px;
+  font-size: 0.85rem;
+}
+
+.crumb a {
+  color: var(--c-link);
+}
+
+fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+}
+
+h3 {
+  font-size: 1rem;
+  margin-block: 8px 0;
+}
+
+.small {
+  font-size: 0.82rem;
+  margin: 0;
+}
+
+.missing {
+  margin-block: 0 12px;
+}
+
+.imgf {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+}
+
+.imgf img {
+  border-radius: 8px;
+  object-fit: cover;
+  background: var(--c-surface-2);
+}
+
+.lbl {
+  margin: 0;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.err p,
+.err ul {
+  margin: 0;
+}
+
+.wide {
+  inline-size: min(760px, 92vw);
+  max-block-size: 88vh;
+  overflow-y: auto;
+}
+
+.pv-cover {
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.pv-opts {
+  margin: 0;
+}
+
+.notice {
+  margin: 0;
+}

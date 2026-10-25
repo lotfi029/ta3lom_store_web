@@ -108,7 +108,20 @@ export async function staffSignIn(
   await page.locator('#al-password').fill(entry.password);
   await page.locator('#al-password').press('Enter');
   await expect(page.locator('#al-code')).toBeFocused();
+  const done = new RegExp(`/${locale}${returnPath.replace(/[?]/g, '\\?')}$`);
   await page.locator('#al-code').fill(totp(entry.secret));
   await page.locator('#al-code').press('Enter');
-  await expect(page).toHaveURL(new RegExp(`/${locale}${returnPath.replace(/[?]/g, '\\?')}$`));
+  // A TOTP step is never accepted twice (the seed or an earlier test may have used it): wait for the next step once.
+  const refused = page.locator('.form-error');
+  await expect(page.locator('#al-code').or(refused).first()).toBeAttached();
+  await Promise.race([
+    page.waitForURL(done, { timeout: 10_000 }).catch(() => undefined),
+    refused.waitFor({ timeout: 10_000 }).catch(() => undefined),
+  ]);
+  if (!done.test(page.url()) && (await refused.isVisible())) {
+    await page.waitForTimeout(30_000 - (Date.now() % 30_000) + 1000);
+    await page.locator('#al-code').fill(totp(entry.secret));
+    await page.locator('#al-code').press('Enter');
+  }
+  await expect(page).toHaveURL(done);
 }

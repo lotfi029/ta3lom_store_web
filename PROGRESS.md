@@ -1,5 +1,5 @@
 # Store web progress
-Next: R5 donations — W-M5 (admin)
+Next: R5 donations — W-M6 (e2e, a11y, CI, close-out)
 
 ## R5 — donations (one PR "Store web — R5 donations", API `792521a`)
 
@@ -10,7 +10,7 @@ Next: R5 donations — W-M5 (admin)
 | W-M2 Project page | done | W-M2 | `/p/:slug`: cover, title, summary, Markdown story (`<ta-markdown>`, own safe renderer), large donate box with presets, share sheet (+ Facebook), not-found (noindex), old-slug redirect (replaceUrl) | 195 / 27 smoke (+ project ar/en on the real API) / 24 × 2 | JSON-LD DonateAction + BreadcrumbList; prerendered + refreshed after hydration |
 | W-M3 Quick donate, cart, checkout, order | done | W-M3 | quick-donate modal (header, menu, hero, side button ≥ 1320 px), `/cart` (3 line kinds, inline problems + fixes, limits, clear), `/checkout` (inline OTP, contact saved to profile, quote summary, C-3 notice, body-bound Idempotency-Key), `/orders/:ref` (pending = end state, token stripped, no-referrer, sign-in state) | 205 / 31 smoke incl. the full donate journey on the stub (+ real API: `/me` updated) / 24 × 2 | 127.8 KB JS |
 | W-M4 Account | done | W-M4 | `/account` shell; My donations (paged) + detail; Profile (edit, export JSON, sign out everywhere, delete with typed confirmation) | 212 / 35 smoke (+ account, sign-in on the real API) / 24 × 2 | W-2 name + mobile in menu and shell |
-| W-M5 Admin | todo | | | | |
+| W-M5 Admin | done | W-M5 | `/admin/password` (forced + self); dashboard; categories (reorder, image, gifts); projects list + editor (details, options editor, publish/archive/preview, unsaved guard, conflict dialog); media (images); donors (block/unblock); orders (search, detail, cancel) | 239 / smoke (stub) / 24 × 2 | API-1, API-2, API-3 workarounds; placeholder removed |
 | W-M6 e2e, a11y, CI, docs | todo | | | | |
 
 ## r4 (history)
