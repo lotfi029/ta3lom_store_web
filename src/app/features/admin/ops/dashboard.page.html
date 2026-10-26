@@ -11,26 +11,37 @@
   (retry)="data.dashboard.reload()"
 >
   @if (d(); as x) {
-    <section aria-labelledby="db-sales-h">
-      <h2 id="db-sales-h" class="sub" i18n="@@store.admin.sales">المبيعات (شاملة الشحن)</h2>
+    <section class="overview" aria-labelledby="db-stats-h">
+      <h2 id="db-stats-h" class="sub" i18n="@@store.admin.overview">نظرة عامة</h2>
       <ul class="stats">
         <li class="panel">
-          <span i18n="@@store.admin.today">اليوم</span><b><ta-money [value]="x.sales.today" /></b>
-        </li>
-        <li class="panel">
-          <span i18n="@@store.admin.last-7">آخر 7 أيام</span
-          ><b><ta-money [value]="x.sales.last7Days" /></b>
-        </li>
-        <li class="panel">
-          <span i18n="@@store.admin.last-30">آخر 30 يومًا</span
-          ><b><ta-money [value]="x.sales.last30Days" /></b>
-        </li>
-        <li class="panel">
-          <span i18n="@@store.admin.awaiting-payment">طلبات بانتظار الدفع</span>
+          <span i18n="@@store.admin.pending-today">تبرعات بانتظار الدفع اليوم</span>
           <b
             ><a routerLink="/admin/orders" [queryParams]="{ status: 'pending_payment' }">{{
-              int(x.ordersAwaitingPayment)
+              int(x.pendingOrdersToday)
             }}</a></b
+          >
+        </li>
+        <li class="panel">
+          <span i18n="@@store.admin.pending-week">بانتظار الدفع هذا الأسبوع</span>
+          <b>{{ int(x.pendingOrdersThisWeek) }}</b>
+        </li>
+        <li class="panel">
+          <span i18n="@@store.admin.published-projects">مشاريع منشورة</span>
+          <b
+            ><a routerLink="/admin/projects">{{ int(x.publishedProjects) }}</a></b
+          >
+        </li>
+        <li class="panel">
+          <span i18n="@@store.admin.active-categories">تصنيفات نشطة</span>
+          <b
+            ><a routerLink="/admin/categories">{{ int(x.activeCategories) }}</a></b
+          >
+        </li>
+        <li class="panel">
+          <span i18n="@@store.admin.active-donors">متبرعون نشطون</span>
+          <b
+            ><a routerLink="/admin/donors">{{ int(x.activeDonors) }}</a></b
           >
         </li>
       </ul>
@@ -38,49 +49,30 @@
 
     <div class="cols">
       <section class="panel" aria-labelledby="db-top-h">
-        <h2 id="db-top-h" i18n="@@store.admin.top-products">الأكثر مبيعًا (30 يومًا)</h2>
-        @if (x.topProducts.length === 0) {
+        <h2 id="db-top-h" i18n="@@store.admin.top-projects">المشاريع الأعلى في المبالغ المنتظرة</h2>
+        @if (x.topProjectsByPendingAmount.length === 0) {
           <p class="muted" i18n="@@store.admin.no-results">لا نتائج.</p>
         } @else {
           <ol class="list">
-            @for (t of x.topProducts; track t.slug) {
+            @for (t of x.topProjectsByPendingAmount; track t.projectId) {
               <li>
-                <bdi dir="ltr" class="mono">{{ t.slug }}</bdi
-                ><ta-money [value]="t.amount" />
+                <span
+                  ><a [routerLink]="['/admin/projects', t.projectId]">{{ t.titleAr }}</a>
+                  <small class="muted" i18n="@@store.admin.pending-count"
+                    >({{ int(t.pendingOrders) }} طلب)</small
+                  ></span
+                ><ta-money [value]="t.pendingAmount" />
               </li>
             }
           </ol>
         }
       </section>
-
-      <section class="panel" aria-labelledby="db-low-h">
-        <h2 id="db-low-h" i18n="@@store.admin.low-stock">مخزون منخفض</h2>
-        @if (low().length === 0) {
-          <p class="muted" i18n="@@store.admin.no-low-stock">لا نسخ مطبوعة تحت حد التنبيه.</p>
-        } @else {
-          <ul class="list">
-            @for (s of low(); track s.formatId) {
-              <li>
-                <span
-                  >{{ s.titleAr }} <small class="muted" dir="ltr">{{ s.sku }}</small></span
-                ><b>{{ int(s.available) }}</b>
-              </li>
-            }
-          </ul>
-          <a routerLink="/admin/stock" i18n="@@store.admin.nav-stock">المخزون</a>
-        }
-      </section>
-
-      <section class="panel" aria-labelledby="db-alerts-h">
-        <h2 id="db-alerts-h" i18n="@@store.admin.alerts">تنبيهات</h2>
-        <ul class="list">
-          @for (a of alerts(); track a.code) {
-            <li [class.hot]="int(a.count) > 0">
-              <span>{{ alertLabel(a.code) }}</span
-              ><b>{{ int(a.count) }}</b>
-            </li>
-          }
-        </ul>
+      <section class="panel" aria-labelledby="db-pay-h">
+        <h2 id="db-pay-h" i18n="@@store.admin.payments-off-title">الدفع الإلكتروني</h2>
+        <p class="muted" i18n="@@store.admin.payments-off">
+          لم يُفعَّل الدفع الإلكتروني بعد: كل التبرعات المسجلة بانتظار الدفع، ولا تُحسب مبالغ
+          مدفوعة.
+        </p>
       </section>
     </div>
   }

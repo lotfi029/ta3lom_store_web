@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideRouter } from '@angular/router';
+import { Router, provideRouter } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { STORE_API_URL } from '../api/store-api-url';
 import { StaffAuth } from '../auth/staff-auth';
@@ -32,6 +32,10 @@ describe('storeApiInterceptor (plan §6 "Interceptors")', () => {
     const auth = TestBed.inject(StoreAuth);
     const p = auth.refresh();
     ctl.expectOne(`${API}/auth/refresh`).flush({ accessToken: token, expiresIn: 900 });
+    await new Promise((r) => setTimeout(r));
+    ctl
+      .expectOne(`${API}/me`)
+      .flush({ id: 'c', mobile: '+966551234567', fullName: null, email: null, locale: 'ar' });
     await p;
   }
   async function signInStaff(token: string) {
@@ -113,5 +117,16 @@ describe('storeApiInterceptor (plan §6 "Interceptors")', () => {
     await new Promise((r) => setTimeout(r));
     ctl.expectOne(`${API}/auth/refresh`).flush({}, { status: 401, statusText: 'x' });
     await expect(result).rejects.toMatchObject({ status: 401 });
+  });
+
+  it('C-6 backstop: 403 auth.password_change_required on a staff call goes to /admin/password', async () => {
+    const router = TestBed.inject(Router);
+    const nav = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
+    const result = firstValueFrom(http.get(`${API}/admin/dashboard`));
+    ctl
+      .expectOne(`${API}/admin/dashboard`)
+      .flush({ code: 'auth.password_change_required' }, { status: 403, statusText: 'x' });
+    await expect(result).rejects.toMatchObject({ status: 403 });
+    expect(nav).toHaveBeenCalledWith('/admin/password');
   });
 });

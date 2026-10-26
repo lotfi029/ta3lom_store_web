@@ -9,8 +9,7 @@ import {
   untracked,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import type { AdminOrderRow } from '../../../core/api/api.types';
-import { toInt } from '../../../core/api/api.types';
+import { type OrderStatusValue, toInt } from '../../../core/api/api.types';
 import { valueOf } from '../../../core/http/resource-value';
 import { I18nService } from '../../../core/i18n/i18n';
 import { SeoService } from '../../../core/seo/seo.service';
@@ -20,19 +19,22 @@ import { orderStatus } from '../../../shared/ui/status-pill/status-labels';
 import { StatusPill } from '../../../shared/ui/status-pill/status-pill';
 import { OpsData, type OrderFilter, PAGE_SIZE } from './ops.data';
 
-export const ORDER_STATUSES = [
+/** Order states the admin filter offers (contract 15 §1.9; R5-Core sets only pending and cancelled). */
+export const ORDER_STATUSES: readonly OrderStatusValue[] = [
   'pending_payment',
+  'cancelled',
   'paid',
-  'fulfilled',
-  'payment_failed',
   'payment_review',
   'expired',
-  'cancelled',
-  'refunded',
-  'partially_refunded',
 ];
 
-/** Orders (#85, FR-S73): search by reference or mobile, status and Riyadh dates; purchase orders only (r4). */
+const isStatus = (s: string | undefined): s is OrderStatusValue =>
+  !!s && (ORDER_STATUSES as readonly string[]).includes(s);
+
+/** `from ≤ to` when both are set (the API answers 400 otherwise). */
+export const rangeOk = (from: string, to: string): boolean => !from || !to || from <= to;
+
+/** Donation orders (contract 15 §2.8): reference, donor mobile, status and Riyadh dates (inclusive). */
 @Component({
   selector: 'ta-admin-orders',
   imports: [RouterLink, Money, ResourceState, StatusPill],
@@ -41,6 +43,7 @@ export const ORDER_STATUSES = [
   styleUrls: ['../admin-common.css'],
 })
 export class AdminOrdersPage {
+  /** `?status=` from the dashboard link. */
   readonly status = input<string | undefined>();
 
   protected readonly data = inject(OpsData);
@@ -53,6 +56,7 @@ export class AdminOrdersPage {
     Math.max(1, Math.ceil(toInt(this.page()?.total) / PAGE_SIZE)),
   );
   protected readonly draft = signal<Omit<OrderFilter, 'page'>>({ ...this.data.orderFilter() });
+  protected readonly rangeError = signal(false);
   protected readonly statuses = ORDER_STATUSES;
   protected readonly label = orderStatus;
   protected readonly int = toInt;
@@ -67,7 +71,7 @@ export class AdminOrdersPage {
     effect(() => {
       const s = this.status();
       untracked(() => {
-        if (s !== undefined) {
+        if (isStatus(s)) {
           this.draft.update((d) => ({ ...d, status: s }));
           this.data.orderFilter.set({ ...this.draft(), page: 1 });
         } else this.data.orders.reload();
@@ -82,7 +86,10 @@ export class AdminOrdersPage {
 
   protected apply(e: Event): void {
     e.preventDefault();
-    this.data.orderFilter.set({ ...this.draft(), page: 1 });
+    const d = this.draft();
+    this.rangeError.set(!rangeOk(d.from, d.to));
+    if (this.rangeError()) return;
+    this.data.orderFilter.set({ ...d, page: 1 });
   }
 
   protected go(page: number): void {
@@ -90,9 +97,5 @@ export class AdminOrdersPage {
       ...f,
       page: Math.min(this.pages(), Math.max(1, page)),
     }));
-  }
-
-  protected key(o: AdminOrderRow): string {
-    return o.reference;
   }
 }

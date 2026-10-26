@@ -1,0 +1,59 @@
+.osec {
+  padding-block: 8px 72px;
+}
+
+.card {
+  max-inline-size: 640px;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: 20px;
+  padding: 28px;
+}
+
+.card.skel {
+  block-size: 280px;
+}
+
+.ic {
+  inline-size: 56px;
+  block-size: 56px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+
+.ic.ok {
+  background: var(--c-success-tint);
+  color: var(--c-success-text);
+}
+
+h2 {
+  font-size: 1.3rem;
+  margin-block: 14px 8px;
+}
+
+.lede {
+  color: var(--c-text-2);
+  margin-block: 0 16px;
+}
+
+.kv {
+  margin: 0;
+}
+
+.kv dt {
+  font-size: 0.82rem;
+  color: var(--c-text-2);
+}
+
+.kv dd {
+  margin: 2px 0 0;
+  font-weight: 600;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-block: 20px 0;
+}

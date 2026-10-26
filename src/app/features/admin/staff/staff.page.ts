@@ -26,7 +26,7 @@ type Confirm = { kind: 'password' | 'totp' | 'unlock'; user: StaffUser } | null;
 
 /**
  * Staff accounts (#123–#128, RUL-62, FR-S71): list, create (one-time password shown once), edit name/roles/active,
- * reset password (one-time password), reset TOTP (re-enrol at next sign-in), unlock. `staff:admin` only (route guard).
+ * reset password (one-time password), reset TOTP (set up again at next sign-in), unlock. `staff:admin` only (route guard).
  */
 @Component({
   selector: 'ta-admin-staff',
@@ -152,6 +152,7 @@ export class StaffPage {
           name: m.name.trim(),
           roles: m.roles,
           isActive: m.isActive,
+          version: target.version,
         });
         this.editOpen.set(false);
         this.toast.show($localize`:@@store.account.saved:حُفظت التغييرات.`, 'success');

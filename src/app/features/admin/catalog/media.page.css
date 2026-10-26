@@ -24,16 +24,6 @@ img {
   background: var(--c-surface-2);
 }
 
-.file {
-  display: grid;
-  place-items: center;
-  aspect-ratio: 3 / 2;
-  border-radius: 8px;
-  background: var(--c-surface-2);
-  color: var(--c-muted-2);
-  font-weight: 600;
-}
-
 .alt {
   margin: 0;
   font-size: 0.85rem;

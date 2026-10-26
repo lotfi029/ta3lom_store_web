@@ -1,0 +1,565 @@
+@switch (loadState()) {
+  @case ('loading') {
+    <p class="muted" role="status" i18n="@@store.ui.loading">جارٍ التحميل…</p>
+  }
+  @case ('notFound') {
+    <div class="ahead">
+      <h1 i18n="@@store.error.project-not-found">هذا المشروع غير متاح.</h1>
+    </div>
+    <a class="btn" routerLink="/admin/projects" i18n="@@store.admin.back-to-projects"
+      >العودة إلى المشاريع</a
+    >
+  }
+  @case ('error') {
+    <div class="ahead">
+      <h1 i18n="@@store.ui.load-failed">تعذّر التحميل.</h1>
+    </div>
+    <button type="button" class="btn" (click)="retry()" i18n="@@store.ui.retry">
+      إعادة المحاولة
+    </button>
+  }
+  @default {
+    <div class="ahead">
+      <div>
+        <p class="crumb">
+          <a routerLink="/admin/projects" i18n="@@store.admin.nav-projects">المشاريع</a>
+        </p>
+        <h1>
+          @if (project(); as p) {
+            {{ p.titleAr }}
+          } @else {
+            <span i18n="@@store.admin.new-project">مشروع جديد</span>
+          }
+        </h1>
+        @if (project(); as p) {
+          <p>
+            <ta-status-pill [tone]="status().tone">{{ status().label }}</ta-status-pill>
+            @if (p.publishedAt) {
+              <span class="muted">
+                · <span i18n="@@store.admin.published-at">نُشر في</span>
+                {{ i18n.formatDate(p.publishedAt) }}</span
+              >
+            }
+          </p>
+        }
+      </div>
+      @if (project(); as p) {
+        <div class="rowacts">
+          <button
+            type="button"
+            class="btn"
+            (click)="openPreview()"
+            [attr.aria-busy]="busy() === 'preview'"
+            i18n="@@store.admin.preview"
+          >
+            معاينة
+          </button>
+          @if (p.status === 'published') {
+            <a class="btn" [routerLink]="['/p', p.slug]" i18n="@@store.admin.view-in-store"
+              >عرض في المتجر</a
+            >
+          }
+        </div>
+      }
+    </div>
+
+    @if (error(); as e) {
+      <div class="err panel" role="alert">
+        <p>{{ e }}</p>
+        @if (missing().length) {
+          <ul>
+            @for (m of missing(); track m) {
+              <li>{{ missingLabel(m) }}</li>
+            }
+          </ul>
+        }
+      </div>
+    }
+
+    @if (project(); as p) {
+      <section class="panel" aria-labelledby="pe-st-h">
+        <h2 id="pe-st-h" i18n="@@store.admin.status">الحالة</h2>
+        @if (missingNow().length) {
+          <p i18n="@@store.admin.missing-lede">قبل النشر أكمل:</p>
+          <ul class="missing">
+            @for (m of missingNow(); track m) {
+              <li>{{ missingLabel(m) }}</li>
+            }
+          </ul>
+        } @else if (p.status !== 'published') {
+          <p class="muted" i18n="@@store.admin.ready-to-publish">المشروع جاهز للنشر.</p>
+        }
+        <div class="act">
+          <div class="rowacts">
+            @if (p.status === 'published') {
+              <button
+                type="button"
+                class="btn"
+                [disabled]="!canEdit() || !!busy()"
+                [attr.aria-busy]="busy() === 'archive'"
+                (click)="transition('archive')"
+                aria-describedby="pe-st-why"
+                i18n="@@store.admin.archive"
+              >
+                أرشفة (إخفاء من المتجر)
+              </button>
+            } @else {
+              <button
+                type="button"
+                class="btn primary"
+                [disabled]="!canEdit() || !!busy()"
+                [attr.aria-busy]="busy() === 'publish'"
+                (click)="transition('publish')"
+                aria-describedby="pe-st-why"
+              >
+                @if (p.status === 'archived') {
+                  <span i18n="@@store.admin.republish">إعادة النشر</span>
+                } @else {
+                  <span i18n="@@store.admin.publish">نشر</span>
+                }
+              </button>
+            }
+          </div>
+          <ta-requires id="pe-st-why" policy="staff:catalogue" />
+        </div>
+        @if (p.oldSlugs.length) {
+          <p class="muted small">
+            <span i18n="@@store.admin.old-slugs">روابط سابقة تُحوَّل إلى الرابط الحالي:</span>
+            @for (s of p.oldSlugs; track s) {
+              <bdi dir="ltr" class="mono">{{ s }}</bdi
+              >{{ $last ? '' : '، ' }}
+            }
+          </p>
+        }
+      </section>
+    }
+
+    <form class="panel" (submit)="save($event)" novalidate aria-labelledby="pe-d-h">
+      <h2 id="pe-d-h" i18n="@@store.admin.project-details">بيانات المشروع</h2>
+      @if (!canEdit()) {
+        <ta-requires policy="staff:catalogue" />
+      }
+      <fieldset [disabled]="!canEdit()">
+        <legend class="visually-hidden" i18n="@@store.admin.project-details">بيانات المشروع</legend>
+        <div class="grid2">
+          <div class="field">
+            <label for="pe-cat" i18n="@@store.admin.category">التصنيف</label>
+            <select
+              id="pe-cat"
+              [formField]="f.categoryId"
+              [attr.aria-invalid]="f.categoryId().touched() && f.categoryId().invalid()"
+              aria-describedby="pe-cat-err"
+            >
+              <option value="" i18n="@@store.admin.choose-category">اختر التصنيف</option>
+              @for (c of categories(); track c.id) {
+                <option [value]="c.id">{{ c.nameAr }}{{ c.isActive ? '' : ' ✕' }}</option>
+              }
+            </select>
+            <ul id="pe-cat-err" class="field-errors">
+              @if (f.categoryId().touched()) {
+                @for (x of f.categoryId().errors(); track x.kind) {
+                  <li>{{ x.message }}</li>
+                }
+              }
+            </ul>
+          </div>
+          <div class="field">
+            <label for="pe-slug" i18n="@@store.admin.slug">الرابط (slug)</label>
+            <input
+              id="pe-slug"
+              dir="ltr"
+              [formField]="f.slug"
+              [attr.aria-invalid]="f.slug().touched() && f.slug().invalid()"
+              aria-describedby="pe-slug-err"
+            />
+            <ul id="pe-slug-err" class="field-errors">
+              @if (f.slug().touched()) {
+                @for (x of f.slug().errors(); track x.kind) {
+                  <li>{{ x.message }}</li>
+                }
+              }
+            </ul>
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label for="pe-tar" i18n="@@store.admin.title-ar">العنوان بالعربية</label>
+            <input
+              id="pe-tar"
+              [formField]="f.titleAr"
+              [attr.aria-invalid]="f.titleAr().touched() && f.titleAr().invalid()"
+              aria-describedby="pe-tar-err"
+            />
+            <ul id="pe-tar-err" class="field-errors">
+              @if (f.titleAr().touched()) {
+                @for (x of f.titleAr().errors(); track x.kind) {
+                  <li>{{ x.message }}</li>
+                }
+              }
+            </ul>
+          </div>
+          <div class="field">
+            <label for="pe-ten" i18n="@@store.admin.title-en">العنوان بالإنجليزية</label>
+            <input
+              id="pe-ten"
+              dir="ltr"
+              [formField]="f.titleEn"
+              [attr.aria-invalid]="f.titleEn().touched() && f.titleEn().invalid()"
+              aria-describedby="pe-ten-err"
+            />
+            <ul id="pe-ten-err" class="field-errors">
+              @if (f.titleEn().touched()) {
+                @for (x of f.titleEn().errors(); track x.kind) {
+                  <li>{{ x.message }}</li>
+                }
+              }
+            </ul>
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label for="pe-sar" i18n="@@store.admin.summary-ar">الملخص بالعربية</label>
+            <textarea
+              id="pe-sar"
+              rows="2"
+              [formField]="f.summaryAr"
+              [attr.aria-invalid]="f.summaryAr().touched() && f.summaryAr().invalid()"
+              aria-describedby="pe-sar-err"
+            ></textarea>
+            <ul id="pe-sar-err" class="field-errors">
+              @if (f.summaryAr().touched()) {
+                @for (x of f.summaryAr().errors(); track x.kind) {
+                  <li>{{ x.message }}</li>
+                }
+              }
+            </ul>
+          </div>
+          <div class="field">
+            <label for="pe-sen" i18n="@@store.admin.summary-en">الملخص بالإنجليزية</label>
+            <textarea
+              id="pe-sen"
+              rows="2"
+              dir="ltr"
+              [formField]="f.summaryEn"
+              [attr.aria-invalid]="f.summaryEn().touched() && f.summaryEn().invalid()"
+              aria-describedby="pe-sen-err"
+            ></textarea>
+            <ul id="pe-sen-err" class="field-errors">
+              @if (f.summaryEn().touched()) {
+                @for (x of f.summaryEn().errors(); track x.kind) {
+                  <li>{{ x.message }}</li>
+                }
+              }
+            </ul>
+          </div>
+        </div>
+        <p class="muted small" i18n="@@store.admin.markdown-hint">
+          القصة بصيغة Markdown: فقرات، عناوين (##)، **عريض**، *مائل*، قوائم، اقتباس (&gt;)، وروابط
+          https.
+        </p>
+        <div class="field">
+          <label for="pe-bar" i18n="@@store.admin.body-ar">القصة بالعربية</label>
+          <textarea
+            id="pe-bar"
+            rows="8"
+            [formField]="f.bodyAr"
+            [attr.aria-invalid]="f.bodyAr().touched() && f.bodyAr().invalid()"
+            aria-describedby="pe-bar-err"
+          ></textarea>
+          <ul id="pe-bar-err" class="field-errors">
+            @if (f.bodyAr().touched()) {
+              @for (x of f.bodyAr().errors(); track x.kind) {
+                <li>{{ x.message }}</li>
+              }
+            }
+          </ul>
+        </div>
+        <div class="field">
+          <label for="pe-ben" i18n="@@store.admin.body-en">القصة بالإنجليزية</label>
+          <textarea
+            id="pe-ben"
+            rows="8"
+            dir="ltr"
+            [formField]="f.bodyEn"
+            [attr.aria-invalid]="f.bodyEn().touched() && f.bodyEn().invalid()"
+            aria-describedby="pe-ben-err"
+          ></textarea>
+          <ul id="pe-ben-err" class="field-errors">
+            @if (f.bodyEn().touched()) {
+              @for (x of f.bodyEn().errors(); track x.kind) {
+                <li>{{ x.message }}</li>
+              }
+            }
+          </ul>
+        </div>
+
+        <div class="imgf">
+          <p class="lbl" i18n="@@store.admin.cover">صورة الغلاف</p>
+          @if (model().coverUrl; as url) {
+            <img [src]="url" [alt]="model().coverAlt" width="240" height="160" />
+          } @else {
+            <p class="muted" i18n="@@store.admin.no-image">بلا صورة.</p>
+          }
+          <div class="rowacts">
+            <button
+              type="button"
+              class="btn sm"
+              (click)="pickerOpen.set(true)"
+              i18n="@@store.admin.choose-image"
+            >
+              اختيار صورة
+            </button>
+            @if (model().coverAssetId) {
+              <button
+                type="button"
+                class="btn sm"
+                (click)="clearCover()"
+                i18n="@@store.admin.remove-image"
+              >
+                إزالة الصورة
+              </button>
+            }
+          </div>
+        </div>
+
+        <h3 i18n="@@store.admin.donation-settings">التبرع</h3>
+        <label class="chk"
+          ><input
+            type="checkbox"
+            [checked]="model().allowOpenAmount"
+            (change)="setFlag('allowOpenAmount', $event)"
+          />
+          <span i18n="@@store.admin.allow-open-amount">يسمح بمبلغ مفتوح يحدده المتبرع</span></label
+        >
+        @if (noTarget()) {
+          <p class="notice" i18n="@@store.admin.no-target">
+            لا خيار نشط ولا مبلغ مفتوح: لا يمكن نشر المشروع ولا التبرع له.
+          </p>
+        }
+        <div class="grid2">
+          <div class="field">
+            <label for="pe-min" i18n="@@store.admin.min-amount"
+              >أقل مبلغ للمبلغ المفتوح (ر.س)</label
+            >
+            <input
+              id="pe-min"
+              inputmode="decimal"
+              dir="ltr"
+              [formField]="f.minAmount"
+              [attr.aria-invalid]="f.minAmount().touched() && f.minAmount().invalid()"
+              aria-describedby="pe-min-hint pe-min-err"
+            />
+            <small id="pe-min-hint" class="muted">
+              @if (config.minGiftAmount(); as min) {
+                <span i18n="@@store.admin.min-amount-hint">فارغ = الحد العام للمتجر</span>
+                (<ta-money [value]="min" />)
+              }
+            </small>
+            <ul id="pe-min-err" class="field-errors">
+              @if (f.minAmount().touched()) {
+                @for (x of f.minAmount().errors(); track x.kind) {
+                  <li>{{ x.message }}</li>
+                }
+              }
+            </ul>
+          </div>
+          <div class="field">
+            <label for="pe-badge" i18n="@@store.admin.badge">الشارة</label>
+            <select id="pe-badge" (change)="setBadge($event)">
+              <option value="" [selected]="model().badge === ''" i18n="@@store.admin.badge-none">
+                بلا شارة
+              </option>
+              <option
+                value="new"
+                [selected]="model().badge === 'new'"
+                i18n="@@store.project.badge-new"
+              >
+                جديد
+              </option>
+              <option
+                value="urgent"
+                [selected]="model().badge === 'urgent'"
+                i18n="@@store.project.badge-urgent"
+              >
+                عاجل
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label for="pe-sort" i18n="@@store.admin.col-sort">الترتيب</label>
+            <input
+              id="pe-sort"
+              dir="ltr"
+              inputmode="numeric"
+              [formField]="f.sort"
+              [attr.aria-invalid]="f.sort().touched() && f.sort().invalid()"
+              aria-describedby="pe-sort-err"
+            />
+            <ul id="pe-sort-err" class="field-errors">
+              @if (f.sort().touched()) {
+                @for (x of f.sort().errors(); track x.kind) {
+                  <li>{{ x.message }}</li>
+                }
+              }
+            </ul>
+          </div>
+        </div>
+
+        <h3 i18n="@@store.admin.seo">محركات البحث</h3>
+        <div class="grid2">
+          <div class="field">
+            <label for="pe-sta" i18n="@@store.admin.seo-title-ar">عنوان البحث بالعربية</label>
+            <input
+              id="pe-sta"
+              [formField]="f.seoTitleAr"
+              [attr.aria-invalid]="f.seoTitleAr().touched() && f.seoTitleAr().invalid()"
+              aria-describedby="pe-sta-err"
+            />
+            <ul id="pe-sta-err" class="field-errors">
+              @if (f.seoTitleAr().touched()) {
+                @for (x of f.seoTitleAr().errors(); track x.kind) {
+                  <li>{{ x.message }}</li>
+                }
+              }
+            </ul>
+          </div>
+          <div class="field">
+            <label for="pe-ste" i18n="@@store.admin.seo-title-en">عنوان البحث بالإنجليزية</label>
+            <input
+              id="pe-ste"
+              dir="ltr"
+              [formField]="f.seoTitleEn"
+              [attr.aria-invalid]="f.seoTitleEn().touched() && f.seoTitleEn().invalid()"
+              aria-describedby="pe-ste-err"
+            />
+            <ul id="pe-ste-err" class="field-errors">
+              @if (f.seoTitleEn().touched()) {
+                @for (x of f.seoTitleEn().errors(); track x.kind) {
+                  <li>{{ x.message }}</li>
+                }
+              }
+            </ul>
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label for="pe-sda" i18n="@@store.admin.seo-desc-ar">وصف البحث بالعربية</label>
+            <textarea
+              id="pe-sda"
+              rows="2"
+              [formField]="f.seoDescAr"
+              [attr.aria-invalid]="f.seoDescAr().touched() && f.seoDescAr().invalid()"
+              aria-describedby="pe-sda-err"
+            ></textarea>
+            <ul id="pe-sda-err" class="field-errors">
+              @if (f.seoDescAr().touched()) {
+                @for (x of f.seoDescAr().errors(); track x.kind) {
+                  <li>{{ x.message }}</li>
+                }
+              }
+            </ul>
+          </div>
+          <div class="field">
+            <label for="pe-sde" i18n="@@store.admin.seo-desc-en">وصف البحث بالإنجليزية</label>
+            <textarea
+              id="pe-sde"
+              rows="2"
+              dir="ltr"
+              [formField]="f.seoDescEn"
+              [attr.aria-invalid]="f.seoDescEn().touched() && f.seoDescEn().invalid()"
+              aria-describedby="pe-sde-err"
+            ></textarea>
+            <ul id="pe-sde-err" class="field-errors">
+              @if (f.seoDescEn().touched()) {
+                @for (x of f.seoDescEn().errors(); track x.kind) {
+                  <li>{{ x.message }}</li>
+                }
+              }
+            </ul>
+          </div>
+        </div>
+      </fieldset>
+      <div class="rowacts">
+        <button
+          type="submit"
+          class="btn primary"
+          [disabled]="!canEdit() || !!busy() || (!isNew() && !dirty())"
+          [attr.aria-busy]="busy() === 'save'"
+        >
+          @if (isNew()) {
+            <span i18n="@@store.admin.create-draft">إنشاء كمسودة</span>
+          } @else {
+            <span i18n="@@store.admin.save-details">حفظ البيانات</span>
+          }
+        </button>
+        @if (dirty() && !isNew()) {
+          <button type="button" class="btn" (click)="discard()" i18n="@@store.admin.discard">
+            تجاهل التعديلات
+          </button>
+        }
+      </div>
+    </form>
+
+    <section class="panel" aria-labelledby="pe-o-h">
+      <h2 id="pe-o-h" i18n="@@store.admin.options">خيارات التبرع</h2>
+      @if (project(); as p) {
+        <ta-options-editor
+          [project]="p"
+          [canEdit]="canEdit()"
+          (saved)="refreshed($event)"
+          (conflict)="conflict()"
+        />
+      } @else {
+        <p class="muted" i18n="@@store.admin.options-after-create">
+          أنشئ المشروع أولًا ثم أضف خياراته.
+        </p>
+      }
+    </section>
+  }
+}
+
+<ta-media-picker
+  idPrefix="pe-mp"
+  heading="اختيار صورة الغلاف"
+  i18n-heading="@@store.admin.choose-cover"
+  [(open)]="pickerOpen"
+  (picked)="picked($event)"
+/>
+<ta-conflict-dialog idPrefix="pe-cf" [(open)]="conflictOpen" (reload)="reloadLatest()" />
+
+<ta-dialog [(open)]="previewOpen" labelledBy="pe-pv-h">
+  <div class="dlg wide">
+    <p class="muted" id="pe-pv-h" i18n="@@store.admin.preview-title">معاينة كما يراها المتبرع</p>
+    @if (preview(); as d) {
+      @if (d.coverUrl) {
+        <img
+          class="pv-cover"
+          [src]="d.coverUrl"
+          [alt]="i18n.pick(d.coverAltAr ?? '', d.coverAltEn)"
+        />
+      }
+      <h2>{{ i18n.pick(d.titleAr, d.titleEn) }}</h2>
+      @if (i18n.pick(d.summaryAr ?? '', d.summaryEn); as s) {
+        <p>{{ s }}</p>
+      }
+      <ta-markdown [source]="i18n.pick(d.bodyAr ?? '', d.bodyEn)" />
+      @if (d.options.length) {
+        <ul class="pv-opts">
+          @for (o of d.options; track o.id) {
+            <li>{{ i18n.pick(o.labelAr, o.labelEn) }} — <ta-money [value]="o.amount" /></li>
+          }
+        </ul>
+      }
+      @if (d.allowOpenAmount) {
+        <p class="muted" i18n="@@store.admin.preview-open">يقبل مبلغًا مفتوحًا.</p>
+      }
+    }
+    <div class="acts">
+      <button type="button" class="btn" (click)="previewOpen.set(false)" i18n="@@store.ui.close">
+        إغلاق
+      </button>
+    </div>
+  </div>
+</ta-dialog>

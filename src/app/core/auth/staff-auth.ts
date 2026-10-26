@@ -6,16 +6,49 @@ import type {
   StaffLoginResponse,
   StaffMe,
   StaffSessionResponse,
-  TotpEnrolResponse,
+  TotpSetupResponse,
 } from '../api/api.types';
 import { STORE_API_URL } from '../api/store-api-url';
 import { I18nService } from '../i18n/i18n';
 import { type StaffPolicy, rolesAllow } from './policies';
 
 /**
- * Staff session (RUL-62, 11 §9.1): email + password → short-lived MFA token → TOTP enrol (first time) or verify →
- * access token (signal only) + `t3s_srt` refresh cookie (Path=/v1/admin/auth). `can(policy)` drives which admin actions
- * are enabled; the API enforces the same table.
+ * Reads the claims of a JWT access token (base64url JSON payload) without verifying it — the API verifies; the web only
+ * needs to know what the token says. Returns {} for anything that is not a JWT.
+ */
+export function tokenClaims(token: string | null): Record<string, unknown> {
+  const part = token?.split('.')[1];
+  if (!part) return {};
+  try {
+    const b64 = part
+      .replace(/-/g, '+')
+      .replace(/_/g, '/')
+      .padEnd(Math.ceil(part.length / 4) * 4, '=');
+    const json = decodeURIComponent(
+      Array.from(atob(b64), (c) => `%${c.charCodeAt(0).toString(16).padStart(2, '0')}`).join(''),
+    );
+    const claims: unknown = JSON.parse(json);
+    return claims && typeof claims === 'object' ? (claims as Record<string, unknown>) : {};
+  } catch {
+    return {};
+  }
+}
+
+/** C-6 / E-3: a pending forced password change, read from the token's `pwd_change` claim (`"true"`). */
+export const pendingPasswordChange = (token: string | null): boolean => {
+  const v = tokenClaims(token)['pwd_change'];
+  return v === 'true' || v === true;
+};
+
+/**
+ * Staff session (contract 15 §1.6, §2.6): email + password → short-lived MFA token → TOTP set-up (first time) or code →
+ * access token (signal only) + `t3s_srt` refresh cookie (Path=/v1/admin/auth).
+ *
+ * Forced password change: the `pwd_change` claim of EVERY token received (code, refresh, password change) is the source
+ * of truth (`mustChangePassword`); `StaffSessionResponse.staff.mustChangePassword` is only a cross-check (either one
+ * true → pending). While pending, every `staff:*` route answers 403 `auth.password_change_required` — the guards send
+ * the user to /admin/password, and the interceptor does the same as a backstop. `GET /admin/me` is 403 too, so the
+ * profile comes from the session response instead.
  */
 @Injectable({ providedIn: 'root' })
 export class StaffAuth {
@@ -30,6 +63,10 @@ export class StaffAuth {
   readonly staff = signal<StaffMe | null>(null);
   readonly isSignedIn = computed(() => this.token() !== null);
   readonly roles = computed(() => this.staff()?.roles ?? []);
+  private readonly sessionSaysChange = signal(false);
+  readonly mustChangePassword = computed(
+    () => this.isSignedIn() && (pendingPasswordChange(this.token()) || this.sessionSaysChange()),
+  );
 
   private refreshing: Promise<string> | null = null;
   private restoring: Promise<boolean> | null = null;
@@ -44,11 +81,12 @@ export class StaffAuth {
     };
   }
 
+  /** A policy the signed-in member holds — never while a password change is pending (every `staff:*` is 403 then). */
   can(policy: StaffPolicy): boolean {
-    return rolesAllow(this.roles(), policy);
+    return !this.mustChangePassword() && rolesAllow(this.roles(), policy);
   }
 
-  /** Step 1: password. Resolves whether TOTP is already enrolled (verify) or must be set up (enrol). */
+  /** Step 1: password. Resolves whether TOTP is already set up (code) or must be set up first. */
   async login(email: string, password: string): Promise<StaffLoginResponse> {
     const res = await firstValueFrom(
       this.http.post<StaffLoginResponse>(
@@ -61,10 +99,10 @@ export class StaffAuth {
     return res;
   }
 
-  /** Step 2a (first sign-in): the secret and otpauth URI for the authenticator app. */
-  enrol(): Promise<TotpEnrolResponse> {
+  /** Step 2a (first sign-in or after a reset): the secret and otpauth URI for the authenticator app. */
+  setupTotp(): Promise<TotpSetupResponse> {
     return firstValueFrom(
-      this.http.post<TotpEnrolResponse>(
+      this.http.post<TotpSetupResponse>(
         `${this.api}/admin/auth/totp/enrol`,
         null,
         this.headers(this.mfaToken),
@@ -86,21 +124,48 @@ export class StaffAuth {
     return session;
   }
 
+  /**
+   * `POST /admin/auth/password` (forced or self-service). Success revokes every other session of the member and returns
+   * a fresh one (new `t3s_srt` cookie, token without `pwd_change`) — it replaces the current one at once.
+   */
+  async changePassword(
+    currentPassword: string,
+    newPassword: string,
+  ): Promise<StaffSessionResponse> {
+    const session = await firstValueFrom(
+      this.http.post<StaffSessionResponse>(
+        `${this.api}/admin/auth/password`,
+        { currentPassword, newPassword },
+        this.headers(this.token()),
+      ),
+    );
+    this.setSession(session);
+    return session;
+  }
+
   refresh(): Promise<string> {
     if (!this.browser) return Promise.reject(new Error('no session during prerender'));
-    this.refreshing ??= firstValueFrom(
-      this.http.post<StaffSessionResponse>(`${this.api}/admin/auth/refresh`, null, this.headers()),
-    )
-      .then((s) => {
-        this.setSession(s);
-        return s.accessToken;
-      })
-      .catch((err) => {
-        this.clear();
-        throw err;
-      })
-      .finally(() => (this.refreshing = null));
+    this.refreshing ??= this.doRefresh().finally(() => (this.refreshing = null));
     return this.refreshing;
+  }
+
+  private async doRefresh(retried = false): Promise<string> {
+    try {
+      const s = await firstValueFrom(
+        this.http.post<StaffSessionResponse>(
+          `${this.api}/admin/auth/refresh`,
+          null,
+          this.headers(),
+        ),
+      );
+      this.setSession(s);
+      return s.accessToken;
+    } catch (err) {
+      // auth.refresh_race (409): a parallel tab rotated the cookie within 20 s — the cookie is kept, retry once.
+      if (!retried && (err as { status?: number }).status === 409) return this.doRefresh(true);
+      this.clear();
+      throw err;
+    }
   }
 
   ensureSession(): Promise<boolean> {
@@ -113,10 +178,10 @@ export class StaffAuth {
     return this.restoring;
   }
 
-  /** #52: the current staff profile and roles (a role change by an admin applies without signing in again). */
+  /** The current staff profile and roles (a role change by an admin applies without signing in again). */
   async refreshMe(): Promise<StaffMe | null> {
     const token = this.token();
-    if (!token) return null;
+    if (!token || this.mustChangePassword()) return null;
     try {
       const me = await firstValueFrom(
         this.http.get<StaffMe>(`${this.api}/admin/me`, this.headers(token)),
@@ -139,12 +204,14 @@ export class StaffAuth {
   clear(): void {
     this.token.set(null);
     this.staff.set(null);
+    this.sessionSaysChange.set(false);
     this.restoring = Promise.resolve(false);
   }
 
   private setSession(s: StaffSessionResponse): void {
     this.token.set(s.accessToken);
     this.staff.set(s.staff);
+    this.sessionSaysChange.set(!!s.staff?.mustChangePassword);
     this.restoring = Promise.resolve(true);
   }
 }

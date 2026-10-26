@@ -29,7 +29,7 @@ jobs:
       - name: Generated API types are current
         run: npm run types:check
       - run: npm run typecheck
-      - name: Lint (ESLint, Stylelint, contrast, r4 guard, i18n ids)
+      - name: Lint (ESLint, Stylelint, contrast, no-commerce guard, i18n ids)
         run: npm run lint
       - name: Unit tests
         run: npm test
@@ -45,6 +45,13 @@ jobs:
         run: npx playwright test --grep @smoke
       - name: a11y (ar/en × light/dark)
         run: npm run a11y
+      - name: Production is blocked while payments are off (D-W2)
+        run: '! node scripts/check-payments-flag.mjs'
+      - name: Production build dry run (stub data, runtime API = production; payments guard skipped — never deployed)
+        env:
+          PRERENDER_API_URL: http://localhost:3000/v1
+          ALLOW_PAYMENTS_DISABLED: '1'
+        run: npm run build:prod
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

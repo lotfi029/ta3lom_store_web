@@ -2,7 +2,7 @@ import { Component, input } from '@angular/core';
 
 export type PillTone = 'success' | 'warning' | 'danger' | 'neutral' | 'info';
 
-/** A status as a pill (prototype `.pill`): order, shipment, enrolment and publish states. The label is projected. */
+/** A status as a pill (prototype `.pill`): order, project and donor states. The label is projected. */
 @Component({
   selector: 'ta-status-pill',
   template: '<span class="pill" [class]="tone()"><ng-content /></span>',

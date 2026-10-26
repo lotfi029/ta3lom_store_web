@@ -8,15 +8,19 @@ and is not done from this repo.
 
 ```bash
 npm ci
-STORE_API_URL=https://store-api.ta3lom.sa/v1 npm run build:prod   # routes.mjs (product slugs) → ng build → checks
+PRERENDER_API_URL=https://store-api.ta3lom.sa/v1 npm run build:prod   # payments guard → routes.mjs (project slugs) → ng build → checks
 ```
 
-`build:prod` uses `src/environments/environment.production.ts` (`apiUrl` = `https://store-api.ta3lom.sa/v1`,
-`devPaymentTrigger: false`). The build fails unless every gate passes:
+`build:prod` uses `src/environments/environment.production.ts` (`apiUrl` = `https://store-api.ta3lom.sa/v1`).
+`PRERENDER_API_URL` is where the BUILD reads the catalogue (C-1; default: the runtime `apiUrl`) — the compiled app always
+talks to `apiUrl`. **Production is blocked until R5-Payments (D-W2):** `scripts/check-payments-flag.mjs` fails
+`build:prod` while `paymentsEnabled` is `false`. Only the CI dry run sets `ALLOW_PAYMENTS_DISABLED=1` (it prints a
+warning); the deploy workflow must never set it. The build fails unless every gate passes:
 
 | Gate                              | What it checks                                                                                                             |
 | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `scripts/check-deploy-output.mjs` | `index.html`, `sitemap.xml`, `robots.txt`, `{ar,en}/index.html`, `{ar,en}/index.csr.html` exist; every file world-readable |
+| `scripts/check-payments-flag.mjs` | `paymentsEnabled` is true in the production environment (D-W2)                                                              |
+| `scripts/check-deploy-output.mjs` | `index.html`, `sitemap.xml`, `robots.txt`, `{ar,en}/index.html`, `{ar,en}/index.csr.html` and every prerendered route exist; the fallback rules below are documented; every file world-readable; with `build:prod`: the runtime API URL is compiled in and allowed by the CSP `connect-src` |
 | `scripts/check-csp.mjs`           | every inline script on every page is allowed by a hash in `caddy-headers.conf`; no unused hash; no inline handlers         |
 | `scripts/check-bundle-budget.mjs` | initial JS ≤ 150 KB and initial transfer ≤ 400 KB (gzip), per locale                                                       |
 
@@ -29,7 +33,7 @@ Publish **`dist/store-web/browser/`** as the web root.
 /robots.txt /sitemap.xml /favicon.*
 /ar/…  /en/…           → one Angular build per locale (base href /ar/ and /en/)
   index.html           → prerendered home
-  courses/ books/ p/<slug>/index.html   → prerendered public pages (build-time catalogue)
+  p/<slug>/index.html  → prerendered project pages (build-time catalogue)
   index.csr.html       → the client-rendered shell: fallback for every other path in that locale
   *.js *.css media/    → fingerprinted assets
 ```
@@ -66,10 +70,15 @@ store.ta3lom.sa {
 }
 ```
 
-- **Client fallback.** A product published after the build has no prerendered page: `try_files` serves
-  `/{locale}/index.csr.html`, which renders it in the browser (plan §2.5). Cart, checkout, thanks, account, login,
-  search and admin are always client-rendered.
+- **Client fallback (E-1).** A project published after the build has no prerendered page: `try_files` serves
+  `/{locale}/index.csr.html` (`no-cache`, like every HTML file), which renders it in the browser. The page shows the
+  real not-found page (`noindex`) only when the API answers 404 for that slug. Cart, checkout, order, account, login
+  and admin are always client-rendered. Follow-up (recorded in DECISIONS): rebuild on publish, so new projects get a
+  prerendered page too.
 - **404s.** Unknown paths also get the shell, and the app shows its own not-found page (`noindex`).
+- **Order pages (E-2).** `/{locale}/orders/*` carry a status token in the link; serve them with
+  `Referrer-Policy: no-referrer` (see `caddy-headers.conf`); the page also sets it in a `<meta>` and strips the token
+  from the address bar.
 
 ## Security headers
 
@@ -85,5 +94,5 @@ that site (plan §3.2). The web sends credentials and bearer tokens **only** to 
 
 ## After a catalogue change
 
-Prices, stock and availability are live on every page load. Titles, descriptions and SEO text of prerendered pages
+Options, amounts and availability are refreshed in the browser after every page load. Titles, descriptions and SEO text of prerendered pages
 change with the next build — rebuild and publish to refresh them (the admin shows this notice).

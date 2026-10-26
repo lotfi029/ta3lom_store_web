@@ -1,41 +1,30 @@
-import { isPlatformBrowser } from '@angular/common';
 import { httpResource } from '@angular/common/http';
-import { Injectable, PLATFORM_ID, computed, inject } from '@angular/core';
-import type { Category, HomeResponse, LiveFigures, LiveItem } from '../../../core/api/api.types';
-import { isStoreProduct } from '../../../core/api/api.types';
-import { valueOf } from '../../../core/http/resource-value';
+import { Injectable, computed, inject, signal } from '@angular/core';
+import type { Category, ProjectCard, ProjectPage } from '../../../core/api/api.types';
+import { toInt } from '../../../core/api/api.types';
 import { STORE_API_URL } from '../../../core/api/store-api-url';
+import { valueOf } from '../../../core/http/resource-value';
+import { type ListingQuery, PAGE_SIZE, listingParams } from './listing';
 
 /**
- * Store home (#1 home, #2 categories, #5 live). r4: only `featured`, `courses` and `books` are read — the pre-r4 API's
- * causes, sponsorable, impact and general-fund blocks are ignored, and any non course/book card is dropped.
+ * Home = listing (D-W3): `GET /v1/catalog/projects` for the URL's query and `GET /v1/catalog/categories` for the chips
+ * (non-negotiable #12). Read during prerender (transfer state) and refreshed after hydration by the page.
  */
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class HomeData {
   private readonly api = inject(STORE_API_URL);
-  private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
+  readonly query = signal<ListingQuery>({ q: '', category: '', sort: 'featured', page: 1 });
 
-  readonly home = httpResource<HomeResponse>(() => `${this.api}/catalog/home`);
+  readonly listing = httpResource<ProjectPage>(() => ({
+    url: `${this.api}/catalog/projects`,
+    params: listingParams(this.query()),
+  }));
   readonly categories = httpResource<Category[]>(() => `${this.api}/catalog/categories`);
-  readonly catList = computed(() => valueOf(this.categories) ?? []);
 
-  readonly featured = computed(() =>
-    (valueOf(this.home)?.featured ?? []).filter(isStoreProduct).slice(0, 5),
-  );
-  readonly courses = computed(() =>
-    (valueOf(this.home)?.courses ?? []).filter(isStoreProduct).slice(0, 6),
-  );
-  readonly books = computed(() =>
-    (valueOf(this.home)?.books ?? []).filter(isStoreProduct).slice(0, 4),
-  );
-
-  private readonly liveRes = httpResource<LiveFigures>(() => {
-    const slugs = [...this.courses(), ...this.books()].map((p) => p.slug);
-    return this.browser && slugs.length
-      ? { url: `${this.api}/catalog/live`, params: { slugs: slugs.join(',') } }
-      : undefined;
-  });
-  readonly live = computed(
-    () => new Map<string, LiveItem>((valueOf(this.liveRes)?.items ?? []).map((i) => [i.slug, i])),
-  );
+  private readonly page = computed(() => valueOf(this.listing));
+  /** The cards in the API's order (U-2). */
+  readonly items = computed<readonly ProjectCard[]>(() => this.page()?.items ?? []);
+  readonly total = computed(() => toInt(this.page()?.total));
+  readonly pages = computed(() => Math.max(1, Math.ceil(this.total() / PAGE_SIZE)));
+  readonly categoryList = computed<readonly Category[]>(() => valueOf(this.categories) ?? []);
 }

@@ -3,56 +3,47 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import type { Cart, CartLine } from '../api/api.types';
 import { STORE_API_URL } from '../api/store-api-url';
-import { CartStore } from './cart-store';
+import { CartStore, lineBody, mergeOrAppend } from './cart-store';
 import { CartSummary } from './cart-summary';
 
 const API = 'https://store-api.test/v1';
 const tick = () => new Promise((r) => setTimeout(r));
+const CONFIG = {
+  minGiftAmount: '10.00',
+  maxLineAmount: '100000.00',
+  cartMaxLines: 50,
+  cartMaxTotal: '100000.00',
+  maxQuantity: 5,
+  amountPresets: ['50.00', '100.00'],
+};
 
-const line = (id: string, over: Partial<CartLine> = {}): CartLine =>
-  ({
-    id,
-    productId: `p-${id}`,
-    slug: id,
-    type: 'book',
-    kind: 'buy',
-    mode: 'units',
-    titleAr: id,
-    titleEn: null,
-    bookFormat: { id: `f-${id}`, kind: 'print' },
-    quantity: 1,
-    maxQuantity: 20,
-    unitPrice: '65.00',
-    amount: '65.00',
-    unitLabelAr: null,
-    unitLabelEn: null,
-    seatEquivalent: null,
-    intent: null,
-    dedication: null,
-    issues: [],
-    ...over,
-  }) as CartLine;
-const cart = (lines: CartLine[], shipping = '25.00'): Cart =>
-  ({
-    id: 'c',
-    isGuest: true,
-    purchases: lines,
-    gifts: [],
-    notices: [],
-    expiresAt: null,
-    summary: {
-      purchasesTotal: lines.reduce((t, l) => t + Number(l.amount), 0).toFixed(2),
-      vatIncluded: '0.00',
-      shippingTotal: lines.length ? shipping : '0.00',
-      giftsTotal: '0.00',
-      grandTotal: '0',
-      lineCount: lines.length,
-      requiresShipping: lines.length > 0,
-      hasGifts: false,
-    },
-  }) as unknown as Cart;
+const line = (id: string, over: Partial<CartLine> = {}): CartLine => ({
+  id,
+  targetKind: 'project',
+  projectId: `p-${id}`,
+  projectSlug: id,
+  categoryId: null,
+  categorySlug: null,
+  optionId: `o-${id}`,
+  titleAr: id,
+  titleEn: null,
+  optionLabelAr: 'كفالة يوم',
+  optionLabelEn: null,
+  quantity: 1,
+  unitAmount: '50.00',
+  amount: '50.00',
+  problems: [],
+  ...over,
+});
+const cart = (lines: CartLine[]): Cart => ({
+  lines,
+  lineCount: lines.length,
+  totalAmount: lines.reduce((t, l) => t + Math.round(Number(l.amount) * 100), 0) / 100 + '.00',
+  problems: [],
+});
+const preview = { titleAr: 'سقيا', titleEn: 'Water', slug: 'water' };
 
-describe('CartStore (plan §6)', () => {
+describe('CartStore (contract 15 §2.3)', () => {
   let store: CartStore;
   let http: HttpTestingController;
 
@@ -66,6 +57,8 @@ describe('CartStore (plan §6)', () => {
     });
     store = TestBed.inject(CartStore);
     http = TestBed.inject(HttpTestingController);
+    TestBed.tick();
+    http.match(`${API}/catalog/config`).forEach((r) => r.flush(CONFIG));
     store.load();
     TestBed.tick();
     http.expectOne(`${API}/cart`).flush(cart([line('a')]));
@@ -73,186 +66,133 @@ describe('CartStore (plan §6)', () => {
     TestBed.tick();
   });
 
+  it('sends exactly one body shape per line kind', () => {
+    const none = {
+      projectId: null,
+      optionId: null,
+      categoryId: null,
+      amount: null,
+      quantity: null,
+    };
+    expect(
+      lineBody({
+        kind: 'option',
+        projectId: 'p',
+        optionId: 'o',
+        quantity: 2,
+        unitAmount: '5.00',
+        preview,
+      }),
+    ).toEqual({ ...none, projectId: 'p', optionId: 'o', quantity: 2 });
+    expect(lineBody({ kind: 'project', projectId: 'p', amount: '75', preview })).toEqual({
+      ...none,
+      projectId: 'p',
+      amount: '75.00',
+    });
+    expect(lineBody({ kind: 'category', categoryId: 'c', amount: '100.5', preview })).toEqual({
+      ...none,
+      categoryId: 'c',
+      amount: '100.50',
+    });
+  });
+
   it('adds optimistically, then the server answer replaces the view and bumps the badge', async () => {
     const summary = TestBed.inject(CartSummary);
-    const done = store.add({
-      productId: 'p-new',
-      bookFormatId: null,
-      quantity: 1,
-      preview: {
-        slug: 'new',
-        type: 'course',
-        titleAr: 'جديد',
-        titleEn: null,
-        unitPrice: '120.00',
-        formatKind: null,
-      },
-    });
+    const done = store.add({ kind: 'project', projectId: 'p-new', amount: '75', preview });
     await tick();
-    expect(store.lines().map((l) => l.slug)).toEqual(['a', 'new']);
+    expect(store.lines().length).toBe(2);
+    expect(store.total()).toBe('125.00');
     const req = http.expectOne(`${API}/cart/lines`);
-    expect(req.request.body).toEqual({
-      kind: 'buy',
-      mode: 'units',
-      amount: null,
-      intent: null,
-      dedication: null,
-      productId: 'p-new',
-      bookFormatId: null,
-      quantity: 1,
-    });
-    req.flush(cart([line('a'), line('srv', { slug: 'new', type: 'course', bookFormat: null })]), {
-      status: 201,
-      statusText: 'Created',
-    });
+    expect(req.request.method).toBe('POST');
+    req.flush(
+      cart([line('a'), line('b', { optionId: null, unitAmount: '75.00', amount: '75.00' })]),
+    );
     expect(await done).toBe(true);
-    expect(store.lines().map((l) => l.id)).toEqual(['a', 'srv']);
+    expect(store.lines().map((l) => l.id)).toEqual(['a', 'b']);
     expect(summary.count()).toBe(2);
     expect(summary.bumps()).toBe(1);
   });
 
-  it('merges the same product and format into one line (RUL-14)', async () => {
-    void store.add({ productId: 'p-a', bookFormatId: 'f-a', quantity: 2 });
-    await tick();
-    expect(store.lines()[0].quantity).toBe(3);
-    expect(store.lines()[0].amount).toBe('195.00');
-    http
-      .expectOne(`${API}/cart/lines`)
-      .flush(cart([line('a', { quantity: 3, amount: '195.00' })]), {
-        status: 201,
-        statusText: 'Created',
-      });
+  it('merges the same option into its line, capped at the configured maximum quantity (W-5)', () => {
+    const merged = mergeOrAppend(
+      [line('a', { quantity: 4 })],
+      {
+        kind: 'option',
+        projectId: 'p-a',
+        optionId: 'o-a',
+        quantity: 3,
+        unitAmount: '50.00',
+        preview,
+      },
+      5,
+    );
+    expect(merged).toHaveLength(1);
+    expect(merged[0].quantity).toBe(5);
+    expect(merged[0].amount).toBe('250.00');
+    expect(store.maxQuantity()).toBe(5);
   });
 
-  it('rolls back and keeps the problem when the server refuses', async () => {
-    const done = store.remove('a');
+  it('caps a quantity edit at the configured maximum, not a hard-coded one (W-5)', async () => {
+    const done = store.setQuantity('a', 40);
     await tick();
-    expect(store.lines()).toEqual([]);
-    http
-      .expectOne(`${API}/cart/lines/a`)
-      .flush({ code: 'cart.line_not_found' }, { status: 404, statusText: 'x' });
-    expect(await done).toBe(false);
-    expect(store.lines().map((l) => l.id)).toEqual(['a']);
-    expect(store.lastProblem()?.code).toBe('cart.line_not_found');
-  });
-
-  it('runs mutations in order, so a slow answer never overwrites a newer one', async () => {
-    const first = store.setQuantity('a', 2);
-    const second = store.setQuantity('a', 5);
-    await tick();
-    const r1 = http.expectOne(`${API}/cart/lines/a`);
-    expect(r1.request.body).toEqual({ quantity: 2 });
-    http.expectNone(`${API}/cart/lines/a`); // the second waits for the first
-    r1.flush(cart([line('a', { quantity: 2, amount: '130.00' })]));
-    await first;
-    await tick();
-    const r2 = http.expectOne(`${API}/cart/lines/a`);
-    expect(r2.request.body).toEqual({ quantity: 5 });
-    r2.flush(cart([line('a', { quantity: 5, amount: '325.00' })]));
-    await second;
-    expect(store.lines()[0].quantity).toBe(5);
-  });
-
-  it('caps quantity at the line maximum (print 20)', async () => {
-    void store.setQuantity('a', 99);
-    await tick();
-    expect(http.expectOne(`${API}/cart/lines/a`).request.body).toEqual({ quantity: 20 });
-  });
-
-  it('flags lines the checkout quote repriced and switches the totals to the quote (RUL-15)', async () => {
-    const done = store.checkPrices();
-    const req = http.expectOne(`${API}/checkout/quote`);
-    expect(req.request.method).toBe('POST');
-    req.flush({
-      lines: [
-        {
-          lineId: 'a',
-          status: 'changed',
-          code: null,
-          previousUnitPrice: '65.00',
-          unitPrice: '70.00',
-          amount: '70.00',
-          vatAmount: '0.00',
-        },
-      ],
-      purchasesTotal: '70.00',
-      shippingTotal: '25.00',
-      giftsTotal: '0.00',
-      vatTotal: '0.00',
-      grandTotal: '95.00',
-      priceChanged: true,
-      requiresShipping: true,
-      hasGifts: false,
-      valid: true,
-      cartIssues: [],
-    });
-    await done;
-    expect(store.priceChanged()).toEqual(['a']);
-    expect(store.repriced('a')?.unitPrice).toBe('70.00');
-    expect(store.totals().grand).toBe('95.00');
-  });
-
-  it('drops the quote when the cart changes, and never quotes an empty cart', async () => {
-    void store.checkPrices();
-    http.expectOne(`${API}/checkout/quote`).flush({
-      lines: [
-        {
-          lineId: 'a',
-          status: 'changed',
-          code: null,
-          previousUnitPrice: '65.00',
-          unitPrice: '70.00',
-          amount: '70.00',
-          vatAmount: '0.00',
-        },
-      ],
-      purchasesTotal: '70.00',
-      shippingTotal: '25.00',
-      giftsTotal: '0.00',
-      vatTotal: '0.00',
-      grandTotal: '95.00',
-      priceChanged: true,
-      requiresShipping: true,
-      hasGifts: false,
-      valid: true,
-      cartIssues: [],
-    });
-    await tick();
-    void store.remove('a');
-    await tick();
-    http.expectOne(`${API}/cart/lines/a`).flush(cart([]));
-    await tick();
-    expect(store.priceChanged()).toEqual([]);
-    await store.checkPrices();
-    http.expectNone(`${API}/checkout/quote`);
-  });
-
-  it('refresh() replaces the view with the merged cart after sign-in (RUL-17)', async () => {
-    const done = store.refresh();
-    http.expectOne(`${API}/cart`).flush(cart([line('b')]));
-    await done;
-    expect(store.lines().map((l) => l.id)).toEqual(['b']);
-  });
-
-  it('clear() empties the cart with DELETE /cart and resets the badge (#15)', async () => {
-    const summary = TestBed.inject(CartSummary);
-    const done = store.clear();
-    expect(store.lines()).toEqual([]);
-    const req = http.expectOne((r) => r.method === 'DELETE' && r.url === `${API}/cart`);
-    req.flush(null, { status: 204, statusText: 'No Content' });
+    const req = http.expectOne(`${API}/cart/lines/a`);
+    expect(req.request.body).toEqual({ quantity: 5 });
+    req.flush(cart([line('a', { quantity: 5, amount: '250.00' })]));
     expect(await done).toBe(true);
-    expect(summary.count()).toBe(0);
-    TestBed.tick();
-    http.match(`${API}/cart`).forEach((r) => r.flush(cart([])));
   });
 
-  it('estimates totals in halalas during an edit (shipping only with print)', async () => {
-    void store.setQuantity('a', 3);
+  it('rolls back a failed edit and keeps the problem with its extension values', async () => {
+    const done = store.setAmount('a', '5');
     await tick();
-    expect(store.totals().purchases).toBe('195.00');
-    expect(store.totals().grand).toBe('220.00');
+    const req = http.expectOne(`${API}/cart/lines/a`);
+    expect(req.request.body).toEqual({ amount: '5.00' });
+    req.flush(
+      { code: 'cart.amount_below_minimum', min: '10.00' },
+      { status: 422, statusText: 'x' },
+    );
+    expect(await done).toBe(false);
+    expect(store.lines()[0].amount).toBe('50.00');
+    expect(store.lastProblem()?.code).toBe('cart.amount_below_minimum');
+    expect(store.lastProblem()?.extra['min']).toBe('10.00');
+  });
+
+  it('W-3: clear() waits for an in-flight add, so the add cannot bring cleared lines back', async () => {
+    const adding = store.add({ kind: 'project', projectId: 'p-new', amount: '75', preview });
+    const clearing = store.clear();
+    await tick();
+    // Only the add is on the wire; the clear is queued behind it.
+    const add = http.expectOne(`${API}/cart/lines`);
+    http.expectNone((r) => r.method === 'DELETE');
+    add.flush(cart([line('a'), line('b')]));
+    await adding;
+    await tick();
+    const del = http.expectOne((r) => r.method === 'DELETE' && r.url === `${API}/cart`);
+    del.flush(null, { status: 204, statusText: 'No Content' });
+    expect(await clearing).toBe(true);
+    expect(store.lines()).toEqual([]);
+    expect(TestBed.inject(CartSummary).count()).toBe(0);
+  });
+
+  it('W-3: refresh() is queued too and replaces the view with the server cart', async () => {
+    const adding = store.add({ kind: 'category', categoryId: 'c', amount: '100', preview });
+    const refreshing = store.refresh();
+    await tick();
+    http.expectOne(`${API}/cart/lines`).flush(cart([line('a'), line('c')]));
+    await adding;
+    await tick();
+    http.expectOne(`${API}/cart`).flush(cart([line('a'), line('c'), line('merged')]));
+    expect(await refreshing).toBe(true);
+    expect(store.lines().map((l) => l.id)).toEqual(['a', 'c', 'merged']);
+  });
+
+  it('a failed clear restores the lines', async () => {
+    const clearing = store.clear();
+    await tick();
+    expect(store.lines()).toEqual([]);
     http
-      .expectOne(`${API}/cart/lines/a`)
-      .flush(cart([line('a', { quantity: 3, amount: '195.00' })]));
+      .expectOne((r) => r.method === 'DELETE')
+      .flush({ code: 'auth.account_blocked' }, { status: 403, statusText: 'x' });
+    expect(await clearing).toBe(false);
+    expect(store.lines().map((l) => l.id)).toEqual(['a']);
   });
 });

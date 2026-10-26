@@ -8,6 +8,7 @@
 /.lighthouseci
 /.api
 /.e2e
+/e2e/.auth
 routes.txt
 .DS_Store
 *.log

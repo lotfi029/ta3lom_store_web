@@ -3,8 +3,8 @@ import { RouterLink } from '@angular/router';
 import { environment } from '../../../environments/environment';
 
 /**
- * Store footer (prototype `#foot`, giving stripped — plan §2.6): about, store links, association links on ta3lom.sa
- * (identity, privacy, contact), contact e-mail and the accepted payment marks.
+ * Store footer (prototype `#foot`): about, store links, association links on ta3lom.sa (identity, privacy, contact) and
+ * the contact e-mail. No payment marks while online payment is off (D-W2).
  */
 @Component({
   selector: 'ta-footer',

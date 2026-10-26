@@ -23,21 +23,9 @@
   margin: 0;
 }
 
-.pform,
-.addr-form {
+.pform {
   display: grid;
   gap: 16px;
-}
-
-.addr-form {
-  margin-block-start: 16px;
-  padding-block-start: 16px;
-  border-block-start: 1px solid var(--c-border);
-}
-
-.addr-form h4 {
-  margin: 0;
-  font-size: 0.98rem;
 }
 
 .langs {
@@ -69,40 +57,6 @@
   block-size: 18px;
   margin: 0;
   accent-color: var(--c-brand);
-}
-
-.addrs {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 8px;
-}
-
-.addrs li {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 8px 16px;
-  align-items: center;
-  padding-block: 10px;
-  padding-inline: 14px;
-  border: 1px solid var(--c-border);
-  border-radius: 12px;
-}
-
-.addrs .bd {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-  font-size: 0.92rem;
-}
-
-.addrs .acts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0 14px;
 }
 
 .linkbtn.danger {
@@ -149,4 +103,32 @@
 .del p {
   margin: 0;
   color: var(--c-text-2);
+}
+
+.row2 {
+  display: grid;
+  gap: 16px;
+}
+
+@media (width >= 600px) {
+  .row2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.lbl {
+  display: block;
+  font-weight: 500;
+  font-size: 0.92rem;
+  margin-block-end: 6px;
+}
+
+.ro {
+  margin: 0;
+  min-block-size: 44px;
+  display: flex;
+  align-items: center;
+  padding-inline: 14px;
+  border-radius: 10px;
+  background: var(--c-surface-2);
 }

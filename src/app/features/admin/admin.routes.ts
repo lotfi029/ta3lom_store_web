@@ -1,11 +1,22 @@
 import type { Routes } from '@angular/router';
-import { staffGuard, staffPolicyGuard } from '../../core/guards/guards';
+import {
+  staffGuard,
+  staffPolicyGuard,
+  staffSessionGuard,
+  unsavedChangesGuard,
+} from '../../core/guards/guards';
 
-/** `/admin/…` (plan §2.2, W-08…W-10): client-rendered, noindex, outside the storefront layout. */
+/** `/admin/…`: client-rendered, noindex, outside the storefront layout. */
 export const ADMIN_ROUTES: Routes = [
   {
     path: 'login',
     loadComponent: () => import('./login/admin-login.page').then((m) => m.AdminLoginPage),
+  },
+  {
+    // Forced (pwd_change claim, C-6) or self-service; outside the shell, whose screens are 403 while a change is pending.
+    path: 'password',
+    canActivate: [staffSessionGuard],
+    loadComponent: () => import('./password/admin-password.page').then((m) => m.AdminPasswordPage),
   },
   {
     path: '',
@@ -18,16 +29,18 @@ export const ADMIN_ROUTES: Routes = [
         loadComponent: () => import('./ops/dashboard.page').then((m) => m.DashboardPage),
       },
       {
-        path: 'products',
-        loadComponent: () => import('./catalog/products.page').then((m) => m.ProductsPage),
+        path: 'projects',
+        loadComponent: () => import('./catalog/projects.page').then((m) => m.ProjectsPage),
       },
       {
-        path: 'products/:id',
+        path: 'projects/:id',
+        canDeactivate: [unsavedChangesGuard],
         loadComponent: () =>
-          import('./catalog/product-editor.page').then((m) => m.ProductEditorPage),
+          import('./catalog/project-editor.page').then((m) => m.ProjectEditorPage),
       },
       {
         path: 'categories',
+        canDeactivate: [unsavedChangesGuard],
         loadComponent: () => import('./catalog/categories.page').then((m) => m.CategoriesPage),
       },
       {
@@ -43,18 +56,12 @@ export const ADMIN_ROUTES: Routes = [
         loadComponent: () => import('./ops/order.page').then((m) => m.AdminOrderPage),
       },
       {
-        path: 'shipments',
-        loadComponent: () => import('./ops/shipments.page').then((m) => m.ShipmentsPage),
-      },
-      { path: 'stock', loadComponent: () => import('./ops/stock.page').then((m) => m.StockPage) },
-      {
-        path: 'customers',
-        loadComponent: () => import('./ops/customers.page').then((m) => m.CustomersPage),
+        path: 'donors',
+        loadComponent: () => import('./ops/donors.page').then((m) => m.DonorsPage),
       },
       {
-        path: 'reports',
-        canActivate: [staffPolicyGuard('staff:finance')],
-        loadComponent: () => import('./ops/reports.page').then((m) => m.ReportsPage),
+        path: 'donors/:id',
+        loadComponent: () => import('./ops/donor.page').then((m) => m.DonorPage),
       },
       {
         path: 'staff',
@@ -63,10 +70,12 @@ export const ADMIN_ROUTES: Routes = [
       },
       {
         path: 'settings',
+        canActivate: [staffPolicyGuard('staff:admin')],
         loadComponent: () => import('./settings/settings.page').then((m) => m.SettingsPage),
       },
       {
         path: 'templates',
+        canActivate: [staffPolicyGuard('staff:templates')],
         loadComponent: () => import('./templates/templates.page').then((m) => m.TemplatesPage),
       },
       {

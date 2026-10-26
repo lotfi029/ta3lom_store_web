@@ -4,85 +4,60 @@ import { problemMessage } from '../../../core/api/problem-message';
 import { toProblem } from '../../../core/api/problem';
 import { CatalogAdminData } from './catalog-admin.data';
 
-export type UploadKind = 'image' | 'pdf' | 'book_file';
+const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
-const ACCEPT: Record<UploadKind, string> = {
-  image: 'image/jpeg,image/png,image/webp',
-  pdf: 'application/pdf',
-  book_file: 'application/pdf',
-};
-const MAX_BYTES: Record<UploadKind, number> = {
-  image: 10 * 1024 * 1024,
-  pdf: 200 * 1024 * 1024,
-  book_file: 200 * 1024 * 1024,
-};
-
-/** Client checks before upload (the API checks again): MIME per kind, size limits, alt text for images (RUL-03). */
-export function uploadProblem(
-  kind: UploadKind,
-  file: { type: string; size: number } | null,
-  altAr: string,
-  altEn: string,
-): string | null {
+/**
+ * Client checks before an upload (the API checks again): an image type and the Arabic alt text (`media.alt_required`).
+ * The size limit is NOT checked here — it is the API's (413 `media.too_large` + `max` in bytes, shown in MB; a bare
+ * proxy 413 gets the generic too-large text).
+ */
+export function uploadProblem(file: { type: string } | null, altAr: string): string | null {
   if (!file) return $localize`:@@store.admin.file-required:اختر ملفًا.`;
-  if (!ACCEPT[kind].split(',').includes(file.type))
-    return $localize`:@@store.error.media-type-not-allowed:نوع الملف غير مسموح.`;
-  if (file.size > MAX_BYTES[kind])
-    return $localize`:@@store.error.media-too-large:حجم الملف أكبر من المسموح.`;
-  if (kind === 'image' && (!altAr.trim() || !altEn.trim()))
-    return $localize`:@@store.admin.alt-required:النص البديل بالعربية والإنجليزية مطلوب للصور.`;
+  if (!IMAGE_TYPES.includes(file.type))
+    return $localize`:@@store.error.media-type-not-allowed:نوع الملف غير مسموح. ارفع صورة JPEG أو PNG أو WebP.`;
+  if (!altAr.trim())
+    return $localize`:@@store.error.media-alt-required:أضف نصًا بديلًا بالعربية للصورة.`;
   return null;
 }
 
-/** Upload a media asset (#75): file, then alt text in both languages for images (mandatory, RUL-03). */
+/** Upload an image with its alt text (Arabic required, English optional — falls back to Arabic). */
 @Component({
   selector: 'ta-media-upload',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <form class="up" (submit)="submit($event)" novalidate>
       <div class="field">
-        <label [for]="idPrefix() + '-file'">
-          @switch (kind()) {
-            @case ('image') {
-              <span i18n="@@store.admin.upload-image"
-                >صورة (JPG أو PNG أو WebP، حتى 10 ميغابايت)</span
-              >
-            }
-            @default {
-              <span i18n="@@store.admin.upload-pdf">ملف PDF (حتى 200 ميغابايت)</span>
-            }
-          }
-        </label>
+        <label [for]="idPrefix() + '-file'" i18n="@@store.admin.upload-image"
+          >صورة (JPEG أو PNG أو WebP)</label
+        >
         <input
           [id]="idPrefix() + '-file'"
           type="file"
-          [attr.accept]="accept()"
+          accept="image/jpeg,image/png,image/webp"
           (change)="onFile($event)"
         />
       </div>
-      @if (kind() === 'image') {
-        <div class="field">
-          <label [for]="idPrefix() + '-alt-ar'" i18n="@@store.admin.alt-ar"
-            >النص البديل (عربي)</label
-          >
-          <input
-            [id]="idPrefix() + '-alt-ar'"
-            [value]="altAr()"
-            (input)="altAr.set(value($event))"
-          />
-        </div>
-        <div class="field">
-          <label [for]="idPrefix() + '-alt-en'" i18n="@@store.admin.alt-en"
-            >النص البديل (إنجليزي)</label
-          >
-          <input
-            [id]="idPrefix() + '-alt-en'"
-            dir="ltr"
-            [value]="altEn()"
-            (input)="altEn.set(value($event))"
-          />
-        </div>
-      }
+      <div class="field">
+        <label [for]="idPrefix() + '-alt-ar'" i18n="@@store.admin.alt-ar">النص البديل (عربي)</label>
+        <input
+          [id]="idPrefix() + '-alt-ar'"
+          maxlength="300"
+          [value]="altAr()"
+          (input)="altAr.set(value($event))"
+        />
+      </div>
+      <div class="field">
+        <label [for]="idPrefix() + '-alt-en'" i18n="@@store.admin.alt-en-optional"
+          >النص البديل (إنجليزي، اختياري)</label
+        >
+        <input
+          [id]="idPrefix() + '-alt-en'"
+          dir="ltr"
+          maxlength="300"
+          [value]="altEn()"
+          (input)="altEn.set(value($event))"
+        />
+      </div>
       @if (error(); as e) {
         <p class="err" role="alert">{{ e }}</p>
       }
@@ -112,7 +87,6 @@ export function uploadProblem(
 })
 export class MediaUpload {
   private readonly data = inject(CatalogAdminData);
-  readonly kind = input<UploadKind>('image');
   readonly idPrefix = input('mu');
   readonly uploaded = output<MediaAsset>();
 
@@ -121,10 +95,6 @@ export class MediaUpload {
   protected readonly altEn = signal('');
   protected readonly busy = signal(false);
   protected readonly error = signal<string | null>(null);
-
-  protected accept(): string {
-    return ACCEPT[this.kind()];
-  }
 
   protected value(e: Event): string {
     return (e.target as HTMLInputElement).value;
@@ -139,7 +109,7 @@ export class MediaUpload {
     e.preventDefault();
     if (this.busy()) return;
     const f = this.file();
-    const problem = uploadProblem(this.kind(), f, this.altAr(), this.altEn());
+    const problem = uploadProblem(f, this.altAr());
     if (problem || !f) {
       this.error.set(problem);
       return;
@@ -147,7 +117,7 @@ export class MediaUpload {
     this.busy.set(true);
     this.error.set(null);
     try {
-      const asset = await this.data.upload(f, this.kind(), this.altAr(), this.altEn());
+      const asset = await this.data.upload(f, this.altAr(), this.altEn());
       this.altAr.set('');
       this.altEn.set('');
       this.uploaded.emit(asset);

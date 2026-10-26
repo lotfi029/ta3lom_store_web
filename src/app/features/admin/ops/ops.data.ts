@@ -2,207 +2,128 @@ import { HttpClient, httpResource } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import type {
+  AdminCustomer,
+  AdminCustomerPage,
   AdminOrderDetail,
   AdminOrderPage,
-  Customer360,
-  CustomerRow,
+  AdminOrderRow,
+  CustomerStatus,
   Dashboard,
-  DownloadGrant,
-  Shipment,
-  ShipmentPage,
-  StockMovementPage,
-  StockMovementRequest,
-  StockRow,
+  OrderStatusValue,
 } from '../../../core/api/api.types';
 import { STORE_API_URL } from '../../../core/api/store-api-url';
 import { StaffAuth } from '../../../core/auth/staff-auth';
 
 export interface OrderFilter {
-  q: string;
-  status: string;
+  reference: string;
+  mobile: string;
+  status: '' | OrderStatusValue;
+  /** `YYYY-MM-DD`, Riyadh calendar days, inclusive (contract 15 §1.4). */
   from: string;
   to: string;
   page: number;
 }
 
-export type ReportName = 'sales' | 'vat' | 'shipments';
+export interface DonorFilter {
+  q: string;
+  status: '' | CustomerStatus;
+  page: number;
+}
+
 export const PAGE_SIZE = 20;
 
+/** Admin references are matched exactly in upper case (API-2: the client upper-cases too). */
+export const upperRef = (s: string): string => s.trim().toUpperCase();
+
+/** Order filter → query parameters (blank fields left out). */
+export function orderParams(f: OrderFilter): Record<string, string | number> {
+  const params: Record<string, string | number> = { page: f.page, pageSize: PAGE_SIZE };
+  if (f.reference.trim()) params['reference'] = upperRef(f.reference);
+  if (f.mobile.trim()) params['mobile'] = f.mobile.trim();
+  if (f.status) params['status'] = f.status;
+  if (f.from) params['from'] = f.from;
+  if (f.to) params['to'] = f.to;
+  return params;
+}
+
 /**
- * Admin operations (#53, #78–#80, #85–#88, #94–#99, #117, #129–#132): dashboard, orders, shipments, stock, download
- * resets, customers and reports. r4: purchase orders only (`kind=buy`), reports sales / VAT / shipments.
+ * Admin operations (contract 15 §2.8): dashboard, donors (search, detail, block/unblock) and orders (search, detail,
+ * cancel a pending order). Reads need `staff:read`; block/unblock `staff:customers`; cancel `staff:orders`.
  */
 @Injectable({ providedIn: 'root' })
 export class OpsData {
   private readonly http = inject(HttpClient);
   private readonly api = inject(STORE_API_URL);
   private readonly auth = inject(StaffAuth);
-  private readonly on = computed(() => this.auth.isSignedIn());
+  private readonly on = computed(() => this.auth.isSignedIn() && this.auth.can('staff:read'));
 
   readonly dashboard = httpResource<Dashboard>(() =>
     this.on() ? `${this.api}/admin/dashboard` : undefined,
   );
-  readonly lowStock = httpResource<StockRow[]>(() =>
-    this.on() ? { url: `${this.api}/admin/stock`, params: { lowOnly: 'true' } } : undefined,
-  );
 
-  readonly orderFilter = signal<OrderFilter>({ q: '', status: '', from: '', to: '', page: 1 });
-  readonly orders = httpResource<AdminOrderPage>(() => {
-    if (!this.on()) return undefined;
-    const f = this.orderFilter();
-    const params: Record<string, string | number> = {
-      page: f.page,
-      pageSize: PAGE_SIZE,
-      kind: 'buy',
-    };
-    if (f.q.trim()) params['q'] = f.q.trim();
-    if (f.status) params['status'] = f.status;
-    if (f.from) params['from'] = f.from;
-    if (f.to) params['to'] = f.to;
-    return { url: `${this.api}/admin/orders`, params };
+  readonly orderFilter = signal<OrderFilter>({
+    reference: '',
+    mobile: '',
+    status: '',
+    from: '',
+    to: '',
+    page: 1,
   });
-
-  readonly shipmentStatus = signal('preparing');
-  readonly shipmentPage = signal(1);
-  readonly shipments = httpResource<ShipmentPage>(() =>
+  readonly orders = httpResource<AdminOrderPage>(() =>
     this.on()
-      ? {
-          url: `${this.api}/admin/shipments`,
-          params: { status: this.shipmentStatus(), page: this.shipmentPage(), pageSize: PAGE_SIZE },
-        }
+      ? { url: `${this.api}/admin/orders`, params: orderParams(this.orderFilter()) }
       : undefined,
   );
 
-  readonly lowOnly = signal(false);
-  readonly stock = httpResource<StockRow[]>(() => {
-    if (!this.on()) return undefined;
-    const params: Record<string, string> = this.lowOnly() ? { lowOnly: 'true' } : {};
-    return { url: `${this.api}/admin/stock`, params };
+  readonly orderRef = signal<string | null>(null);
+  readonly order = httpResource<AdminOrderDetail>(() => {
+    const ref = this.orderRef();
+    return this.on() && ref
+      ? `${this.api}/admin/orders/${encodeURIComponent(upperRef(ref))}`
+      : undefined;
   });
 
-  order(ref: string): Promise<AdminOrderDetail> {
-    return firstValueFrom(
-      this.http.get<AdminOrderDetail>(`${this.api}/admin/orders/${encodeURIComponent(ref)}`),
-    );
-  }
+  readonly donorFilter = signal<DonorFilter>({ q: '', status: '', page: 1 });
+  readonly donors = httpResource<AdminCustomerPage>(() => {
+    if (!this.on()) return undefined;
+    const f = this.donorFilter();
+    const params: Record<string, string | number> = { page: f.page, pageSize: PAGE_SIZE };
+    if (f.q.trim()) params['q'] = f.q.trim();
+    if (f.status) params['status'] = f.status;
+    return { url: `${this.api}/admin/customers`, params };
+  });
 
-  cancel(ref: string, reason: string): Promise<AdminOrderDetail> {
-    return firstValueFrom(
-      this.http.post<AdminOrderDetail>(
-        `${this.api}/admin/orders/${encodeURIComponent(ref)}/cancel`,
-        { reason },
-      ),
-    );
-  }
+  readonly donorId = signal<string | null>(null);
+  readonly donor = httpResource<AdminCustomer>(() => {
+    const id = this.donorId();
+    return this.on() && id ? `${this.api}/admin/customers/${encodeURIComponent(id)}` : undefined;
+  });
 
-  resend(ref: string, channels: string[]): Promise<unknown> {
-    return firstValueFrom(
-      this.http.post(`${this.api}/admin/orders/${encodeURIComponent(ref)}/resend-documents`, {
-        channels,
-      }),
-    );
-  }
-
-  resetGrant(id: string, reason: string): Promise<DownloadGrant> {
-    return firstValueFrom(
-      this.http.post<DownloadGrant>(
-        `${this.api}/admin/download-grants/${encodeURIComponent(id)}/reset`,
-        { reason },
-      ),
-    );
-  }
-
-  packingSlip(id: string): Promise<Blob> {
-    return firstValueFrom(
-      this.http.get(`${this.api}/admin/shipments/${id}/packing-slip`, { responseType: 'blob' }),
-    );
-  }
-
-  async ship(id: string, carrier: string, trackingNo: string): Promise<Shipment> {
-    const s = await firstValueFrom(
-      this.http.post<Shipment>(`${this.api}/admin/shipments/${id}/ship`, { carrier, trackingNo }),
-    );
-    this.shipments.reload();
-    return s;
-  }
-
-  async deliver(id: string, deliveredOn: string | null): Promise<Shipment> {
-    const s = await firstValueFrom(
-      this.http.post<Shipment>(`${this.api}/admin/shipments/${id}/deliver`, { deliveredOn }),
-    );
-    this.shipments.reload();
-    return s;
-  }
-
-  async returnShipment(id: string, note: string, restock: boolean): Promise<Shipment> {
-    const s = await firstValueFrom(
-      this.http.post<Shipment>(`${this.api}/admin/shipments/${id}/return`, { note, restock }),
-    );
-    this.shipments.reload();
-    return s;
-  }
-
-  movements(formatId: string, page = 1): Promise<StockMovementPage> {
-    return firstValueFrom(
-      this.http.get<StockMovementPage>(`${this.api}/admin/stock/${formatId}/movements`, {
-        params: { page, pageSize: 10 },
-      }),
-    );
-  }
-
-  async move(formatId: string, body: StockMovementRequest): Promise<StockRow> {
+  /**
+   * `POST /admin/orders/{ref}/cancel` (only `pending_payment`). API-1: its 409 adds an extension named `status` that
+   * collides with the RFC status — the client reads only `code`, never that member.
+   */
+  async cancelOrder(reference: string): Promise<AdminOrderRow> {
     const r = await firstValueFrom(
-      this.http.post<StockRow>(`${this.api}/admin/stock/${formatId}/movements`, body),
+      this.http.post<AdminOrderRow>(
+        `${this.api}/admin/orders/${encodeURIComponent(upperRef(reference))}/cancel`,
+        null,
+      ),
     );
-    this.stock.reload();
+    this.order.reload();
+    this.orders.reload();
+    this.dashboard.reload();
     return r;
   }
 
-  findCustomers(by: { mobile?: string; email?: string }): Promise<CustomerRow[]> {
-    const params: Record<string, string> = {};
-    if (by.mobile) params['mobile'] = by.mobile;
-    if (by.email) params['email'] = by.email;
-    return firstValueFrom(this.http.get<CustomerRow[]>(`${this.api}/admin/customers`, { params }));
-  }
-
-  customer(id: string): Promise<Customer360> {
-    return firstValueFrom(this.http.get<Customer360>(`${this.api}/admin/customers/${id}`));
-  }
-
-  block(id: string, reason: string): Promise<CustomerRow> {
-    return firstValueFrom(
-      this.http.post<CustomerRow>(`${this.api}/admin/customers/${id}/block`, { reason }),
-    );
-  }
-
-  unblock(id: string): Promise<CustomerRow> {
-    return firstValueFrom(
-      this.http.post<CustomerRow>(`${this.api}/admin/customers/${id}/unblock`, null),
-    );
-  }
-
-  report(
-    name: ReportName,
-    from: string,
-    to: string,
-  ): Promise<{ name: string; from: string; to: string; rows: Record<string, unknown>[] }> {
-    return firstValueFrom(
-      this.http.get<{ name: string; from: string; to: string; rows: Record<string, unknown>[] }>(
-        `${this.api}/admin/reports/${name}`,
-        {
-          params: { from, to, format: 'json' },
-        },
+  async setBlocked(id: string, blocked: boolean): Promise<void> {
+    await firstValueFrom(
+      this.http.post(
+        `${this.api}/admin/customers/${encodeURIComponent(id)}/${blocked ? 'block' : 'unblock'}`,
+        null,
       ),
     );
-  }
-
-  /** The API's CSV (UTF-8 with BOM, snake_case header) as a file. */
-  reportCsv(name: ReportName, from: string, to: string): Promise<Blob> {
-    return firstValueFrom(
-      this.http.get(`${this.api}/admin/reports/${name}`, {
-        params: { from, to, format: 'csv' },
-        responseType: 'blob',
-      }),
-    );
+    this.donor.reload();
+    this.donors.reload();
   }
 }

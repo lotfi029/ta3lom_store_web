@@ -25,22 +25,10 @@
           >
         </div>
       </div>
-      <a routerLink="courses" routerLinkActive="on" ariaCurrentWhenActive="page">
-        <span i18n="@@store.account.tab-courses">دوراتي</span>
-        @if (data.counts().courses !== null) {
-          <span class="c">{{ data.counts().courses }}</span>
-        }
-      </a>
-      <a routerLink="books" routerLinkActive="on" ariaCurrentWhenActive="page">
-        <span i18n="@@store.account.tab-books">كتبي</span>
-        @if (data.counts().books !== null) {
-          <span class="c">{{ data.counts().books }}</span>
-        }
-      </a>
-      <a routerLink="orders" routerLinkActive="on" ariaCurrentWhenActive="page">
-        <span i18n="@@store.account.tab-orders">الطلبات والفواتير</span>
-        @if (data.counts().orders !== null) {
-          <span class="c">{{ data.counts().orders }}</span>
+      <a routerLink="donations" routerLinkActive="on" ariaCurrentWhenActive="page">
+        <span i18n="@@store.layout.my-donations">تبرعاتي</span>
+        @if (data.donationsTotal() !== null) {
+          <span class="c">{{ data.donationsTotal() }}</span>
         }
       </a>
       <a routerLink="profile" routerLinkActive="on" ariaCurrentWhenActive="page">

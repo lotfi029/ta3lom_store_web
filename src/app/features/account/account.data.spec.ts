@@ -3,90 +3,87 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { STORE_API_URL } from '../../core/api/store-api-url';
 import { StoreAuth } from '../../core/auth/store-auth';
-import { AccountData } from './account.data';
-import {
-  documentKind,
-  orderStatus,
-  shipmentStatus,
-} from '../../shared/ui/status-pill/status-labels';
+import { CartStore } from '../../core/cart/cart-store';
+import { AccountData, donationUrl } from './account.data';
 
 const API = 'https://store-api.test/v1';
+const tick = () => new Promise((r) => setTimeout(r));
 
-describe('AccountData (#21–#39)', () => {
+describe('AccountData (contract 15 §2.5)', () => {
   let data: AccountData;
   let http: HttpTestingController;
-  let auth: StoreAuth;
+  const calls: string[] = [];
+  const auth = {
+    isSignedIn: () => true,
+    setProfile: vi.fn(),
+    clear: vi.fn(() => calls.push('clear')),
+    refresh: vi.fn(async () => (calls.push('refresh'), 'T')),
+    logoutAll: vi.fn(async () => void calls.push('logout-all')),
+  };
+  const cart = { reset: vi.fn(() => calls.push('cart-reset')) };
 
   beforeEach(() => {
+    calls.length = 0;
     TestBed.configureTestingModule({
       providers: [
+        AccountData,
         provideHttpClient(),
         provideHttpClientTesting(),
         { provide: STORE_API_URL, useValue: API },
+        { provide: StoreAuth, useValue: auth },
+        { provide: CartStore, useValue: cart },
       ],
     });
     data = TestBed.inject(AccountData);
     http = TestBed.inject(HttpTestingController);
-    auth = TestBed.inject(StoreAuth);
   });
 
-  it('reads nothing without a session', () => {
-    TestBed.tick();
-    http.expectNone(`${API}/me`);
-    http.expectNone(`${API}/me/enrolments`);
+  it('upper-cases a reference for the case-sensitive route (API-2)', () => {
+    expect(donationUrl(API, ' t3-26-000001 ')).toBe(`${API}/me/donations/T3-26-000001`);
   });
 
-  it('deletes the account with { confirm: true } and drops the local session (RUL-61)', async () => {
-    const clear = vi.spyOn(auth, 'clear');
-    const done = data.deleteAccount();
-    const req = http.expectOne(`${API}/me`);
-    expect(req.request.method).toBe('DELETE');
-    expect(req.request.body).toEqual({ confirm: true });
+  it('sign out everywhere refreshes first, then calls logout-all, then empties the local cart', async () => {
+    await data.logoutAll();
+    expect(calls).toEqual(['refresh', 'logout-all', 'cart-reset']);
+  });
+
+  it('delete: DELETE /v1/me, then signed out and the cart cleared locally', async () => {
+    const p = data.deleteAccount();
+    await tick();
+    const req = http.expectOne((r) => r.method === 'DELETE' && r.url === `${API}/me`);
     req.flush(null, { status: 204, statusText: 'No Content' });
-    await done;
-    expect(clear).toHaveBeenCalled();
+    await p;
+    expect(calls).toEqual(['clear', 'cart-reset']);
   });
 
-  it('asks for a signed download link (#32) and fetches invoices as PDF blobs (#37)', async () => {
-    const link = data.downloadLink('g1');
-    const r = http.expectOne(`${API}/me/downloads/g1/link`);
-    expect(r.request.method).toBe('POST');
-    r.flush({ url: `${API}/downloads/tok`, expiresAt: '2026-10-14T10:10:00Z', remaining: 4 });
-    expect((await link).remaining).toBe(4);
-    const pdf = data.document('INV-2026-000001');
-    const d = http.expectOne(`${API}/me/documents/INV-2026-000001`);
-    expect(d.request.responseType).toBe('blob');
-    d.flush(new Blob(['%PDF']));
-    expect(await pdf).toBeInstanceOf(Blob);
-  });
-
-  it('saves a new address with POST and an existing one with PUT', async () => {
-    const body = {
-      recipientName: 'N',
-      recipientMobile: '0551234567',
-      city: 'Riyadh',
-      district: null,
-      shortAddress: 'RRRD2929',
-      street: null,
-      buildingNo: null,
-      postalCode: null,
-    };
-    const a = data.saveAddress(null, body);
+  it('a failed delete keeps the session', async () => {
+    const p = data.deleteAccount();
+    await tick();
     http
-      .expectOne((r) => r.method === 'POST' && r.url === `${API}/me/addresses`)
-      .flush({ ...body, id: 'a1', isDefault: true });
-    await a;
-    const b = data.saveAddress('a1', body);
-    http
-      .expectOne((r) => r.method === 'PUT' && r.url === `${API}/me/addresses/a1`)
-      .flush({ ...body, id: 'a1', isDefault: true });
-    await b;
+      .expectOne((r) => r.method === 'DELETE')
+      .flush({ code: 'auth.account_blocked' }, { status: 403, statusText: 'x' });
+    await expect(p).rejects.toBeTruthy();
+    expect(calls).toEqual([]);
   });
 
-  it('labels order, shipment and document states', () => {
-    expect(orderStatus('paid').tone).toBe('success');
-    expect(orderStatus('pending_payment').tone).toBe('warning');
-    expect(shipmentStatus('shipped').tone).toBe('info');
-    expect(documentKind('credit_note')).not.toBe(documentKind('invoice'));
+  it('export downloads the JSON as a Blob; PATCH /me updates the menu profile', async () => {
+    const e = data.exportData();
+    await tick();
+    http
+      .match((r) => r.url === `${API}/me` || r.url === `${API}/me/donations`)
+      .forEach((r) => r.flush({}));
+    http
+      .expectOne(`${API}/me/export`)
+      .flush({ profile: { id: 'x' }, donations: [], exportedAt: 'now' });
+    const blob = await e;
+    expect(blob.type).toBe('application/json');
+    expect(JSON.parse(await blob.text()).profile.id).toBe('x');
+    const u = data.updateMe({ fullName: 'Noura', email: null, locale: null, marketingOptIn: null });
+    await tick();
+    http
+      .expectOne((r) => r.method === 'PATCH')
+      .flush({ id: 'x', fullName: 'Noura', mobile: '+966551234567', email: null, locale: 'ar' });
+    await u;
+    expect(auth.setProfile).toHaveBeenCalled();
   });
 });

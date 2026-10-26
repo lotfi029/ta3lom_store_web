@@ -73,6 +73,7 @@
   font: inherit;
   font-size: 0.88rem;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .abody {

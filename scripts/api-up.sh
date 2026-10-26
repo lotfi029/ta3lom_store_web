@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
-# Starts the real store API on :5080 (Development: /dev/sms, /dev/orders/{ref}/confirm-payment, seed) — plan §4.
-# Idempotent: if /health/ready already answers, it does nothing. Never edits the API repo; it only builds and runs it.
-#   1. PostgreSQL up, dev database migrated (the API's own tools/scripts/dev-db-migrate.sh) + reference catalogue
-#   2. dotnet build if the DLL is missing, then the DLL is run directly (no launch profile, so ASPNETCORE_URLS applies)
+# Starts the real R5 store API on :5080 (Development: /dev/sms, /dev/mail, /dev/jobs, OpenAPI, seed). Idempotent: if
+# /health/ready already answers, it does nothing. Never edits the API repo; it only builds and runs it.
+#   1. PostgreSQL 18 (docker postgres:18 on $PGPORT; a local cluster on $PGPORT is used when Docker is unavailable)
+#   2. migrations: dotnet ef database update --connection (the API never calls Database.Migrate(); DECISIONS: E-6)
+#   3. the DLL is run directly (no launch profile, so ASPNETCORE_URLS applies); the Development seed runs on start-up
+#      (3 categories, 6 projects with options)
 set -uo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=dev-env.sh
@@ -11,18 +13,26 @@ LOG_DIR="$HERE/../.api"; mkdir -p "$LOG_DIR"
 ready() { curl -sf http://localhost:5080/health/ready >/dev/null; }
 
 if ready; then echo "api-up: already running on :5080"; exit 0; fi
-[ -d "$STORE_API_DIR/.git" ] || { echo "api-up: $STORE_API_DIR not found — use the stub API (npm run stub-api)"; exit 1; }
+[ -f "$STORE_API_DIR/Ta3lom.Store.slnx" ] || { echo "api-up: $STORE_API_DIR is not the R5 store API — use the stub API (npm run stub-api)"; exit 1; }
 
-if ! pg_isready -q -h localhost; then
-  pg_ctlcluster "$(ls /usr/lib/postgresql | sort -V | tail -1)" main start >/dev/null 2>&1 || service postgresql start >/dev/null 2>&1 || true
-  for _ in $(seq 1 30); do pg_isready -q -h localhost && break; sleep 1; done
+pg_up() { pg_isready -q -h localhost -p "$PGPORT"; }
+if ! pg_up; then
+  if docker info >/dev/null 2>&1 || { (dockerd >"$LOG_DIR/dockerd.log" 2>&1 &); sleep 5; docker info >/dev/null 2>&1; }; then
+    docker start "$STORE_PG_CONTAINER" >/dev/null 2>&1 \
+      || docker run -d --name "$STORE_PG_CONTAINER" -e POSTGRES_PASSWORD=postgres -p "$PGPORT:5432" "$STORE_PG_IMAGE" >/dev/null
+  fi
+  for _ in $(seq 1 30); do pg_up && break; sleep 1; done
 fi
-pg_isready -q -h localhost || { echo "api-up: PostgreSQL is not running"; exit 1; }
+pg_up || { echo "api-up: PostgreSQL is not running on :$PGPORT"; exit 1; }
 psql -qAtd postgres -c "SELECT 1 FROM pg_database WHERE datname='$PGDATABASE'" | grep -q 1 || psql -qd postgres -c "CREATE DATABASE $PGDATABASE"
 
 DLL="$STORE_API_DIR/src/Ta3lom.Store.Api/bin/Debug/net10.0/Ta3lom.Store.Api.dll"
-[ -f "$DLL" ] || (cd "$STORE_API_DIR" && dotnet build Ta3lom.Store.slnx -v q -nologo) || { echo "api-up: dotnet build failed"; exit 1; }
-(cd "$STORE_API_DIR" && bash tools/scripts/dev-db-migrate.sh --seed-catalogue) || { echo "api-up: migration failed"; exit 1; }
+if [ ! -f "$DLL" ] || [ -n "$(find "$STORE_API_DIR/src" -name '*.cs' -newer "$DLL" -print -quit)" ]; then
+  (cd "$STORE_API_DIR" && dotnet build Ta3lom.Store.slnx -v q -nologo) || { echo "api-up: dotnet build failed"; exit 1; }
+fi
+(cd "$STORE_API_DIR" && dotnet tool restore >/dev/null && dotnet ef database update --no-build \
+  -p src/Ta3lom.Store.Infrastructure -s src/Ta3lom.Store.Infrastructure --connection "$ConnectionStrings__Store" >"$LOG_DIR/migrate.log" 2>&1) \
+  || { echo "api-up: migration failed — see .api/migrate.log"; tail -20 "$LOG_DIR/migrate.log"; exit 1; }
 
 for pid in $(pgrep -f "Store[.]Api[.]dll|Store[.]Api/bin|run --project src/Ta3lom"); do [ "$pid" != "$$" ] && kill "$pid" 2>/dev/null; done; sleep 1
 env Serilog__MinimumLevel__Default=Information Serilog__MinimumLevel__Override__Microsoft=Warning \

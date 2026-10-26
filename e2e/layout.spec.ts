@@ -1,15 +1,14 @@
 import { expect, test } from '@playwright/test';
 import { expectNoA11yViolations, expectNoHorizontalScroll } from './support/a11y';
 
-/** W-02 — header, footer, skip link, language switch, theme, 404. Arabic first. */
+/** Header, footer, skip link, language switch, theme, 404. Arabic first. */
 for (const locale of ['ar', 'en'] as const) {
   test.describe(`@smoke layout /${locale}`, () => {
     test('header: store nav, search, cart, sign-in, language, theme', async ({ page }) => {
       await page.goto(`/${locale}/`);
       const header = page.locator('header.hdr');
       await expect(header.getByRole('navigation').first()).toBeVisible();
-      await expect(header.locator('.nav a[href$="/courses"]')).toBeVisible();
-      await expect(header.locator('.nav a[href$="/books"]')).toBeVisible();
+      await expect(header.locator('.nav a[href$="/#projects"]')).toBeVisible();
       await expect(header.locator('.brand')).toHaveAttribute('href', /^https:\/\/ta3lom\.sa/);
       await expect(header.locator('a.cartbtn')).toHaveAttribute('href', `/${locale}/cart`);
       await expect(header.locator('a.signin')).toHaveAttribute('href', `/${locale}/login`);
@@ -42,11 +41,11 @@ for (const locale of ['ar', 'en'] as const) {
       await expect(page).toHaveURL(/#main$/);
     });
 
-    test('search submits to /search?q=', async ({ page }) => {
+    test('search submits to the home listing (?q=)', async ({ page }) => {
       await page.goto(`/${locale}/`);
-      await page.locator('#hdr-q').fill('دورة');
+      await page.locator('#hdr-q').fill('سقيا');
       await page.locator('#hdr-q').press('Enter');
-      await expect(page).toHaveURL(new RegExp(`/${locale}/search\\?q=`));
+      await expect(page).toHaveURL(new RegExp(`/${locale}/\\?q=`));
     });
 
     test('mobile: burger opens the drawer, Escape closes it, no horizontal scroll at 320 px', async ({

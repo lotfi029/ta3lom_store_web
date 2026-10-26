@@ -1,9 +1,8 @@
 import { POLICY_ROLES, STAFF_ROLES, rolesAllow } from './policies';
 
-describe('r4 staff policy table (11 §1.2)', () => {
-  it('has no giving roles or policies', () => {
-    expect(STAFF_ROLES).not.toContain('allocation_officer');
-    expect(Object.keys(POLICY_ROLES)).not.toContain('staff:allocate');
+describe('R5 staff policy table (contract 15 §1.6)', () => {
+  it('has exactly the four R5 roles', () => {
+    expect([...STAFF_ROLES]).toEqual(['admin', 'store_manager', 'finance', 'viewer']);
   });
 
   it('lets every role read and only admin administer', () => {
@@ -11,25 +10,18 @@ describe('r4 staff policy table (11 §1.2)', () => {
     expect(STAFF_ROLES.filter((r) => rolesAllow([r], 'staff:admin'))).toEqual(['admin']);
   });
 
-  it('keeps refunds with finance only — segregation of duties (RUL-62)', () => {
-    expect(rolesAllow(['admin'], 'staff:refund')).toBe(false);
-    expect(rolesAllow(['finance'], 'staff:refund')).toBe(true);
-  });
-
-  it('cancels (staff:finance) for admin and finance, never for store_manager, fulfilment or viewer', () => {
-    expect(rolesAllow(['admin'], 'staff:finance')).toBe(true);
-    expect(rolesAllow(['finance'], 'staff:finance')).toBe(true);
-    for (const role of ['store_manager', 'fulfilment', 'viewer'])
-      expect(rolesAllow([role], 'staff:finance')).toBe(false);
-  });
-
-  it('matches the catalogue, stock, fulfilment and resend rows', () => {
+  it('matches the catalogue, customers, orders and templates rows', () => {
     const who = (p: Parameters<typeof rolesAllow>[1]) =>
       STAFF_ROLES.filter((r) => rolesAllow([r], p));
     expect(who('staff:catalogue')).toEqual(['admin', 'store_manager']);
-    expect(who('staff:stock')).toEqual(['admin', 'store_manager', 'fulfilment']);
-    expect(who('staff:fulfilment')).toEqual(['admin', 'fulfilment']);
-    expect(who('staff:resend')).toEqual(['admin', 'store_manager', 'finance']);
-    expect(rolesAllow(['viewer', 'fulfilment'], 'staff:fulfilment')).toBe(true);
+    expect(who('staff:customers')).toEqual(['admin', 'store_manager']);
+    expect(who('staff:orders')).toEqual(['admin', 'finance']);
+    expect(who('staff:templates')).toEqual(['admin', 'store_manager']);
+    expect(Object.keys(POLICY_ROLES)).toHaveLength(6);
+  });
+
+  it('never lets viewer write', () => {
+    for (const p of Object.keys(POLICY_ROLES) as (keyof typeof POLICY_ROLES)[])
+      if (p !== 'staff:read') expect(rolesAllow(['viewer'], p)).toBe(false);
   });
 });

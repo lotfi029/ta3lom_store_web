@@ -18,12 +18,13 @@
     <input id="au-action" dir="ltr" [value]="draft().action" (input)="set('action', $event)" />
   </div>
   <div class="field">
-    <label for="au-from" i18n="@@store.admin.from">من</label>
-    <input id="au-from" type="date" [value]="draft().from" (input)="set('from', $event)" />
-  </div>
-  <div class="field">
-    <label for="au-to" i18n="@@store.admin.to">إلى</label>
-    <input id="au-to" type="date" [value]="draft().to" (input)="set('to', $event)" />
+    <label for="au-entity-id" i18n="@@store.admin.entity-id">معرّف الكيان</label>
+    <input
+      id="au-entity-id"
+      dir="ltr"
+      [value]="draft().entityId"
+      (input)="set('entityId', $event)"
+    />
   </div>
   <button type="submit" class="btn primary" i18n="@@store.admin.apply">تطبيق</button>
   <button type="button" class="btn" (click)="clear()" i18n="@@store.admin.clear">مسح</button>

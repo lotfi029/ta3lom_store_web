@@ -1,322 +1,226 @@
-import { isPlatformBrowser } from '@angular/common';
+import { DOCUMENT } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  ElementRef,
   Injector,
-  PLATFORM_ID,
   afterNextRender,
   computed,
   effect,
   inject,
+  linkedSignal,
   signal,
   untracked,
-  viewChild,
 } from '@angular/core';
-import { FormField } from '@angular/forms/signals';
 import { Router, RouterLink } from '@angular/router';
-import type { Address, CartLine, CartNotice, Quote } from '../../../core/api/api.types';
-import { toInt } from '../../../core/api/api.types';
+import type { Cart, CartProblem } from '../../../core/api/api.types';
 import { problemMessage } from '../../../core/api/problem-message';
+import { toProblem } from '../../../core/api/problem';
 import { StoreConfig } from '../../../core/api/store-config';
 import { StoreAuth } from '../../../core/auth/store-auth';
 import { cartNoticeText } from '../../../core/cart/cart-notice-text';
 import { CartStore } from '../../../core/cart/cart-store';
 import { CartSummary } from '../../../core/cart/cart-summary';
-import { addressLine } from '../../../core/address/address';
-import { valueOf } from '../../../core/http/resource-value';
-import { normalizeSaudiMobile } from '../../../core/i18n/western-digits';
+import { EMAIL } from '../../../core/forms/patterns';
 import { I18nService } from '../../../core/i18n/i18n';
-import { formatMoney } from '../../../core/money/money-format';
 import { SeoService } from '../../../core/seo/seo.service';
 import { Icon } from '../../../shared/ui/icon/icon';
 import { Money } from '../../../shared/ui/money/money';
 import { ResourceState } from '../../../shared/ui/resource-state/resource-state';
-import { Steps } from '../../../shared/ui/steps/steps';
-import { AddressFields } from '../../../shared/ui/address-fields/address-fields';
+import { environment } from '../../../../environments/environment';
+import { lineProblem } from '../cart/line-problems';
+import type { CheckoutNavState } from '../donate/donate-box';
 import { OtpSignIn } from '../login/otp-sign-in';
-import { CheckoutData, type LineProblem } from './checkout.data';
-import { PAYMENT_METHODS, type PaymentMethod, checkoutForm, emptyCheckout } from './checkout.form';
-
-const METHOD_LABELS: Record<PaymentMethod, string> = {
-  mada: 'mada',
-  applepay: 'Apple Pay',
-  card: 'VISA / Mastercard',
-  stcpay: 'STC Pay',
-};
+import { OrderTokenStore } from '../order/order.data';
+import { CheckoutData } from './checkout.data';
 
 /**
- * `/checkout` (FR-S30–S33, 10 §7): identity by inline OTP (RUL-25), details, shipping only with a print line (RUL-26),
- * payment method (RUL-36) and terms (FR-S30). The summary shows the server quote (RUL-15). Placing the order sends an
- * Idempotency-Key; `checkout.price_changed` swaps in the new quote and asks to pay again. No gateway code here: with no
- * `redirectUrl` (today) the page goes to the thanks page, which shows "Awaiting payment".
+ * `/checkout` (W-M3): (1) inline OTP sign-in when signed out — the guest cart is merged and `cartNotices` shown;
+ * (2) name and e-mail, prefilled from the profile and saved to it (C-7; the API requires both, `checkout.contact_required`);
+ * (3) the summary from `POST /v1/checkout/quote`; (4) `POST /v1/checkout` with the body-bound Idempotency-Key
+ * (CheckoutData). With payments off (D-W2) the button registers the donation and the order page says payment is coming.
+ * C-3: arriving from "تبرع" with other lines already in the cart, the summary lists them all and says so.
  */
 @Component({
   selector: 'ta-checkout-page',
-  imports: [RouterLink, FormField, AddressFields, Icon, Money, ResourceState, Steps, OtpSignIn],
+  imports: [RouterLink, Icon, Money, ResourceState, OtpSignIn],
   providers: [CheckoutData],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './checkout.page.html',
   styleUrl: './checkout.page.css',
 })
 export class CheckoutPage {
-  protected readonly cart = inject(CartStore);
   protected readonly auth = inject(StoreAuth);
-  protected readonly config = inject(StoreConfig);
+  protected readonly cart = inject(CartStore);
   protected readonly i18n = inject(I18nService);
-  protected readonly data = inject(CheckoutData);
+  private readonly config = inject(StoreConfig);
+  private readonly data = inject(CheckoutData);
   private readonly summary = inject(CartSummary);
+  private readonly tokens = inject(OrderTokenStore);
   private readonly router = inject(Router);
   private readonly injector = inject(Injector);
-  private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly doc = inject(DOCUMENT);
 
-  protected readonly model = signal(emptyCheckout());
-  protected readonly needsAddress = computed(() => this.cart.hasPrint());
-  protected readonly mobile = computed(() => {
-    const m = this.auth.customer()?.mobile ?? '';
-    return normalizeSaudiMobile(m) ?? m;
+  protected readonly paymentsEnabled = environment.paymentsEnabled;
+  /** C-3: set by the donate box / quick donate when the cart already held other donations. */
+  private readonly cameWithOthers = !!(
+    this.doc.defaultView?.history.state as CheckoutNavState | null
+  )?.otherDonations;
+
+  protected readonly quote = signal<Cart | null>(null);
+  protected readonly quoteLoading = signal(true);
+  protected readonly quoteFailed = signal(false);
+  protected readonly lines = computed(() => this.quote()?.lines ?? []);
+  protected readonly othersNotice = computed(() => this.cameWithOthers && this.lines().length > 1);
+
+  protected readonly name = linkedSignal(() => this.auth.customer()?.fullName ?? '');
+  protected readonly email = linkedSignal(() => this.auth.customer()?.email ?? '');
+  protected readonly touched = signal(false);
+  protected readonly nameError = computed(() =>
+    this.touched() && this.name().trim().length < 2
+      ? $localize`:@@store.checkout.name-required:أدخل الاسم الكامل.`
+      : null,
+  );
+  protected readonly emailError = computed(() => {
+    if (!this.touched()) return null;
+    const e = this.email().trim();
+    if (!e)
+      return $localize`:@@store.checkout.email-required-r5:أدخل البريد الإلكتروني لإرسال تأكيد التبرع.`;
+    return EMAIL.test(e)
+      ? null
+      : $localize`:@@store.checkout.email-invalid:بريد إلكتروني غير صحيح.`;
   });
-  protected readonly f = checkoutForm(this.model, () => this.needsAddress());
 
-  protected readonly quote = signal<Quote | null>(null);
   protected readonly busy = signal(false);
-  protected readonly priceChanged = signal(false);
-  protected readonly invalidLines = signal<LineProblem[]>([]);
   protected readonly error = signal<string | null>(null);
-  protected readonly blocked = signal(false);
-  /** Shown on the button once the order exists (prototype copy). */
-  protected readonly redirecting = signal(false);
-
-  protected readonly methods = computed<PaymentMethod[]>(() => {
-    const allowed = this.config.paymentMethods();
-    const list = PAYMENT_METHODS.filter((m) => allowed.length === 0 || allowed.includes(m));
-    return list.length ? list : [...PAYMENT_METHODS];
-  });
-  protected readonly saved = computed<Address[]>(() => this.data.savedAddresses());
-  protected readonly newAddress = computed(
-    () => this.needsAddress() && this.model().savedId === 'new',
-  );
-
-  /** Totals: the quote when present (authoritative, RUL-15), else the cart's own figures. */
-  protected readonly totals = computed(() => {
-    const q = this.quote();
-    if (q)
-      return {
-        purchases: q.purchasesTotal,
-        shipping: q.shippingTotal,
-        grand: q.grandTotal,
-        requiresShipping: q.requiresShipping,
-      };
-    const t = this.cart.totals();
-    return {
-      purchases: t.purchases,
-      shipping: t.shipping,
-      grand: t.grand,
-      requiresShipping: t.requiresShipping,
-    };
-  });
-  protected readonly payLabel = computed(
-    () =>
-      $localize`:@@store.checkout.pay:ادفع ${formatMoney(this.totals().grand, this.i18n.locale)}:amount:`,
-  );
-
-  private readonly errorBox = viewChild<ElementRef<HTMLElement>>('errorBox');
-  private readonly changedBox = viewChild<ElementRef<HTMLElement>>('changedBox');
+  protected readonly invalid = signal<CartProblem[]>([]);
+  protected readonly cartEmpty = signal(false);
+  protected readonly inProgress = signal(false);
+  protected readonly noticeText = cartNoticeText;
 
   private readonly seo = inject(SeoService);
 
   constructor() {
     this.seo.set({
-      title: $localize`:@@store.checkout.title:إتمام الطلب`,
-      description: $localize`:@@store.checkout.seo-description:أدخل بياناتك واختر طريقة الدفع لإتمام طلبك.`,
+      title: $localize`:@@store.checkout.title-r5:إتمام التبرع`,
+      description: $localize`:@@store.checkout.title-r5:إتمام التبرع`,
       path: '/checkout',
       noindex: true,
     });
     this.cart.load();
-
-    // A new server cart (first load, merge after sign-in) → a fresh quote for the summary.
-    effect(() => {
-      const snap = this.cart.snapshot();
-      if (snap && snap.purchases.length > 0) untracked(() => void this.refreshQuote());
-    });
-    // RUL-17: signing in here merges the guest cart into the customer's — fetch the merged cart (and its notices). This
-    // watches the session rather than the OTP component's output: the component is removed as soon as the token lands.
-    let wasGuest = false;
+    // Signed in (now or by restoring the session): the guest cart was merged server-side — refresh, then re-quote.
     effect(() => {
       const signedIn = this.auth.isSignedIn();
-      untracked(() => {
-        if (!signedIn) wasGuest = true;
-        else if (wasGuest) {
-          wasGuest = false;
-          void this.cart.refresh();
-        }
-      });
-    });
-    // Prefill name and email from the session, then from /me (10 §7.1).
-    effect(() => {
-      const c = this.auth.customer();
-      const p = valueOf(this.data.profile);
-      const name = p?.fullName ?? c?.fullName ?? '';
-      const email = p?.email ?? c?.email ?? '';
-      untracked(() =>
-        this.model.update((m) => ({ ...m, name: m.name || name, email: m.email || email })),
+      untracked(
+        () => void (signedIn ? this.cart.refresh().then(() => this.loadQuote()) : this.loadQuote()),
       );
-    });
-    // The default saved address is pre-selected.
-    effect(() => {
-      const list = this.saved();
-      const def = list.find((a) => a.isDefault) ?? list[0];
-      untracked(() => {
-        if (def && this.model().savedId === 'new')
-          this.model.update((m) => ({ ...m, savedId: def.id }));
-      });
     });
   }
 
-  protected title(l: CartLine): string {
+  protected title(l: { titleAr: string; titleEn: string | null }): string {
     return this.i18n.pick(l.titleAr, l.titleEn);
   }
 
-  protected qty(l: CartLine): number {
-    return toInt(l.quantity, 1);
+  protected optionLabel(l: { optionLabelAr: string | null; optionLabelEn: string | null }): string {
+    return l.optionLabelAr ? this.i18n.pick(l.optionLabelAr, l.optionLabelEn) : '';
   }
 
-  protected lineAmount(l: CartLine): string {
-    return this.quote()?.lines.find((q) => q.lineId === l.id)?.amount ?? l.amount;
+  protected problemText(p: CartProblem): string {
+    const line = this.lines().find((l) => l.id === p.lineId) ?? null;
+    const text = lineProblem(p.code, line, {
+      minGiftAmount: this.config.minGiftAmount(),
+      maxLineAmount: this.config.maxLineAmount(),
+      cartMaxLines: this.config.cartMaxLines(),
+      cartMaxTotal: this.config.cartMaxTotal(),
+    }).text;
+    return line ? `${this.title(line)} — ${text}` : text;
   }
 
-  protected lineChanged(l: CartLine): boolean {
-    return (
-      this.priceChanged() &&
-      this.quote()?.lines.some((q) => q.lineId === l.id && q.status === 'changed') === true
-    );
-  }
-
-  protected methodLabel(m: PaymentMethod): string {
-    return METHOD_LABELS[m];
-  }
-
-  protected addressLabel(a: Address): string {
-    return addressLine(a);
-  }
-
-  protected noticeText(n: CartNotice): string {
-    return cartNoticeText(n);
-  }
-
-  protected lineTitle(lineId: string): string {
-    const l = this.cart.lines().find((x) => x.id === lineId);
-    return l ? this.title(l) : '';
-  }
-
-  protected issueText(code: string): string {
-    return problemMessage({ code, status: 422 });
-  }
-
-  protected setMethod(m: PaymentMethod): void {
-    this.model.update((x) => ({ ...x, method: m }));
-  }
-
-  protected setSaved(id: string): void {
-    this.model.update((x) => ({ ...x, savedId: id }));
-  }
-
-  protected setTerms(event: Event): void {
-    const checked = (event.target as HTMLInputElement).checked;
-    this.model.update((x) => ({ ...x, acceptTerms: checked }));
-    this.f.acceptTerms().markAsTouched();
-  }
-
-  protected setSaveAddress(event: Event): void {
-    const checked = (event.target as HTMLInputElement).checked;
-    this.model.update((x) => ({ ...x, saveAddress: checked }));
-  }
-
-  private async refreshQuote(): Promise<Quote | null> {
+  protected async loadQuote(): Promise<void> {
+    this.quoteLoading.set(true);
+    this.quoteFailed.set(false);
     try {
-      const q = await this.data.quote();
-      this.quote.set(q);
-      return q;
-    } catch {
-      return null;
+      this.quote.set(await this.data.quote());
+      this.cartEmpty.set(false);
+    } catch (e) {
+      const p = toProblem(e);
+      if (p.code === 'checkout.cart_empty') this.cartEmpty.set(true);
+      else this.quoteFailed.set(true);
+    } finally {
+      this.quoteLoading.set(false);
     }
   }
 
-  protected async pay(event: Event): Promise<void> {
+  protected setName(e: Event): void {
+    this.name.set((e.target as HTMLInputElement).value);
+  }
+
+  protected setEmail(e: Event): void {
+    this.email.set((e.target as HTMLInputElement).value);
+  }
+
+  protected async submit(event: Event): Promise<void> {
     event.preventDefault();
-    if (this.busy() || this.redirecting()) return;
-    this.f().markAsTouched();
-    if (this.f().invalid()) {
-      afterNextRender(
-        () => document.querySelector<HTMLElement>('.co [aria-invalid="true"]')?.focus(),
-        { injector: this.injector },
-      );
+    this.touched.set(true);
+    if (this.nameError() || this.emailError() || this.busy()) {
+      this.focus('#co-name[aria-invalid=true], #co-email[aria-invalid=true]');
       return;
     }
     this.busy.set(true);
     this.error.set(null);
-    this.invalidLines.set([]);
+    this.invalid.set([]);
+    this.inProgress.set(false);
     try {
-      const q = this.quote() ?? (await this.refreshQuote());
-      if (!q) {
-        this.showError(problemMessage({ code: 'network.error', status: 0 }));
-        return;
-      }
-      const outcome = await this.data.placeOrder(
-        this.data.buildRequest(this.model(), this.needsAddress(), q.grandTotal),
-      );
-      switch (outcome.kind) {
-        case 'created': {
-          this.redirecting.set(true);
-          void this.summary.load();
-          this.cart.reload();
-          const url = outcome.order.payment.redirectUrl;
-          if (url && this.browser) {
-            location.assign(url);
-            return;
-          }
-          await this.router.navigate(['/orders', outcome.order.reference, 'thanks'], {
-            queryParams: { t: outcome.order.statusToken },
-          });
+      const out = await this.data.placeOrder({
+        fullName: this.name(),
+        email: this.email(),
+        locale: this.i18n.locale,
+      });
+      switch (out.kind) {
+        case 'created':
+          this.tokens.remember(out.order.reference, out.order.statusToken);
+          await this.done(out.order.reference);
           return;
-        }
-        case 'priceChanged': {
-          if (outcome.quote) this.quote.set(outcome.quote);
-          else await this.refreshQuote();
-          this.priceChanged.set(true);
-          afterNextRender(() => this.changedBox()?.nativeElement.focus(), {
-            injector: this.injector,
-          });
+        case 'recovered':
+          await this.done(out.reference);
           return;
-        }
         case 'linesInvalid':
-          this.invalidLines.set(outcome.lines);
-          this.showError(problemMessage({ code: 'checkout.lines_invalid', status: 422 }));
-          return;
-        case 'gatewayDown':
-          this.redirecting.set(true);
-          await this.router.navigate(['/orders', outcome.reference, 'thanks'], {
-            queryParams: { t: outcome.statusToken },
-          });
-          return;
-        case 'error': {
-          const p = outcome.problem;
-          if (p.code === 'auth.account_blocked') {
-            this.blocked.set(true);
-            return;
-          }
-          if (p.code === 'auth.unauthenticated') await this.auth.ensureSession();
-          this.showError(problemMessage(p));
-          return;
-        }
+          this.invalid.set(out.problems);
+          this.error.set(problemMessage({ code: 'checkout.lines_invalid', status: 422 }));
+          await this.cart.refresh();
+          await this.loadQuote();
+          break;
+        case 'cartEmpty':
+          this.cartEmpty.set(true);
+          await this.cart.refresh();
+          break;
+        case 'contactRequired':
+          this.error.set(problemMessage({ code: 'checkout.contact_required', status: 422 }));
+          break;
+        case 'inProgress':
+          this.inProgress.set(true);
+          this.error.set(problemMessage({ code: 'idempotency.in_progress', status: 409 }));
+          break;
+        case 'error':
+          this.error.set(problemMessage(out.problem));
+          break;
       }
+      this.focus('.co-err');
     } finally {
       this.busy.set(false);
     }
   }
 
-  private showError(message: string): void {
-    this.error.set(message);
-    afterNextRender(() => this.errorBox()?.nativeElement.focus(), { injector: this.injector });
+  /** The order exists: the cart is empty server-side, the profile has the saved contact (C-7), go to the order. */
+  private async done(reference: string): Promise<void> {
+    this.cart.reset();
+    void this.summary.load();
+    void this.auth.loadMe();
+    await this.router.navigate(['/orders', reference]);
+  }
+
+  private focus(selector: string): void {
+    afterNextRender(() => (this.doc.querySelector(selector) as HTMLElement | null)?.focus(), {
+      injector: this.injector,
+    });
   }
 }

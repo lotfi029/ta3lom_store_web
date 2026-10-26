@@ -20,7 +20,7 @@ import { ResourceState } from '../../../shared/ui/resource-state/resource-state'
 import { PlatformData } from '../platform.data';
 import { Requires } from '../ui/requires';
 
-/** r4 message templates (RUL-63): purchases, sign-in, shipping, refunds and staff alerts. */
+/** R5 message templates (contract 15 §2.8): the sign-in code (SMS) and staff alerts (e-mail), per locale. */
 export const TEMPLATE_KEYS = [
   'order_paid',
   'otp',
@@ -38,7 +38,10 @@ export function previewText(text: string | null | undefined): string {
 const id = (t: Pick<MessageTemplate, 'key' | 'channel' | 'locale'>): string =>
   `${t.key}/${t.channel}/${t.locale}`;
 
-/** Message templates (#120–#122, FR-S77): pick one, edit subject/body (staff:admin), preview, test send. */
+/**
+ * Message templates (contract 15 §2.8): pick one, edit subject/body (`staff:templates`), preview, test send (5 per hour;
+ * a 429 says when to retry; a Scriban error shows its line and column).
+ */
 @Component({
   selector: 'ta-admin-templates',
   imports: [ResourceState, Requires],
@@ -53,7 +56,9 @@ export class TemplatesPage {
   private readonly toast = inject(ToastService);
   private readonly seo = inject(SeoService);
 
-  protected readonly canEdit = computed(() => this.auth.can('staff:admin'));
+  protected readonly canEdit = computed(() => this.auth.can('staff:templates'));
+  /** The values the API renders a test with (Scriban `{{ name }}`), contract 15 §2.8. */
+  protected readonly variables = 'code, name, reference, amount, subject, body';
   protected readonly list = computed(() =>
     (valueOf(this.data.templates) ?? []).filter((t) =>
       (TEMPLATE_KEYS as readonly string[]).includes(t.key),
@@ -134,10 +139,7 @@ export class TemplatesPage {
       });
       this.toast.show($localize`:@@store.account.saved:حُفظت التغييرات.`, 'success');
     } catch (e) {
-      const p = toProblem(e);
-      const where =
-        p.extra['line'] !== undefined ? ` (${p.extra['line']}:${p.extra['column']})` : '';
-      this.error.set(problemMessage(p) + where);
+      this.error.set(problemMessage(toProblem(e)));
     } finally {
       this.saving.set(false);
     }
@@ -148,8 +150,8 @@ export class TemplatesPage {
     const t = this.selected();
     if (!t || !this.canEdit() || this.testing()) return;
     const raw = this.recipient().trim();
-    const recipient = t.channel === 'sms' ? normalizeSaudiMobile(raw) : raw;
-    if (!recipient) {
+    const to = t.channel === 'sms' ? normalizeSaudiMobile(raw) : null;
+    if (t.channel === 'sms' && !to) {
       this.testError.set(
         $localize`:@@store.error.otp-mobile-invalid:أدخل رقم جوال سعودي صحيحًا يبدأ بـ 05.`,
       );
@@ -158,7 +160,14 @@ export class TemplatesPage {
     this.testing.set(true);
     this.testError.set(null);
     try {
-      this.testResult.set(await this.data.testTemplate(t, { recipient, sampleData: null }));
+      this.testResult.set(
+        await this.data.testTemplate({
+          channel: t.channel,
+          subject: t.channel === 'email' ? this.subject() : null,
+          body: this.body(),
+          to,
+        }),
+      );
     } catch (e) {
       this.testError.set(problemMessage(toProblem(e)));
     } finally {

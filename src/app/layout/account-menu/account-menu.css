@@ -79,3 +79,18 @@
   background: var(--c-tint);
   color: var(--c-link);
 }
+
+.acc-list .who {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-2) var(--space-3) var(--space-3);
+  border-block-end: 1px solid var(--c-border);
+  margin-block-end: var(--space-2);
+  font-size: 0.85rem;
+}
+
+.acc-list .who bdi {
+  color: var(--c-muted);
+  font-size: 0.8rem;
+}

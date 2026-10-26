@@ -12,21 +12,10 @@ import { ResourceState } from '../../../shared/ui/resource-state/resource-state'
 import { ADMIN_NAV } from '../shell/admin-nav';
 import { OpsData } from './ops.data';
 
-/** r4 dashboard alerts (the pre-r4 API also reports allocation alerts, which are giving). */
-export const R4_ALERTS = ['outbox.dead', 'integrity.failed'];
-
-export function alertLabel(code: string): string {
-  switch (code) {
-    case 'outbox.dead':
-      return $localize`:@@store.admin.alert-outbox:رسائل تعذّر إرسالها`;
-    case 'integrity.failed':
-      return $localize`:@@store.admin.alert-integrity:فحوص سلامة البيانات الفاشلة`;
-    default:
-      return code;
-  }
-}
-
-/** `/admin` dashboard (#53, FR-S74): sales today / 7 / 30 days, orders awaiting payment, top products, alerts, low stock. */
+/**
+ * `/admin` (contract 15 §2.8): published projects, active categories, active donors, pending donations today and this
+ * week, and the top five projects by pending amount (R5-Core has no payments yet, so "pending" is all there is).
+ */
 @Component({
   selector: 'ta-admin-dashboard',
   imports: [RouterLink, Icon, Money, ResourceState],
@@ -41,16 +30,11 @@ export class DashboardPage {
   private readonly seo = inject(SeoService);
 
   protected readonly d = computed(() => valueOf(this.data.dashboard));
-  protected readonly alerts = computed(() =>
-    (this.d()?.alerts ?? []).filter((a) => R4_ALERTS.includes(a.code)),
-  );
-  protected readonly low = computed(() => valueOf(this.data.lowStock) ?? []);
   protected readonly roles = computed(() => this.auth.roles().map(roleLabel).join('، '));
   protected readonly links = computed(() =>
     ADMIN_NAV.filter((i) => i.path !== '/admin' && this.auth.can(i.policy)),
   );
   protected readonly int = toInt;
-  protected readonly alertLabel = alertLabel;
 
   constructor() {
     this.seo.set({
@@ -60,6 +44,5 @@ export class DashboardPage {
       noindex: true,
     });
     this.data.dashboard.reload();
-    this.data.lowStock.reload();
   }
 }

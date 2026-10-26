@@ -1,0 +1,101 @@
+<div class="ph">
+  <div class="wrap">
+    <h1 i18n="@@store.order.title">تبرعك</h1>
+    <p>
+      <span i18n="@@store.order.reference">الرقم المرجعي</span>:
+      <bdi dir="ltr" class="mono">{{ data.ref() }}</bdi>
+    </p>
+  </div>
+</div>
+
+<section class="osec">
+  <div class="wrap">
+    @switch (data.view()) {
+      @case ('ready') {
+        @if (data.value(); as o) {
+          <div class="card" role="status">
+            @if (pending() && !data.paymentsEnabled) {
+              <span class="ic ok" aria-hidden="true"><ta-icon name="check" [size]="30" /></span>
+              <h2 i18n="@@store.order.registered">تم تسجيل تبرعك — الدفع الإلكتروني قريبًا</h2>
+              <p class="lede" i18n="@@store.order.registered-lede">
+                شكرًا لك. سجّلنا تبرعك برقمه المرجعي، وسنرسل لك رابط الدفع حين يُفعَّل الدفع
+                الإلكتروني.
+              </p>
+            } @else {
+              <h2>{{ status().label }}</h2>
+            }
+            <dl class="kv">
+              <div>
+                <dt i18n="@@store.order.reference">الرقم المرجعي</dt>
+                <dd>
+                  <bdi dir="ltr" class="mono">{{ o.reference }}</bdi>
+                </dd>
+              </div>
+              <div>
+                <dt i18n="@@store.cart.total">الإجمالي</dt>
+                <dd><ta-money [value]="o.totalAmount" /></dd>
+              </div>
+              <div>
+                <dt i18n="@@store.cart.lines">عدد التبرعات</dt>
+                <dd>{{ lineCount() }}</dd>
+              </div>
+              <div>
+                <dt i18n="@@store.order.status">الحالة</dt>
+                <dd>
+                  <ta-status-pill [tone]="status().tone">{{ status().label }}</ta-status-pill>
+                </dd>
+              </div>
+              <div>
+                <dt i18n="@@store.order.created">التاريخ</dt>
+                <dd>{{ formatDate(o.createdAt) }}</dd>
+              </div>
+            </dl>
+            <p class="links">
+              @if (auth.isSignedIn()) {
+                <a
+                  class="b primary"
+                  routerLink="/account/donations"
+                  i18n="@@store.layout.my-donations"
+                  >تبرعاتي</a
+                >
+              }
+              <a class="b ghost" routerLink="/" fragment="projects" i18n="@@store.order.more"
+                >تبرّع لمشروع آخر</a
+              >
+            </p>
+          </div>
+        }
+      }
+      @case ('signIn') {
+        <div class="card">
+          <h2 i18n="@@store.order.sign-in-title">سجّل الدخول لعرض هذا التبرع</h2>
+          <p class="lede" i18n="@@store.order.sign-in-lede">
+            استخدم رقم الجوال الذي تبرّعت به، أو افتح الرابط الذي وصلك في الرسالة.
+          </p>
+          <ta-otp-sign-in />
+        </div>
+      }
+      @case ('notFound') {
+        <div class="card">
+          <h2 i18n="@@store.error.order-not-found">لم نجد هذا التبرع.</h2>
+          <p class="links">
+            <a class="b primary" routerLink="/account/donations" i18n="@@store.layout.my-donations"
+              >تبرعاتي</a
+            >
+          </p>
+        </div>
+      }
+      @case ('error') {
+        <div class="card" role="alert">
+          <h2 i18n="@@store.error.server-error">حدث خطأ غير متوقع. حاول مرة أخرى لاحقًا.</h2>
+          <button type="button" class="b ghost" (click)="data.checkAgain()" i18n="@@store.ui.retry">
+            إعادة المحاولة
+          </button>
+        </div>
+      }
+      @default {
+        <div class="card skel" aria-busy="true"></div>
+      }
+    }
+  </div>
+</section>

@@ -433,6 +433,17 @@
   border: 1px solid transparent;
 }
 
+button.b {
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.b.danger {
+  background: var(--c-danger-fill);
+  color: var(--c-on-brand);
+}
+
 .b.sm {
   min-block-size: 44px;
   font-size: 0.9rem;
@@ -550,20 +561,6 @@
   display: block;
   font-size: 0.78rem;
   color: var(--c-muted-2);
-}
-
-.bar {
-  block-size: 6px;
-  margin-block: 8px 4px;
-  border-radius: 999px;
-  background: var(--c-surface-3);
-  overflow: hidden;
-}
-
-.bar > i {
-  display: block;
-  block-size: 100%;
-  background: var(--c-brand);
 }
 
 .tblwrap {

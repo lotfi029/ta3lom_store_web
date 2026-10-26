@@ -1,41 +1,61 @@
-import { rolesAllow } from '../../../core/auth/policies';
-import { lookupQuery } from './customers.page';
-import { R4_ALERTS } from './dashboard.page';
-import { CANCELLABLE } from './order.page';
-import { lastDays, riyadhDay } from './reports.page';
-import { parseDelta } from './stock.page';
+import type { AdminOrderLine } from '../../../core/api/api.types';
+import { problemMessage } from '../../../core/api/problem-message';
+import { lineTitle } from './order.page';
+import { orderParams, upperRef } from './ops.data';
+import { rangeOk } from './orders.page';
 
-describe('admin operations helpers (W-10)', () => {
-  it('stock deltas are non-zero whole numbers, Arabic-Indic digits accepted', () => {
-    expect(parseDelta('25')).toBe(25);
-    expect(parseDelta('-٣')).toBe(-3);
-    expect(parseDelta('0')).toBeNull();
-    expect(parseDelta('1.5')).toBeNull();
-    expect(parseDelta('')).toBeNull();
-  });
+const line = (o: Partial<AdminOrderLine>): AdminOrderLine => ({
+  lineNo: 1,
+  targetKind: 'project',
+  projectId: 'p',
+  categoryId: null,
+  optionId: null,
+  titleAr: 'بئر',
+  titleEn: 'Well',
+  optionLabelAr: null,
+  quantity: 1,
+  unitAmount: '10.00',
+  amount: '10.00',
+  ...o,
+});
 
-  it('customer lookup is exact: a Saudi mobile or an email, nothing else', () => {
-    expect(lookupQuery('٠٥٥١٢٣٤٥٦٧')).toEqual({ mobile: '0551234567' });
-    expect(lookupQuery('+966551234567')).toEqual({ mobile: '0551234567' });
-    expect(lookupQuery('noura@example.com')).toEqual({ email: 'noura@example.com' });
-    expect(lookupQuery('noura')).toBeNull();
-  });
-
-  it('report days are Riyadh days; the default range is the last 30 days', () => {
-    expect(riyadhDay(new Date('2026-10-13T22:30:00Z'))).toBe('2026-10-14');
-    expect(lastDays(30, new Date('2026-10-14T09:00:00Z'))).toEqual({
-      from: '2026-09-15',
-      to: '2026-10-14',
+describe('admin operations', () => {
+  it('order search: upper-cased reference (API-2), blank fields dropped', () => {
+    expect(upperRef(' t3-26-000001 ')).toBe('T3-26-000001');
+    expect(
+      orderParams({
+        reference: 't3-26-1',
+        mobile: ' ',
+        status: 'pending_payment',
+        from: '2026-10-01',
+        to: '',
+        page: 2,
+      }),
+    ).toEqual({
+      page: 2,
+      pageSize: 20,
+      reference: 'T3-26-1',
+      status: 'pending_payment',
+      from: '2026-10-01',
     });
+    expect(rangeOk('2026-10-02', '2026-10-01')).toBe(false);
+    expect(rangeOk('2026-10-01', '')).toBe(true);
   });
 
-  it('only unpaid orders can be cancelled, by staff:finance (admin or finance; never store manager) (RUL-29, RUL-62)', () => {
-    expect(CANCELLABLE).toEqual(['pending_payment', 'payment_failed']);
-    expect(rolesAllow(['store_manager'], 'staff:finance')).toBe(false);
-    expect(rolesAllow(['finance'], 'staff:finance')).toBe(true);
+  it('lines: option label, or a general gift to a category', () => {
+    const pick = (ar: string) => ar;
+    expect(lineTitle(line({ optionLabelAr: 'سهم' }), pick)).toBe('بئر — سهم');
+    expect(lineTitle(line({ targetKind: 'category', titleAr: 'سقيا' }), pick)).toContain('سقيا');
+    expect(lineTitle(line({}), pick)).toBe('بئر');
   });
 
-  it('the dashboard shows no giving alerts (r4)', () => {
-    expect(R4_ALERTS.some((a) => a.startsWith('allocation'))).toBe(false);
+  it('API-1: a cancel refused for the order state reads its code, not the colliding status member', () => {
+    const msg = problemMessage({
+      status: 409,
+      code: 'order.cancel_not_allowed',
+      // The API sends `status: "cancelled"` as an extension, overwriting nothing we read.
+      extra: { status: 'cancelled' },
+    });
+    expect(msg).toContain('إلغاء');
   });
 });

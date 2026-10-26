@@ -1,119 +1,90 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  DestroyRef,
-  computed,
-  effect,
-  inject,
-  untracked,
-} from '@angular/core';
-import { RouterLink } from '@angular/router';
-import type { CartLine, CartNotice } from '../../../core/api/api.types';
-import { toInt } from '../../../core/api/api.types';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+import type { CartLine } from '../../../core/api/api.types';
 import { problemMessage } from '../../../core/api/problem-message';
 import { StoreConfig } from '../../../core/api/store-config';
 import { cartNoticeText } from '../../../core/cart/cart-notice-text';
 import { CartStore } from '../../../core/cart/cart-store';
-import { I18nService } from '../../../core/i18n/i18n';
 import { SeoService } from '../../../core/seo/seo.service';
+import { QuickDonate } from '../../../core/ui/quick-donate.service';
+import { Dialog } from '../../../shared/ui/dialog/dialog';
 import { Icon } from '../../../shared/ui/icon/icon';
 import { Money } from '../../../shared/ui/money/money';
 import { ResourceState } from '../../../shared/ui/resource-state/resource-state';
-import { Steps } from '../../../shared/ui/steps/steps';
+import { CartLineView } from './cart-line';
+import { type Limits, lineProblem } from './line-problems';
 
-/** `/cart` (FR-S17/S18, RUL-11–18): one group, "Your purchases" (r4). Client-rendered, noindex. */
+/**
+ * `/cart` (W-M3): the donation cart — option, project-amount and category-amount lines with inline problems and their
+ * fixes, cart-level limits (lines, total) with the values from `/catalog/config`, remove and clear (with a
+ * confirmation). Every write goes through the cart store's queue; the server's answer replaces the view.
+ * Client-rendered, noindex.
+ */
 @Component({
   selector: 'ta-cart-page',
-  imports: [RouterLink, Icon, Money, ResourceState, Steps],
+  imports: [RouterLink, Dialog, Icon, Money, ResourceState, CartLineView],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './cart.page.html',
   styleUrl: './cart.page.css',
 })
 export class CartPage {
   protected readonly cart = inject(CartStore);
-  protected readonly config = inject(StoreConfig);
-  protected readonly i18n = inject(I18nService);
-  private readonly seo = inject(SeoService);
+  private readonly config = inject(StoreConfig);
+  private readonly quick = inject(QuickDonate);
+  private readonly router = inject(Router);
 
-  /** Stepper presses are debounced (300 ms) so five taps become one PATCH (10 §6). */
-  private readonly timers = new Map<string, ReturnType<typeof setTimeout>>();
-  private readonly wanted = new Map<string, number>();
-
-  protected readonly problem = computed(() => {
+  protected readonly confirmClear = signal(false);
+  protected readonly limits = computed<Limits>(() => ({
+    minGiftAmount: this.config.minGiftAmount(),
+    maxLineAmount: this.config.maxLineAmount(),
+    cartMaxLines: this.config.cartMaxLines(),
+    cartMaxTotal: this.config.cartMaxTotal(),
+  }));
+  protected readonly cartProblems = computed(() =>
+    this.cart.cartProblems().map((code) => lineProblem(code, null, this.limits()).text),
+  );
+  protected readonly lastProblem = computed(() => {
     const p = this.cart.lastProblem();
     return p ? problemMessage(p) : null;
   });
+  protected readonly blocked = computed(() => this.cart.pending() > 0 || this.cart.hasProblems());
+  protected readonly noticeText = cartNoticeText;
+
+  private readonly seo = inject(SeoService);
 
   constructor() {
     this.seo.set({
-      title: $localize`:@@store.cart.title:السلة`,
-      description: $localize`:@@store.cart.seo-description:راجع الدورات والكتب في سلتك ثم أتمم الطلب.`,
+      title: $localize`:@@store.cart.title-r5:سلة التبرعات`,
+      description: $localize`:@@store.cart.title-r5:سلة التبرعات`,
       path: '/cart',
       noindex: true,
     });
     this.cart.load();
-    // RUL-15: once the cart settles, ask for a quote so a moved price shows here, before checkout.
-    effect(() => {
-      if (this.cart.snapshot() && this.cart.pending() === 0)
-        untracked(() => void this.cart.checkPrices());
-    });
-    inject(DestroyRef).onDestroy(() => {
-      for (const t of this.timers.values()) clearTimeout(t);
-      this.cart.dismissNotices();
-    });
   }
 
-  protected title(l: CartLine): string {
-    return this.i18n.pick(l.titleAr, l.titleEn);
+  protected setQuantity(l: CartLine, q: number): void {
+    void this.cart.setQuantity(l.id, q);
   }
 
-  protected qty(l: CartLine): number {
-    return this.wanted.get(l.id) ?? toInt(l.quantity, 1);
-  }
-
-  protected max(l: CartLine): number {
-    return toInt(l.maxQuantity, 20) || 20;
-  }
-
-  protected step(l: CartLine, delta: number): void {
-    const next = Math.min(this.max(l), Math.max(1, toInt(l.quantity, 1) + delta));
-    if (next === toInt(l.quantity, 1)) return;
-    this.wanted.set(l.id, next);
-    // Optimistic display now; one PATCH after the presses settle.
-    this.cart.lines.update((lines) =>
-      lines.map((x) => (x.id === l.id ? { ...x, quantity: next } : x)),
-    );
-    clearTimeout(this.timers.get(l.id));
-    this.timers.set(
-      l.id,
-      setTimeout(() => {
-        this.wanted.delete(l.id);
-        void this.cart.setQuantity(l.id, next);
-      }, 300),
-    );
-  }
-
-  protected clearAll(): void {
-    for (const t of this.timers.values()) clearTimeout(t);
-    this.timers.clear();
-    void this.cart.clear();
+  protected setAmount(l: CartLine, a: string): void {
+    void this.cart.setAmount(l.id, a);
   }
 
   protected remove(l: CartLine): void {
-    clearTimeout(this.timers.get(l.id));
     void this.cart.remove(l.id);
   }
 
-  /** The checkout link waits for pending edits and for flagged lines to be fixed. */
-  protected guard(event: Event): void {
-    if (this.cart.pending() > 0 || this.cart.issues().length > 0) event.preventDefault();
+  protected async clear(): Promise<void> {
+    this.confirmClear.set(false);
+    await this.cart.clear();
   }
 
-  protected issueText(code: string): string {
-    return problemMessage({ code, status: 409 });
+  protected openQuick(event: Event): void {
+    this.quick.show(event.currentTarget);
   }
 
-  protected noticeText(n: CartNotice): string {
-    return cartNoticeText(n);
+  protected checkout(event: Event): void {
+    event.preventDefault();
+    if (!this.blocked()) void this.router.navigateByUrl('/checkout');
   }
 }

@@ -9,7 +9,7 @@ export interface AdminNavItem {
   policy: StaffPolicy;
 }
 
-/** The side navigation (10 §16.2), r4 screens only. Filtered by `StaffAuth.can()`. */
+/** The side navigation (R5 screens). Filtered by `StaffAuth.can()`. */
 export const ADMIN_NAV: readonly AdminNavItem[] = [
   {
     path: '/admin',
@@ -24,33 +24,15 @@ export const ADMIN_NAV: readonly AdminNavItem[] = [
     policy: 'staff:read',
   },
   {
-    path: '/admin/shipments',
-    label: () => $localize`:@@store.admin.nav-shipments:الشحنات`,
-    icon: 'truck',
-    policy: 'staff:read',
-  },
-  {
-    path: '/admin/stock',
-    label: () => $localize`:@@store.admin.nav-stock:المخزون`,
-    icon: 'box',
-    policy: 'staff:read',
-  },
-  {
-    path: '/admin/customers',
-    label: () => $localize`:@@store.admin.nav-customers:العملاء`,
+    path: '/admin/donors',
+    label: () => $localize`:@@store.admin.nav-donors:المتبرعون`,
     icon: 'user',
     policy: 'staff:read',
   },
   {
-    path: '/admin/reports',
-    label: () => $localize`:@@store.admin.nav-reports:التقارير`,
-    icon: 'chart',
-    policy: 'staff:finance',
-  },
-  {
-    path: '/admin/products',
-    label: () => $localize`:@@store.admin.nav-products:المنتجات`,
-    icon: 'book',
+    path: '/admin/projects',
+    label: () => $localize`:@@store.admin.nav-projects:المشاريع`,
+    icon: 'heart',
     policy: 'staff:read',
   },
   {
@@ -75,13 +57,13 @@ export const ADMIN_NAV: readonly AdminNavItem[] = [
     path: '/admin/settings',
     label: () => $localize`:@@store.admin.nav-settings:الإعدادات`,
     icon: 'settings',
-    policy: 'staff:read',
+    policy: 'staff:admin',
   },
   {
     path: '/admin/templates',
     label: () => $localize`:@@store.admin.nav-templates:قوالب الرسائل`,
     icon: 'mail',
-    policy: 'staff:read',
+    policy: 'staff:templates',
   },
   {
     path: '/admin/audit',

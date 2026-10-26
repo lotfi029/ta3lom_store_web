@@ -1,132 +1,92 @@
-import { isPlatformBrowser } from '@angular/common';
 import { HttpClient, httpResource } from '@angular/common/http';
-import { Injectable, PLATFORM_ID, computed, inject, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import type {
-  Address,
-  AddressInput,
-  BooksResponse,
-  DownloadLink,
-  Enrolment,
-  LaunchResponse,
-  OrderDetail,
-  OrderPage,
-  Profile,
-  RequestBody,
-  UpdateProfile,
+  DonationDetail,
+  DonationPage,
+  Me,
+  MeExport,
+  UpdateMe,
 } from '../../core/api/api.types';
+import { toInt } from '../../core/api/api.types';
 import { STORE_API_URL } from '../../core/api/store-api-url';
 import { StoreAuth } from '../../core/auth/store-auth';
+import { CartStore } from '../../core/cart/cart-store';
 import { valueOf } from '../../core/http/resource-value';
 
-export const ORDERS_PAGE_SIZE = 10;
+export const DONATIONS_PAGE_SIZE = 10;
+
+/** API-2: `/v1/me/donations/{reference}` matches case-sensitively; references are stored upper-case. */
+export const donationUrl = (api: string, ref: string): string =>
+  `${api}/me/donations/${encodeURIComponent(ref.trim().toUpperCase())}`;
 
 /**
- * The customer account (11 §5, #21–#32, #35–#39). Reads are `httpResource`s keyed on the session; writes reload the
- * resource they change. Root-provided but only imported by the lazy account routes, so it ships in their chunk.
+ * The donor account (contract 15 §2.5): profile (`GET/PATCH /v1/me`), donations (paged list + detail), data export,
+ * account deletion (anonymises, keeps the orders) and sign-out everywhere. Provided by the account shell.
  */
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class AccountData {
   private readonly http = inject(HttpClient);
   private readonly api = inject(STORE_API_URL);
   private readonly auth = inject(StoreAuth);
-  private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly cart = inject(CartStore);
 
-  private readonly on = computed(() => this.browser && this.auth.isSignedIn());
-  private url(path: string): string | undefined {
-    return this.on() ? `${this.api}${path}` : undefined;
-  }
+  readonly profile = httpResource<Me>(() =>
+    this.auth.isSignedIn() ? `${this.api}/me` : undefined,
+  );
+  readonly me = computed(() => valueOf(this.profile));
 
-  readonly profile = httpResource<Profile>(() => this.url('/me'));
-  readonly enrolments = httpResource<Enrolment[]>(() => this.url('/me/enrolments'));
-  readonly books = httpResource<BooksResponse>(() => this.url('/me/books'));
-  readonly addresses = httpResource<Address[]>(() => this.url('/me/addresses'));
-  readonly ordersPage = signal(1);
-  readonly orders = httpResource<OrderPage>(() =>
-    this.on()
+  readonly page = signal(1);
+  readonly donations = httpResource<DonationPage>(() =>
+    this.auth.isSignedIn()
       ? {
-          url: `${this.api}/me/orders`,
-          params: { page: this.ordersPage(), pageSize: ORDERS_PAGE_SIZE },
+          url: `${this.api}/me/donations`,
+          params: { page: this.page(), pageSize: DONATIONS_PAGE_SIZE },
         }
       : undefined,
   );
-
-  /** Tab counts for the side menu (prototype `.acct-side .c`). */
-  readonly counts = computed(() => {
-    const books = valueOf(this.books);
-    return {
-      courses: valueOf(this.enrolments)?.length ?? null,
-      books: books ? books.downloads.length + books.shipments.length : null,
-      orders: valueOf(this.orders)?.total ?? null,
-    };
+  readonly donationsTotal = computed(() => {
+    const v = valueOf(this.donations);
+    return v ? toInt(v.total) : null;
   });
 
-  order(ref: string): Promise<OrderDetail> {
-    return firstValueFrom(
-      this.http.get<OrderDetail>(`${this.api}/me/orders/${encodeURIComponent(ref)}`),
-    );
+  readonly ref = signal('');
+  readonly detail = httpResource<DonationDetail>(() =>
+    this.auth.isSignedIn() && this.ref() ? donationUrl(this.api, this.ref()) : undefined,
+  );
+
+  /** `PATCH /v1/me`: null leaves a field, "" clears name/e-mail. The menu and checkout follow at once. */
+  async updateMe(body: UpdateMe): Promise<Me> {
+    const me = await firstValueFrom(this.http.patch<Me>(`${this.api}/me`, body));
+    this.profile.set(me);
+    this.auth.setProfile(me);
+    return me;
   }
 
-  async updateProfile(body: UpdateProfile): Promise<Profile> {
-    const p = await firstValueFrom(this.http.patch<Profile>(`${this.api}/me`, body));
-    this.profile.set(p);
-    const c = this.auth.customer();
-    if (c) this.auth.customer.set({ ...c, fullName: p.fullName, email: p.email, locale: p.locale });
-    return p;
+  /** `GET /v1/me/export` → a JSON file (profile + every donation with its lines). */
+  async exportData(): Promise<Blob> {
+    const data = await firstValueFrom(this.http.get<MeExport>(`${this.api}/me/export`));
+    return new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   }
 
-  async saveAddress(id: string | null, body: AddressInput): Promise<Address> {
-    const a = id
-      ? await firstValueFrom(this.http.put<Address>(`${this.api}/me/addresses/${id}`, body))
-      : await firstValueFrom(this.http.post<Address>(`${this.api}/me/addresses`, body));
-    this.addresses.reload();
-    return a;
-  }
-
-  async deleteAddress(id: string): Promise<void> {
-    await firstValueFrom(this.http.delete(`${this.api}/me/addresses/${id}`));
-    this.addresses.reload();
-  }
-
-  async setDefaultAddress(id: string): Promise<void> {
-    await firstValueFrom(this.http.post<Address>(`${this.api}/me/addresses/${id}/default`, null));
-    this.addresses.reload();
-  }
-
-  /** #29: a short-lived start/resume link from the LMS (RUL-42). */
-  launch(enrolmentId: string): Promise<LaunchResponse> {
-    return firstValueFrom(
-      this.http.post<LaunchResponse>(`${this.api}/me/enrolments/${enrolmentId}/launch`, null),
-    );
-  }
-
-  /** #32: a signed 10-minute link (`/v1/downloads/{token}`, #46); counts one of the 5 downloads (RUL-41). */
-  async downloadLink(grantId: string): Promise<DownloadLink> {
-    const link = await firstValueFrom(
-      this.http.post<DownloadLink>(`${this.api}/me/downloads/${grantId}/link`, null),
-    );
-    this.books.reload();
-    return link;
-  }
-
-  /** #37: an invoice / credit note PDF (needs the bearer, so it is fetched, not linked). */
-  document(number: string): Promise<Blob> {
-    return firstValueFrom(
-      this.http.get(`${this.api}/me/documents/${encodeURIComponent(number)}`, {
-        responseType: 'blob',
-      }),
-    );
-  }
-
-  /** #38: everything the store holds about the customer, as JSON (FR-S27). */
-  exportData(): Promise<Blob> {
-    return firstValueFrom(this.http.get(`${this.api}/me/export`, { responseType: 'blob' }));
-  }
-
-  /** #39: anonymises the account (RUL-61); the API clears the refresh cookie, the app clears the token. */
+  /** `DELETE /v1/me`: anonymises the donor (orders kept), revokes the sessions; locally: signed out, cart emptied. */
   async deleteAccount(): Promise<void> {
-    const body: RequestBody<'/v1/me', 'delete'> = { confirm: true };
-    await firstValueFrom(this.http.delete(`${this.api}/me`, { body }));
+    await firstValueFrom(this.http.delete(`${this.api}/me`));
     this.auth.clear();
+    this.cart.reset();
+  }
+
+  /**
+   * Sign out everywhere: refresh first (the access token may be minutes old and `logout-all` needs a valid one), then
+   * `POST /v1/auth/logout-all`, which revokes every session family and clears the refresh cookie.
+   */
+  async logoutAll(): Promise<void> {
+    try {
+      await this.auth.refresh();
+    } catch {
+      /* already signed out: logoutAll clears the local session below */
+    }
+    await this.auth.logoutAll();
+    this.cart.reset();
   }
 }

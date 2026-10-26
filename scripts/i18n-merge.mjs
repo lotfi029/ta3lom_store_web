@@ -4,6 +4,7 @@
  *   node scripts/i18n-merge.mjs           merge: new ids get <target state="needs-translation"> (the Arabic copied in),
  *                                          ids no longer in the source are dropped, existing English is kept
  *   node scripts/i18n-merge.mjs --check   fail when any id is missing, untranslated, or not named @@store.<area>.<element>
+ *   node scripts/i18n-merge.mjs --prune   also drop en.json entries whose id is no longer in the source (R5 clean-up)
  * Plan §4.1: every string has an id `@@store.<area>.<element>` and the English XLF is filled.
  */
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
@@ -59,13 +60,22 @@ for (const [id, body] of src) {
   );
 }
 
+const xml = `<?xml version="1.0" encoding="UTF-8" ?>\n<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">\n  <file source-language="ar" target-language="en" datatype="plaintext" original="ng2.template">\n    <body>\n${out.join('\n')}\n    </body>\n  </file>\n</xliff>\n`;
+// The build reads messages.en.xlf, not en.json: a stale file ships untranslated English.
+if (check && (!existsSync(EN) || readFileSync(EN, 'utf8') !== xml))
+  problems.push(`${EN} is stale — run node scripts/i18n-merge.mjs`);
 if (!check) {
-  const xml = `<?xml version="1.0" encoding="UTF-8" ?>\n<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">\n  <file source-language="ar" target-language="en" datatype="plaintext" original="ng2.template">\n    <body>\n${out.join('\n')}\n    </body>\n  </file>\n</xliff>\n`;
   writeFileSync(EN, xml);
   console.log(`i18n-merge: ${src.size} units → ${EN}${problems.length ? ` (${problems.length} to translate/review)` : ''}`);
 }
 // Ids authored ahead of the code that uses them (e.g. problem messages before their first screen) are only reported.
 const unused = Object.keys(map).filter((id) => !src.has(id));
+if (process.argv.includes('--prune') && !check && unused.length) {
+  for (const id of unused) delete map[id];
+  writeFileSync(MAP, `${JSON.stringify(map, null, 2)}\n`);
+  console.log(`i18n-merge: pruned ${unused.length} unused id(s) from ${MAP}`);
+  unused.length = 0;
+}
 if (unused.length && !check) console.log(`i18n-merge: ${unused.length} id(s) in ${MAP} not used yet (kept): ${unused.slice(0, 5).join(', ')}${unused.length > 5 ? ' …' : ''}`);
 if (problems.length) {
   for (const p of problems) console[check ? 'error' : 'log'](`  - ${p}`);

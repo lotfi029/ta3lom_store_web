@@ -13,7 +13,13 @@ import { Requires } from '../ui/requires';
 import { CatalogAdminData, MEDIA_PAGE_SIZE } from './catalog-admin.data';
 import { MediaUpload } from './media-upload';
 
-/** Media library (#75–#77, RUL-03): images (public, alt text required in both languages) and PDFs. */
+/** A file size for people: KB below 1 MB, else MB with one decimal. */
+export function fileSize(bytes: number | string): string {
+  const kb = toInt(bytes) / 1024;
+  return kb >= 1024 ? `${(kb / 1024).toFixed(1)} MB` : `${Math.max(1, Math.round(kb))} KB`;
+}
+
+/** Media library (contract 15 §2.7): public images for covers and categories; Arabic alt text required. */
 @Component({
   selector: 'ta-admin-media',
   imports: [ResourceState, Requires, MediaUpload],
@@ -34,6 +40,7 @@ export class MediaPage {
   protected readonly pages = computed(() =>
     Math.max(1, Math.ceil(toInt(this.page()?.total) / MEDIA_PAGE_SIZE)),
   );
+  protected readonly size = fileSize;
   protected readonly editing = signal<string | null>(null);
   protected readonly alt = signal({ ar: '', en: '' });
   protected readonly error = signal<string | null>(null);
@@ -48,18 +55,8 @@ export class MediaPage {
     this.data.media.reload();
   }
 
-  protected setKind(e: Event): void {
-    this.data.mediaKind.set((e.target as HTMLSelectElement).value as '' | 'image' | 'pdf');
-    this.data.mediaPage.set(1);
-  }
-
   protected go(page: number): void {
     this.data.mediaPage.set(Math.min(this.pages(), Math.max(1, page)));
-  }
-
-  protected size(a: MediaAsset): string {
-    const kb = toInt(a.sizeBytes) / 1024;
-    return kb > 1024 ? `${(kb / 1024).toFixed(1)} MB` : `${Math.round(kb)} KB`;
   }
 
   protected edit(a: MediaAsset): void {
@@ -76,14 +73,13 @@ export class MediaPage {
   protected async saveAlt(a: MediaAsset, e: Event): Promise<void> {
     e.preventDefault();
     const { ar, en } = this.alt();
-    if (!ar.trim() || !en.trim()) {
-      this.error.set(
-        $localize`:@@store.admin.alt-required:النص البديل بالعربية والإنجليزية مطلوب للصور.`,
-      );
+    if (!ar.trim()) {
+      this.error.set($localize`:@@store.error.media-alt-required:أضف نصًا بديلًا بالعربية للصورة.`);
       return;
     }
     try {
-      await this.data.saveAlt(a.id, { altAr: ar.trim(), altEn: en.trim() });
+      // PATCH replaces both texts: a blank English clears it (the page then falls back to Arabic).
+      await this.data.saveAlt(a.id, { altAr: ar.trim(), altEn: en.trim() || null });
       this.editing.set(null);
       this.toast.show($localize`:@@store.account.saved:حُفظت التغييرات.`, 'success');
     } catch (err) {

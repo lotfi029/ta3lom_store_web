@@ -20,7 +20,10 @@ import { PlatformData } from '../platform.data';
 import { Requires } from '../ui/requires';
 import { SETTINGS, type SettingDef, fromInput, toInput } from './setting-kinds';
 
-/** Store settings (#118–#119, FR-S76): one typed field per key; editing needs `staff:admin`, others read. */
+/**
+ * Store settings (contract 15 §2.8): one typed field per R5 key. The whole screen is `staff:admin` (the API's GET too);
+ * cross-key errors (422 `setting.invalid_value`) show on the field that was saved.
+ */
 @Component({
   selector: 'ta-admin-settings',
   imports: [ResourceState, Requires],
@@ -46,7 +49,7 @@ export class SettingsPage {
     })),
   );
   /** Edited values by key (input text or checkbox state). */
-  protected readonly draft = signal<Record<string, string | boolean>>({});
+  protected readonly draft = signal<Record<string, string>>({});
   protected readonly errors = signal<Record<string, string>>({});
   protected readonly saving = signal<string | null>(null);
 
@@ -67,13 +70,13 @@ export class SettingsPage {
     });
   }
 
-  protected value(key: string): string | boolean {
+  protected value(key: string): string {
     return this.draft()[key] ?? '';
   }
 
   protected onInput(key: string, event: Event): void {
     const el = event.target as HTMLInputElement;
-    this.draft.update((d) => ({ ...d, [key]: el.type === 'checkbox' ? el.checked : el.value }));
+    this.draft.update((d) => ({ ...d, [key]: el.value }));
     this.errors.update((e) => ({ ...e, [key]: '' }));
   }
 

@@ -1,0 +1,99 @@
+<div class="ahead">
+  <div>
+    <h1 i18n="@@store.admin.nav-donors">المتبرعون</h1>
+    <p i18n="@@store.admin.donors-lede">ابحث بالجوال (مطابقة تامة) أو بجزء من الاسم أو البريد.</p>
+  </div>
+</div>
+<form class="filters panel" (submit)="apply($event)" novalidate>
+  <div class="field">
+    <label for="ad-q" i18n="@@store.admin.donor-search">الجوال أو الاسم أو البريد</label>
+    <input id="ad-q" type="search" maxlength="100" [value]="draft().q" (input)="set('q', $event)" />
+  </div>
+  <div class="field">
+    <label for="ad-status" i18n="@@store.account.col-status">الحالة</label>
+    <select id="ad-status" (change)="set('status', $event)">
+      <option value="" [selected]="draft().status === ''" i18n="@@store.admin.all">الكل</option>
+      @for (s of statuses; track s) {
+        <option [value]="s" [selected]="draft().status === s">{{ label(s).label }}</option>
+      }
+    </select>
+  </div>
+  <button type="submit" class="btn primary" i18n="@@store.admin.apply">تطبيق</button>
+</form>
+<ta-resource-state
+  [loading]="data.donors.isLoading() && !page()"
+  [error]="!!data.donors.error() && !page()"
+  (retry)="data.donors.reload()"
+>
+  @if (items().length === 0) {
+    <p class="muted" i18n="@@store.admin.no-results">لا نتائج.</p>
+  } @else {
+    <div class="panel tbl-wrap">
+      <table class="atbl">
+        <caption class="visually-hidden" i18n="@@store.admin.nav-donors">
+          المتبرعون
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col" i18n="@@store.admin.col-name">الاسم</th>
+            <th scope="col" i18n="@@store.admin.donor-mobile">جوال المتبرع</th>
+            <th scope="col" i18n="@@store.admin.col-orders">الطلبات</th>
+            <th scope="col" i18n="@@store.account.col-status">الحالة</th>
+            <th scope="col" i18n="@@store.admin.joined">انضم في</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (c of items(); track c.id) {
+            <tr>
+              <td>
+                <a [routerLink]="['/admin/donors', c.id]">{{ c.fullName || '—' }}</a>
+                @if (c.email) {
+                  <small class="muted slug"
+                    ><bdi dir="ltr">{{ c.email }}</bdi></small
+                  >
+                }
+              </td>
+              <td>
+                <bdi dir="ltr">{{ c.mobile || '—' }}</bdi>
+              </td>
+              <td>
+                <bdi>{{ int(c.orderCount) }}</bdi>
+              </td>
+              <td>
+                <ta-status-pill [tone]="label(c.status).tone">{{
+                  label(c.status).label
+                }}</ta-status-pill>
+              </td>
+              <td>{{ i18n.formatDate(c.createdAt) }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    @if (pages() > 1) {
+      <nav class="apager" aria-label="الصفحات" i18n-aria-label="@@store.ui.pagination">
+        <button
+          type="button"
+          class="btn sm"
+          (click)="go(data.donorFilter().page - 1)"
+          [disabled]="data.donorFilter().page <= 1"
+          i18n="@@store.account.prev"
+        >
+          السابق
+        </button>
+        <span
+          ><bdi>{{ data.donorFilter().page }} / {{ pages() }}</bdi></span
+        >
+        <button
+          type="button"
+          class="btn sm"
+          (click)="go(data.donorFilter().page + 1)"
+          [disabled]="data.donorFilter().page >= pages()"
+          i18n="@@store.account.next"
+        >
+          التالي
+        </button>
+      </nav>
+    }
+  }
+</ta-resource-state>

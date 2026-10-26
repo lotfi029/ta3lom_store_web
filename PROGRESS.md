@@ -1,5 +1,33 @@
 # Store web progress
-Next: — (all sessions done; final summary after W-11 merges and main CI is green)
+Next: review of PR "Store web — R5 donations" (lotfi029/ta3lom_store_web#13); then R5-Payments (flip `paymentsEnabled`, gateway redirect)
+
+## R5 — donations (one PR "Store web — R5 donations", API `792521a`)
+
+| Phase | Status | Commit | Screens | Tests (unit / e2e / a11y routes) | Notes |
+|---|---|---|---|---|---|
+| W-M0 Foundation and clean-up | done | W-M0 | placeholders for the screens rebuilt in W-M1…W-M5; login, 404, admin login/shell, staff, settings, templates, audit adapted | 159 / 17 smoke (stub) / 24 × 2 themes | OpenAPI snapshot + types; check-no-commerce; r4 code deleted; W-1…W-5 fixed with tests; StoreConfig; payments flag + prod guard; problem messages R5; stub (stateful); routes.mjs → projects; C-1; seed R5; 124 KB JS |
+| W-M1 Home/listing + card | done | W-M1 | home = hero + search + category chips (API) + sort + paged grid; project card (image, share bar, chips → stepper, open amount, اضافة / تبرع); shared `amount-input`, `option-picker`, `qty-stepper` | 183 / 23 smoke (+ listing ar/en on the real API) / 24 × 2 | C-4 SEO, U-2 API order, JSON-LD NGO + ItemList; 126.5 KB JS |
+| W-M2 Project page | done | W-M2 | `/p/:slug`: cover, title, summary, Markdown story (`<ta-markdown>`, own safe renderer), large donate box with presets, share sheet (+ Facebook), not-found (noindex), old-slug redirect (replaceUrl) | 195 / 27 smoke (+ project ar/en on the real API) / 24 × 2 | JSON-LD DonateAction + BreadcrumbList; prerendered + refreshed after hydration |
+| W-M3 Quick donate, cart, checkout, order | done | W-M3 | quick-donate modal (header, menu, hero, side button ≥ 1320 px), `/cart` (3 line kinds, inline problems + fixes, limits, clear), `/checkout` (inline OTP, contact saved to profile, quote summary, C-3 notice, body-bound Idempotency-Key), `/orders/:ref` (pending = end state, token stripped, no-referrer, sign-in state) | 205 / 31 smoke incl. the full donate journey on the stub (+ real API: `/me` updated) / 24 × 2 | 127.8 KB JS |
+| W-M4 Account | done | W-M4 | `/account` shell; My donations (paged) + detail; Profile (edit, export JSON, sign out everywhere, delete with typed confirmation) | 212 / 35 smoke (+ account, sign-in on the real API) / 24 × 2 | W-2 name + mobile in menu and shell |
+| W-M5 Admin | done | W-M5 | `/admin/password` (forced + self); dashboard; categories (reorder, image, gifts); projects list + editor (details, options editor, publish/archive/preview, unsaved guard, conflict dialog); media (images); donors (block/unblock); orders (search, detail, cancel) | 239 / smoke (stub) / 24 × 2 | API-1, API-2, API-3 workarounds; placeholder removed |
+| W-M6 e2e, a11y, CI, docs | done | W-M6 | — | 240 / 65 on the real API (35 smoke on the stub) / 26 × 2 | refresh-after-hydration fix (reload when stable); admin e2e clean up after themselves; i18n staleness check; order page in the a11y sweep; `docs/W-report-r5.md` + `docs/screenshots/r5/`; `.session/` moved to `docs/r5/` |
+
+### API follow-ups (open at `792521a`; client workarounds in place)
+
+| # | Issue | Web workaround |
+|---|---|---|
+| API-1 | `order.cancel_not_allowed` adds an extension named `status` that collides with the RFC `status` | Only `code` is read |
+| API-2 | Public order status and `/me/donations/{ref}` match references case-sensitively | References upper-cased client-side |
+| API-3 | `PUT /admin/projects/{id}/options` with a null list or label likely 500s | Options editor never sends one |
+| API-4 | **Production CORS also lists `store-staging.ta3lom.sa` — production blocker on the API side** | — |
+| API-5 | `CartSummaryResponse.totalAmount` is not re-priced | Badge shows the line count only (C-2) |
+| API-6 | Validation `errors{}` are English only | Mapped by field in `problem-message.ts` |
+| API-7 | No published OpenAPI artifact | Local snapshot `docs/openapi/store-api.v1.json` (`api:openapi`) |
+| API-8 (optional) | OTP caps are code constants; no Development override | e2e clears `store.otp_challenge` (guarded to the local DB) |
+| API-9 | `ProjectCard` has no options | Each card with `fromAmount` loads its project detail |
+
+## r4 (history)
 
 | Session | Status (todo/doing/done/blocked) | PR | Screens | Endpoints # | Tests (unit/e2e/a11y) | Notes |
 |---|---|---|---|---|---|---|
@@ -26,6 +54,7 @@ Next: — (all sessions done; final summary after W-11 merges and main CI is gre
 - [x] reference/ removed; docs/W-report.md pushed
 
 ## Environment (resume notes)
-- `. scripts/dev-env.sh && npm run api:up && npm run api:seed` — API on :5080, staff in `.e2e/staff.json` (git-ignored).
-- PostgreSQL may need `pg_ctlcluster 16 main start` after a container restart (`api:up` does it).
+- `. scripts/dev-env.sh && npm run api:up && npm run api:seed` — API on :5080 (postgres:18 in docker `t3s-pg` on
+  :5440; `api:up` starts `dockerd` and the container), staff in `e2e/.auth/staff.json` (git-ignored).
+- Node 24 lives in `/opt/node24` (dev-env.sh puts it first on PATH).
 - Never `pkill -f` with a pattern that appears in your own command line; stop servers by port (`fuser -k 4320/tcp`).

@@ -1,13 +1,34 @@
 <div class="ahead">
   <div>
     <h1 i18n="@@store.admin.nav-orders">الطلبات</h1>
-    <p i18n="@@store.admin.orders-lede">ابحث برقم الطلب أو جوال العميل.</p>
+    <p i18n="@@store.admin.orders-lede">
+      ابحث بالرقم المرجعي أو جوال المتبرع. التواريخ بتوقيت الرياض وتشمل اليومين.
+    </p>
   </div>
 </div>
 <form class="filters panel" (submit)="apply($event)" novalidate>
   <div class="field">
-    <label for="ao-q" i18n="@@store.admin.order-search">رقم الطلب أو الجوال</label>
-    <input id="ao-q" type="search" dir="ltr" [value]="draft().q" (input)="set('q', $event)" />
+    <label for="ao-ref" i18n="@@store.order.reference">الرقم المرجعي</label>
+    <input
+      id="ao-ref"
+      type="search"
+      dir="ltr"
+      maxlength="20"
+      [value]="draft().reference"
+      (input)="set('reference', $event)"
+    />
+  </div>
+  <div class="field">
+    <label for="ao-mobile" i18n="@@store.admin.donor-mobile">جوال المتبرع</label>
+    <input
+      id="ao-mobile"
+      type="search"
+      dir="ltr"
+      inputmode="tel"
+      maxlength="20"
+      [value]="draft().mobile"
+      (input)="set('mobile', $event)"
+    />
   </div>
   <div class="field">
     <label for="ao-status" i18n="@@store.account.col-status">الحالة</label>
@@ -20,13 +41,32 @@
   </div>
   <div class="field">
     <label for="ao-from" i18n="@@store.admin.from">من</label>
-    <input id="ao-from" type="date" [value]="draft().from" (input)="set('from', $event)" />
+    <input
+      id="ao-from"
+      type="date"
+      [value]="draft().from"
+      (input)="set('from', $event)"
+      [attr.aria-invalid]="rangeError()"
+      aria-describedby="ao-range-err"
+    />
   </div>
   <div class="field">
     <label for="ao-to" i18n="@@store.admin.to">إلى</label>
-    <input id="ao-to" type="date" [value]="draft().to" (input)="set('to', $event)" />
+    <input
+      id="ao-to"
+      type="date"
+      [value]="draft().to"
+      (input)="set('to', $event)"
+      [attr.aria-invalid]="rangeError()"
+      aria-describedby="ao-range-err"
+    />
   </div>
   <button type="submit" class="btn primary" i18n="@@store.admin.apply">تطبيق</button>
+  <p id="ao-range-err" class="err" [attr.role]="rangeError() ? 'alert' : null">
+    @if (rangeError()) {
+      <span i18n="@@store.admin.range-invalid">تاريخ البداية بعد تاريخ النهاية.</span>
+    }
+  </p>
 </form>
 <ta-resource-state
   [loading]="data.orders.isLoading() && !page()"
@@ -43,33 +83,33 @@
         </caption>
         <thead>
           <tr>
-            <th scope="col" i18n="@@store.thanks.reference">رقم الطلب</th>
-            <th scope="col" i18n="@@store.account.placed">تاريخ الطلب</th>
-            <th scope="col" i18n="@@store.admin.customer">العميل</th>
-            <th scope="col" i18n="@@store.account.col-items">العناصر</th>
+            <th scope="col" i18n="@@store.order.reference">الرقم المرجعي</th>
+            <th scope="col" i18n="@@store.admin.col-date">التاريخ</th>
+            <th scope="col" i18n="@@store.admin.donor">المتبرع</th>
+            <th scope="col" i18n="@@store.admin.col-lines">التبرعات</th>
             <th scope="col" i18n="@@store.cart.total">الإجمالي</th>
             <th scope="col" i18n="@@store.account.col-status">الحالة</th>
           </tr>
         </thead>
         <tbody>
-          @for (o of items(); track key(o)) {
+          @for (o of items(); track o.reference) {
             <tr>
               <td>
                 <a [routerLink]="['/admin/orders', o.reference]"
                   ><bdi dir="ltr" class="mono">{{ o.reference }}</bdi></a
                 >
               </td>
-              <td>{{ i18n.formatDateTime(o.placedAt) }}</td>
+              <td>{{ i18n.formatDateTime(o.createdAt) }}</td>
               <td>
-                {{ o.contactName }}
+                {{ o.donorName }}
                 <small class="muted slug"
-                  ><bdi dir="ltr">{{ o.contactMobile }}</bdi></small
+                  ><bdi dir="ltr">{{ o.donorMobile }}</bdi></small
                 >
               </td>
               <td>
                 <bdi>{{ int(o.lineCount) }}</bdi>
               </td>
-              <td><ta-money [value]="o.grandTotal" /></td>
+              <td><ta-money [value]="o.totalAmount" /></td>
               <td>
                 <ta-status-pill [tone]="label(o.status).tone">{{
                   label(o.status).label

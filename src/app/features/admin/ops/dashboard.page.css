@@ -32,6 +32,7 @@
 }
 
 .cols {
+  margin-block-end: 18px;
   display: grid;
   gap: 14px;
   grid-template-columns: minmax(0, 1fr);
@@ -39,7 +40,7 @@
 
 @media (width >= 1100px) {
   .cols {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
   }
 }
 
@@ -60,10 +61,6 @@
   justify-content: space-between;
   gap: 10px;
   font-size: 0.9rem;
-}
-
-.list li.hot b {
-  color: var(--c-danger);
 }
 
 .cols a {
@@ -92,4 +89,12 @@
 
 .tiles ta-icon {
   color: var(--c-accent-strong);
+}
+
+.overview {
+  padding-block: 0;
+}
+
+.list small {
+  margin-inline-start: 6px;
 }

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import type { AuditEntry } from '../../../core/api/api.types';
+import type { AuditRow } from '../../../core/api/api.types';
 import { toInt } from '../../../core/api/api.types';
 import { valueOf } from '../../../core/http/resource-value';
 import { I18nService } from '../../../core/i18n/i18n';
@@ -7,7 +7,7 @@ import { SeoService } from '../../../core/seo/seo.service';
 import { ResourceState } from '../../../shared/ui/resource-state/resource-state';
 import { AUDIT_PAGE_SIZE, type AuditFilter, PlatformData } from '../platform.data';
 
-/** The audit log (#133, FR-S78): every staff write, filtered by actor, entity, action and Riyadh dates. `staff:admin`. */
+/** The audit log (contract 15 §2.8): every staff write, filtered by actor, action, entity and entity id (exact matches). `staff:admin`. */
 @Component({
   selector: 'ta-admin-audit',
   imports: [ResourceState],
@@ -49,7 +49,7 @@ export class AuditPage {
   }
 
   protected clear(): void {
-    const empty = { actor: '', entity: '', action: '', from: '', to: '' };
+    const empty = { actor: '', entity: '', action: '', entityId: '' };
     this.draft.set(empty);
     this.data.auditFilter.set({ ...empty, page: 1 });
   }
@@ -61,16 +61,21 @@ export class AuditPage {
     }));
   }
 
-  protected diff(e: AuditEntry): string {
-    return e.diff === null || e.diff === undefined ? '' : JSON.stringify(e.diff, null, 2);
+  protected diff(e: AuditRow): string {
+    if (!e.diff) return '';
+    try {
+      return JSON.stringify(JSON.parse(e.diff), null, 2);
+    } catch {
+      return e.diff;
+    }
   }
 
-  protected toggle(e: AuditEntry): void {
+  protected toggle(e: AuditRow): void {
     const k = String(e.id);
     this.open.set(this.open() === k ? null : k);
   }
 
-  protected key(e: AuditEntry): string {
+  protected key(e: AuditRow): string {
     return String(e.id);
   }
 }

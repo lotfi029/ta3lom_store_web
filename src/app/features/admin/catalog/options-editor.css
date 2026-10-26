@@ -1,0 +1,73 @@
+.oform {
+  display: grid;
+  gap: 12px;
+}
+
+.olist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.orow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px 12px;
+  padding: 12px;
+  border: 1px solid var(--c-border);
+  border-radius: 10px;
+  background: var(--c-surface);
+}
+
+@media (width >= 900px) {
+  .orow {
+    grid-template-columns: 28px minmax(0, 1.4fr) minmax(0, 1.2fr) minmax(0, 0.8fr) auto auto;
+    align-items: start;
+  }
+
+  .num {
+    padding-block-start: 30px;
+  }
+}
+
+.orow.off {
+  background: var(--c-surface-2);
+}
+
+.num {
+  font-weight: 600;
+  color: var(--c-muted-2);
+}
+
+.orow .field {
+  margin: 0;
+}
+
+.orow .chk,
+.orow .rowacts {
+  padding-block-start: 22px;
+}
+
+.ferr {
+  display: block;
+  min-block-size: 1em;
+  color: var(--c-danger);
+  font-size: 0.8rem;
+}
+
+.note {
+  margin: 0;
+  font-size: 0.82rem;
+}
+
+.err p,
+.err ul {
+  margin: 0;
+}
+
+.btn[aria-disabled='true'] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}

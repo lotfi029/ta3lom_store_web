@@ -1,121 +1,143 @@
 <section class="hero">
   <div class="wrap">
-    <span class="eyebrow-hero" i18n="@@store.home.eyebrow">متجر جمعية التعلم الإلكتروني</span>
-    <h1 i18n="@@store.home.headline">تعلّم لنفسك.<br /><em>بالسرعة</em> التي تناسبك.</h1>
-    <p class="lede" i18n="@@store.home.lede">
-      دورات وكتب تعليمية من إنتاج الجمعية: سجّل في الدورة فور الدفع، واحصل على الكتب مطبوعة تصلك أو
-      رقمية تحمّلها من حسابك.
+    <span class="eyebrow-hero" i18n="@@store.home.eyebrow-r5"
+      >متجر تبرعات جمعية التعلم الإلكتروني</span
+    >
+    <h1 i18n="@@store.home.headline-r5">تبرّعك <em>يصنع أثرًا</em> يبقى.</h1>
+    <p class="lede" i18n="@@store.home.lede-r5">
+      اختر مشروعًا وتبرّع بأحد خياراته أو بالمبلغ الذي تريد، أو تبرّع لتصنيف عام يُصرف على مشاريعه.
     </p>
-    <div class="cta">
-      <a class="hb white" routerLink="/courses"
-        ><span i18n="@@store.home.browse-courses">تصفّح الدورات</span>
-        <ta-icon name="arrow" [size]="18"
-      /></a>
-      <a class="hb ghost" routerLink="/books" i18n="@@store.home.browse-books">تصفّح الكتب</a>
-    </div>
-    <p class="guar">
-      <ta-icon name="lock" [size]="16" /><span i18n="@@store.home.guarantee"
-        >دفع آمن بمدى وApple Pay · تسجيل فوري في الدورات · تحميل فوري للكتب الرقمية</span
-      >
-    </p>
-    <form class="hsearch" role="search" (submit)="search($event, q)">
-      <label class="visually-hidden" for="home-q" i18n="@@store.layout.search-label"
-        >ابحث في المتجر</label
+    <button type="button" class="hquick" (click)="openQuick($event)">
+      <ta-icon name="gift" [size]="20" /><span i18n="@@store.quick.title">تبرع سريع</span>
+    </button>
+    <form class="hsearch" role="search" (submit)="search($event, hq)">
+      <label class="visually-hidden" for="home-q" i18n="@@store.listing.search-label"
+        >ابحث في المشاريع</label
       >
       <input
-        #q
+        #hq
         id="home-q"
         type="search"
         name="q"
-        placeholder="ابحث عن دورة أو كتاب…"
-        i18n-placeholder="@@store.layout.search-placeholder"
+        [value]="query().q"
+        placeholder="ابحث عن مشروع…"
+        i18n-placeholder="@@store.layout.search-placeholder-r5"
+        autocomplete="off"
       />
       <button type="submit" i18n="@@store.layout.search-submit">بحث</button>
     </form>
-    @if (accordion().length > 0) {
-      <ta-accordion-hero [items]="accordion()" />
-    }
   </div>
 </section>
 
-<div class="wrap">
-  <ul class="pillars">
-    <li>
-      <a class="pillar" routerLink="/courses">
-        <span class="ic"><ta-icon name="play" [size]="24" /></span>
-        <span
-          ><b i18n="@@store.layout.nav-courses">الدورات</b
-          ><span i18n="@@store.home.pillar-courses">تعلّم بالسرعة التي تناسبك</span></span
-        >
-      </a>
-    </li>
-    <li>
-      <a class="pillar" routerLink="/books">
-        <span class="ic"><ta-icon name="book" [size]="24" /></span>
-        <span
-          ><b i18n="@@store.layout.nav-books">الكتب</b
-          ><span i18n="@@store.home.pillar-books">مطبوعة أو رقمية</span></span
-        >
-      </a>
-    </li>
-  </ul>
-  @if (data.catList().length > 0) {
-    <nav class="cats" aria-labelledby="cats-h">
-      <h2 id="cats-h" class="cats-h" i18n="@@store.home.categories">تصفّح حسب التصنيف</h2>
-      <div class="filters">
-        @for (c of data.catList(); track c.slug) {
-          <a routerLink="/courses" [queryParams]="{ category: c.slug }">{{
-            i18n.pick(c.nameAr, c.nameEn)
-          }}</a>
+<section id="projects" class="list" aria-labelledby="list-h" tabindex="-1">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 id="list-h" class="sec-title">
+        @if (activeCategory(); as c) {
+          {{ categoryName(c) }}
+        } @else {
+          <ng-container i18n="@@store.listing.title">مشاريع التبرع</ng-container>
         }
-      </div>
-    </nav>
-  }
-</div>
-
-<section class="block" aria-labelledby="courses-h">
-  <div class="wrap">
-    <div class="sec-head">
-      <div>
-        <span class="eyebrow" i18n="@@store.layout.nav-courses">الدورات</span>
-        <h2 id="courses-h" class="sec-title" i18n="@@store.home.courses-title">
-          دورات تصنع فرقًا.
-        </h2>
-        <p class="sec-lede" i18n="@@store.home.courses-lede">
-          دورات عملية مصمّمة للمعلم والطالب والأسرة، مع شهادة إتمام.
+      </h2>
+      @if (query().q) {
+        <p class="sec-lede" i18n="@@store.listing.results-for">
+          نتائج البحث عن «<bdi>{{ query().q }}</bdi
+          >»
         </p>
-      </div>
-      <a class="more" routerLink="/courses"
-        ><span i18n="@@store.home.all-courses">جميع الدورات</span>
-        <ta-icon name="arrow" [size]="16"
-      /></a>
-    </div>
-    <ul class="cards c3">
-      @for (p of data.courses(); track p.id) {
-        <li><ta-product-card [product]="p" [live]="data.live().get(p.slug)" /></li>
       }
-    </ul>
+    </div>
+
+    <div class="toolbar">
+      <nav
+        class="filters"
+        aria-label="التصنيفات"
+        i18n-aria-label="@@store.listing.categories-label"
+      >
+        <a
+          routerLink="/"
+          [queryParams]="{ category: null, page: null }"
+          queryParamsHandling="merge"
+          fragment="projects"
+          [attr.aria-current]="!query().category ? 'true' : null"
+          i18n="@@store.listing.all-categories"
+          >الكل</a
+        >
+        @for (c of data.categoryList(); track c.slug) {
+          <a
+            routerLink="/"
+            [queryParams]="{ category: c.slug, page: null }"
+            queryParamsHandling="merge"
+            fragment="projects"
+            [attr.aria-current]="query().category === c.slug ? 'true' : null"
+            >{{ categoryName(c) }}</a
+          >
+        }
+      </nav>
+      <div class="sort">
+        <label for="sort" i18n="@@store.listing.sort-label">الترتيب</label>
+        <select id="sort" (change)="onSort($any($event.target).value)">
+          @for (s of sorts; track s) {
+            <option [value]="s" [selected]="s === query().sort">{{ sortLabel(s) }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <ta-resource-state
+      [loading]="data.listing.isLoading() && !data.listing.hasValue()"
+      [error]="!!data.listing.error() && !data.listing.hasValue()"
+      (retry)="data.listing.reload()"
+    >
+      @if (data.items().length > 0) {
+        <ul class="cards c3">
+          @for (p of data.items(); track p.id) {
+            <li><ta-project-card [project]="p" /></li>
+          }
+        </ul>
+        @if (data.pages() > 1) {
+          <nav
+            class="pager"
+            aria-label="ترقيم الصفحات"
+            i18n-aria-label="@@store.ui.data-table-pager-label"
+          >
+            @for (n of pageNumbers(); track n) {
+              @if (n === query().page) {
+                <span aria-current="page">{{ n }}</span>
+              } @else {
+                <a
+                  routerLink="/"
+                  [queryParams]="{ page: n === 1 ? null : n }"
+                  queryParamsHandling="merge"
+                  fragment="projects"
+                  >{{ n }}</a
+                >
+              }
+            }
+          </nav>
+        }
+      } @else if (data.listing.hasValue()) {
+        <div class="empty">
+          <h3 i18n="@@store.listing.empty-title">لا توجد مشاريع مطابقة</h3>
+          @if (filtered()) {
+            <p i18n="@@store.listing.empty-lede">جرّب كلمة أخرى أو تصنيفًا آخر.</p>
+            <a class="reset" routerLink="/" fragment="projects" i18n="@@store.listing.show-all"
+              >عرض كل المشاريع</a
+            >
+          } @else {
+            <p i18n="@@store.listing.empty-none">لا توجد مشاريع منشورة الآن. عُد قريبًا.</p>
+          }
+        </div>
+      }
+    </ta-resource-state>
   </div>
 </section>
 
-<section class="block alt" aria-labelledby="books-h">
+<section class="trust">
   <div class="wrap">
-    <div class="sec-head">
-      <div>
-        <span class="eyebrow" i18n="@@store.layout.nav-books">الكتب</span>
-        <h2 id="books-h" class="sec-title" i18n="@@store.home.books-title">من إصدارات الجمعية.</h2>
-        <p class="sec-lede" i18n="@@store.home.books-lede">
-          نسخة مطبوعة تصلك بالشحن، أو رقمية تحمّلها فورًا من حسابك.
-        </p>
-      </div>
-      <a class="more" routerLink="/books"
-        ><span i18n="@@store.home.all-books">جميع الكتب</span> <ta-icon name="arrow" [size]="16"
-      /></a>
-    </div>
-    <ul class="cards c4">
-      @for (p of data.books(); track p.id) {
-        <li><ta-product-card [product]="p" [live]="data.live().get(p.slug)" /></li>
-      }
-    </ul>
+    <p>
+      <ta-icon name="lock" [size]="16" /><span i18n="@@store.home.trust"
+        >تبرعك يصل إلى المشروع أو التصنيف الذي تختاره كاملًا.</span
+      >
+    </p>
   </div>
 </section>

@@ -5,15 +5,18 @@ import { firstValueFrom } from 'rxjs';
 import type {
   AccessTokenResponse,
   CartNotice,
-  CustomerSession,
+  Me,
   OtpRequestedResponse,
   SessionResponse,
 } from '../api/api.types';
 import { STORE_API_URL } from '../api/store-api-url';
 import { I18nService } from '../i18n/i18n';
 
+/** What the header, account menu and checkout show about the signed-in donor (from the session or `GET /v1/me`). */
+export type DonorProfile = Pick<Me, 'id' | 'mobile' | 'fullName' | 'email' | 'locale'>;
+
 /**
- * Customer session (ADR-S04, 11 §4). The access token lives in a signal only — never in storage (non-negotiable #9).
+ * Donor session (ADR-S04, contract 15 §2.2). The access token lives in a signal only — never in storage (non-negotiable #9).
  * The refresh token is the API's HttpOnly `t3s_rt` cookie; `refresh()` is single-flight, so N parallel 401s cause one
  * refresh. Auth calls go through HttpBackend (no interceptors) with credentials, so they can't loop through the
  * refresh-on-401 logic.
@@ -27,13 +30,14 @@ export class StoreAuth {
 
   private readonly token = signal<string | null>(null);
   readonly accessToken = this.token.asReadonly();
-  readonly customer = signal<CustomerSession | null>(null);
+  readonly customer = signal<DonorProfile | null>(null);
   readonly isSignedIn = computed(() => this.token() !== null);
   /** Notices from the guest-cart merge on the last sign-in (RUL-17) — the cart shows and clears them. */
   readonly cartNotices = signal<CartNotice[]>([]);
 
   private refreshing: Promise<string> | null = null;
   private restoring: Promise<boolean> | null = null;
+  private loadingMe: Promise<void> | null = null;
 
   private readonly options = () => ({
     withCredentials: true,
@@ -59,7 +63,14 @@ export class StoreAuth {
       ),
     );
     this.token.set(session.accessToken);
-    this.customer.set(session.customer);
+    const c = session.customer;
+    this.customer.set({
+      id: c.id,
+      mobile: c.mobile,
+      fullName: c.fullName,
+      email: c.email,
+      locale: c.locale,
+    });
     this.cartNotices.set(session.cartNotices ?? []);
     this.restoring = Promise.resolve(true);
     return session;
@@ -78,6 +89,8 @@ export class StoreAuth {
         this.http.post<AccessTokenResponse>(`${this.api}/auth/refresh`, null, this.options()),
       );
       this.token.set(res.accessToken);
+      // W-2: a restored session has a token but no profile yet — load /v1/me once (the menu shows name + mobile).
+      if (!this.customer()) await this.loadMe();
       return res.accessToken;
     } catch (err) {
       // auth.refresh_race (409): a parallel tab refreshed within 20 s — retry once (11 §1.6).
@@ -98,6 +111,33 @@ export class StoreAuth {
     return this.restoring;
   }
 
+  /** `GET /v1/me` → the donor profile (single-flight). A failure leaves the session signed in without a profile. */
+  loadMe(): Promise<void> {
+    const token = this.token();
+    if (!token) return Promise.resolve();
+    this.loadingMe ??= firstValueFrom(
+      this.http.get<Me>(`${this.api}/me`, {
+        withCredentials: true,
+        headers: { 'Accept-Language': this.i18n.locale, Authorization: `Bearer ${token}` },
+      }),
+    )
+      .then((me) => this.setProfile(me))
+      .catch(() => undefined)
+      .finally(() => (this.loadingMe = null));
+    return this.loadingMe;
+  }
+
+  /** After `PATCH /v1/me` (profile page, checkout contact): the menu and checkout show the new values. */
+  setProfile(me: Pick<Me, 'id' | 'mobile' | 'fullName' | 'email' | 'locale'>): void {
+    this.customer.set({
+      id: me.id,
+      mobile: me.mobile,
+      fullName: me.fullName,
+      email: me.email,
+      locale: me.locale,
+    });
+  }
+
   async logout(): Promise<void> {
     try {
       await firstValueFrom(this.http.post(`${this.api}/auth/logout`, null, this.options()));
@@ -106,7 +146,7 @@ export class StoreAuth {
     }
   }
 
-  /** #20: revokes every session of this customer (needs the bearer). */
+  /** Revokes every session of this customer (needs the bearer). */
   async logoutAll(): Promise<void> {
     const token = this.token();
     try {
@@ -127,6 +167,7 @@ export class StoreAuth {
   clear(): void {
     this.token.set(null);
     this.customer.set(null);
+    this.cartNotices.set([]);
     this.restoring = Promise.resolve(false);
   }
 }

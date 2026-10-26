@@ -4,5 +4,6 @@ export const environment = {
   apiUrl: 'http://localhost:3000/v1',
   siteOrigin: 'https://store.ta3lom.sa',
   mainSiteUrl: 'https://ta3lom.sa',
-  devPaymentTrigger: true,
+  /** D-W2: online payment arrives with R5-Payments; until then checkout ends at the pending order. */
+  paymentsEnabled: false,
 };

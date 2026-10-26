@@ -1,312 +1,155 @@
-<div class="ahead">
-  <div>
-    <p class="back">
-      <a routerLink="/admin/orders" i18n="@@store.account.back-orders">كل الطلبات</a>
-    </p>
-    <h1>
-      <span i18n="@@store.account.order-title">تفاصيل الطلب</span>
-      <bdi dir="ltr" class="mono">{{ ref() }}</bdi>
-    </h1>
+<p class="back">
+  <a routerLink="/admin/orders" i18n="@@store.admin.back-to-orders">العودة إلى الطلبات</a>
+</p>
+@if (notFound()) {
+  <div class="ahead">
+    <h1 i18n="@@store.error.order-not-found">لم نجد هذا التبرع.</h1>
   </div>
-  @if (order(); as o) {
-    <div class="act">
-      <div class="rowacts">
-        @if (cancellable()) {
-          <button
-            type="button"
-            class="btn danger"
-            (click)="openCancel()"
-            [disabled]="!canCancel()"
-            aria-describedby="ord-cancel-why"
-            i18n="@@store.admin.cancel-order"
-          >
-            إلغاء الطلب
-          </button>
-        }
-        <button
-          type="button"
-          class="btn"
-          (click)="resendOpen.set(true)"
-          [disabled]="!canResend() || o.documents.length === 0"
-          aria-describedby="ord-resend-why"
-          i18n="@@store.admin.resend-docs"
-        >
-          إعادة إرسال المستندات
-        </button>
-      </div>
-      @if (cancellable()) {
-        <ta-requires id="ord-cancel-why" policy="staff:finance" />
-      }
-      <ta-requires id="ord-resend-why" policy="staff:resend" />
-    </div>
-  }
-</div>
-
-<ta-resource-state [loading]="loading() && !order()" [error]="!!problem()" (retry)="load(ref())">
-  @if (order(); as o) {
-    <div class="ogrid">
-      <section class="panel" aria-labelledby="ord-sum-h">
-        <h2 id="ord-sum-h" i18n="@@store.thanks.receipt">ملخص الطلب</h2>
-        <p class="meta">
-          <ta-status-pill [tone]="status(o.status).tone">{{
-            status(o.status).label
-          }}</ta-status-pill>
-          <span>{{ i18n.formatDateTime(o.placedAt) }}</span>
-        </p>
-        <div class="tbl-wrap">
-          <table class="atbl">
-            <caption class="visually-hidden" i18n="@@store.thanks.receipt">
-              ملخص الطلب
-            </caption>
-            <thead>
-              <tr>
-                <th scope="col" i18n="@@store.account.col-item">العنصر</th>
-                <th scope="col" i18n="@@store.account.col-qty">الكمية</th>
-                <th scope="col" i18n="@@store.account.col-amount">المبلغ</th>
-                <th scope="col" i18n="@@store.account.col-status">الحالة</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (l of lines(); track l.lineNo) {
-                <tr>
-                  <td>
-                    {{ title(l) }}
-                    @if (l.format) {
-                      <small class="muted slug">{{ l.format }}</small>
-                    }
-                  </td>
-                  <td>
-                    <bdi>{{ int(l.quantity) }}</bdi>
-                  </td>
-                  <td><ta-money [value]="l.amount" /></td>
-                  <td>
-                    <bdi dir="ltr" class="mono">{{ l.fulfilmentStatus }}</bdi>
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-        <dl class="kv">
-          <div>
-            <dt i18n="@@store.cart.purchases">المشتريات</dt>
-            <dd><ta-money [value]="o.purchasesTotal" /></dd>
-          </div>
-          @if (!isZero(o.shippingTotal)) {
-            <div>
-              <dt i18n="@@store.cart.shipping">الشحن</dt>
-              <dd><ta-money [value]="o.shippingTotal" /></dd>
-            </div>
-          }
-          <div class="t">
-            <dt i18n="@@store.cart.total">الإجمالي</dt>
-            <dd><ta-money [value]="o.grandTotal" /></dd>
-          </div>
-          @if (!isZero(o.refundedTotal)) {
-            <div>
-              <dt i18n="@@store.account.refunded">المبلغ المسترد</dt>
-              <dd><ta-money [value]="o.refundedTotal" /></dd>
-            </div>
-          }
-        </dl>
-      </section>
-
-      <section class="panel" aria-labelledby="ord-cust-h">
-        <h2 id="ord-cust-h" i18n="@@store.admin.customer">العميل</h2>
-        <dl class="kv">
-          <div>
-            <dt i18n="@@store.admin.col-name">الاسم</dt>
-            <dd>{{ o.contact.name }}</dd>
-          </div>
-          <div>
-            <dt i18n="@@store.otp.mobile-label">رقم الجوال</dt>
-            <dd>
-              <bdi dir="ltr">{{ o.contact.mobile }}</bdi>
-            </dd>
-          </div>
-          <div>
-            <dt i18n="@@store.checkout.email">البريد الإلكتروني</dt>
-            <dd>
-              <bdi dir="ltr">{{ o.contact.email }}</bdi>
-            </dd>
-          </div>
-        </dl>
-        @if (o.shippingAddress; as a) {
-          <h3 i18n="@@store.checkout.shipping">عنوان الشحن</h3>
-          <p class="addr">
-            {{ a.recipientName }} · <bdi dir="ltr">{{ a.recipientMobile }}</bdi
-            ><br />{{ a.city }}{{ a.district ? ' · ' + a.district : '' }} ·
-            <bdi dir="ltr">{{ a.shortAddress }}</bdi>
-          </p>
-        }
-        @if (o.shipment; as s) {
-          <p class="meta">
-            <ta-status-pill [tone]="shipStatus(s.status).tone">{{
-              shipStatus(s.status).label
+} @else {
+  <ta-resource-state
+    [loading]="data.order.isLoading() && !o()"
+    [error]="!!data.order.error() && !o()"
+    (retry)="data.order.reload()"
+  >
+    @if (o(); as x) {
+      <div class="ahead">
+        <div>
+          <h1>
+            <span i18n="@@store.admin.order-title">الطلب</span>
+            <bdi dir="ltr" class="mono">{{ x.reference }}</bdi>
+          </h1>
+          <p>
+            <ta-status-pill [tone]="label(x.status).tone">{{
+              label(x.status).label
             }}</ta-status-pill>
-            @if (s.trackingNo) {
-              <span
-                >{{ s.carrier }} · <bdi dir="ltr">{{ s.trackingNo }}</bdi></span
-              >
-            }
           </p>
+        </div>
+        @if (x.status === 'pending_payment') {
+          <div class="act">
+            <button
+              type="button"
+              class="btn danger"
+              [disabled]="!canCancel()"
+              aria-describedby="ao-why"
+              (click)="error.set(null); confirmOpen.set(true)"
+              i18n="@@store.admin.cancel-order"
+            >
+              إلغاء الطلب
+            </button>
+            <ta-requires id="ao-why" policy="staff:orders" />
+          </div>
         }
-      </section>
-
-      <section class="panel" aria-labelledby="ord-tl-h">
-        <h2 id="ord-tl-h" i18n="@@store.admin.timeline">سجل الطلب</h2>
-        <ol class="tl">
-          @for (e of timeline(); track $index) {
-            <li>
-              <time>{{ i18n.formatDateTime(e.at) }}</time> <span>{{ e.label }}</span>
-            </li>
-          }
-        </ol>
-        @if (o.payments.length > 0) {
-          <h3 i18n="@@store.admin.payments">المدفوعات</h3>
-          <ul class="plain">
-            @for (p of o.payments; track p.id) {
-              <li>
-                <bdi dir="ltr" class="mono">{{ p.method }} · {{ p.status }}</bdi> ·
-                <ta-money [value]="p.amount" />
-              </li>
-            }
-          </ul>
-        }
-        <h3 i18n="@@store.account.documents">الفواتير</h3>
-        @if (o.documents.length === 0) {
-          <p class="muted" i18n="@@store.account.no-documents">تصدر الفاتورة بعد تأكيد الدفع.</p>
-        } @else {
-          <ul class="plain">
-            @for (d of o.documents; track d.number) {
-              <li>
-                {{ docKind(d.kind) }} <bdi dir="ltr" class="mono">{{ d.number }}</bdi>
-              </li>
-            }
-          </ul>
-        }
-      </section>
-
-      <section class="panel" aria-labelledby="ord-grant-h">
-        <h2 id="ord-grant-h" i18n="@@store.admin.download-reset">إعادة ضبط تنزيل</h2>
-        <p class="muted" i18n="@@store.admin.download-reset-lede">
-          يعيد عدّاد تنزيل كتاب رقمي إلى صفر (مثلًا بعد مشكلة في الملف).
-        </p>
-        <form class="gform" (submit)="resetGrant($event)" novalidate>
-          <fieldset [disabled]="!canResend()">
-            <legend class="visually-hidden" i18n="@@store.admin.download-reset">
-              إعادة ضبط تنزيل
-            </legend>
-            <div class="field">
-              <label for="gr-id" i18n="@@store.admin.grant-id">معرّف التنزيل</label>
-              <input
-                id="gr-id"
-                dir="ltr"
-                [value]="grantId()"
-                (input)="grantId.set(value($event))"
-              />
+      </div>
+      @if (error(); as e) {
+        <p class="err panel" role="alert">{{ e }}</p>
+      }
+      <div class="ogrid">
+        <section class="panel" aria-labelledby="ao-lines-h">
+          <h2 id="ao-lines-h" i18n="@@store.admin.col-lines">التبرعات</h2>
+          <div class="tbl-wrap">
+            <table class="atbl">
+              <thead>
+                <tr>
+                  <th scope="col" i18n="@@store.admin.col-target">التبرع</th>
+                  <th scope="col" i18n="@@store.admin.col-qty">الكمية</th>
+                  <th scope="col" i18n="@@store.admin.col-unit">المبلغ للوحدة</th>
+                  <th scope="col" i18n="@@store.cart.total">الإجمالي</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (l of x.lines; track l.lineNo) {
+                  <tr>
+                    <td>{{ title(l) }}</td>
+                    <td>
+                      <bdi>{{ int(l.quantity) }}</bdi>
+                    </td>
+                    <td><ta-money [value]="l.unitAmount" /></td>
+                    <td><ta-money [value]="l.amount" /></td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          <dl class="kv">
+            <div>
+              <dt i18n="@@store.cart.total">الإجمالي</dt>
+              <dd class="t"><ta-money [value]="x.totalAmount" /></dd>
             </div>
-            <div class="field">
-              <label for="gr-reason" i18n="@@store.admin.reason">السبب</label>
-              <input
-                id="gr-reason"
-                [value]="grantReason()"
-                (input)="grantReason.set(value($event))"
-              />
+          </dl>
+        </section>
+        <section class="panel" aria-labelledby="ao-donor-h">
+          <h2 id="ao-donor-h" i18n="@@store.admin.donor">المتبرع</h2>
+          <dl class="kv">
+            <div>
+              <dt i18n="@@store.admin.col-name">الاسم</dt>
+              <dd>
+                <a [routerLink]="['/admin/donors', x.customerId]">{{ x.donorName }}</a>
+              </dd>
             </div>
-            @if (grantError(); as e) {
-              <p class="err" role="alert">{{ e }}</p>
+            <div>
+              <dt i18n="@@store.admin.donor-mobile">جوال المتبرع</dt>
+              <dd>
+                <bdi dir="ltr">{{ x.donorMobile }}</bdi>
+              </dd>
+            </div>
+            <div>
+              <dt i18n="@@store.checkout.email">البريد الإلكتروني</dt>
+              <dd>
+                <bdi dir="ltr">{{ x.donorEmail }}</bdi>
+              </dd>
+            </div>
+            <div>
+              <dt i18n="@@store.admin.locale">لغة الرسائل</dt>
+              <dd>{{ x.locale === 'en' ? 'English' : 'العربية' }}</dd>
+            </div>
+            <div>
+              <dt i18n="@@store.admin.col-date">التاريخ</dt>
+              <dd>{{ i18n.formatDateTime(x.createdAt) }}</dd>
+            </div>
+            <div>
+              <dt i18n="@@store.admin.payment-due">مهلة الدفع</dt>
+              <dd>{{ i18n.formatDateTime(x.paymentDueAt) }}</dd>
+            </div>
+            @if (x.cancelledAt) {
+              <div>
+                <dt i18n="@@store.admin.cancelled-at">أُلغي في</dt>
+                <dd>
+                  {{ i18n.formatDateTime(x.cancelledAt) }}
+                  @if (x.cancelledBy) {
+                    · <bdi dir="ltr">{{ x.cancelledBy }}</bdi>
+                  }
+                </dd>
+              </div>
             }
-            <div class="act">
-              <button
-                type="submit"
-                class="btn"
-                aria-describedby="gr-why"
-                i18n="@@store.admin.reset"
-              >
-                إعادة الضبط
-              </button>
-              <ta-requires id="gr-why" policy="staff:resend" />
-            </div>
-          </fieldset>
-        </form>
-      </section>
-    </div>
-  }
-</ta-resource-state>
+          </dl>
+        </section>
+      </div>
+    }
+  </ta-resource-state>
+}
 
-<ta-dialog [(open)]="cancelOpen" labelledBy="ord-c-h" [lightDismiss]="false">
-  <form class="dlg" (submit)="confirmCancel($event)" novalidate>
-    <h2 id="ord-c-h" i18n="@@store.admin.cancel-order">إلغاء الطلب</h2>
-    <p i18n="@@store.admin.cancel-lede">
-      يُلغى الطلب غير المدفوع ويعود المخزون المحجوز. لا يمكن التراجع عن الإلغاء.
+<ta-dialog [(open)]="confirmOpen" labelledBy="ao-c-h" [lightDismiss]="false">
+  <div class="dlg">
+    <h2 id="ao-c-h" i18n="@@store.admin.cancel-order-q">إلغاء هذا الطلب؟</h2>
+    <p i18n="@@store.admin.cancel-order-lede">
+      يُلغى الطلب ويُبلَّغ المتبرع. لا يمكن التراجع عن الإلغاء.
     </p>
-    <div class="field">
-      <label for="ord-reason" i18n="@@store.admin.reason">السبب</label>
-      <input id="ord-reason" [value]="reason()" (input)="reason.set(value($event))" />
-    </div>
-    @if (cancelError(); as e) {
+    @if (error(); as e) {
       <p class="err" role="alert">{{ e }}</p>
     }
     <div class="acts">
       <button
-        type="submit"
+        type="button"
         class="btn danger"
         [disabled]="busy()"
         [attr.aria-busy]="busy()"
-        i18n="@@store.admin.confirm-cancel"
+        (click)="cancel()"
+        i18n="@@store.admin.cancel-order"
       >
-        تأكيد الإلغاء
+        إلغاء الطلب
       </button>
-      <button
-        type="button"
-        class="btn"
-        (click)="cancelOpen.set(false)"
-        i18n="@@store.account.cancel"
-      >
-        إلغاء
-      </button>
-    </div>
-  </form>
-</ta-dialog>
-
-<ta-dialog [(open)]="resendOpen" labelledBy="ord-r-h">
-  <div class="dlg">
-    <h2 id="ord-r-h" i18n="@@store.admin.resend-docs">إعادة إرسال المستندات</h2>
-    <p i18n="@@store.admin.resend-lede">تُرسل الفاتورة مجددًا إلى جوال العميل وبريده.</p>
-    <label class="chk"
-      ><input
-        type="checkbox"
-        [checked]="channels().includes('sms')"
-        (change)="toggleChannel('sms', $event)"
-      />
-      <span i18n="@@store.admin.channel-sms">رسالة نصية</span></label
-    >
-    <label class="chk"
-      ><input
-        type="checkbox"
-        [checked]="channels().includes('email')"
-        (change)="toggleChannel('email', $event)"
-      />
-      <span i18n="@@store.admin.channel-email">بريد إلكتروني</span></label
-    >
-    <div class="acts">
-      <button
-        type="button"
-        class="btn primary"
-        (click)="confirmResend()"
-        [disabled]="busy() || channels().length === 0"
-        i18n="@@store.admin.send"
-      >
-        إرسال
-      </button>
-      <button
-        type="button"
-        class="btn"
-        (click)="resendOpen.set(false)"
-        i18n="@@store.account.cancel"
-      >
-        إلغاء
+      <button type="button" class="btn" (click)="confirmOpen.set(false)" i18n="@@store.admin.keep">
+        رجوع
       </button>
     </div>
   </div>

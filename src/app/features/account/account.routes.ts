@@ -1,14 +1,15 @@
 import type { Routes } from '@angular/router';
 
-/** `/account/…` (plan §2.2): client-rendered, noindex, signed-in customers only (guard on the parent). */
+/** `/account/…` (W-M4): donations (list + detail) and profile; the empty path opens the donations. */
 export const ACCOUNT_ROUTES: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'courses' },
-  { path: 'courses', loadComponent: () => import('./courses.page').then((m) => m.CoursesPage) },
-  { path: 'books', loadComponent: () => import('./books.page').then((m) => m.BooksPage) },
-  { path: 'orders', loadComponent: () => import('./orders.page').then((m) => m.OrdersPage) },
+  { path: '', pathMatch: 'full', redirectTo: 'donations' },
   {
-    path: 'orders/:ref',
-    loadComponent: () => import('./order-detail.page').then((m) => m.OrderDetailPage),
+    path: 'donations',
+    loadComponent: () => import('./donations.page').then((m) => m.DonationsPage),
+  },
+  {
+    path: 'donations/:ref',
+    loadComponent: () => import('./donation-detail.page').then((m) => m.DonationDetailPage),
   },
   { path: 'profile', loadComponent: () => import('./profile.page').then((m) => m.ProfilePage) },
 ];

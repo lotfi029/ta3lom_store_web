@@ -2,11 +2,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   inject,
+  input,
   model,
   output,
-  untracked,
 } from '@angular/core';
 import type { MediaAsset } from '../../../core/api/api.types';
 import { valueOf } from '../../../core/http/resource-value';
@@ -15,15 +14,15 @@ import { Dialog } from '../../../shared/ui/dialog/dialog';
 import { CatalogAdminData } from './catalog-admin.data';
 import { MediaUpload } from './media-upload';
 
-/** Pick a cover image from the media library, or upload one with its alt text (RUL-03). */
+/** Pick an image from the media library, or upload one with its alt text. */
 @Component({
   selector: 'ta-media-picker',
   imports: [Dialog, MediaUpload],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <ta-dialog [(open)]="open" labelledBy="mp-h" [lightDismiss]="false">
+    <ta-dialog [(open)]="open" [labelledBy]="idPrefix() + '-h'" [lightDismiss]="false">
       <div class="dlg wide">
-        <h2 id="mp-h" i18n="@@store.admin.choose-cover">اختيار صورة الغلاف</h2>
+        <h2 [id]="idPrefix() + '-h'">{{ heading() }}</h2>
         <ul class="grid">
           @for (a of images(); track a.id) {
             <li>
@@ -43,7 +42,7 @@ import { MediaUpload } from './media-upload';
           }
         </ul>
         <h3 i18n="@@store.admin.upload-new">رفع صورة جديدة</h3>
-        <ta-media-upload kind="image" idPrefix="mp" (uploaded)="choose($event)" />
+        <ta-media-upload [idPrefix]="idPrefix() + '-up'" (uploaded)="choose($event)" />
         <div class="acts">
           <button type="button" class="btn" (click)="open.set(false)" i18n="@@store.account.cancel">
             إلغاء
@@ -98,21 +97,13 @@ export class MediaPicker {
   private readonly data = inject(CatalogAdminData);
   protected readonly i18n = inject(I18nService);
   readonly open = model(false);
+  readonly idPrefix = input('mp');
+  readonly heading = input($localize`:@@store.admin.choose-image:اختيار صورة`);
   readonly picked = output<MediaAsset>();
 
   protected readonly images = computed(() =>
     (valueOf(this.data.media)?.items ?? []).filter((a) => a.kind === 'image' && a.url),
   );
-
-  constructor() {
-    effect(() => {
-      if (this.open())
-        untracked(() => {
-          this.data.mediaKind.set('image');
-          this.data.mediaPage.set(1);
-        });
-    });
-  }
 
   protected choose(a: MediaAsset): void {
     this.picked.emit(a);
