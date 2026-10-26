@@ -1,4 +1,3 @@
-import { execFileSync } from 'node:child_process';
 import { expect, type Page } from '@playwright/test';
 import { API } from './api';
 // Test tooling shared with the seed script (TOTP, staff credentials from e2e/.auth/staff.json).
@@ -26,46 +25,6 @@ export async function otpFor(mobile05: string, after = 0): Promise<string> {
   throw new Error(`no OTP for ${mobile05}`);
 }
 
-/**
- * R3-1 — local e2e only. The API's OTP caps (3 codes per mobile / 15 min, 10 per IP / hour) are code constants counted
- * in `store.otp_challenge`; neither the env nor /dev can raise or reset them, while the whole suite signs in from
- * 127.0.0.1. Before each signing-in spec the challenges are deleted from the LOCAL dev database — and only there: it
- * refuses unless the host is localhost and the database is the local dev database. Mobiles stay unique per test.
- * Against the stub (CI) there is nothing to reset.
- */
-export function resetOtpChallenges(): void {
-  if (/localhost:3000/.test(API)) return;
-  const host = process.env['PGHOST'] ?? 'localhost';
-  const db = process.env['PGDATABASE'] ?? 'ta3lom_store_dev';
-  if (
-    !['localhost', '127.0.0.1', '::1'].includes(host) ||
-    db !== 'ta3lom_store_dev' ||
-    !/\/\/localhost:5080\//.test(API)
-  )
-    throw new Error(
-      `resetOtpChallenges: refusing to touch ${host}/${db} (local dev database only)`,
-    );
-  execFileSync(
-    'psql',
-    [
-      '-h',
-      host,
-      '-p',
-      process.env['PGPORT'] ?? '5440',
-      '-U',
-      'postgres',
-      '-d',
-      db,
-      '-qc',
-      'DELETE FROM store.otp_challenge',
-    ],
-    {
-      env: { ...process.env, PGPASSWORD: process.env['PGPASSWORD'] ?? 'postgres' },
-      stdio: 'ignore',
-    },
-  );
-}
-
 /** Signs in through the real /login page and returns the mobile used. */
 export async function signIn(
   page: Page,
@@ -73,7 +32,6 @@ export async function signIn(
   mobile = freshMobile(),
   returnUrl = '/account/donations',
 ): Promise<string> {
-  resetOtpChallenges();
   await page.goto(`/${locale}/login?returnUrl=${encodeURIComponent(returnUrl)}`);
   const started = Date.now() - 50;
   await page.locator('#otp-mobile').fill(mobile);

@@ -12,7 +12,7 @@ import {
   untracked,
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import type { Cart, CartProblem } from '../../../core/api/api.types';
+import { type Cart, type CartProblem, toInt } from '../../../core/api/api.types';
 import { problemMessage } from '../../../core/api/problem-message';
 import { toProblem } from '../../../core/api/problem';
 import { StoreConfig } from '../../../core/api/store-config';
@@ -94,6 +94,8 @@ export class CheckoutPage {
   protected readonly error = signal<string | null>(null);
   protected readonly invalid = signal<CartProblem[]>([]);
   protected readonly cartEmpty = signal(false);
+  /** F-4: an earlier attempt may have placed the order, but it could not be matched — point to "my donations". */
+  protected readonly checkMyDonations = signal(false);
   protected readonly inProgress = signal(false);
   protected readonly noticeText = cartNoticeText;
 
@@ -170,11 +172,11 @@ export class CheckoutPage {
     this.invalid.set([]);
     this.inProgress.set(false);
     try {
-      const out = await this.data.placeOrder({
-        fullName: this.name(),
-        email: this.email(),
-        locale: this.i18n.locale,
-      });
+      const q = this.quote();
+      const out = await this.data.placeOrder(
+        { fullName: this.name(), email: this.email(), locale: this.i18n.locale },
+        q ? { lineCount: toInt(q.lineCount), totalAmount: q.totalAmount } : null,
+      );
       switch (out.kind) {
         case 'created':
           this.tokens.remember(out.order.reference, out.order.statusToken);
@@ -190,6 +192,7 @@ export class CheckoutPage {
           await this.loadQuote();
           break;
         case 'cartEmpty':
+          this.checkMyDonations.set(!!out.checkMyDonations);
           this.cartEmpty.set(true);
           await this.cart.refresh();
           break;

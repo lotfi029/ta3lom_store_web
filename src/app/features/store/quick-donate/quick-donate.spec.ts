@@ -10,6 +10,7 @@ const cat = (slug: string, acceptsGeneralGifts: boolean): Category => ({
   descriptionEn: null,
   imageUrl: null,
   imageAltAr: null,
+  imageAltEn: null,
   acceptsGeneralGifts,
   projectCount: 1,
 });

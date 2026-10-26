@@ -4363,6 +4363,7 @@ export interface components {
             /** Format: uuid */
             id: string;
             imageAltAr: null | string;
+            imageAltEn: null | string;
             imageUrl: null | string;
             nameAr: string;
             nameEn: null | string;
@@ -4605,11 +4606,13 @@ export interface components {
             badge: null | string;
             categorySlug: string;
             coverAltAr: null | string;
+            coverAltEn: null | string;
             coverUrl: null | string;
             fromAmount: null | string;
             /** Format: uuid */
             id: string;
             minAmount: string;
+            options: components["schemas"]["ProjectOptionView"][];
             slug: string;
             summaryAr: null | string;
             summaryEn: null | string;

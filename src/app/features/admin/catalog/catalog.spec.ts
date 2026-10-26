@@ -16,7 +16,7 @@ import {
 
 const row = (o: Partial<OptionRow>): OptionRow => ({ ...newOptionRow(), ...o });
 
-describe('options editor rules (API-3)', () => {
+describe('options editor rules', () => {
   it('rows follow the API sort order and keep ids', () => {
     const rows = optionRows([
       { id: 'b', labelAr: 'ب', labelEn: null, amount: '20.00', sort: 20, isActive: true },
@@ -42,6 +42,20 @@ describe('options editor rules (API-3)', () => {
       { key: 'k5', field: 'labelAr', kind: 'length' },
       { key: 'k6', field: 'labelEn', kind: 'length' },
     ]);
+  });
+
+  it('F-7: label length counts UTF-16 units, as the API does (string .length)', () => {
+    const astral = '𝔸'; // one code point, two UTF-16 units
+    expect(optionProblems([row({ key: 'k', labelAr: astral.repeat(31), amount: '5' })])).toEqual([
+      { key: 'k', field: 'labelAr', kind: 'length' },
+    ]);
+    expect(optionProblems([row({ key: 'k', labelAr: astral.repeat(30), amount: '5' })])).toEqual(
+      [],
+    );
+    expect(optionProblems([row({ key: 'k', labelAr: astral, amount: '5' })])).toEqual([]);
+    expect(
+      optionProblems([row({ key: 'k', labelAr: 'سهم', labelEn: astral.repeat(31), amount: '5' })]),
+    ).toEqual([{ key: 'k', field: 'labelEn', kind: 'length' }]);
   });
 
   it('amounts must be positive money in the API format (Arabic-Indic digits accepted)', () => {

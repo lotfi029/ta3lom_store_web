@@ -1,11 +1,10 @@
 import { expect } from '@playwright/test';
 import { Client } from '../../scripts/lib/store-api-client.mjs';
 import { apiGet } from './api';
-import { otpFor, resetOtpChallenges } from './auth';
+import { otpFor } from './auth';
 
 /** A donation for this mobile, placed through the API (its own session): a category gift of 50. Returns the reference. */
 export async function donate(mobile: string, locale: 'ar' | 'en'): Promise<string> {
-  resetOtpChallenges();
   const c = new Client();
   const t0 = Date.now() - 50;
   await c.call('POST', '/v1/auth/otp/request', { mobile, locale });

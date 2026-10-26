@@ -28,7 +28,7 @@ export function pollDelay(elapsedMs: number): number | null {
   return elapsedMs < FAST_FOR_MS ? FAST_MS : SLOW_MS;
 }
 
-/** API-2: the status route matches the reference case-sensitively and references are stored upper-case. */
+/** References are shown and linked in their canonical upper case (the API matches them in any case). */
 export const normalizeRef = (ref: string): string => ref.trim().toUpperCase();
 
 const TOKEN_KEY = (ref: string) => `t3s-order-t:${ref}`;
@@ -161,7 +161,7 @@ export class OrderData {
     });
   }
 
-  /** Opens an order: the reference upper-cased (API-2), the token from the URL (then remembered) or from earlier. */
+  /** Opens an order: the reference in canonical upper case, the token from the URL (then remembered) or from earlier. */
   open(ref: string, urlToken: string | null): void {
     const r = normalizeRef(ref);
     if (urlToken) this.tokens.remember(r, urlToken);

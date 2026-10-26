@@ -16,8 +16,11 @@ export Store__WebBaseUrl=http://localhost:4200 Store__PublicBaseUrl=http://local
 export STORE_API_DIR="${STORE_API_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)/ta3lom_store_api}"
 # Local e2e only: the API's per-IP HTTP limits (Store:RateLimits) assume one person per IP; the e2e suite is many "people"
 # on 127.0.0.1. Raised here for the local run only — production defaults are untouched (DECISIONS: e2e limits).
-# The OTP business caps (3 per mobile / 15 min, 10 per IP / hour) are code constants and cannot be raised here (R3-1).
 for p in OtpRequest OtpVerify AuthRefresh StaffLogin Cart Checkout Me Admin TemplateTest; do
   export "Store__RateLimits__${p}__PermitLimit=5000"
 done
 export Store__RateLimits__Public__TokenLimit=5000 Store__RateLimits__Public__TokensPerPeriod=500
+# Both OTP limits must be raised for the suite: the HTTP limiter above (OtpRequest) and the D-10 business caps (3 codes per
+# mobile / 15 min, 10 per IP / hour). The caps are overridable in Development only since API cd26a80 (API-8); the API
+# refuses these keys in any other environment (the host stops at start-up), so they can never reach production.
+export Store__Otp__Development__MaxPerIp=10000 Store__Otp__Development__MaxPerMobile=100

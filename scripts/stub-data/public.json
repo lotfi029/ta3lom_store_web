@@ -1,6 +1,6 @@
 {
  "meta": {
-  "apiCommit": "792521a"
+  "apiCommit": "cd26a80"
  },
  "/catalog/home": {
   "featured": [
@@ -17,7 +17,22 @@
     "categorySlug": "education",
     "allowOpenAmount": true,
     "minAmount": "10.00",
-    "fromAmount": "4.00"
+    "fromAmount": "4.00",
+    "options": [
+     {
+      "id": "01a174b0-41e9-7b0d-8192-90117607bc41",
+      "labelAr": "نسخة عربية",
+      "labelEn": "Arabic copy",
+      "amount": "4.00"
+     },
+     {
+      "id": "01a174b0-41eb-72a8-8802-13b633cfed37",
+      "labelAr": "نسخة مترجمة",
+      "labelEn": "Translated copy",
+      "amount": "5.00"
+     }
+    ],
+    "coverAltEn": null
    },
    {
     "id": "01a174b0-4331-702f-bb8b-59fa998d35ff",
@@ -32,7 +47,34 @@
     "categorySlug": "dawah",
     "allowOpenAmount": false,
     "minAmount": "10.00",
-    "fromAmount": "25.00"
+    "fromAmount": "25.00",
+    "options": [
+     {
+      "id": "01a174b0-4331-7ef4-8bc0-b367419eeb82",
+      "labelAr": "ساعة",
+      "labelEn": "One hour",
+      "amount": "25.00"
+     },
+     {
+      "id": "01a174b0-4331-7b30-8421-2cdc332beb93",
+      "labelAr": "يوم",
+      "labelEn": "One day",
+      "amount": "100.00"
+     },
+     {
+      "id": "01a174b0-4331-73ba-bb5c-82c326fff861",
+      "labelAr": "أسبوع",
+      "labelEn": "One week",
+      "amount": "500.00"
+     },
+     {
+      "id": "01a174b0-4331-74c1-8340-acc821d158bc",
+      "labelAr": "شهر",
+      "labelEn": "One month",
+      "amount": "2000.00"
+     }
+    ],
+    "coverAltEn": null
    },
    {
     "id": "01a174b0-42db-7b8e-8a72-1472b3df0e89",
@@ -47,7 +89,16 @@
     "categorySlug": "dawah",
     "allowOpenAmount": true,
     "minAmount": "10.00",
-    "fromAmount": "150.00"
+    "fromAmount": "150.00",
+    "options": [
+     {
+      "id": "01a174b0-42db-78f9-a8bb-c67df6392fee",
+      "labelAr": "تكلفة المعتمر",
+      "labelEn": "One pilgrim",
+      "amount": "150.00"
+     }
+    ],
+    "coverAltEn": null
    },
    {
     "id": "01a174b0-43b6-77fe-9eef-2abc0ce2cc6f",
@@ -62,7 +113,9 @@
     "categorySlug": "relief",
     "allowOpenAmount": true,
     "minAmount": "10.00",
-    "fromAmount": null
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": null
    },
    {
     "id": "01a174b0-4492-798c-9538-de8576e27b25",
@@ -77,7 +130,9 @@
     "categorySlug": "relief",
     "allowOpenAmount": true,
     "minAmount": "10.00",
-    "fromAmount": null
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": null
    },
    {
     "id": "01a174b0-4504-7f58-ace6-270e55a31d9c",
@@ -92,7 +147,9 @@
     "categorySlug": "education",
     "allowOpenAmount": true,
     "minAmount": "10.00",
-    "fromAmount": null
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": null
    }
   ],
   "categories": [
@@ -106,7 +163,8 @@
     "imageUrl": "http://localhost:5080/files/public/seed/category-dawah.webp",
     "imageAltAr": "الدعوة",
     "acceptsGeneralGifts": true,
-    "projectCount": 2
+    "projectCount": 2,
+    "imageAltEn": null
    },
    {
     "id": "01a174b0-4001-7241-a5ae-55db445028b0",
@@ -118,7 +176,8 @@
     "imageUrl": "http://localhost:5080/files/public/seed/category-education.webp",
     "imageAltAr": "التعليم",
     "acceptsGeneralGifts": true,
-    "projectCount": 2
+    "projectCount": 2,
+    "imageAltEn": null
    },
    {
     "id": "01a174b0-407d-7d40-90fc-9f515d9c666b",
@@ -130,7 +189,8 @@
     "imageUrl": "http://localhost:5080/files/public/seed/category-relief.webp",
     "imageAltAr": "الإغاثة",
     "acceptsGeneralGifts": true,
-    "projectCount": 2
+    "projectCount": 2,
+    "imageAltEn": null
    }
   ],
   "amountPresets": [
@@ -150,7 +210,8 @@
    "imageUrl": "http://localhost:5080/files/public/seed/category-dawah.webp",
    "imageAltAr": "الدعوة",
    "acceptsGeneralGifts": true,
-   "projectCount": 2
+   "projectCount": 2,
+   "imageAltEn": null
   },
   {
    "id": "01a174b0-4001-7241-a5ae-55db445028b0",
@@ -162,7 +223,8 @@
    "imageUrl": "http://localhost:5080/files/public/seed/category-education.webp",
    "imageAltAr": "التعليم",
    "acceptsGeneralGifts": true,
-   "projectCount": 2
+   "projectCount": 2,
+   "imageAltEn": null
   },
   {
    "id": "01a174b0-407d-7d40-90fc-9f515d9c666b",
@@ -174,7 +236,8 @@
    "imageUrl": "http://localhost:5080/files/public/seed/category-relief.webp",
    "imageAltAr": "الإغاثة",
    "acceptsGeneralGifts": true,
-   "projectCount": 2
+   "projectCount": 2,
+   "imageAltEn": null
   }
  ],
  "/catalog/config": {
@@ -214,7 +277,22 @@
     "categorySlug": "education",
     "allowOpenAmount": true,
     "minAmount": "10.00",
-    "fromAmount": "4.00"
+    "fromAmount": "4.00",
+    "options": [
+     {
+      "id": "01a174b0-41e9-7b0d-8192-90117607bc41",
+      "labelAr": "نسخة عربية",
+      "labelEn": "Arabic copy",
+      "amount": "4.00"
+     },
+     {
+      "id": "01a174b0-41eb-72a8-8802-13b633cfed37",
+      "labelAr": "نسخة مترجمة",
+      "labelEn": "Translated copy",
+      "amount": "5.00"
+     }
+    ],
+    "coverAltEn": null
    },
    {
     "id": "01a174b0-42db-7b8e-8a72-1472b3df0e89",
@@ -229,7 +307,16 @@
     "categorySlug": "dawah",
     "allowOpenAmount": true,
     "minAmount": "10.00",
-    "fromAmount": "150.00"
+    "fromAmount": "150.00",
+    "options": [
+     {
+      "id": "01a174b0-42db-78f9-a8bb-c67df6392fee",
+      "labelAr": "تكلفة المعتمر",
+      "labelEn": "One pilgrim",
+      "amount": "150.00"
+     }
+    ],
+    "coverAltEn": null
    },
    {
     "id": "01a174b0-4331-702f-bb8b-59fa998d35ff",
@@ -244,7 +331,34 @@
     "categorySlug": "dawah",
     "allowOpenAmount": false,
     "minAmount": "10.00",
-    "fromAmount": "25.00"
+    "fromAmount": "25.00",
+    "options": [
+     {
+      "id": "01a174b0-4331-7ef4-8bc0-b367419eeb82",
+      "labelAr": "ساعة",
+      "labelEn": "One hour",
+      "amount": "25.00"
+     },
+     {
+      "id": "01a174b0-4331-7b30-8421-2cdc332beb93",
+      "labelAr": "يوم",
+      "labelEn": "One day",
+      "amount": "100.00"
+     },
+     {
+      "id": "01a174b0-4331-73ba-bb5c-82c326fff861",
+      "labelAr": "أسبوع",
+      "labelEn": "One week",
+      "amount": "500.00"
+     },
+     {
+      "id": "01a174b0-4331-74c1-8340-acc821d158bc",
+      "labelAr": "شهر",
+      "labelEn": "One month",
+      "amount": "2000.00"
+     }
+    ],
+    "coverAltEn": null
    },
    {
     "id": "01a174b0-43b6-77fe-9eef-2abc0ce2cc6f",
@@ -259,7 +373,9 @@
     "categorySlug": "relief",
     "allowOpenAmount": true,
     "minAmount": "10.00",
-    "fromAmount": null
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": null
    },
    {
     "id": "01a174b0-4492-798c-9538-de8576e27b25",
@@ -274,7 +390,9 @@
     "categorySlug": "relief",
     "allowOpenAmount": true,
     "minAmount": "10.00",
-    "fromAmount": null
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": null
    },
    {
     "id": "01a174b0-4504-7f58-ace6-270e55a31d9c",
@@ -289,7 +407,9 @@
     "categorySlug": "education",
     "allowOpenAmount": true,
     "minAmount": "10.00",
-    "fromAmount": null
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": null
    }
   ],
   "total": 6,
@@ -311,7 +431,22 @@
     "categorySlug": "education",
     "allowOpenAmount": true,
     "minAmount": "10.00",
-    "fromAmount": "4.00"
+    "fromAmount": "4.00",
+    "options": [
+     {
+      "id": "01a174b0-41e9-7b0d-8192-90117607bc41",
+      "labelAr": "نسخة عربية",
+      "labelEn": "Arabic copy",
+      "amount": "4.00"
+     },
+     {
+      "id": "01a174b0-41eb-72a8-8802-13b633cfed37",
+      "labelAr": "نسخة مترجمة",
+      "labelEn": "Translated copy",
+      "amount": "5.00"
+     }
+    ],
+    "coverAltEn": null
    },
    {
     "id": "01a174b0-42db-7b8e-8a72-1472b3df0e89",
@@ -326,7 +461,16 @@
     "categorySlug": "dawah",
     "allowOpenAmount": true,
     "minAmount": "10.00",
-    "fromAmount": "150.00"
+    "fromAmount": "150.00",
+    "options": [
+     {
+      "id": "01a174b0-42db-78f9-a8bb-c67df6392fee",
+      "labelAr": "تكلفة المعتمر",
+      "labelEn": "One pilgrim",
+      "amount": "150.00"
+     }
+    ],
+    "coverAltEn": null
    },
    {
     "id": "01a174b0-4331-702f-bb8b-59fa998d35ff",
@@ -341,7 +485,34 @@
     "categorySlug": "dawah",
     "allowOpenAmount": false,
     "minAmount": "10.00",
-    "fromAmount": "25.00"
+    "fromAmount": "25.00",
+    "options": [
+     {
+      "id": "01a174b0-4331-7ef4-8bc0-b367419eeb82",
+      "labelAr": "ساعة",
+      "labelEn": "One hour",
+      "amount": "25.00"
+     },
+     {
+      "id": "01a174b0-4331-7b30-8421-2cdc332beb93",
+      "labelAr": "يوم",
+      "labelEn": "One day",
+      "amount": "100.00"
+     },
+     {
+      "id": "01a174b0-4331-73ba-bb5c-82c326fff861",
+      "labelAr": "أسبوع",
+      "labelEn": "One week",
+      "amount": "500.00"
+     },
+     {
+      "id": "01a174b0-4331-74c1-8340-acc821d158bc",
+      "labelAr": "شهر",
+      "labelEn": "One month",
+      "amount": "2000.00"
+     }
+    ],
+    "coverAltEn": null
    },
    {
     "id": "01a174b0-43b6-77fe-9eef-2abc0ce2cc6f",
@@ -356,7 +527,9 @@
     "categorySlug": "relief",
     "allowOpenAmount": true,
     "minAmount": "10.00",
-    "fromAmount": null
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": null
    },
    {
     "id": "01a174b0-4492-798c-9538-de8576e27b25",
@@ -371,7 +544,9 @@
     "categorySlug": "relief",
     "allowOpenAmount": true,
     "minAmount": "10.00",
-    "fromAmount": null
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": null
    },
    {
     "id": "01a174b0-4504-7f58-ace6-270e55a31d9c",
@@ -386,7 +561,9 @@
     "categorySlug": "education",
     "allowOpenAmount": true,
     "minAmount": "10.00",
-    "fromAmount": null
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": null
    }
   ],
   "total": 6,
@@ -408,7 +585,9 @@
     "categorySlug": "relief",
     "allowOpenAmount": true,
     "minAmount": "10.00",
-    "fromAmount": null
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": null
    },
    {
     "id": "01a174b0-42db-7b8e-8a72-1472b3df0e89",
@@ -423,7 +602,16 @@
     "categorySlug": "dawah",
     "allowOpenAmount": true,
     "minAmount": "10.00",
-    "fromAmount": "150.00"
+    "fromAmount": "150.00",
+    "options": [
+     {
+      "id": "01a174b0-42db-78f9-a8bb-c67df6392fee",
+      "labelAr": "تكلفة المعتمر",
+      "labelEn": "One pilgrim",
+      "amount": "150.00"
+     }
+    ],
+    "coverAltEn": null
    },
    {
     "id": "01a174b0-4504-7f58-ace6-270e55a31d9c",
@@ -438,7 +626,9 @@
     "categorySlug": "education",
     "allowOpenAmount": true,
     "minAmount": "10.00",
-    "fromAmount": null
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": null
    },
    {
     "id": "01a174b0-43b6-77fe-9eef-2abc0ce2cc6f",
@@ -453,7 +643,9 @@
     "categorySlug": "relief",
     "allowOpenAmount": true,
     "minAmount": "10.00",
-    "fromAmount": null
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": null
    },
    {
     "id": "01a174b0-41d9-7f35-be63-a1849291cdbb",
@@ -468,7 +660,22 @@
     "categorySlug": "education",
     "allowOpenAmount": true,
     "minAmount": "10.00",
-    "fromAmount": "4.00"
+    "fromAmount": "4.00",
+    "options": [
+     {
+      "id": "01a174b0-41e9-7b0d-8192-90117607bc41",
+      "labelAr": "نسخة عربية",
+      "labelEn": "Arabic copy",
+      "amount": "4.00"
+     },
+     {
+      "id": "01a174b0-41eb-72a8-8802-13b633cfed37",
+      "labelAr": "نسخة مترجمة",
+      "labelEn": "Translated copy",
+      "amount": "5.00"
+     }
+    ],
+    "coverAltEn": null
    },
    {
     "id": "01a174b0-4331-702f-bb8b-59fa998d35ff",
@@ -483,7 +690,34 @@
     "categorySlug": "dawah",
     "allowOpenAmount": false,
     "minAmount": "10.00",
-    "fromAmount": "25.00"
+    "fromAmount": "25.00",
+    "options": [
+     {
+      "id": "01a174b0-4331-7ef4-8bc0-b367419eeb82",
+      "labelAr": "ساعة",
+      "labelEn": "One hour",
+      "amount": "25.00"
+     },
+     {
+      "id": "01a174b0-4331-7b30-8421-2cdc332beb93",
+      "labelAr": "يوم",
+      "labelEn": "One day",
+      "amount": "100.00"
+     },
+     {
+      "id": "01a174b0-4331-73ba-bb5c-82c326fff861",
+      "labelAr": "أسبوع",
+      "labelEn": "One week",
+      "amount": "500.00"
+     },
+     {
+      "id": "01a174b0-4331-74c1-8340-acc821d158bc",
+      "labelAr": "شهر",
+      "labelEn": "One month",
+      "amount": "2000.00"
+     }
+    ],
+    "coverAltEn": null
    }
   ],
   "total": 6,

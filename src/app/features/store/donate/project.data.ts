@@ -9,9 +9,9 @@ export const isRedirect = (v: ProjectDetail | SlugRedirect | undefined): v is Sl
   !!v && 'redirectTo' in v && typeof v.redirectTo === 'string';
 
 /**
- * One project's detail (contract 15 §2.1). Provided per component: the project page uses it whole; a listing card uses
- * it for the option chips, because `ProjectCard` carries only `fromAmount` (DECISIONS: card options, API-9). Read during
- * prerender too (transfer state), so the prerendered card and page already show their options.
+ * One project's detail (contract 15 §2.1), for the project page `/p/:slug` only — listing cards carry their options
+ * themselves (`ProjectCard.options`, API-9). Read during prerender too (transfer state), so the prerendered page already
+ * shows its options; refreshed after hydration.
  */
 @Injectable()
 export class ProjectData {

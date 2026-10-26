@@ -143,3 +143,12 @@
   color: var(--c-link);
   font-size: 0.88rem;
 }
+
+.co-check {
+  margin-block: 0 12px;
+}
+
+.co-check a {
+  color: var(--c-link);
+  font-weight: 600;
+}

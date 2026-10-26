@@ -11,7 +11,10 @@ import { westernDigits } from '../../../core/i18n/western-digits';
 
 /** Project slugs as the API validates them (contract 15 §2.7). */
 export const PROJECT_SLUG = /^[a-z0-9-]{2,80}$/;
-/** `PUT …/options`: at most 50 options, `labelAr` 2–60 (trimmed, unique), `labelEn` ≤ 60 (contract 15 §2.7). */
+/**
+ * `PUT …/options`: at most 50 options, `labelAr` 2–60 (trimmed, unique), `labelEn` ≤ 60 (contract 15 §2.7). Lengths are
+ * UTF-16 units (`string.length`), as the API's validator counts them (F-7).
+ */
 export const MAX_OPTIONS = 50;
 const LABEL_MIN = 2;
 const LABEL_MAX = 60;
@@ -134,8 +137,8 @@ export interface OptionProblem {
 const norm = (s: string) => s.trim().replace(/\s+/g, ' ');
 
 /**
- * Client checks before `PUT …/options` (API-3: the API answers 500 for a null label or list, so the editor never sends
- * one): every row has an Arabic label of 2–60 characters, unique after trimming; the English label ≤ 60; a positive
+ * Client checks before `PUT …/options`, so mistakes show on the row before a round trip (the API validates the same
+ * rules and answers 400 `validation.failed`): every row has an Arabic label of 2–60 characters, unique after trimming; the English label ≤ 60; a positive
  * amount in the API's money format; at most 50 rows.
  */
 export function optionProblems(rows: readonly OptionRow[]): OptionProblem[] {
@@ -145,11 +148,11 @@ export function optionProblems(rows: readonly OptionRow[]): OptionProblem[] {
   for (const r of rows) {
     const ar = norm(r.labelAr);
     if (!ar) out.push({ key: r.key, field: 'labelAr', kind: 'required' });
-    else if ([...ar].length < LABEL_MIN || [...ar].length > LABEL_MAX)
+    else if (ar.length < LABEL_MIN || ar.length > LABEL_MAX)
       out.push({ key: r.key, field: 'labelAr', kind: 'length' });
     else if (seen.has(ar)) out.push({ key: r.key, field: 'labelAr', kind: 'duplicate' });
     else seen.set(ar, r.key);
-    if ([...norm(r.labelEn)].length > LABEL_MAX)
+    if (norm(r.labelEn).length > LABEL_MAX)
       out.push({ key: r.key, field: 'labelEn', kind: 'length' });
     if (!checkAmount(r.amount, null, null).ok)
       out.push({ key: r.key, field: 'amount', kind: 'amount' });

@@ -5,7 +5,7 @@ import { toInt } from '../../../core/api/api.types';
 import { problemMessage } from '../../../core/api/problem-message';
 import { toProblem } from '../../../core/api/problem';
 import { StaffAuth } from '../../../core/auth/staff-auth';
-import type { HasUnsavedChanges } from '../../../core/guards/guards';
+import { type HasUnsavedChanges, warnBeforeUnload } from '../../../core/guards/guards';
 import { valueOf } from '../../../core/http/resource-value';
 import { I18nService } from '../../../core/i18n/i18n';
 import { westernDigits } from '../../../core/i18n/western-digits';
@@ -137,6 +137,7 @@ export class CategoriesPage implements HasUnsavedChanges {
   );
 
   constructor() {
+    warnBeforeUnload(() => this.hasUnsavedChanges());
     this.seo.set({
       title: $localize`:@@store.admin.nav-categories:التصنيفات`,
       description: '',

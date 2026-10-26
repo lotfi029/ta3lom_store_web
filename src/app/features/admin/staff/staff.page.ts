@@ -13,6 +13,7 @@ import { ToastService } from '../../../core/ui/toast.service';
 import { Dialog } from '../../../shared/ui/dialog/dialog';
 import { ResourceState } from '../../../shared/ui/resource-state/resource-state';
 import { StatusPill } from '../../../shared/ui/status-pill/status-pill';
+import { ConflictDialog } from '../ui/conflict-dialog';
 import { PlatformData } from '../platform.data';
 
 interface StaffModel {
@@ -30,7 +31,7 @@ type Confirm = { kind: 'password' | 'totp' | 'unlock'; user: StaffUser } | null;
  */
 @Component({
   selector: 'ta-admin-staff',
-  imports: [FormField, Dialog, ResourceState, StatusPill],
+  imports: [FormField, Dialog, ResourceState, StatusPill, ConflictDialog],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './staff.page.html',
   styleUrls: ['../admin-common.css'],
@@ -73,6 +74,8 @@ export class StaffPage {
   });
   protected readonly busy = signal(false);
   protected readonly formError = signal<string | null>(null);
+  /** 409 `concurrency.conflict` on an edit (F-3): someone changed this member since the list was loaded. */
+  protected readonly conflictOpen = signal(false);
 
   protected readonly confirm = signal<Confirm>(null);
   protected readonly confirmOpen = signal(false);
@@ -158,10 +161,19 @@ export class StaffPage {
         this.toast.show($localize`:@@store.account.saved:حُفظت التغييرات.`, 'success');
       }
     } catch (e) {
-      this.formError.set(problemMessage(toProblem(e)));
+      const p = toProblem(e);
+      if (p.code === 'concurrency.conflict') {
+        this.data.staff.reload();
+        this.conflictOpen.set(true);
+      } else this.formError.set(problemMessage(p));
     } finally {
       this.busy.set(false);
     }
+  }
+
+  /** Conflict → close the form; the reloaded list carries the new version, so editing again starts from it. */
+  protected reloadLatest(): void {
+    this.editOpen.set(false);
   }
 
   protected ask(kind: 'password' | 'totp' | 'unlock', user: StaffUser): void {

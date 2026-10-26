@@ -1,3 +1,4 @@
+import { Component, provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import {
   type ActivatedRouteSnapshot,
@@ -15,6 +16,7 @@ import {
   safeReturnUrl,
   staffGuard,
   staffPolicyGuard,
+  warnBeforeUnload,
 } from './guards';
 
 const state = (url: string) => ({ url }) as RouterStateSnapshot;
@@ -97,5 +99,33 @@ describe('guards', () => {
     expect(path(await run(staffPolicyGuard('staff:admin'), route(), '/admin/audit'))).toBe(
       '/admin',
     );
+  });
+});
+
+describe('warnBeforeUnload (F-6)', () => {
+  let dirty = false;
+
+  @Component({ template: '' })
+  class Editor {
+    constructor() {
+      warnBeforeUnload(() => dirty);
+    }
+  }
+
+  const unload = () => {
+    const e = new Event('beforeunload', { cancelable: true });
+    window.dispatchEvent(e);
+    return e.defaultPrevented;
+  };
+
+  it('asks before the tab closes or reloads only while there are unsaved edits, and stops when destroyed', () => {
+    TestBed.configureTestingModule({ providers: [provideZonelessChangeDetection()] });
+    const fixture = TestBed.createComponent(Editor);
+    dirty = false;
+    expect(unload()).toBe(false);
+    dirty = true;
+    expect(unload()).toBe(true);
+    fixture.destroy();
+    expect(unload()).toBe(false);
   });
 });

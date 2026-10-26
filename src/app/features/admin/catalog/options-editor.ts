@@ -33,8 +33,12 @@ import {
 /**
  * Donation options of a project (`PUT /admin/projects/{id}/options`, a full replacement): add, rename, change the
  * amount, reorder (up/down), deactivate or remove. A removed option that already has donations is deactivated by the
- * API instead of deleted. Rows are checked here first (API-3: never a null label or list). Saves send `version`; a
- * 409 `concurrency.conflict` is handed to the page (`conflict`).
+ * API instead of deleted. Rows are checked here first, next to the field (the API checks again).
+ *
+ * Version (F-2, owner R-1): the editor keeps its OWN base version and the option list it was loaded from. A new
+ * `project()` with the same options (e.g. a details save) only advances the base version, so unsaved rows survive; new
+ * options replace the rows when nothing is being edited; with unsaved rows the base version stays, so the next save gets
+ * 409 `concurrency.conflict` (handed to the page, `conflict`) instead of overwriting someone else's change.
  */
 @Component({
   selector: 'ta-options-editor',
@@ -55,6 +59,10 @@ export class OptionsEditor {
 
   protected readonly rows = signal<OptionRow[]>([]);
   private readonly initial = signal('');
+  /** The `version` the rows are based on, and the option list (canonical JSON) they were loaded from. */
+  private baseVersion = 0;
+  private baseOptions = '';
+  private loaded = false;
   protected readonly tried = signal(false);
   protected readonly busy = signal(false);
   protected readonly error = signal<string | null>(null);
@@ -66,10 +74,9 @@ export class OptionsEditor {
   protected readonly dirty = computed(() => JSON.stringify(this.rows()) !== this.initial());
 
   constructor() {
-    // A new project version (load, save, conflict reload) resets the rows.
     effect(() => {
       const p = this.project();
-      untracked(() => this.reset(p));
+      untracked(() => this.follow(p));
     });
   }
 
@@ -77,7 +84,18 @@ export class OptionsEditor {
     return this.dirty();
   }
 
-  private reset(p: AdminProject): void {
+  /** A new project from the page: see the class comment (R-1). */
+  private follow(p: AdminProject): void {
+    if (!this.loaded) this.reset(p);
+    else if (optionsKey(p) === this.baseOptions) this.baseVersion = toInt(p.version);
+    else if (!this.dirty()) this.reset(p);
+  }
+
+  /** Rows, base version and base options from this project (load, own save, discard, conflict reload). */
+  reset(p: AdminProject): void {
+    this.loaded = true;
+    this.baseVersion = toInt(p.version);
+    this.baseOptions = optionsKey(p);
     const rows = optionRows(p.options);
     this.rows.set(rows);
     this.initial.set(JSON.stringify(rows));
@@ -150,7 +168,8 @@ export class OptionsEditor {
     this.missing.set([]);
     const p = this.project();
     try {
-      const fresh = await this.data.saveOptions(p.id, optionsInput(this.rows(), toInt(p.version)));
+      const fresh = await this.data.saveOptions(p.id, optionsInput(this.rows(), this.baseVersion));
+      this.reset(fresh);
       this.saved.emit(fresh);
     } catch (err) {
       const prob = toProblem(err);
@@ -174,3 +193,6 @@ export class OptionsEditor {
     });
   }
 }
+
+/** The option list a project carries, as canonical JSON (order matters: it is the sort order). */
+const optionsKey = (p: AdminProject): string => JSON.stringify(p.options);

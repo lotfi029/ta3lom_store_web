@@ -11,7 +11,7 @@ import {
 import { STORE_API_URL } from '../../../core/api/store-api-url';
 import { StaffAuth } from '../../../core/auth/staff-auth';
 import { staffGuard } from '../../../core/guards/guards';
-import { passwordOutcome } from './admin-password.page';
+import { changePasswordWithRefresh, passwordOutcome } from './admin-password.page';
 
 const API = 'https://store-api.test/v1';
 const b64 = (o: object) =>
@@ -105,5 +105,62 @@ describe('/admin/password (C-6, E-3)', () => {
 
     expect(passwordOutcome(problem(423, { code: 'auth.account_locked' })).signIn).toBe(true);
     expect(passwordOutcome(problem(401, { code: 'auth.unauthenticated' })).signIn).toBe(true);
+  });
+
+  describe('F-5: a 401 (the 10-minute access token expired) refreshes once and retries', () => {
+    const start = async () => {
+      const r = auth.ensureSession();
+      http.expectOne(`${API}/admin/auth/refresh`).flush(session({ pwd_change: 'true' }, true));
+      await r;
+    };
+    const tick = () => new Promise((r) => setTimeout(r));
+
+    it('401 → refresh (the token still carries pwd_change) → retry → new session', async () => {
+      await start();
+      const done = changePasswordWithRefresh(auth, 'old-one-time', 'a much longer new pass');
+      http
+        .expectOne(`${API}/admin/auth/password`)
+        .flush({ status: 401, code: 'auth.unauthenticated' }, { status: 401, statusText: 'x' });
+      await tick();
+      http.expectOne(`${API}/admin/auth/refresh`).flush(session({ pwd_change: 'true' }, true));
+      await tick();
+      expect(auth.mustChangePassword()).toBe(true); // still forced until the change succeeds
+      const retry = http.expectOne(`${API}/admin/auth/password`);
+      expect(retry.request.body.currentPassword).toBe('old-one-time');
+      retry.flush(session({ sub: 's1' }));
+      await done;
+      expect(auth.mustChangePassword()).toBe(false);
+    });
+
+    it('401 and the refresh fails → the error reaches the page, which signs out', async () => {
+      await start();
+      const done = changePasswordWithRefresh(auth, 'old-one-time', 'a much longer new pass');
+      http
+        .expectOne(`${API}/admin/auth/password`)
+        .flush({ status: 401, code: 'auth.unauthenticated' }, { status: 401, statusText: 'x' });
+      await tick();
+      http
+        .expectOne(`${API}/admin/auth/refresh`)
+        .flush({ status: 401, code: 'auth.refresh_expired' }, { status: 401, statusText: 'x' });
+      const err = await done.then(
+        () => null,
+        (e: unknown) => e,
+      );
+      expect(passwordOutcome(err).signIn).toBe(true);
+      http.expectNone(`${API}/admin/auth/password`);
+    });
+
+    it('a 422 is not retried', async () => {
+      await start();
+      const done = changePasswordWithRefresh(auth, 'wrong', 'a much longer new pass');
+      http
+        .expectOne(`${API}/admin/auth/password`)
+        .flush(
+          { status: 422, code: 'auth.current_password_invalid' },
+          { status: 422, statusText: 'x' },
+        );
+      await expect(done).rejects.toBeTruthy();
+      http.expectNone(`${API}/admin/auth/refresh`);
+    });
   });
 });

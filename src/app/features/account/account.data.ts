@@ -16,7 +16,7 @@ import { valueOf } from '../../core/http/resource-value';
 
 export const DONATIONS_PAGE_SIZE = 10;
 
-/** API-2: `/v1/me/donations/{reference}` matches case-sensitively; references are stored upper-case. */
+/** `/v1/me/donations/{reference}` with the reference in its canonical upper case (the API matches any case). */
 export const donationUrl = (api: string, ref: string): string =>
   `${api}/me/donations/${encodeURIComponent(ref.trim().toUpperCase())}`;
 

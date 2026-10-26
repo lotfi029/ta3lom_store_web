@@ -76,7 +76,7 @@ for (const locale of ['ar', 'en'] as const) {
       );
       await expectNoA11yViolations(page, `/${locale}/admin/projects/:id`);
 
-      // Options: the client checks rows first (API-3), then the full replacement is saved.
+      // Options: the client checks rows first, then the full replacement is saved.
       await page.getByRole('button', { name: t('إضافة خيار', 'Add an option') }).click();
       await page.getByRole('button', { name: t('حفظ الخيارات', 'Save options') }).click();
       await expect(page.locator('.orow [aria-invalid=true]').first()).toBeFocused();

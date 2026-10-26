@@ -8,8 +8,7 @@ import { SILENT } from '../http/error-toast.interceptor';
 
 /**
  * The header cart badge (`GET /v1/cart/summary`) — part of the initial bundle, so it stays tiny. It shows the LINE COUNT
- * only (C-2): the summary's `totalAmount` uses stored amounts and may differ from the re-priced cart (API-5), so totals
- * are shown on the cart and checkout pages only. The full cart (CartStore) is a
+ * only (C-2): it counts donations; amounts are shown on the cart and checkout pages, from the re-priced cart and quote. The full cart (CartStore) is a
  * lazy feature service that calls `set()` after every change; the server is the truth (plan §2.4). Browser only: the
  * prerendered page never shows a badge count.
  */

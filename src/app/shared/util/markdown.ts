@@ -45,44 +45,73 @@ export function safeHref(raw: string): string | null {
   }
 }
 
-const LINK = /\[([^[\]\n]{1,300})\]\(([^()\s]{1,2000})\)/;
-const STRONG = /\*\*([^*\n](?:[^*\n]|\*(?!\*)){0,999}?)\*\*/;
-const EM = /(?:\*([^*\n]{1,1000}?)\*|_([^_\n]{1,1000}?)_)/;
+const LINK = /\[([^[\]\n]{1,300})\]\(([^()\s]{1,2000})\)/g;
+const STRONG = /\*\*([^*\n](?:[^*\n]|\*(?!\*)){0,999}?)\*\*/g;
+const EM = /(?:\*([^*\n]{1,1000}?)\*|_([^_\n]{1,1000}?)_)/g;
+/** Inline nodes per block (F-8): past this, the rest of the block stays plain text — nothing is dropped. */
+export const MAX_INLINE_NODES = 500;
 
 /** Inline markup → nodes. Unmatched markers stay as text. */
 export function parseInline(text: string, depth = 0): Inline[] {
+  return inline(text, depth, { left: MAX_INLINE_NODES });
+}
+
+/**
+ * One left-to-right pass (F-8): the next match of each token is cached and searched again only once the scan has
+ * passed it, so a long block costs O(length) instead of re-scanning the rest of the text after every match. At equal
+ * positions a link wins over strong over em (as before).
+ */
+function inline(text: string, depth: number, budget: { left: number }): Inline[] {
   if (!text) return [];
-  if (depth > MAX_DEPTH) return [{ kind: 'text', text }];
-  const candidates = [
-    { re: LINK, kind: 'link' as const },
-    { re: STRONG, kind: 'strong' as const },
-    { re: EM, kind: 'em' as const },
-  ]
-    .map((c) => ({ ...c, m: c.re.exec(text) }))
-    .filter((c) => c.m)
-    .sort((a, b) => (a.m as RegExpExecArray).index - (b.m as RegExpExecArray).index);
-  const first = candidates[0];
-  if (!first) return [{ kind: 'text', text }];
-  const m = first.m as RegExpExecArray;
-  const before: Inline[] = m.index > 0 ? [{ kind: 'text', text: text.slice(0, m.index) }] : [];
-  const after = parseInline(text.slice(m.index + m[0].length), depth);
-  let node: Inline;
-  if (first.kind === 'link') {
-    const href = safeHref(m[2]);
-    node = href
-      ? {
-          kind: 'link',
-          href,
-          external: href.startsWith('https:'),
-          children: parseInline(m[1], depth + 1),
-        }
-      : { kind: 'text', text: m[1] };
-  } else if (first.kind === 'strong') {
-    node = { kind: 'strong', children: parseInline(m[1], depth + 1) };
-  } else {
-    node = { kind: 'em', children: parseInline(m[1] ?? m[2] ?? '', depth + 1) };
+  const out: Inline[] = [];
+  /** Every node pushed counts against the block's budget. */
+  const push = (n: Inline) => {
+    out.push(n);
+    budget.left--;
+  };
+  if (depth > MAX_DEPTH || budget.left <= 4) {
+    push({ kind: 'text', text });
+    return out;
   }
-  return merge([...before, node, ...after]);
+  const tokens = [new RegExp(LINK), new RegExp(STRONG), new RegExp(EM)];
+  const next: (RegExpExecArray | null | undefined)[] = [undefined, undefined, undefined];
+  let pos = 0;
+  // Room is kept for a node, the text before it and the text after the loop.
+  while (pos < text.length && budget.left > 4) {
+    let best = -1;
+    for (let k = 0; k < tokens.length; k++) {
+      const cached = next[k];
+      if (cached === undefined || (cached !== null && cached.index < pos)) {
+        tokens[k].lastIndex = pos;
+        next[k] = tokens[k].exec(text);
+      }
+      const m = next[k];
+      if (m && (best < 0 || m.index < (next[best] as RegExpExecArray).index)) best = k;
+    }
+    if (best < 0) break;
+    const m = next[best] as RegExpExecArray;
+    if (m.index > pos) push({ kind: 'text', text: text.slice(pos, m.index) });
+    if (best === 0) {
+      const href = safeHref(m[2]);
+      push(
+        href
+          ? {
+              kind: 'link',
+              href,
+              external: href.startsWith('https:'),
+              children: inline(m[1], depth + 1, budget),
+            }
+          : { kind: 'text', text: m[1] },
+      );
+    } else if (best === 1) {
+      push({ kind: 'strong', children: inline(m[1], depth + 1, budget) });
+    } else {
+      push({ kind: 'em', children: inline(m[1] ?? m[2] ?? '', depth + 1, budget) });
+    }
+    pos = m.index + m[0].length;
+  }
+  if (pos < text.length) push({ kind: 'text', text: text.slice(pos) });
+  return merge(out);
 }
 
 /** Adjacent text nodes joined (keeps the tree small). */

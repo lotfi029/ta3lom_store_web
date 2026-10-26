@@ -25,7 +25,7 @@ for (const locale of ['ar', 'en'] as const) {
       await expect(page).toHaveURL(new RegExp(`/${locale}/account/donations/${ref}$`));
       await expect(page.locator('table.tbl tbody tr')).toHaveCount(1);
       await expect(page.locator('tfoot')).toContainText('50');
-      // API-2: a lower-case reference in the URL still opens the donation.
+      // A lower-case reference in the URL still opens the donation.
       await page.goto(`/${locale}/account/donations/${ref.toLowerCase()}`);
       await expect(page.locator('tfoot')).toContainText('50');
 

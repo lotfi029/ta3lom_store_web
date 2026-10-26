@@ -2,7 +2,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { Client } from '../scripts/lib/store-api-client.mjs';
 import { expectNoA11yViolations, expectNoHorizontalScroll } from './support/a11y';
 import { apiGet, onStub, resetStub } from './support/api';
-import { freshMobile, otpFor, resetOtpChallenges } from './support/auth';
+import { freshMobile, otpFor } from './support/auth';
 
 interface Card {
   slug: string;
@@ -55,7 +55,6 @@ for (const locale of ['ar', 'en'] as const) {
       await expect(page.locator('.sumlines li')).toHaveCount(3);
 
       const mobile = freshMobile();
-      resetOtpChallenges();
       const started = Date.now() - 50;
       await page.locator('#otp-mobile').fill(mobile);
       await page.locator('#otp-mobile').press('Enter');
@@ -81,7 +80,6 @@ for (const locale of ['ar', 'en'] as const) {
 
       if (!onStub) {
         // C-7: the name and e-mail given at checkout were saved to the profile (trimmed, e-mail lower-cased).
-        resetOtpChallenges();
         const c = new Client();
         const t0 = Date.now() - 50;
         await c.call('POST', '/v1/auth/otp/request', { mobile, locale });

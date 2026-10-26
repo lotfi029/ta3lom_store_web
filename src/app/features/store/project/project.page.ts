@@ -66,7 +66,7 @@ export class ProjectPage {
   });
   protected readonly alt = computed(() => {
     const p = this.p();
-    return p ? this.i18n.pick(p.coverAltAr || p.titleAr, p.coverAltEn) : '';
+    return p ? this.i18n.pick(p.coverAltAr ?? '', p.coverAltEn) || this.title() : '';
   });
   protected readonly canonical = computed(() =>
     this.seo.url(this.i18n.locale, `/p/${this.slug()}`),
