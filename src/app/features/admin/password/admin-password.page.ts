@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormField, form, required, validate } from '@angular/forms/signals';
 import { Router, RouterLink } from '@angular/router';
+import type { StaffSessionResponse } from '../../../core/api/api.types';
 import { passwordReason, problemMessage } from '../../../core/api/problem-message';
 import { toProblem } from '../../../core/api/problem';
 import { StaffAuth } from '../../../core/auth/staff-auth';
@@ -42,6 +43,26 @@ export function passwordOutcome(error: unknown): PasswordOutcome {
     // Inactive member or an expired session: the change can only be retried after signing in again.
     signIn: p.status === 401 || p.code === 'auth.account_locked',
   };
+}
+
+/**
+ * `POST /admin/auth/password`, retried once after a 401 (F-5): the staff access token lives 10 minutes, so a staff member who
+ * reads the rules for a while gets 401 on submit. The refresh cookie still works — refresh (the new token may still
+ * carry `pwd_change`, which this route accepts) and send the same change again. A second 401, or a failed refresh,
+ * reaches the page, which signs out.
+ */
+export async function changePasswordWithRefresh(
+  auth: StaffAuth,
+  current: string,
+  next: string,
+): Promise<StaffSessionResponse> {
+  try {
+    return await auth.changePassword(current, next);
+  } catch (e) {
+    if (toProblem(e).status !== 401) throw e;
+    await auth.refresh();
+    return auth.changePassword(current, next);
+  }
 }
 
 /**
@@ -102,7 +123,7 @@ export class AdminPasswordPage {
     this.outcome.set(null);
     const { current, next } = this.model();
     try {
-      await this.auth.changePassword(current, next);
+      await changePasswordWithRefresh(this.auth, current, next);
       this.toast.show(
         $localize`:@@store.admin.password-changed:غُيّرت كلمة المرور. أُغلقت جلساتك الأخرى.`,
         'success',
