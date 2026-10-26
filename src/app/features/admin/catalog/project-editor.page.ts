@@ -305,7 +305,10 @@ export class ProjectEditorPage implements HasUnsavedChanges {
     const p = this.project();
     if (!p) return;
     try {
-      this.apply(await this.data.project(p.id));
+      const latest = await this.data.project(p.id);
+      this.apply(latest);
+      // The options editor keeps its own rows while dirty (R-1); "load the latest" replaces them on purpose.
+      this.options()?.reset(latest);
     } catch (err) {
       this.error.set(problemMessage(toProblem(err)));
     }
