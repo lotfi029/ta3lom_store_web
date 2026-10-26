@@ -8,7 +8,7 @@ for (const locale of ['ar', 'en'] as const) {
   const t = (ar: string, en: string) => (locale === 'ar' ? ar : en);
 
   test.describe(`admin operations /${locale}`, () => {
-    test('finance finds a pending order (lower-case reference, API-2) and cancels it', async ({
+    test('finance finds a pending order (lower-case reference) and cancels it', async ({
       page,
     }) => {
       const mobile = freshMobile();

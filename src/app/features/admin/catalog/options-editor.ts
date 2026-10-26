@@ -33,7 +33,7 @@ import {
 /**
  * Donation options of a project (`PUT /admin/projects/{id}/options`, a full replacement): add, rename, change the
  * amount, reorder (up/down), deactivate or remove. A removed option that already has donations is deactivated by the
- * API instead of deleted. Rows are checked here first (API-3: never a null label or list). Saves send `version`; a
+ * API instead of deleted. Rows are checked here first, next to the field (the API checks again). Saves send `version`; a
  * 409 `concurrency.conflict` is handed to the page (`conflict`).
  */
 @Component({

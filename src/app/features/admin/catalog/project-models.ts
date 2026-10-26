@@ -134,8 +134,8 @@ export interface OptionProblem {
 const norm = (s: string) => s.trim().replace(/\s+/g, ' ');
 
 /**
- * Client checks before `PUT …/options` (API-3: the API answers 500 for a null label or list, so the editor never sends
- * one): every row has an Arabic label of 2–60 characters, unique after trimming; the English label ≤ 60; a positive
+ * Client checks before `PUT …/options`, so mistakes show on the row before a round trip (the API validates the same
+ * rules and answers 400 `validation.failed`): every row has an Arabic label of 2–60 characters, unique after trimming; the English label ≤ 60; a positive
  * amount in the API's money format; at most 50 rows.
  */
 export function optionProblems(rows: readonly OptionRow[]): OptionProblem[] {

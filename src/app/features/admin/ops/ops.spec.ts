@@ -20,7 +20,7 @@ const line = (o: Partial<AdminOrderLine>): AdminOrderLine => ({
 });
 
 describe('admin operations', () => {
-  it('order search: upper-cased reference (API-2), blank fields dropped', () => {
+  it('order search: canonical upper-case reference, blank fields dropped', () => {
     expect(upperRef(' t3-26-000001 ')).toBe('T3-26-000001');
     expect(
       orderParams({
@@ -49,12 +49,11 @@ describe('admin operations', () => {
     expect(lineTitle(line({}), pick)).toBe('بئر');
   });
 
-  it('API-1: a cancel refused for the order state reads its code, not the colliding status member', () => {
+  it('a cancel refused for the order state is told from its code', () => {
     const msg = problemMessage({
       status: 409,
       code: 'order.cancel_not_allowed',
-      // The API sends `status: "cancelled"` as an extension, overwriting nothing we read.
-      extra: { status: 'cancelled' },
+      extra: { orderStatus: 'cancelled' },
     });
     expect(msg).toContain('إلغاء');
   });

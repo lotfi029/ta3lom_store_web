@@ -84,14 +84,12 @@ describe('problem → message (contract 15 §4, R5)', () => {
     expect(p.extra['attemptsLeft']).toBe(2);
   });
 
-  it('keeps the HTTP status when order.cancel_not_allowed sends a colliding "status" member (API-1)', () => {
-    const body = JSON.parse(
-      '{"status":409,"code":"order.cancel_not_allowed","status":"cancelled"}',
-    );
+  it('reads order.cancel_not_allowed with the order state in orderStatus', () => {
+    const body = { status: 409, code: 'order.cancel_not_allowed', orderStatus: 'cancelled' };
     const p = toProblem(new HttpErrorResponse({ status: 409, error: body }));
     expect(p.status).toBe(409);
     expect(p.code).toBe('order.cancel_not_allowed');
-    expect(p.extra['status']).toBeUndefined();
+    expect(p.extra['orderStatus']).toBe('cancelled');
   });
 
   it('derives a code when the body has none', () => {

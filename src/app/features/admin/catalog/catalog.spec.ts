@@ -16,7 +16,7 @@ import {
 
 const row = (o: Partial<OptionRow>): OptionRow => ({ ...newOptionRow(), ...o });
 
-describe('options editor rules (API-3)', () => {
+describe('options editor rules', () => {
   it('rows follow the API sort order and keep ids', () => {
     const rows = optionRows([
       { id: 'b', labelAr: 'ب', labelEn: null, amount: '20.00', sort: 20, isActive: true },

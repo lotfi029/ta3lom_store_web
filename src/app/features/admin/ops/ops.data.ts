@@ -32,7 +32,7 @@ export interface DonorFilter {
 
 export const PAGE_SIZE = 20;
 
-/** Admin references are matched exactly in upper case (API-2: the client upper-cases too). */
+/** References in their canonical upper case, for the search query, links and display (the API matches any case). */
 export const upperRef = (s: string): string => s.trim().toUpperCase();
 
 /** Order filter → query parameters (blank fields left out). */
@@ -100,8 +100,8 @@ export class OpsData {
   });
 
   /**
-   * `POST /admin/orders/{ref}/cancel` (only `pending_payment`). API-1: its 409 adds an extension named `status` that
-   * collides with the RFC status — the client reads only `code`, never that member.
+   * `POST /admin/orders/{ref}/cancel` (only `pending_payment`). A refusal is 409 `order.cancel_not_allowed` with the
+   * order's state in `orderStatus`; the client reads only `code` and reloads the order.
    */
   async cancelOrder(reference: string): Promise<AdminOrderRow> {
     const r = await firstValueFrom(

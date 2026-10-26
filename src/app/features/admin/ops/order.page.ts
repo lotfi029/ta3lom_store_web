@@ -39,8 +39,8 @@ export function lineTitle(
 
 /**
  * `/admin/orders/:ref` (contract 15 §2.8): donor, lines and status of one donation order; a pending order can be
- * cancelled (`staff:orders`, confirmed first). API-1: the 409 `order.cancel_not_allowed` body's `status` extension is
- * ignored — the message comes from `code` and the page reloads the order to show its real state.
+ * cancelled (`staff:orders`, confirmed first). A 409 `order.cancel_not_allowed` is shown from its `code`, and the page
+ * reloads the order to show its real state.
  */
 @Component({
   selector: 'ta-admin-order',

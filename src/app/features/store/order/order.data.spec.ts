@@ -17,7 +17,7 @@ const STATUS = {
 };
 
 describe('order status (D-W2, W-4, E-2, R3-2)', () => {
-  it('upper-cases references (API-2)', () => {
+  it('shows references in their canonical upper case', () => {
     expect(normalizeRef(' t3-26-000001 ')).toBe('T3-26-000001');
   });
 

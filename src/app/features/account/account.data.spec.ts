@@ -38,7 +38,7 @@ describe('AccountData (contract 15 §2.5)', () => {
     http = TestBed.inject(HttpTestingController);
   });
 
-  it('upper-cases a reference for the case-sensitive route (API-2)', () => {
+  it('links a reference in its canonical upper case', () => {
     expect(donationUrl(API, ' t3-26-000001 ')).toBe(`${API}/me/donations/T3-26-000001`);
   });
 

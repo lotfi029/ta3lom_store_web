@@ -1,5 +1,5 @@
 # Store web progress
-Next: review of PR "Store web — R5 donations" (lotfi029/ta3lom_store_web#13); then R5-Payments (flip `paymentsEnabled`, gateway redirect)
+Next: review of PR "Store web — R5 review fixes" (lotfi029/ta3lom_store_web#15); then R5-Payments (flip `paymentsEnabled`, gateway redirect)
 
 ## R5 — donations (one PR "Store web — R5 donations", API `792521a`)
 
@@ -13,19 +13,20 @@ Next: review of PR "Store web — R5 donations" (lotfi029/ta3lom_store_web#13); 
 | W-M5 Admin | done | W-M5 | `/admin/password` (forced + self); dashboard; categories (reorder, image, gifts); projects list + editor (details, options editor, publish/archive/preview, unsaved guard, conflict dialog); media (images); donors (block/unblock); orders (search, detail, cancel) | 239 / smoke (stub) / 24 × 2 | API-1, API-2, API-3 workarounds; placeholder removed |
 | W-M6 e2e, a11y, CI, docs | done | W-M6 | — | 240 / 65 on the real API (35 smoke on the stub) / 26 × 2 | refresh-after-hydration fix (reload when stable); admin e2e clean up after themselves; i18n staleness check; order page in the a11y sweep; `docs/W-report-r5.md` + `docs/screenshots/r5/`; `.session/` moved to `docs/r5/` |
 
-### API follow-ups (open at `792521a`; client workarounds in place)
+### API follow-ups — all closed at `cd26a80` (lotfi029/ta3lom_store_api#15)
 
-| # | Issue | Web workaround |
+| # | Closed by the API | Web after the review fixes |
 |---|---|---|
-| API-1 | `order.cancel_not_allowed` adds an extension named `status` that collides with the RFC `status` | Only `code` is read |
-| API-2 | Public order status and `/me/donations/{ref}` match references case-sensitively | References upper-cased client-side |
-| API-3 | `PUT /admin/projects/{id}/options` with a null list or label likely 500s | Options editor never sends one |
-| API-4 | **Production CORS also lists `store-staging.ta3lom.sa` — production blocker on the API side** | — |
-| API-5 | `CartSummaryResponse.totalAmount` is not re-priced | Badge shows the line count only (C-2) |
-| API-6 | Validation `errors{}` are English only | Mapped by field in `problem-message.ts` |
-| API-7 | No published OpenAPI artifact | Local snapshot `docs/openapi/store-api.v1.json` (`api:openapi`) |
-| API-8 (optional) | OTP caps are code constants; no Development override | e2e clears `store.otp_challenge` (guarded to the local DB) |
-| API-9 | `ProjectCard` has no options | Each card with `fromAmount` loads its project detail |
+| API-1 | 409 `order.cancel_not_allowed` carries `orderStatus`; `status` is numeric again | Reads `code` only (unchanged) |
+| API-2 | References match in any case | Upper case kept for display and links only |
+| API-3 | Bad option bodies → 400 `validation.failed` | Client row checks kept as UX |
+| API-4 | Production CORS = `https://store.ta3lom.sa` only | No longer a production blocker |
+| API-5 | `/v1/cart/summary` total re-priced | Badge stays a line count (choice recorded) |
+| API-6 | By design: validation texts stay English (API README "Errors") | Mapped by field (unchanged) |
+| API-7 | OpenAPI CI artifact `store-api-openapi` | Snapshot still from `npm run api:openapi`; the artifact is the source of truth |
+| API-8 | Development OTP caps `Store__Otp__Development__MaxPerIp/MaxPerMobile` | Raised in `dev-env.sh`; DB cleanup removed |
+| API-9 | `ProjectCard.options` | Cards use them; no per-card detail request (F-1) |
+| API-10 | `coverAltEn`, `imageAltEn` | English alt via `pick()` |
 
 ## r4 (history)
 

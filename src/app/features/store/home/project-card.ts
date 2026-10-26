@@ -132,7 +132,11 @@ export class ProjectCard {
   protected readonly summary = computed(() =>
     this.i18n.pick(this.project().summaryAr ?? '', this.project().summaryEn),
   );
-  protected readonly alt = computed(() => this.project().coverAltAr || this.title());
+  /** Alt from the API (API-10: English from `coverAltEn`), Arabic as the fallback, the title when there is none. */
+  protected readonly alt = computed(() => {
+    const p = this.project();
+    return this.i18n.pick(p.coverAltAr ?? '', p.coverAltEn) || this.title();
+  });
   protected readonly url = computed(() =>
     this.seo.url(this.i18n.locale, `/p/${this.project().slug}`),
   );
