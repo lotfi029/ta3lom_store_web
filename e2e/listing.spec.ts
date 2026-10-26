@@ -27,13 +27,19 @@ for (const locale of ['ar', 'en'] as const) {
         await apiGet<{ slug: string; nameAr: string; nameEn: string | null }[]>(
           '/catalog/categories',
         );
-      await page.goto(`/${locale}/`);
+      // F-1: cards carry their options (API-9) — no detail request per card.
+      const detailRequests: string[] = [];
+      page.on('request', (r) => {
+        if (/\/catalog\/projects\/[^?]/.test(r.url())) detailRequests.push(r.url());
+      });
+      await page.goto(`/${locale}/`, { waitUntil: 'networkidle' });
       await expect(page.locator('h1')).toHaveCount(1);
       const titles = page.locator('ta-project-card h3');
       await expect(titles).toHaveCount(api.items.length);
       const name = (c: Card) => (locale === 'en' && c.titleEn ? c.titleEn : c.titleAr);
       await expect(titles).toHaveText(api.items.map(name));
       await expect(page.locator('nav.filters a')).toHaveCount(cats.length + 1);
+      expect(detailRequests).toEqual([]);
       await expect
         .poll(() =>
           page.evaluate(

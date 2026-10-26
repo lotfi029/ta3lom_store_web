@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, computed, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import type { ProjectCard as Card } from '../../../core/api/api.types';
 import { I18nService } from '../../../core/i18n/i18n';
@@ -7,18 +7,16 @@ import { Image } from '../../../shared/ui/image/image';
 import { Money } from '../../../shared/ui/money/money';
 import { DonateBox } from '../donate/donate-box';
 import type { DonateProject } from '../donate/donate-draft';
-import { ProjectData } from '../donate/project.data';
 import { ShareBar } from '../share/share-bar';
 
 /**
  * The project card (D-W5, reference card): image with a fixed ratio (lazy, alt from the API) and the share bar, title
  * linking to `/p/{slug}`, one-line summary, then the donate box (option chips → qty stepper, "تبرع مفتوح" → amount,
- * اضافة / تبرع). No progress bar. A project with options loads them from its detail (the card DTO has none).
+ * اضافة / تبرع). No progress bar. The options come with the card (`ProjectCard.options`, API-9) — no request per card.
  */
 @Component({
   selector: 'ta-project-card',
   imports: [RouterLink, Image, Money, DonateBox, ShareBar],
-  providers: [ProjectData],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <article class="pcard" [attr.aria-labelledby]="'pc-' + project().id">
@@ -122,10 +120,9 @@ import { ShareBar } from '../share/share-bar';
     }
   `,
 })
-export class ProjectCard implements OnInit {
+export class ProjectCard {
   private readonly i18n = inject(I18nService);
   private readonly seo = inject(SeoService);
-  private readonly data = inject(ProjectData);
   readonly project = input.required<Card>();
   readonly headingLevel = input<2 | 3>(3);
 
@@ -139,10 +136,8 @@ export class ProjectCard implements OnInit {
   protected readonly url = computed(() =>
     this.seo.url(this.i18n.locale, `/p/${this.project().slug}`),
   );
-  /** Options: none when the card says there are none (`fromAmount` null), else from the detail (null = loading). */
   protected readonly donate = computed<DonateProject>(() => {
     const p = this.project();
-    const detail = this.data.detail();
     return {
       id: p.id,
       slug: p.slug,
@@ -150,18 +145,7 @@ export class ProjectCard implements OnInit {
       titleEn: p.titleEn,
       allowOpenAmount: p.allowOpenAmount,
       minAmount: p.minAmount,
-      options:
-        p.fromAmount === null
-          ? []
-          : detail
-            ? detail.options
-            : this.data.resource.error()
-              ? []
-              : null,
+      options: p.options,
     };
   });
-
-  ngOnInit(): void {
-    if (this.project().fromAmount !== null) this.data.slug.set(this.project().slug);
-  }
 }
