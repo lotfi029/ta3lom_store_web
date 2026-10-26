@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { expectNoA11yViolations, expectNoHorizontalScroll } from './support/a11y';
-import { freshMobile, otpFor, resetOtpChallenges, signIn, staff } from './support/auth';
+import { freshMobile, otpFor, signIn, staff } from './support/auth';
 
 /** W-04 — OTP sign-in (#16–#20) against the real API. Arabic first. */
 for (const locale of ['ar', 'en'] as const) {
@@ -24,7 +24,6 @@ for (const locale of ['ar', 'en'] as const) {
       await expect(page.locator('#otp-mobile')).toHaveAttribute('aria-invalid', 'true');
 
       const mobile = freshMobile();
-      resetOtpChallenges();
       const started = Date.now() - 50;
       await page.locator('#otp-mobile').fill(mobile);
       await page
@@ -110,7 +109,6 @@ for (const locale of ['ar', 'en'] as const) {
       expect((await manager.call('POST', `/v1/admin/customers/${id}/block`)).status).toBe(204);
 
       await page.goto(`/${locale}/login`);
-      resetOtpChallenges();
       const started = Date.now() - 50;
       await page.locator('#otp-mobile').fill(mobile);
       await page.locator('#otp-mobile').press('Enter');
