@@ -1,5 +1,21 @@
 # 15: Store API HTTP contract (R5-Core, main @ 7b2e22e — derived from code)
 
+> **Source of truth since API `cd26a80` (lotfi029/ta3lom_store_api#15):** the OpenAPI document published by the API CI as
+> the artifact **`store-api-openapi`**, mirrored in this repo as `docs/openapi/store-api.v1.json` (`npm run api:openapi`,
+> `info.x-api-commit`). This file is the R5-Core contract as derived at `7b2e22e`; where they differ, the OpenAPI wins.
+>
+> **Changes at `cd26a80`** (API-1 … API-10 closed):
+> - API-1 (breaking): `order.cancel_not_allowed` carries the order state in `orderStatus`; `status` is the numeric HTTP status.
+> - API-2: order references match in any case (and trimmed) on `/v1/orders/{ref}/status`, `/v1/me/donations/{ref}` and admin.
+> - API-3: malformed `PUT /v1/admin/projects/{id}/options` bodies answer 400 `validation.failed` (field named), never 500.
+> - API-4: Production CORS lists only `https://store.ta3lom.sa`; staging has its own origin.
+> - API-5: `GET /v1/cart/summary` `totalAmount` is re-priced like `GET /v1/cart`.
+> - API-8: Development-only OTP caps `Store:Otp:Development:MaxPerIp` / `MaxPerMobile` (the host refuses them elsewhere).
+> - API-9: `ProjectCard.options` — the active options (`ProjectOptionView`: id, labelAr, labelEn, amount), sort then id.
+> - API-10: `ProjectCard.coverAltEn`, `CategorySummary.imageAltEn` (nullable).
+> - API-7: the OpenAPI artifact above. API-6: validation texts stay English by design (README "Errors").
+
+
 Source: `lotfi029/…/api` at `main` **7b2e22e** (ASP.NET Core minimal APIs, .NET 10). No OpenAPI file is committed; everything below is read from
 `src/Ta3lom.Store.Api` (endpoints, security, filters), `src/Ta3lom.Store.Application` (DTOs, handlers, FluentValidation validators),
 `src/Ta3lom.Store.Domain` (errors, enums, constants, value objects) and `appsettings*.json`. In Development the live OpenAPI is at

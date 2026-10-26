@@ -14,11 +14,13 @@ const card = (slug: string) => ({
   summaryEn: null,
   coverUrl: null,
   coverAltAr: null,
+  coverAltEn: null,
   badge: null,
   categorySlug: 'c',
   allowOpenAmount: true,
   minAmount: '10.00',
   fromAmount: null,
+  options: [],
 });
 
 describe('HomeData (U-2)', () => {

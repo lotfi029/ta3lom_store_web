@@ -1239,6 +1239,12 @@
               "string"
             ]
           },
+          "imageAltEn": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "imageUrl": {
             "type": [
               "null",
@@ -1276,7 +1282,8 @@
           "imageUrl",
           "imageAltAr",
           "acceptsGeneralGifts",
-          "projectCount"
+          "projectCount",
+          "imageAltEn"
         ],
         "type": "object"
       },
@@ -2285,6 +2292,12 @@
               "string"
             ]
           },
+          "coverAltEn": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "coverUrl": {
             "type": [
               "null",
@@ -2303,6 +2316,12 @@
           },
           "minAmount": {
             "type": "string"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/components/schemas/ProjectOptionView"
+            },
+            "type": "array"
           },
           "slug": {
             "type": "string"
@@ -2342,7 +2361,9 @@
           "categorySlug",
           "allowOpenAmount",
           "minAmount",
-          "fromAmount"
+          "fromAmount",
+          "options",
+          "coverAltEn"
         ],
         "type": "object"
       },
@@ -3230,7 +3251,7 @@
   "info": {
     "title": "Ta3lom.Store.Api | v1",
     "version": "1.0.0",
-    "x-api-commit": "792521a91261685ef50534ab5ef14fd55fa59208"
+    "x-api-commit": "cd26a8066e9fc7f966c0234086ea1cc270b79f2c"
   },
   "openapi": "3.1.1",
   "paths": {
