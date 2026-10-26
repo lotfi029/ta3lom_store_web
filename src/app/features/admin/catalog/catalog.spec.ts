@@ -44,6 +44,20 @@ describe('options editor rules', () => {
     ]);
   });
 
+  it('F-7: label length counts UTF-16 units, as the API does (string .length)', () => {
+    const astral = '𝔸'; // one code point, two UTF-16 units
+    expect(optionProblems([row({ key: 'k', labelAr: astral.repeat(31), amount: '5' })])).toEqual([
+      { key: 'k', field: 'labelAr', kind: 'length' },
+    ]);
+    expect(optionProblems([row({ key: 'k', labelAr: astral.repeat(30), amount: '5' })])).toEqual(
+      [],
+    );
+    expect(optionProblems([row({ key: 'k', labelAr: astral, amount: '5' })])).toEqual([]);
+    expect(
+      optionProblems([row({ key: 'k', labelAr: 'سهم', labelEn: astral.repeat(31), amount: '5' })]),
+    ).toEqual([{ key: 'k', field: 'labelEn', kind: 'length' }]);
+  });
+
   it('amounts must be positive money in the API format (Arabic-Indic digits accepted)', () => {
     const bad = ['', '0', '-5', '1e3', '10.555', 'abc'];
     for (const amount of bad)
