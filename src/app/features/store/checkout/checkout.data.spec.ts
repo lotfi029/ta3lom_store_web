@@ -133,35 +133,88 @@ describe('CheckoutData (contract 15 §1.10, W-1, U-3, R3-3)', () => {
     expect((await p).kind).toBe('created');
   });
 
-  it('U-3: key_reused → retry says cart_empty → the earlier attempt placed it: newest pending donation', async () => {
-    const p = data.placeOrder(contact);
-    (await next()).flush(...fail('idempotency.key_reused', 422));
-    (await next()).flush(...fail('checkout.cart_empty', 409));
+  const NOW = Date.parse('2026-10-26T12:00:00Z');
+  const QUOTE = { lineCount: 2, totalAmount: '120.00' };
+  const pending = (createdAt: string, totalAmount = '120.00', lineCount = 2) => ({
+    items: [
+      {
+        reference: 'T3-26-000009',
+        status: 'cancelled',
+        totalAmount: '5.00',
+        lineCount: 1,
+        createdAt,
+      },
+      { reference: 'T3-26-000008', status: 'pending_payment', totalAmount, lineCount, createdAt },
+    ],
+    total: 2,
+    page: 1,
+    pageSize: 20,
+  });
+  const minutesAgo = (m: number) => new Date(NOW - m * 60_000).toISOString();
+  const recover = async (body: ReturnType<typeof pending>) => {
     await tick();
     const list = http.expectOne((r) => r.url === `${API}/me/donations`);
     expect(list.request.params.get('page')).toBe('1');
-    list.flush({
-      items: [
-        {
-          reference: 'T3-26-000009',
-          status: 'cancelled',
-          totalAmount: '5.00',
-          lineCount: 1,
-          createdAt: 'x',
-        },
-        {
-          reference: 'T3-26-000008',
-          status: 'pending_payment',
-          totalAmount: '120.00',
-          lineCount: 2,
-          createdAt: 'x',
-        },
-      ],
-      total: 2,
-      page: 1,
-      pageSize: 20,
-    });
+    list.flush(body);
+  };
+
+  it('U-3: key_reused → retry says cart_empty → the earlier attempt placed it: newest pending donation', async () => {
+    data.now = () => NOW;
+    const p = data.placeOrder(contact, QUOTE);
+    (await next()).flush(...fail('idempotency.key_reused', 422));
+    (await next()).flush(...fail('checkout.cart_empty', 409));
+    await recover(pending(minutesAgo(2)));
     expect(await p).toEqual({ kind: 'recovered', reference: 'T3-26-000008' });
+  });
+
+  it('F-4: after an unknown outcome (503), a later cart_empty recovers the matching pending donation', async () => {
+    data.now = () => NOW;
+    const p1 = data.placeOrder(contact, QUOTE);
+    (await next()).flush(...fail('server.error', 503));
+    expect((await p1).kind).toBe('error');
+    const p2 = data.placeOrder(contact, QUOTE);
+    (await next()).flush(...fail('checkout.cart_empty', 409));
+    await recover(pending(minutesAgo(1)));
+    expect(await p2).toEqual({ kind: 'recovered', reference: 'T3-26-000008' });
+  });
+
+  it('R-2: a pending donation whose total differs from the last quote is not taken — cartEmpty + "my donations"', async () => {
+    data.now = () => NOW;
+    const p1 = data.placeOrder(contact, QUOTE);
+    (await next()).flush(...fail('network.error', 0));
+    await p1;
+    const p2 = data.placeOrder(contact, QUOTE);
+    (await next()).flush(...fail('checkout.cart_empty', 409));
+    await recover(pending(minutesAgo(1), '95.00'));
+    expect(await p2).toEqual({ kind: 'cartEmpty', checkMyDonations: true });
+  });
+
+  it('R-2: a matching pending donation older than 15 min (+5 min tolerance) is not taken', async () => {
+    data.now = () => NOW;
+    const p1 = data.placeOrder(contact, QUOTE);
+    (await next()).flush(...fail('rate', 429));
+    await p1;
+    const p2 = data.placeOrder(contact, QUOTE);
+    (await next()).flush(...fail('checkout.cart_empty', 409));
+    await recover(pending(minutesAgo(21)));
+    expect(await p2).toEqual({ kind: 'cartEmpty', checkMyDonations: true });
+  });
+
+  it('R-2: within the tolerance (created 19 min ago, or 4 min "in the future") it is taken', async () => {
+    for (const age of [19, -4]) {
+      data.now = () => NOW;
+      const p = data.placeOrder(contact, QUOTE);
+      (await next()).flush(...fail('idempotency.key_reused', 422));
+      (await next()).flush(...fail('checkout.cart_empty', 409));
+      await recover(pending(minutesAgo(age)));
+      expect(await p).toEqual({ kind: 'recovered', reference: 'T3-26-000008' });
+    }
+  });
+
+  it('F-4: cart_empty with no earlier unknown outcome is just an empty cart — no donations lookup', async () => {
+    const p = data.placeOrder(contact, QUOTE);
+    (await next()).flush(...fail('checkout.cart_empty', 409));
+    expect(await p).toEqual({ kind: 'cartEmpty' });
   });
 
   it('maps cart_empty and contact_required without a key_reused first', async () => {

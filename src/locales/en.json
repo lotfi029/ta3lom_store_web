@@ -582,5 +582,7 @@
   "store.ui.reorder-failed": "The order wasn’t saved.",
   "store.admin.donor-active": "Active",
   "store.admin.donor-blocked": "Blocked",
-  "store.admin.donor-anonymised": "Deleted (anonymised)"
+  "store.admin.donor-anonymised": "Deleted (anonymised)",
+  "store.checkout.check-donations": "Your donation may have been registered by an earlier attempt. Check it in",
+  "store.account.my-donations": "My donations"
 }

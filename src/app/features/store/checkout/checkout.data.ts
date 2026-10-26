@@ -7,11 +7,14 @@ import type {
   CheckoutRequest,
   CheckoutResponse,
   DonationPage,
+  DonationSummary,
 } from '../../../core/api/api.types';
+import { toInt } from '../../../core/api/api.types';
 import { type StoreProblem, toProblem } from '../../../core/api/problem';
 import { STORE_API_URL } from '../../../core/api/store-api-url';
 import { SILENT } from '../../../core/http/error-toast.interceptor';
 import type { Locale } from '../../../core/i18n/i18n';
+import { type Money, compare } from '../../../core/money/money';
 
 export interface ContactInput {
   fullName: string;
@@ -24,11 +27,41 @@ export type CheckoutOutcome =
   /** U-3: the key was reused and the retry found the cart empty — an earlier attempt placed this order. */
   | { kind: 'recovered'; reference: string }
   | { kind: 'linesInvalid'; problems: CartProblem[] }
-  | { kind: 'cartEmpty' }
+  /**
+   * The cart is empty. `checkMyDonations`: an earlier attempt may have placed the order but no pending donation matched
+   * the last quote closely enough to open it — point the donor to "my donations" (F-4, R-2).
+   */
+  | { kind: 'cartEmpty'; checkMyDonations?: boolean }
   | { kind: 'contactRequired' }
   /** 409 `idempotency.in_progress` still after the retries — the first request is still running. */
   | { kind: 'inProgress' }
   | { kind: 'error'; problem: StoreProblem };
+
+/** What the donor last saw on the checkout summary (`POST /v1/checkout/quote`): used to recognise a placed order. */
+export interface QuoteSnapshot {
+  lineCount: number;
+  totalAmount: Money;
+}
+
+/** A recovered donation must be this recent (F-4): 15 min, plus 5 min either way for clock differences (R-2). */
+export const RECOVERY_WINDOW_MS = 15 * 60_000;
+export const CLOCK_TOLERANCE_MS = 5 * 60_000;
+
+/**
+ * Is this pending donation the order an earlier attempt placed? Same line count and total as the last quote, created
+ * within the recovery window (R-2).
+ */
+export function matchesAttempt(d: DonationSummary, quote: QuoteSnapshot, now: number): boolean {
+  if (d.status !== 'pending_payment') return false;
+  if (toInt(d.lineCount) !== quote.lineCount || compare(d.totalAmount, quote.totalAmount) !== 0)
+    return false;
+  const age = now - Date.parse(d.createdAt);
+  return (
+    Number.isFinite(age) &&
+    age >= -CLOCK_TOLERANCE_MS &&
+    age <= RECOVERY_WINDOW_MS + CLOCK_TOLERANCE_MS
+  );
+}
 
 /** A fresh Idempotency-Key (8–64 characters; a UUID is 36). */
 export const newIdempotencyKey = (): string => crypto.randomUUID();
@@ -65,10 +98,13 @@ const RETRYABLE = (p: StoreProblem): boolean =>
  * the same body after a network error, a 5xx, a 429 or 409 `idempotency.in_progress` — the first request may still
  * create the order, and a retry with the same key then gets that order back. It is ROTATED only after a definite
  * outcome: a 201, or a 4xx that is not one of those (the API releases the key on every non-2xx, so nothing is held).
+ * After an UNKNOWN outcome (network error, 5xx, 429, `in_progress` given up) the order may exist although the donor saw
+ * an error; a later 409 `checkout.cart_empty` then means it probably does (F-4).
  * A changed body (name, e-mail, locale) gets a new key before it is sent, because the API answers 422
  * `idempotency.key_reused` to the same key with another body. On `key_reused` anyway: new key, one retry; if that
- * retry says the cart is empty, the earlier attempt placed the order — its reference is the newest `pending_payment`
- * donation.
+ * retry — or, after an unknown outcome, the next attempt — says the cart is empty, the earlier attempt placed the order:
+ * the newest `pending_payment` donation is opened only if it matches the last quote (line count and total) and was
+ * created within 15 min (±5 min); otherwise the donor is pointed to "my donations" (R-2).
  */
 @Injectable()
 export class CheckoutData {
@@ -79,6 +115,10 @@ export class CheckoutData {
   attempt: { key: string; body: string } | null = null;
   /** Waits before re-sending after 409 `idempotency.in_progress` (ms). Tests set it to zeros. */
   inProgressDelays: readonly number[] = [1000, 2000, 4000];
+  /** The clock for the recovery window. Tests replace it. */
+  now: () => number = () => Date.now();
+  /** An attempt in this checkout ended without a definite answer (network, 5xx, 429, in_progress): F-4. */
+  private unknownOutcome = false;
 
   /** `POST /v1/checkout/quote`: the re-priced cart with its problems (nothing written). */
   quote(): Promise<Cart> {
@@ -97,7 +137,10 @@ export class CheckoutData {
     return this.attempt.key;
   }
 
-  async placeOrder(contact: ContactInput): Promise<CheckoutOutcome> {
+  async placeOrder(
+    contact: ContactInput,
+    quote: QuoteSnapshot | null = null,
+  ): Promise<CheckoutOutcome> {
     const body = checkoutBody(contact);
     let reused = false;
     for (let i = 0; ; i++) {
@@ -109,6 +152,7 @@ export class CheckoutData {
           }),
         );
         this.attempt = null;
+        this.unknownOutcome = false;
         return { kind: 'created', order };
       } catch (e) {
         const p = toProblem(e);
@@ -122,10 +166,14 @@ export class CheckoutData {
           continue;
         }
         if (!RETRYABLE(p)) this.attempt = null;
-        if (p.code === 'checkout.cart_empty' && reused) {
-          const ref = await this.newestPending();
-          return ref ? { kind: 'recovered', reference: ref } : { kind: 'cartEmpty' };
+        if (p.code === 'checkout.cart_empty' && (reused || this.unknownOutcome)) {
+          const ref = await this.placedEarlier(quote);
+          if (ref) this.unknownOutcome = false;
+          return ref
+            ? { kind: 'recovered', reference: ref }
+            : { kind: 'cartEmpty', checkMyDonations: true };
         }
+        if (RETRYABLE(p)) this.unknownOutcome = true;
         switch (p.code) {
           case 'checkout.lines_invalid':
             return {
@@ -145,15 +193,20 @@ export class CheckoutData {
     }
   }
 
-  /** The newest `pending_payment` donation of the signed-in donor (`GET /v1/me/donations?page=1`). */
-  private async newestPending(): Promise<string | null> {
+  /**
+   * The order an earlier attempt placed: the newest `pending_payment` donation of the signed-in donor
+   * (`GET /v1/me/donations?page=1`, newest first), only if it matches the last quote and is recent (R-2).
+   */
+  private async placedEarlier(quote: QuoteSnapshot | null): Promise<string | null> {
+    if (!quote) return null;
     try {
       const page = await firstValueFrom(
         this.http.get<DonationPage>(`${this.api}/me/donations`, {
           params: { page: 1, pageSize: 20 },
         }),
       );
-      return page.items.find((d) => d.status === 'pending_payment')?.reference ?? null;
+      const newest = page.items.find((d) => d.status === 'pending_payment');
+      return newest && matchesAttempt(newest, quote, this.now()) ? newest.reference : null;
     } catch {
       return null;
     }

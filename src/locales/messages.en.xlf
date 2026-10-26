@@ -1035,7 +1035,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
-          <context context-type="linenumber">180,181</context>
+          <context context-type="linenumber">188,189</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/order/order.page.html</context>
@@ -1055,7 +1055,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
-          <context context-type="linenumber">81,82</context>
+          <context context-type="linenumber">89,90</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.checkout.email" datatype="html">
@@ -1091,7 +1091,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
-          <context context-type="linenumber">104,105</context>
+          <context context-type="linenumber">112,113</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.account.cancelled-at" datatype="html">
@@ -1139,7 +1139,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
-          <context context-type="linenumber">27,30</context>
+          <context context-type="linenumber">35,38</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/footer/footer.html</context>
@@ -1251,7 +1251,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
-          <context context-type="linenumber">95,97</context>
+          <context context-type="linenumber">103,105</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/login/otp-sign-in.html</context>
@@ -1423,7 +1423,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/staff/staff.page.ts</context>
-          <context context-type="linenumber">61</context>
+          <context context-type="linenumber">62</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.ts</context>
@@ -1459,7 +1459,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/staff/staff.page.ts</context>
-          <context context-type="linenumber">158</context>
+          <context context-type="linenumber">161</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/templates/templates.page.ts</context>
@@ -1971,7 +1971,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/staff/staff.page.ts</context>
-          <context context-type="linenumber">53</context>
+          <context context-type="linenumber">54</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.max-120" datatype="html">
@@ -2235,7 +2235,7 @@
         <target state="translated">Option removed from the list.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/catalog/options-editor.ts</context>
-          <context context-type="linenumber">119</context>
+          <context context-type="linenumber">137</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.option-moved" datatype="html">
@@ -2243,7 +2243,7 @@
         <target state="translated">Option moved to position <x id="position" equiv-text="j + 1"/> of <x id="count" equiv-text="rs.length"/>.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/catalog/options-editor.ts</context>
-          <context context-type="linenumber">132</context>
+          <context context-type="linenumber">150</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.ui.loading" datatype="html">
@@ -2295,7 +2295,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
-          <context context-type="linenumber">70,71</context>
+          <context context-type="linenumber">78,79</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/order/order.page.html</context>
@@ -3119,7 +3119,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/staff/staff.page.ts</context>
-          <context context-type="linenumber">55</context>
+          <context context-type="linenumber">56</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.password-required" datatype="html">
@@ -3999,7 +3999,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/staff/staff.page.ts</context>
-          <context context-type="linenumber">85</context>
+          <context context-type="linenumber">88</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.nav-templates" datatype="html">
@@ -4167,7 +4167,7 @@
         <target state="translated">Choose at least one role.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/staff/staff.page.ts</context>
-          <context context-type="linenumber">69</context>
+          <context context-type="linenumber">70</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.totp-reset" datatype="html">
@@ -4175,7 +4175,7 @@
         <target state="translated">Two-step verification will be set up again at the next sign-in.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/staff/staff.page.ts</context>
-          <context context-type="linenumber">185</context>
+          <context context-type="linenumber">197</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.unlocked" datatype="html">
@@ -4183,7 +4183,7 @@
         <target state="translated">Account unlocked.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/staff/staff.page.ts</context>
-          <context context-type="linenumber">191</context>
+          <context context-type="linenumber">203</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.confirm-password" datatype="html">
@@ -4191,7 +4191,7 @@
         <target state="translated">The current password of <x id="email" equiv-text="c.user.email"/> stops working and a temporary password is shown once.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/staff/staff.page.ts</context>
-          <context context-type="linenumber">206</context>
+          <context context-type="linenumber">218</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.confirm-totp" datatype="html">
@@ -4199,7 +4199,7 @@
         <target state="translated"><x id="email" equiv-text="c.user.email"/> will set up two-step verification again at the next sign-in.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/staff/staff.page.ts</context>
-          <context context-type="linenumber">208</context>
+          <context context-type="linenumber">220</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.confirm-unlock" datatype="html">
@@ -4207,7 +4207,7 @@
         <target state="translated"><x id="email" equiv-text="c.user.email"/> will be able to sign in again.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/staff/staff.page.ts</context>
-          <context context-type="linenumber">210</context>
+          <context context-type="linenumber">222</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.templates-lede" datatype="html">
@@ -4447,7 +4447,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
-          <context context-type="linenumber">24,26</context>
+          <context context-type="linenumber">24,25</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.cart.empty-lede-r5" datatype="html">
@@ -4531,7 +4531,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
-          <context context-type="linenumber">150,151</context>
+          <context context-type="linenumber">158,159</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.cart.checkout-r5" datatype="html">
@@ -4579,11 +4579,27 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.ts</context>
-          <context context-type="linenumber">104</context>
+          <context context-type="linenumber">106</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.ts</context>
-          <context context-type="linenumber">105</context>
+          <context context-type="linenumber">107</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.checkout.check-donations" datatype="html">
+        <source>ربما سُجّل تبرعك في محاولة سابقة. راجعه في</source>
+        <target state="translated">Your donation may have been registered by an earlier attempt. Check it in</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
+          <context context-type="linenumber">28,30</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.account.my-donations" datatype="html">
+        <source>تبرعاتي</source>
+        <target state="translated">My donations</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
+          <context context-type="linenumber">30,33</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.checkout.identity" datatype="html">
@@ -4591,7 +4607,7 @@
         <target state="translated">Confirm your mobile number</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
-          <context context-type="linenumber">45,47</context>
+          <context context-type="linenumber">53,55</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.checkout.identity-lede-r5" datatype="html">
@@ -4599,7 +4615,7 @@
         <target state="translated">We send a verification code to your mobile, then you complete your details. Your donations stay in your cart.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
-          <context context-type="linenumber">48,50</context>
+          <context context-type="linenumber">56,58</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.checkout.back-to-cart-r5" datatype="html">
@@ -4607,7 +4623,7 @@
         <target state="translated">Back to the cart to fix them</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
-          <context context-type="linenumber">65,67</context>
+          <context context-type="linenumber">73,75</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.checkout.details" datatype="html">
@@ -4615,7 +4631,7 @@
         <target state="translated">Your details</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
-          <context context-type="linenumber">77,78</context>
+          <context context-type="linenumber">85,86</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.checkout.saved-to-profile" datatype="html">
@@ -4623,7 +4639,7 @@
         <target state="translated">We save your name and e-mail to your profile for your next donations; you can change them in your account.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
-          <context context-type="linenumber">120,122</context>
+          <context context-type="linenumber">128,130</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.checkout.payments-soon" datatype="html">
@@ -4631,7 +4647,7 @@
         <target state="translated">Online payment is coming soon: we register your donation now with a reference number and send you the payment link once it is available.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
-          <context context-type="linenumber">127,129</context>
+          <context context-type="linenumber">135,137</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.checkout.pay" datatype="html">
@@ -4639,7 +4655,7 @@
         <target state="translated">Pay now</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
-          <context context-type="linenumber">140,141</context>
+          <context context-type="linenumber">148,149</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.checkout.register" datatype="html">
@@ -4647,7 +4663,7 @@
         <target state="translated">Confirm the donation</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
-          <context context-type="linenumber">142,144</context>
+          <context context-type="linenumber">150,152</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.checkout.other-donations" datatype="html">
@@ -4655,7 +4671,7 @@
         <target state="translated">Your cart contains other donations</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
-          <context context-type="linenumber">153,156</context>
+          <context context-type="linenumber">161,164</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.checkout.edit-cart" datatype="html">
@@ -4663,7 +4679,7 @@
         <target state="translated">Edit the cart</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/checkout/checkout.page.html</context>
-          <context context-type="linenumber">187,189</context>
+          <context context-type="linenumber">195,197</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.checkout.name-required" datatype="html">
@@ -4989,7 +5005,7 @@
         <target state="translated">Urgent</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/project-card.ts</context>
-          <context context-type="linenumber">32,33</context>
+          <context context-type="linenumber">30,31</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/project/project.page.html</context>
@@ -5001,7 +5017,7 @@
         <target state="translated">New</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/project-card.ts</context>
-          <context context-type="linenumber">34,37</context>
+          <context context-type="linenumber">32,35</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/project/project.page.html</context>
@@ -5013,7 +5029,7 @@
         <target state="translated">From</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/project-card.ts</context>
-          <context context-type="linenumber">52</context>
+          <context context-type="linenumber">50</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.login.title" datatype="html">

@@ -22,6 +22,14 @@
     @if (cartEmpty()) {
       <div class="empty">
         <h2 i18n="@@store.cart.empty-title">سلتك فارغة</h2>
+        @if (checkMyDonations()) {
+          <p class="co-check" role="status">
+            <span i18n="@@store.checkout.check-donations"
+              >ربما سُجّل تبرعك في محاولة سابقة. راجعه في</span
+            >
+            <a routerLink="/account/donations" i18n="@@store.account.my-donations">تبرعاتي</a>
+          </p>
+        }
         <p class="links">
           <a class="b primary" routerLink="/" fragment="projects" i18n="@@store.layout.nav-projects"
             >المشاريع</a
