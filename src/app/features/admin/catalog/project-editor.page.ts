@@ -17,7 +17,7 @@ import { problemMessage } from '../../../core/api/problem-message';
 import { toProblem } from '../../../core/api/problem';
 import { StoreConfig } from '../../../core/api/store-config';
 import { StaffAuth } from '../../../core/auth/staff-auth';
-import type { HasUnsavedChanges } from '../../../core/guards/guards';
+import { type HasUnsavedChanges, warnBeforeUnload } from '../../../core/guards/guards';
 import { valueOf } from '../../../core/http/resource-value';
 import { I18nService } from '../../../core/i18n/i18n';
 import { checkAmount } from '../../../core/money/amount';
@@ -147,6 +147,7 @@ export class ProjectEditorPage implements HasUnsavedChanges {
   });
 
   constructor() {
+    warnBeforeUnload(() => this.hasUnsavedChanges());
     effect(() => {
       const id = this.id();
       untracked(() => void this.load(id));

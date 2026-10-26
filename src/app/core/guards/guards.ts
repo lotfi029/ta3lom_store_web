@@ -1,4 +1,5 @@
-import { inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { DestroyRef, PLATFORM_ID, inject } from '@angular/core';
 import { CanActivateFn, CanDeactivateFn, Router } from '@angular/router';
 import { StaffAuth } from '../auth/staff-auth';
 import { StoreAuth } from '../auth/store-auth';
@@ -75,6 +76,21 @@ export interface HasUnsavedChanges {
 }
 
 /** Asks before leaving a screen with unsaved edits (the project editor's per-section dirty state). */
+/**
+ * F-6: the browser's own "leave site?" prompt while edits are unsaved — the route guard above cannot see a reload, a
+ * closed tab or a typed address. Call from a constructor (injection context); the listener goes with the component.
+ */
+export function warnBeforeUnload(hasUnsaved: () => boolean): void {
+  if (!isPlatformBrowser(inject(PLATFORM_ID))) return;
+  const onUnload = (e: BeforeUnloadEvent) => {
+    if (!hasUnsaved()) return;
+    e.preventDefault();
+    e.returnValue = ''; // older browsers show the prompt only when this is set
+  };
+  window.addEventListener('beforeunload', onUnload);
+  inject(DestroyRef).onDestroy(() => window.removeEventListener('beforeunload', onUnload));
+}
+
 export const unsavedChangesGuard: CanDeactivateFn<HasUnsavedChanges> = (component) =>
   !component.hasUnsavedChanges() ||
   confirm(
