@@ -103,3 +103,49 @@ describe('markdown subset (C-5)', () => {
     expect(text(b).length).toBeLessThanOrEqual(MAX_SOURCE);
   });
 });
+
+describe('inline parsing cost (F-8)', () => {
+  const count = (nodes: Inline[]): number =>
+    nodes.reduce((n, x) => n + 1 + (x.kind === 'text' ? 0 : count(x.children)), 0);
+  const text = (nodes: Inline[]): string =>
+    nodes.map((x) => (x.kind === 'text' ? x.text : text(x.children))).join('');
+
+  it('20,000 characters of "**a** " parse in under 50 ms, at most 500 nodes, no visible text lost', () => {
+    const source = '**a** '.repeat(3334).slice(0, MAX_SOURCE);
+    const t0 = performance.now();
+    const nodes = parseInline(source);
+    const ms = performance.now() - t0;
+    expect(ms).toBeLessThan(50);
+    expect(count(nodes)).toBeLessThanOrEqual(500);
+    // The first blocks are bold, the rest after the cap stays as plain text — nothing dropped.
+    expect(nodes[0]).toEqual({ kind: 'strong', children: [{ kind: 'text', text: 'a' }] });
+    const visible = text(nodes);
+    const strongCount = nodes.filter((n) => n.kind === 'strong').length;
+    expect(visible.length).toBe(source.length - 4 * strongCount);
+    expect(visible.endsWith(source.slice(-20))).toBe(true);
+  });
+
+  it('keeps the same tree for ordinary text (links, strong, em, nesting)', () => {
+    expect(parseInline('a **b *c* d** [x](https://x.example) _e_ and *f')).toEqual([
+      { kind: 'text', text: 'a ' },
+      {
+        kind: 'strong',
+        children: [
+          { kind: 'text', text: 'b ' },
+          { kind: 'em', children: [{ kind: 'text', text: 'c' }] },
+          { kind: 'text', text: ' d' },
+        ],
+      },
+      { kind: 'text', text: ' ' },
+      {
+        kind: 'link',
+        href: 'https://x.example/',
+        external: true,
+        children: [{ kind: 'text', text: 'x' }],
+      },
+      { kind: 'text', text: ' ' },
+      { kind: 'em', children: [{ kind: 'text', text: 'e' }] },
+      { kind: 'text', text: ' and *f' },
+    ]);
+  });
+});
