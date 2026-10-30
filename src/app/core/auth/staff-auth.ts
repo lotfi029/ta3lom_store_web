@@ -11,6 +11,7 @@ import type {
 import { STORE_API_URL } from '../api/store-api-url';
 import { I18nService } from '../i18n/i18n';
 import { type StaffPolicy, rolesAllow } from './policies';
+import { sessionRejected } from './session-rejected';
 
 /**
  * Reads the claims of a JWT access token (base64url JSON payload) without verifying it — the API verifies; the web only
@@ -163,17 +164,22 @@ export class StaffAuth {
     } catch (err) {
       // auth.refresh_race (409): a parallel tab rotated the cookie within 20 s — the cookie is kept, retry once.
       if (!retried && (err as { status?: number }).status === 409) return this.doRefresh(true);
-      this.clear();
+      // Only a refused session ends it; a network error, 5xx or 429 leaves the cookie as it was (sessionRejected).
+      if (sessionRejected(err)) this.clear();
       throw err;
     }
   }
 
+  /** A refused session is remembered for the page view; after a transient failure the next guard tries again. */
   ensureSession(): Promise<boolean> {
     if (this.token()) return Promise.resolve(true);
     if (!this.browser) return Promise.resolve(false);
     this.restoring ??= this.refresh().then(
       () => true,
-      () => false,
+      (err: unknown) => {
+        if (!sessionRejected(err)) this.restoring = null;
+        return false;
+      },
     );
     return this.restoring;
   }

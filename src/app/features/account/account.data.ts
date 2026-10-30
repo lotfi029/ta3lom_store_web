@@ -77,16 +77,14 @@ export class AccountData {
   }
 
   /**
-   * Sign out everywhere: refresh first (the access token may be minutes old and `logout-all` needs a valid one), then
-   * `POST /v1/auth/logout-all`, which revokes every session family and clears the refresh cookie.
+   * Sign out everywhere: `POST /v1/auth/logout-all` (StoreAuth refreshes and retries on 401), which revokes every session
+   * family and clears the refresh cookie. Either way this device is signed out and its cart emptied; a failure rejects.
    */
   async logoutAll(): Promise<void> {
     try {
-      await this.auth.refresh();
-    } catch {
-      /* already signed out: logoutAll clears the local session below */
+      await this.auth.logoutAll();
+    } finally {
+      this.cart.reset();
     }
-    await this.auth.logoutAll();
-    this.cart.reset();
   }
 }

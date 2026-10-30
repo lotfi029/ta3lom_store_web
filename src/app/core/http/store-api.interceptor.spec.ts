@@ -119,6 +119,30 @@ describe('storeApiInterceptor (plan §6 "Interceptors")', () => {
     await expect(result).rejects.toMatchObject({ status: 401 });
   });
 
+  it('a refused staff refresh goes to /admin/login; a transient one keeps the staff member on the screen', async () => {
+    const router = TestBed.inject(Router);
+    const nav = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    await signInStaff('STAFF');
+
+    const transient = firstValueFrom(http.get(`${API}/admin/orders`));
+    ctl.expectOne(`${API}/admin/orders`).flush({}, { status: 401, statusText: 'x' });
+    await new Promise((r) => setTimeout(r));
+    ctl.expectOne(`${API}/admin/auth/refresh`).flush({}, { status: 503, statusText: 'x' });
+    await expect(transient).rejects.toMatchObject({ status: 401 });
+    expect(nav).not.toHaveBeenCalled();
+    expect(TestBed.inject(StaffAuth).accessToken()).toBe('STAFF');
+
+    const refused = firstValueFrom(http.get(`${API}/admin/orders`));
+    ctl.expectOne(`${API}/admin/orders`).flush({}, { status: 401, statusText: 'x' });
+    await new Promise((r) => setTimeout(r));
+    ctl
+      .expectOne(`${API}/admin/auth/refresh`)
+      .flush({ code: 'auth.refresh_expired' }, { status: 401, statusText: 'x' });
+    await expect(refused).rejects.toMatchObject({ status: 401 });
+    expect(nav).toHaveBeenCalledWith(['/admin/login'], expect.anything());
+    expect(TestBed.inject(StaffAuth).isSignedIn()).toBe(false);
+  });
+
   it('C-6 backstop: 403 auth.password_change_required on a staff call goes to /admin/password', async () => {
     const router = TestBed.inject(Router);
     const nav = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);

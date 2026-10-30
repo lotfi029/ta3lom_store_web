@@ -7,6 +7,7 @@ import {
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, from, switchMap, throwError } from 'rxjs';
+import { sessionRejected } from '../auth/session-rejected';
 import { StaffAuth } from '../auth/staff-auth';
 import { StoreAuth } from '../auth/store-auth';
 import { I18nService } from '../i18n/i18n';
@@ -20,7 +21,7 @@ export const NO_REFRESH = new HttpContextToken<boolean>(() => false);
  * Credentials and bearer for the STORE API ORIGIN ONLY (non-negotiable #9, plan §2.4). Any other URL passes untouched.
  *   - `withCredentials` (cart cookie, refresh cookies) and `Accept-Language` on every store API call;
  *   - bearer: the staff token for `/admin/**`, the customer token otherwise;
- *   - 401 → one single-flight refresh → one retry. A failed staff refresh sends the user to /admin/login.
+ *   - 401 → one single-flight refresh → one retry. A refused staff refresh sends the user to /admin/login.
  *   - 403 `auth.password_change_required` on a staff request → /admin/password (backstop of the `pwd_change` claim
  *     check in the guards, C-6).
  */
@@ -72,8 +73,9 @@ export const storeApiInterceptor: HttpInterceptorFn = (req, next) => {
             ),
           ),
         ),
-        catchError(() => {
-          if (staffRequest)
+        catchError((refreshError: unknown) => {
+          // A transient refresh failure (network, 5xx, 429) keeps the staff member on the screen.
+          if (staffRequest && sessionRejected(refreshError))
             void router.navigate(['/admin/login'], { queryParams: { returnUrl: router.url } });
           return throwError(() => error);
         }),
