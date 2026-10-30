@@ -141,11 +141,14 @@ export class ProfilePage {
   protected async logoutAll(): Promise<void> {
     try {
       await this.data.logoutAll();
-    } finally {
       this.toast.show(
         $localize`:@@store.account.signed-out-all:سجّلنا خروجك من جميع الأجهزة.`,
         'success',
       );
+    } catch (e) {
+      // Not revoked everywhere (this device is signed out regardless) — never claim success.
+      this.toast.show(problemMessage(toProblem(e)), 'error');
+    } finally {
       await this.router.navigateByUrl('/');
     }
   }

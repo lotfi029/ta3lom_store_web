@@ -5,6 +5,9 @@ Local run and deploy readiness (2026-10-30): `dev-env.sh` checks Node ≥ 24.15;
 `compose.dev.yaml`; full DoD on the real API green (types, typecheck, lint, unit, build, 65 e2e, a11y 26 × 2). Production
 hosting = Docker on one VPS from the API repo (`Dockerfile`, `deploy/compose.yaml`, Caddy serving this build).
 
+Auth fixes (2026-10-30): sign out everywhere refreshes and retries on 401 (else signs this device out and says so); its
+success toast only on success; a transient refresh failure no longer ends the donor or staff session. Unit 268 green.
+
 ## R5 — donations (one PR "Store web — R5 donations", API `792521a`)
 
 | Phase | Status | Commit | Screens | Tests (unit / e2e / a11y routes) | Notes |

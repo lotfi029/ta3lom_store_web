@@ -11,6 +11,7 @@ import type {
 } from '../api/api.types';
 import { STORE_API_URL } from '../api/store-api-url';
 import { I18nService } from '../i18n/i18n';
+import { sessionRejected } from './session-rejected';
 
 /** What the header, account menu and checkout show about the signed-in donor (from the session or `GET /v1/me`). */
 export type DonorProfile = Pick<Me, 'id' | 'mobile' | 'fullName' | 'email' | 'locale'>;
@@ -76,7 +77,10 @@ export class StoreAuth {
     return session;
   }
 
-  /** Single-flight refresh via the `t3s_rt` cookie. Resolves the new token; rejects (and clears) when the session is gone. */
+  /**
+   * Single-flight refresh via the `t3s_rt` cookie. Resolves the new token; rejects — and clears only when the API refused
+   * the session (`sessionRejected`). A network error, 5xx or 429 rejects without clearing: the cookie may still be good.
+   */
   refresh(): Promise<string> {
     if (!this.browser) return Promise.reject(new Error('no session during prerender'));
     this.refreshing ??= this.doRefresh().finally(() => (this.refreshing = null));
@@ -95,18 +99,24 @@ export class StoreAuth {
     } catch (err) {
       // auth.refresh_race (409): a parallel tab refreshed within 20 s — retry once (11 §1.6).
       if (!retried && (err as { status?: number }).status === 409) return this.doRefresh(true);
-      this.clear();
+      if (sessionRejected(err)) this.clear();
       throw err;
     }
   }
 
-  /** Restores a session after a page load (one refresh attempt per page view). Guards and the header call this. */
+  /**
+   * Restores a session after a page load. Guards and the header call this. A refused session is remembered for the page
+   * view (one refresh attempt); after a transient failure the next call tries again.
+   */
   ensureSession(): Promise<boolean> {
     if (this.token()) return Promise.resolve(true);
     if (!this.browser) return Promise.resolve(false);
     this.restoring ??= this.refresh().then(
       () => true,
-      () => false,
+      (err: unknown) => {
+        if (!sessionRejected(err)) this.restoring = null;
+        return false;
+      },
     );
     return this.restoring;
   }
@@ -146,22 +156,37 @@ export class StoreAuth {
     }
   }
 
-  /** Revokes every session of this customer (needs the bearer). */
+  /**
+   * Revokes every session of this customer. `logout-all` needs a valid bearer and the access token may be minutes old, so
+   * a 401 refreshes once and sends it again. If it still fails nothing was revoked and the API kept `t3s_rt`: `logout()`
+   * at least ends this device's session (clears the cookie), and the error reaches the caller, which tells the donor.
+   */
   async logoutAll(): Promise<void> {
-    const token = this.token();
     try {
-      await firstValueFrom(
-        this.http.post(`${this.api}/auth/logout-all`, null, {
-          withCredentials: true,
-          headers: {
-            'Accept-Language': this.i18n.locale,
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
-        }),
-      );
+      try {
+        await this.postLogoutAll(this.token());
+      } catch (err) {
+        if ((err as { status?: number }).status !== 401) throw err;
+        await this.postLogoutAll(await this.refresh());
+      }
+    } catch (err) {
+      await this.logout().catch(() => undefined);
+      throw err;
     } finally {
       this.clear();
     }
+  }
+
+  private postLogoutAll(token: string | null): Promise<unknown> {
+    return firstValueFrom(
+      this.http.post(`${this.api}/auth/logout-all`, null, {
+        withCredentials: true,
+        headers: {
+          'Accept-Language': this.i18n.locale,
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      }),
+    );
   }
 
   clear(): void {

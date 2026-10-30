@@ -8,8 +8,11 @@ import {
   viewChild,
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { problemMessage } from '../../core/api/problem-message';
+import { toProblem } from '../../core/api/problem';
 import { StoreAuth } from '../../core/auth/store-auth';
 import { CartSummary } from '../../core/cart/cart-summary';
+import { ToastService } from '../../core/ui/toast.service';
 import { Icon } from '../../shared/ui/icon/icon';
 
 /**
@@ -79,6 +82,7 @@ export class AccountMenu {
   protected readonly auth = inject(StoreAuth);
   private readonly cart = inject(CartSummary);
   private readonly router = inject(Router);
+  private readonly toast = inject(ToastService);
   private readonly host = inject(ElementRef<HTMLElement>);
   private readonly toggle = viewChild<ElementRef<HTMLButtonElement>>('toggle');
   protected readonly open = signal(false);
@@ -100,11 +104,13 @@ export class AccountMenu {
     this.open.set(false);
   }
 
-  /** Revokes every session of the customer (all devices). */
+  /** Revokes every session of the customer (all devices). On failure this device is still signed out; the donor is told. */
   protected async signOutEverywhere(): Promise<void> {
     this.open.set(false);
     try {
       await this.auth.logoutAll();
+    } catch (e) {
+      this.toast.show(problemMessage(toProblem(e)), 'error');
     } finally {
       await this.cart.load();
       await this.router.navigateByUrl('/');

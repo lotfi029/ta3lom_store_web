@@ -17,7 +17,6 @@ describe('AccountData (contract 15 §2.5)', () => {
     isSignedIn: () => true,
     setProfile: vi.fn(),
     clear: vi.fn(() => calls.push('clear')),
-    refresh: vi.fn(async () => (calls.push('refresh'), 'T')),
     logoutAll: vi.fn(async () => void calls.push('logout-all')),
   };
   const cart = { reset: vi.fn(() => calls.push('cart-reset')) };
@@ -42,9 +41,15 @@ describe('AccountData (contract 15 §2.5)', () => {
     expect(donationUrl(API, ' t3-26-000001 ')).toBe(`${API}/me/donations/T3-26-000001`);
   });
 
-  it('sign out everywhere refreshes first, then calls logout-all, then empties the local cart', async () => {
+  it('sign out everywhere calls logout-all (StoreAuth refreshes on 401), then empties the local cart', async () => {
     await data.logoutAll();
-    expect(calls).toEqual(['refresh', 'logout-all', 'cart-reset']);
+    expect(calls).toEqual(['logout-all', 'cart-reset']);
+  });
+
+  it('a failed sign out everywhere still empties the local cart and rejects', async () => {
+    auth.logoutAll.mockRejectedValueOnce(new Error('x'));
+    await expect(data.logoutAll()).rejects.toBeTruthy();
+    expect(calls).toEqual(['cart-reset']);
   });
 
   it('delete: DELETE /v1/me, then signed out and the cart cleared locally', async () => {

@@ -143,4 +143,85 @@ describe('StoreAuth (contract 15 §2.2)', () => {
     await expect(p).rejects.toBeTruthy();
     expect(auth.isSignedIn()).toBe(false);
   });
+
+  async function signIn(token: string): Promise<void> {
+    const p = auth.refresh();
+    http.expectOne(`${API}/auth/refresh`).flush({ accessToken: token, expiresIn: 900 });
+    await tick();
+    http.expectOne(`${API}/me`).flush(ME);
+    await p;
+  }
+
+  it('a refresh that fails on the network, 5xx or 429 keeps the session (the cookie may still be good)', async () => {
+    await signIn('T1');
+    for (const status of [0, 503, 429]) {
+      const p = auth.refresh();
+      http.expectOne(`${API}/auth/refresh`).flush({}, { status, statusText: 'x' });
+      await expect(p).rejects.toBeTruthy();
+      expect(auth.accessToken()).toBe('T1');
+    }
+  });
+
+  it('a refused refresh (403 auth.account_blocked) clears the session', async () => {
+    await signIn('T1');
+    const p = auth.refresh();
+    http
+      .expectOne(`${API}/auth/refresh`)
+      .flush({ code: 'auth.account_blocked' }, { status: 403, statusText: 'x' });
+    await expect(p).rejects.toBeTruthy();
+    expect(auth.isSignedIn()).toBe(false);
+  });
+
+  it('ensureSession tries again after a transient failure', async () => {
+    const first = auth.ensureSession();
+    http.expectOne(`${API}/auth/refresh`).flush({}, { status: 503, statusText: 'x' });
+    expect(await first).toBe(false);
+    const second = auth.ensureSession();
+    http.expectOne(`${API}/auth/refresh`).flush({ accessToken: 'T3', expiresIn: 900 });
+    await tick();
+    http.expectOne(`${API}/me`).flush(ME);
+    expect(await second).toBe(true);
+  });
+
+  it('logoutAll with a stale token: 401 → one refresh → logout-all again with the new bearer', async () => {
+    await signIn('OLD');
+    const p = auth.logoutAll();
+    const first = http.expectOne(`${API}/auth/logout-all`);
+    expect(first.request.headers.get('Authorization')).toBe('Bearer OLD');
+    first.flush({ code: 'auth.unauthenticated' }, { status: 401, statusText: 'x' });
+    await tick();
+    http.expectOne(`${API}/auth/refresh`).flush({ accessToken: 'NEW', expiresIn: 900 });
+    await tick();
+    const retry = http.expectOne(`${API}/auth/logout-all`);
+    expect(retry.request.headers.get('Authorization')).toBe('Bearer NEW');
+    retry.flush(null, { status: 204, statusText: 'No Content' });
+    await p;
+    http.expectNone(`${API}/auth/logout`);
+    expect(auth.isSignedIn()).toBe(false);
+  });
+
+  it('logoutAll that still fails falls back to logout (clears the cookie) and rejects', async () => {
+    await signIn('OLD');
+    const p = auth.logoutAll();
+    http.expectOne(`${API}/auth/logout-all`).flush({}, { status: 401, statusText: 'x' });
+    await tick();
+    http
+      .expectOne(`${API}/auth/refresh`)
+      .flush({ code: 'auth.refresh_expired' }, { status: 401, statusText: 'x' });
+    await tick();
+    http.expectOne(`${API}/auth/logout`).flush(null, { status: 204, statusText: 'No Content' });
+    await expect(p).rejects.toMatchObject({ status: 401 });
+    expect(auth.isSignedIn()).toBe(false);
+  });
+
+  it('logoutAll on a 5xx does not refresh, falls back to logout and rejects', async () => {
+    await signIn('T1');
+    const p = auth.logoutAll();
+    http.expectOne(`${API}/auth/logout-all`).flush({}, { status: 503, statusText: 'x' });
+    await tick();
+    http.expectNone(`${API}/auth/refresh`);
+    http.expectOne(`${API}/auth/logout`).flush(null, { status: 204, statusText: 'No Content' });
+    await expect(p).rejects.toMatchObject({ status: 503 });
+    expect(auth.isSignedIn()).toBe(false);
+  });
 });
