@@ -1,7 +1,13 @@
 # Dev-only environment for the store web cloud session (docs/cloud/store-web-cloud-environment.md §1).
 # None of these values is a secret: local PostgreSQL, local API, local ports. Source it:  . scripts/dev-env.sh
 # R5: the API is lotfi029/ta3lom_store_api (Ta3lom.Store.slnx, src/Ta3lom.Store.Api) on PostgreSQL 18 (docker postgres:18).
-[ -d /opt/node24/bin ] && case ":$PATH:" in *":/opt/node24/bin:"*) ;; *) export PATH="/opt/node24/bin:$PATH" ;; esac
+# Node >= 24.15 (package.json engines): the one on PATH when it is new enough, else /opt/node24 (docs/cloud setup script).
+_node_ok() { node -e 'const [a,b]=process.versions.node.split(".").map(Number);process.exit(a>24||(a===24&&b>=15)?0:1)' 2>/dev/null; }
+if ! _node_ok && [ -d /opt/node24/bin ]; then
+  case ":$PATH:" in *":/opt/node24/bin:"*) ;; *) export PATH="/opt/node24/bin:$PATH" ;; esac
+fi
+_node_ok || echo "dev-env: Node >= 24.15 is required (found $(node -v 2>/dev/null || echo none)) — install Node 24 (nvm install 24)" >&2
+unset -f _node_ok
 [ -d "$HOME/.cache/store-web/pw-browsers" ] && export PLAYWRIGHT_BROWSERS_PATH="$HOME/.cache/store-web/pw-browsers"
 export STORE_API_URL="${STORE_API_URL:-http://localhost:5080/v1}"
 export NG_CLI_ANALYTICS=false NG_FORCE_TTY=false E2E_PORT="${E2E_PORT:-4320}"

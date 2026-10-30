@@ -1,5 +1,9 @@
 # Store web progress
-Next: review of PR "Store web — R5 review fixes" (lotfi029/ta3lom_store_web#15); then R5-Payments (flip `paymentsEnabled`, gateway redirect)
+Next: R5-Payments (flip `paymentsEnabled`, gateway redirect), then the first production deploy (API repo `deploy/README.md`)
+
+Local run and deploy readiness (2026-10-30): `dev-env.sh` checks Node ≥ 24.15; `api-up.sh` starts PostgreSQL from the API's
+`compose.dev.yaml`; full DoD on the real API green (types, typecheck, lint, unit, build, 65 e2e, a11y 26 × 2). Production
+hosting = Docker on one VPS from the API repo (`Dockerfile`, `deploy/compose.yaml`, Caddy serving this build).
 
 ## R5 — donations (one PR "Store web — R5 donations", API `792521a`)
 
