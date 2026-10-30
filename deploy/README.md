@@ -42,11 +42,28 @@ Publish **`dist/store-web/browser/`** as the web root.
 
 The Caddy site block is `deploy/caddy/Caddyfile` in the API repo. It serves this web root from
 `/srv/store-web/site`, imports `caddy-headers.conf` (copied next to it as `/srv/store-web/caddy-headers.conf` on every
-web deploy) and applies:
+web deploy) and applies the rules below (kept identical to that file; `scripts/check-deploy-output.mjs` requires them here):
 
-- `redir / /ar/ 302`;
-- per locale: `try_files {path} {path}/index.html /{ar,en}/index.csr.html`, then `file_server`;
-- `Cache-Control: public, max-age=31536000, immutable` on `*.js|*.css|*.woff2`, `no-cache` on HTML; `zstd`/`gzip`.
+```caddy
+	redir / /ar/ 302
+
+	@ar path /ar/*
+	handle @ar {
+		try_files {path} {path}/index.html /ar/index.csr.html
+		file_server
+	}
+	@en path /en/*
+	handle @en {
+		try_files {path} {path}/index.html /en/index.csr.html
+		file_server
+	}
+
+	# Fingerprinted assets never change; HTML must be revalidated so a deploy is visible at once.
+	@assets path_regexp \.(js|css|woff2)$
+	header @assets Cache-Control "public, max-age=31536000, immutable"
+	@html path *.html */
+	header @html Cache-Control "no-cache"
+```
 
 Publish (after R5-Payments, see the API runbook):
 
