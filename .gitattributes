@@ -1,0 +1,2 @@
+# Shell scripts run under bash (Git Bash on Windows): CRLF breaks them (`set: pipefail\r`), whatever core.autocrlf says.
+*.sh text eol=lf
