@@ -1,8 +1,8 @@
 # Deploying the store web (static)
 
 The store web is **static files only** — no Node server in production ([ADR-S09](../docs/adr/ADR-S09-store-web-separate-app.md),
-plan §2.5). This folder holds what the host needs; hosting itself (Caddy, VPS, DNS, certificates) is a separate step
-and is not done from this repo.
+plan §2.5). This folder holds what the host needs. Hosting (Docker on one VPS: PostgreSQL, the API and Caddy, which serves
+these files) lives in the API repo: `lotfi029/ta3lom_store_api` → `deploy/` (runbook `deploy/README.md`, go-live checklist).
 
 ## Build
 
@@ -38,13 +38,13 @@ Publish **`dist/store-web/browser/`** as the web root.
   *.js *.css media/    → fingerprinted assets
 ```
 
-## Host rules (Caddy sketch)
+## Host rules
+
+The Caddy site block is `deploy/caddy/Caddyfile` in the API repo. It serves this web root from
+`/srv/store-web/site`, imports `caddy-headers.conf` (copied next to it as `/srv/store-web/caddy-headers.conf` on every
+web deploy) and applies the rules below (kept identical to that file; `scripts/check-deploy-output.mjs` requires them here):
 
 ```caddy
-store.ta3lom.sa {
-	root * /srv/store-web            # dist/store-web/browser
-	import /etc/caddy/store-web-headers.conf   # = deploy/caddy-headers.conf
-
 	redir / /ar/ 302
 
 	@ar path /ar/*
@@ -57,17 +57,19 @@ store.ta3lom.sa {
 		try_files {path} {path}/index.html /en/index.csr.html
 		file_server
 	}
-	handle {
-		file_server
-	}
 
 	# Fingerprinted assets never change; HTML must be revalidated so a deploy is visible at once.
 	@assets path_regexp \.(js|css|woff2)$
 	header @assets Cache-Control "public, max-age=31536000, immutable"
 	@html path *.html */
 	header @html Cache-Control "no-cache"
-	encode zstd gzip
-}
+```
+
+Publish (after R5-Payments, see the API runbook):
+
+```bash
+rsync -a --delete dist/store-web/browser/ server:/srv/store-web/site/
+rsync -a deploy/caddy-headers.conf server:/srv/store-web/caddy-headers.conf
 ```
 
 - **Client fallback (E-1).** A project published after the build has no prerendered page: `try_files` serves

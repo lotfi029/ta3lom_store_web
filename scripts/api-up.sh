@@ -18,8 +18,14 @@ if ready; then echo "api-up: already running on :5080"; exit 0; fi
 pg_up() { pg_isready -q -h localhost -p "$PGPORT"; }
 if ! pg_up; then
   if docker info >/dev/null 2>&1 || { (dockerd >"$LOG_DIR/dockerd.log" 2>&1 &); sleep 5; docker info >/dev/null 2>&1; }; then
-    docker start "$STORE_PG_CONTAINER" >/dev/null 2>&1 \
-      || docker run -d --name "$STORE_PG_CONTAINER" -e POSTGRES_PASSWORD=postgres -p "$PGPORT:5432" "$STORE_PG_IMAGE" >/dev/null
+    # The API repo's compose.dev.yaml (same container name and port) when it has one; plain docker run otherwise.
+    if [ "$PGPORT" = 5440 ] && [ -f "$STORE_API_DIR/compose.dev.yaml" ] && docker compose version >/dev/null 2>&1; then
+      docker start "$STORE_PG_CONTAINER" >/dev/null 2>&1 \
+        || docker compose -f "$STORE_API_DIR/compose.dev.yaml" up -d >/dev/null
+    else
+      docker start "$STORE_PG_CONTAINER" >/dev/null 2>&1 \
+        || docker run -d --name "$STORE_PG_CONTAINER" -e POSTGRES_PASSWORD=postgres -p "$PGPORT:5432" "$STORE_PG_IMAGE" >/dev/null
+    fi
   fi
   for _ in $(seq 1 30); do pg_up && break; sleep 1; done
 fi
