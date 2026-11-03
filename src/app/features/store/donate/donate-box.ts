@@ -83,16 +83,6 @@ export interface CheckoutNavState {
       <div class="acts">
         <button
           type="button"
-          class="btn add"
-          [disabled]="!ready()"
-          [attr.aria-busy]="busy() === 'add'"
-          [attr.aria-label]="addLabel()"
-          (click)="submit('add')"
-        >
-          <ta-icon name="plus" [size]="18" /><span i18n="@@store.donate.add">اضافة</span>
-        </button>
-        <button
-          type="button"
           class="btn donate"
           [disabled]="!ready()"
           [attr.aria-busy]="busy() === 'donate'"
@@ -100,6 +90,16 @@ export interface CheckoutNavState {
           (click)="submit('donate')"
         >
           <ta-icon name="heart" [size]="18" /><span i18n="@@store.donate.donate">تبرع</span>
+        </button>
+        <button
+          type="button"
+          class="btn add"
+          [disabled]="!ready()"
+          [attr.aria-busy]="busy() === 'add'"
+          [attr.aria-label]="addLabel()"
+          (click)="submit('add')"
+        >
+          <ta-icon name="cart" [size]="18" /><span i18n="@@store.donate.add">اضافة</span>
         </button>
       </div>
     </div>
@@ -120,10 +120,14 @@ export interface CheckoutNavState {
       font-size: 0.82rem;
       color: var(--c-danger);
     }
+    /* Option C §4: تبرع (primary, wide) then اضافة (secondary, cart icon). The project page splits them evenly. */
     .acts {
       display: grid;
+      grid-template-columns: 1fr auto;
+      gap: var(--space-2);
+    }
+    .large .acts {
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
     }
     .btn {
       display: inline-flex;
@@ -142,7 +146,15 @@ export interface CheckoutNavState {
       cursor: default;
     }
     .add {
+      padding-inline: var(--space-4);
       background: var(--c-surface);
+      border-color: var(--c-border-2);
+      color: var(--c-text-2);
+    }
+    .add:hover {
+      border-color: var(--c-text);
+    }
+    .large .add {
       border-color: var(--c-link);
       color: var(--c-link);
     }

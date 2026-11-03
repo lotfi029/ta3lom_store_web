@@ -19,16 +19,20 @@ const name = (c: Card, locale: 'ar' | 'en') =>
 
 /** Fills the cart with the three line kinds from the UI: option × 2, an open amount, a category gift via quick donate. */
 async function threeLines(page: Page, locale: 'ar' | 'en') {
-  const { items } = await apiGet<{ items: Card[] }>('/catalog/projects?page=1&pageSize=12');
+  const { items } = await apiGet<{ items: Card[] }>('/catalog/projects?page=1&pageSize=20');
   const withOptions = items.find((c) => c.fromAmount !== null)!;
   const amountOnly = items.find((c) => c.fromAmount === null && c.allowOpenAmount)!;
   await page.goto(`/${locale}/`);
-  const a = page.locator('ta-project-card', { hasText: name(withOptions, locale) });
+  const a = page.locator('ta-project-card').filter({
+    has: page.getByRole('heading', { name: name(withOptions, locale), exact: true }),
+  });
   await a.locator('.chip').first().click();
   await a.getByRole('button', { name: /^(زيادة|Increase)/ }).click();
   await a.locator('button.add').click();
   await expect(page.locator('a.cartbtn')).toHaveAttribute('data-lines', '1');
-  const b = page.locator('ta-project-card', { hasText: name(amountOnly, locale) });
+  const b = page.locator('ta-project-card').filter({
+    has: page.getByRole('heading', { name: name(amountOnly, locale), exact: true }),
+  });
   await b.locator('input[inputmode=decimal]').fill('٧٥');
   await b.locator('button.add').click();
   await expect(page.locator('a.cartbtn')).toHaveAttribute('data-lines', '2');

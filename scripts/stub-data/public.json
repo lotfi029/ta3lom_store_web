@@ -286,8 +286,8 @@
    {
     "id": "01a1a08d-fa9d-7d88-be76-65feb5cb4147",
     "slug": "c-relief",
-    "nameAr": "الإغاثة",
-    "nameEn": "Relief",
+    "nameAr": "الإغاثة العاجلة",
+    "nameEn": "Emergency relief",
     "descriptionAr": "مشاريع الإغاثة.",
     "descriptionEn": "Relief projects.",
     "imageUrl": null,
@@ -424,8 +424,8 @@
   {
    "id": "01a1a08d-fa9d-7d88-be76-65feb5cb4147",
    "slug": "c-relief",
-   "nameAr": "الإغاثة",
-   "nameEn": "Relief",
+   "nameAr": "الإغاثة العاجلة",
+   "nameEn": "Emergency relief",
    "descriptionAr": "مشاريع الإغاثة.",
    "descriptionEn": "Relief projects.",
    "imageUrl": null,
@@ -2605,8 +2605,8 @@
   "category": {
    "id": "01a1a08d-fa9d-7d88-be76-65feb5cb4147",
    "slug": "c-relief",
-   "nameAr": "الإغاثة",
-   "nameEn": "Relief"
+   "nameAr": "الإغاثة العاجلة",
+   "nameEn": "Emergency relief"
   },
   "allowOpenAmount": true,
   "minAmount": "10.00",
@@ -2825,8 +2825,8 @@
   "category": {
    "id": "01a1a08d-fa9d-7d88-be76-65feb5cb4147",
    "slug": "c-relief",
-   "nameAr": "الإغاثة",
-   "nameEn": "Relief"
+   "nameAr": "الإغاثة العاجلة",
+   "nameEn": "Emergency relief"
   },
   "allowOpenAmount": true,
   "minAmount": "10.00",
@@ -3104,8 +3104,8 @@
   "category": {
    "id": "01a1a08d-fa9d-7d88-be76-65feb5cb4147",
    "slug": "c-relief",
-   "nameAr": "الإغاثة",
-   "nameEn": "Relief"
+   "nameAr": "الإغاثة العاجلة",
+   "nameEn": "Emergency relief"
   },
   "allowOpenAmount": false,
   "minAmount": "10.00",
@@ -3283,8 +3283,8 @@
   "category": {
    "id": "01a1a08d-fa9d-7d88-be76-65feb5cb4147",
    "slug": "c-relief",
-   "nameAr": "الإغاثة",
-   "nameEn": "Relief"
+   "nameAr": "الإغاثة العاجلة",
+   "nameEn": "Emergency relief"
   },
   "allowOpenAmount": true,
   "minAmount": "10.00",

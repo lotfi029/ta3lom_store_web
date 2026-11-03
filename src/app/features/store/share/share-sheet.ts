@@ -8,18 +8,26 @@ import { shareLinks } from './share-links';
  * Prototype "مشاركة": the system share sheet where the browser has one (phones), otherwise a dialog with WhatsApp,
  * X, Facebook and copy-link. Nothing is loaded from a third party; the links open in a new tab.
  */
+let nextId = 0;
+
 @Component({
   selector: 'ta-share-sheet',
   imports: [Dialog, Icon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <button type="button" class="share-btn" (click)="share()">
-      <ta-icon name="share" [size]="16" /><span i18n="@@store.share.button">مشاركة</span>
-    </button>
-    <ta-dialog [(open)]="open" labelledBy="share-h">
+    @if (compact()) {
+      <button type="button" class="share-ic" (click)="share()" [attr.aria-label]="iconLabel()">
+        <ta-icon name="share" [size]="18" />
+      </button>
+    } @else {
+      <button type="button" class="share-btn" (click)="share()">
+        <ta-icon name="share" [size]="16" /><span i18n="@@store.share.button">مشاركة</span>
+      </button>
+    }
+    <ta-dialog [(open)]="open" [labelledBy]="headingId">
       <div class="sheet">
         <div class="hd">
-          <h2 id="share-h" i18n="@@store.share.title-project">مشاركة المشروع</h2>
+          <h2 [id]="headingId" i18n="@@store.share.title-project">مشاركة المشروع</h2>
           <button
             type="button"
             class="x"
@@ -61,6 +69,21 @@ import { shareLinks } from './share-links';
     }
     .share-btn:hover {
       border-color: var(--c-text);
+    }
+    .share-ic {
+      display: grid;
+      place-items: center;
+      inline-size: 44px;
+      block-size: 44px;
+      border-radius: 50%;
+      border: 0;
+      background: var(--c-surface);
+      color: var(--c-text);
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+    }
+    .share-ic:hover {
+      color: var(--c-link);
     }
     .sheet {
       background: var(--c-surface);
@@ -123,6 +146,13 @@ export class ShareSheet {
   private readonly toast = inject(ToastService);
   readonly url = input.required<string>();
   readonly title = input.required<string>();
+  /** Icon-only trigger (the compact project card, spec C-1): its accessible name carries the project title. */
+  readonly compact = input(false);
+  protected readonly headingId = `share-h-${nextId++}`;
+  protected readonly iconLabel = computed(() => {
+    const title = this.title();
+    return $localize`:@@store.share.icon-label:مشاركة ${title}:title:`;
+  });
   protected readonly open = signal(false);
   private readonly links = computed(() => shareLinks(this.url(), this.title()));
   protected readonly whatsapp = computed(() => this.links().whatsapp);
