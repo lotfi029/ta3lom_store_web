@@ -45,6 +45,12 @@ jobs:
         run: npx playwright test --grep @smoke
       - name: a11y (ar/en × light/dark)
         run: npm run a11y
+      - name: Container image (CONFIG=ci) — headers, generated CSP, fallbacks, 404s, cache, healthz (check-container)
+        run: |
+          docker build --network host --build-arg CONFIG=ci \
+            --build-arg VERSION="$(git describe --tags --always)" --build-arg GIT_SHA="${{ github.sha }}" \
+            -t ta3lom-store-web:ci .
+          node scripts/check-container.mjs ta3lom-store-web:ci --env ci
       - name: Staging build dry run (stub data, runtime API = staging; noindex, ribbon, generated CSP)
         env:
           PRERENDER_API_URL: http://localhost:3000/v1

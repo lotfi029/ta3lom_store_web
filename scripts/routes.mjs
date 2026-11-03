@@ -13,8 +13,9 @@
 import { rmSync, writeFileSync } from 'node:fs';
 import { deployEnv } from './lib/envs.mjs';
 
-const API_URL = (process.env.PRERENDER_API_URL ?? process.env.STORE_API_URL ?? 'http://localhost:5080/v1').replace(/\/$/, '');
 const ENV = deployEnv();
+// C-1: the prerender's data source; defaults to the environment's own API.
+const API_URL = (process.env.PRERENDER_API_URL || process.env.STORE_API_URL || ENV.apiUrl).replace(/\/$/, '');
 const SITE_ORIGIN = ENV.site;
 const LOCALES = ['ar', 'en'];
 const STATIC_ROUTES = ['/'];
