@@ -27,11 +27,11 @@ async function threeLines(page: Page, locale: 'ar' | 'en') {
   await a.locator('.chip').first().click();
   await a.getByRole('button', { name: /^(زيادة|Increase)/ }).click();
   await a.locator('button.add').click();
-  await expect(page.locator('a.cartbtn .n')).toHaveText('1');
+  await expect(page.locator('a.cartbtn')).toHaveAttribute('data-lines', '1');
   const b = page.locator('ta-project-card', { hasText: name(amountOnly, locale) });
   await b.locator('input[inputmode=decimal]').fill('٧٥');
   await b.locator('button.add').click();
-  await expect(page.locator('a.cartbtn .n')).toHaveText('2');
+  await expect(page.locator('a.cartbtn')).toHaveAttribute('data-lines', '2');
 
   // Quick donate (header button): a category gift → straight to checkout.
   await page.locator('header .acts > button.quick').click();
@@ -75,7 +75,7 @@ for (const locale of ['ar', 'en'] as const) {
       );
       expect(page.url()).not.toContain('t=');
       await expect(page.locator('meta[name=referrer]')).toHaveAttribute('content', 'no-referrer');
-      await expect(page.locator('a.cartbtn .n')).toHaveCount(0);
+      await expect(page.locator('a.cartbtn')).toHaveAttribute('data-lines', '0');
       await expectNoA11yViolations(page);
 
       if (!onStub) {
@@ -111,7 +111,7 @@ for (const locale of ['ar', 'en'] as const) {
       await page.locator('.cfoot button.rm').click();
       await page.getByRole('dialog').locator('button.danger').click();
       await expect(page.locator('.empty')).toBeVisible();
-      await expect(page.locator('a.cartbtn .n')).toHaveCount(0);
+      await expect(page.locator('a.cartbtn')).toHaveAttribute('data-lines', '0');
     });
   });
 }

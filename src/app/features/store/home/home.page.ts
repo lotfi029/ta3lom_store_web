@@ -18,6 +18,7 @@ import { Icon } from '../../../shared/ui/icon/icon';
 import { ResourceState } from '../../../shared/ui/resource-state/resource-state';
 import { HomeData } from './home.data';
 import { listingSeo, toQuery } from './listing';
+import { CategoryTabs } from './category-tabs';
 import { ProjectCard } from './project-card';
 
 /**
@@ -27,7 +28,7 @@ import { ProjectCard } from './project-card';
  */
 @Component({
   selector: 'ta-home-page',
-  imports: [RouterLink, Icon, ResourceState, ProjectCard],
+  imports: [RouterLink, Icon, ResourceState, ProjectCard, CategoryTabs],
   providers: [HomeData],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './home.page.html',
@@ -63,6 +64,12 @@ export class HomePage {
       const q = this.query();
       untracked(() => this.data.query.set(q));
     });
+    // M-4: the quick-donate entry points follow the categories that take general gifts.
+    effect(() => {
+      if (!this.data.categories.hasValue()) return;
+      const n = this.data.categoryList().filter((c) => c.acceptsGeneralGifts).length;
+      untracked(() => this.quick.giftCategoryCount.set(n));
+    });
     effect(() => {
       const q = this.query();
       const cat = this.activeCategory();
@@ -88,16 +95,6 @@ export class HomePage {
 
   protected openQuick(event: Event): void {
     this.quick.show(event.currentTarget);
-  }
-
-  protected search(event: Event, input: HTMLInputElement): void {
-    event.preventDefault();
-    const q = input.value.trim();
-    void this.router.navigate([], {
-      queryParams: { q: q || null, page: null },
-      queryParamsHandling: 'merge',
-      fragment: 'projects',
-    });
   }
 
   protected onSort(value: string): void {

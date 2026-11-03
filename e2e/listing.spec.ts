@@ -38,7 +38,7 @@ for (const locale of ['ar', 'en'] as const) {
       await expect(titles).toHaveCount(api.items.length);
       const name = (c: Card) => (locale === 'en' && c.titleEn ? c.titleEn : c.titleAr);
       await expect(titles).toHaveText(api.items.map(name));
-      await expect(page.locator('nav.filters a')).toHaveCount(cats.length + 1);
+      await expect(page.locator('ta-category-tabs nav a')).toHaveCount(cats.length + 1);
       expect(detailRequests).toEqual([]);
       await expect
         .poll(() =>
@@ -49,7 +49,7 @@ for (const locale of ['ar', 'en'] as const) {
         .toContain('"ItemList"');
 
       const cat = cats[0];
-      await page.locator('nav.filters a').nth(1).click();
+      await page.locator('ta-category-tabs nav a').nth(1).click();
       await expect(page).toHaveURL(new RegExp(`category=${cat.slug}`));
       const filtered = await apiGet<Page>(
         `/catalog/projects?page=1&pageSize=12&category=${cat.slug}`,
@@ -60,8 +60,8 @@ for (const locale of ['ar', 'en'] as const) {
         `https://store.ta3lom.sa/${locale}/`,
       );
 
-      await page.locator('#home-q').fill(api.items[0].titleAr.split(' ')[0]);
-      await page.locator('#home-q').press('Enter');
+      await page.locator('#hdr-q').fill(api.items[0].titleAr.split(' ')[0]);
+      await page.locator('#hdr-q').press('Enter');
       await expect(page).toHaveURL(/q=/);
       await expect(page.locator('meta[name=robots]')).toHaveAttribute(
         'content',
@@ -84,7 +84,7 @@ for (const locale of ['ar', 'en'] as const) {
       await card.getByRole('button', { name: /^(زيادة|Increase)/ }).click();
       await card.locator('button.add').click();
       await expect(page.locator('ta-toast')).toContainText(locale === 'ar' ? 'السلة' : 'cart');
-      await expect(page.locator('a.cartbtn .n')).toHaveText('1');
+      await expect(page.locator('a.cartbtn')).toHaveAttribute('data-lines', '1');
     });
 
     test('an amount-only card validates the amount against the config minimum (Arabic digits accepted)', async ({
@@ -107,7 +107,7 @@ for (const locale of ['ar', 'en'] as const) {
       );
       await field.fill('٧٥');
       await card.locator('button.add').click();
-      await expect(page.locator('a.cartbtn .n')).toHaveText('1');
+      await expect(page.locator('a.cartbtn')).toHaveAttribute('data-lines', '1');
       await page.setViewportSize({ width: 320, height: 720 });
       await expectNoHorizontalScroll(page);
     });

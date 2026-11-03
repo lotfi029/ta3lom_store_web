@@ -1,3 +1,5 @@
+<ta-category-tabs [categories]="data.categoryList()" [active]="query().category" />
+
 <section class="hero">
   <div class="wrap">
     <span class="eyebrow-hero" i18n="@@store.home.eyebrow-r5"
@@ -10,22 +12,6 @@
     <button type="button" class="hquick" (click)="openQuick($event)">
       <ta-icon name="gift" [size]="20" /><span i18n="@@store.quick.title">تبرع سريع</span>
     </button>
-    <form class="hsearch" role="search" (submit)="search($event, hq)">
-      <label class="visually-hidden" for="home-q" i18n="@@store.listing.search-label"
-        >ابحث في المشاريع</label
-      >
-      <input
-        #hq
-        id="home-q"
-        type="search"
-        name="q"
-        [value]="query().q"
-        placeholder="ابحث عن مشروع…"
-        i18n-placeholder="@@store.layout.search-placeholder-r5"
-        autocomplete="off"
-      />
-      <button type="submit" i18n="@@store.layout.search-submit">بحث</button>
-    </form>
   </div>
 </section>
 
@@ -48,31 +34,6 @@
     </div>
 
     <div class="toolbar">
-      <nav
-        class="filters"
-        aria-label="التصنيفات"
-        i18n-aria-label="@@store.listing.categories-label"
-      >
-        <a
-          routerLink="/"
-          [queryParams]="{ category: null, page: null }"
-          queryParamsHandling="merge"
-          fragment="projects"
-          [attr.aria-current]="!query().category ? 'true' : null"
-          i18n="@@store.listing.all-categories"
-          >الكل</a
-        >
-        @for (c of data.categoryList(); track c.slug) {
-          <a
-            routerLink="/"
-            [queryParams]="{ category: c.slug, page: null }"
-            queryParamsHandling="merge"
-            fragment="projects"
-            [attr.aria-current]="query().category === c.slug ? 'true' : null"
-            >{{ categoryName(c) }}</a
-          >
-        }
-      </nav>
       <div class="sort">
         <label for="sort" i18n="@@store.listing.sort-label">الترتيب</label>
         <select id="sort" (change)="onSort($any($event.target).value)">

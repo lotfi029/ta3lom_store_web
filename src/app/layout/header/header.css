@@ -1,33 +1,85 @@
-/* Prototype .hdr (store prototype lines 34–64, 418–427), on semantic tokens. */
+/* Option C header (docs/r5/home-option-c-spec.md §3 rows 1–2): utility row, logo + big search + actions. Tokens only. */
+:host {
+  display: contents;
+}
+
+/* 1 — utility row on the dark surface; it scrolls away, the header below stays sticky. */
+.util {
+  background: var(--c-surface-dark);
+  color: var(--c-on-dark);
+  font-size: 0.8rem;
+}
+
+.uwrap {
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-block: var(--space-1);
+  padding-inline: var(--space-6);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0 var(--space-3);
+}
+
+.utext {
+  margin: 0;
+  padding-block: var(--space-2);
+}
+
+.ulinks {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.ulink {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+  padding-inline: var(--space-2);
+  color: var(--c-on-dark);
+  text-decoration: none;
+}
+
+.ulink:hover {
+  color: var(--c-on-inverse);
+  text-decoration: underline;
+}
+
+/* 2 — header */
 .hdr {
-  background: var(--c-header-glass);
-  backdrop-filter: blur(14px);
+  background: var(--c-surface);
+  border-block-end: 1px solid var(--c-border);
   position: sticky;
   inset-block-start: 0;
   z-index: 50;
-  transition: box-shadow 0.25s;
+  transition: box-shadow var(--dur-1);
 }
 
 .hdr.scrolled {
-  box-shadow:
-    0 1px 0 var(--c-border),
-    0 8px 30px var(--c-header-shadow);
+  box-shadow: 0 8px 30px var(--c-header-shadow);
 }
 
 .wrap {
   max-width: 1200px;
   margin-inline: auto;
+  padding-block: var(--space-3);
   padding-inline: var(--space-6);
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-4);
-  min-height: 68px;
+  gap: var(--space-3) var(--space-5);
 }
 
 @media (width < 600px) {
+  .uwrap,
   .wrap {
     padding-inline: var(--space-4);
-    gap: var(--space-2);
+  }
+
+  .wrap {
+    gap: var(--space-2) var(--space-2);
   }
 }
 
@@ -46,7 +98,7 @@
   width: 46px;
   height: 40px;
   flex: none;
-  transition: transform 0.4s var(--ease);
+  transition: transform var(--dur-2) var(--ease);
 }
 
 .brand:hover .mark {
@@ -54,9 +106,9 @@
 }
 
 .nm {
-  font-weight: 600;
+  font-weight: 700;
   font-size: 1rem;
-  line-height: 1.2;
+  line-height: 1.25;
   min-width: 0;
 }
 
@@ -69,14 +121,85 @@
 
 .sub {
   display: block;
-  font-size: 0.7rem;
-  color: var(--c-muted);
-  font-weight: 400;
+  font-size: 0.8rem;
+  color: var(--c-link);
+  font-weight: 600;
 }
 
-/* Below 1100px only the mark shows; the name stays the link's accessible text (visually hidden, not removed). */
-@media (width < 1100px) {
-  .nm {
+/* The big pill search: its own full row on phones and small tablets, between logo and actions from 900 px. */
+.hsearch {
+  order: 3;
+  flex: 1 1 100%;
+  display: flex;
+  align-items: stretch;
+  min-block-size: 50px;
+  border: 2px solid var(--c-brand);
+  border-radius: var(--rp);
+  overflow: hidden;
+  background: var(--c-surface);
+}
+
+@media (width >= 900px) {
+  .hsearch {
+    order: 0;
+    flex: 1 1 360px;
+  }
+}
+
+.hsearch:focus-within {
+  outline: 2px solid var(--c-focus);
+  outline-offset: 2px;
+}
+
+.hsearch input {
+  flex: 1;
+  min-inline-size: 0;
+  border: 0;
+  background: none;
+  color: var(--c-text);
+  font: inherit;
+  font-size: 0.95rem;
+  padding-inline: var(--space-4);
+  outline: none;
+}
+
+.hsearch input::placeholder {
+  color: var(--c-muted);
+}
+
+.hsearch-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-inline-size: 44px;
+  padding-inline: var(--space-5);
+  border: 0;
+  background: var(--c-brand-strong);
+  color: var(--c-on-brand);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.hsearch-btn:hover {
+  background: var(--c-brand-deep);
+}
+
+.hsearch-ic {
+  display: none;
+}
+
+@media (width < 400px) {
+  .hsearch-btn {
+    padding-inline: var(--space-3);
+  }
+
+  .hsearch-ic {
+    display: inline-flex;
+  }
+
+  .hsearch-lbl {
     position: absolute;
     inline-size: 1px;
     block-size: 1px;
@@ -84,107 +207,6 @@
     clip-path: inset(50%);
     white-space: nowrap;
   }
-}
-
-/* Store nav: three links, shown from 1024px. */
-.nav {
-  display: none;
-  gap: 2px;
-}
-
-@media (width >= 1024px) {
-  .nav {
-    display: flex;
-  }
-}
-
-.nav a {
-  font-size: 0.9rem;
-  color: var(--c-text);
-  text-decoration: none;
-  white-space: nowrap;
-  padding-block: 8px;
-  padding-inline: 12px;
-  border-radius: var(--rp);
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  transition: background var(--dur-1);
-}
-
-.nav a:hover,
-.nav a.on {
-  background: var(--c-surface-3);
-}
-
-.nav a.on {
-  font-weight: 500;
-}
-
-/* Header search: an inline pill from 900px; the mobile drawer carries its own. */
-.hsearch,
-.msearch {
-  display: flex;
-  align-items: center;
-  border: 1px solid var(--c-border);
-  border-radius: var(--rp);
-  background: var(--c-surface);
-  padding-inline-start: var(--space-3);
-}
-
-.msearch {
-  margin-block: var(--space-2) var(--space-3);
-}
-
-.hsearch {
-  display: none;
-  flex: 1 1 200px;
-  max-inline-size: 280px;
-}
-
-@media (width >= 900px) {
-  .hsearch {
-    display: flex;
-  }
-}
-
-.hsearch:focus-within,
-.msearch:focus-within {
-  border-color: var(--c-focus);
-}
-
-.hsearch input,
-.msearch input {
-  flex: 1;
-  min-inline-size: 0;
-  border: 0;
-  background: none;
-  color: var(--c-text);
-  font: inherit;
-  font-size: 0.85rem;
-  min-block-size: 42px;
-  outline: none;
-}
-
-.hsearch input::placeholder,
-.msearch input::placeholder {
-  color: var(--c-muted);
-}
-
-.hsearch-btn {
-  display: inline-grid;
-  place-items: center;
-  inline-size: 44px;
-  block-size: 42px;
-  border: 0;
-  background: none;
-  color: var(--c-text-2);
-  cursor: pointer;
-  border-radius: var(--rp);
-}
-
-.hsearch-btn:hover {
-  color: var(--c-link);
 }
 
 .acts {
@@ -201,97 +223,72 @@
   }
 }
 
-.backsite {
-  display: none;
+/* حسابي / دخول — outlined, like the account menu trigger. */
+.signin {
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.82rem;
-  color: var(--c-muted);
-  text-decoration: none;
-  white-space: nowrap;
-  min-height: 44px;
-}
-
-@media (width >= 1200px) {
-  .backsite {
-    display: inline-flex;
-  }
-}
-
-.backsite:hover {
-  color: var(--c-text);
-}
-
-/* Prototype .cartbtn: round, badge in gold. 44px target (non-negotiable #7). */
-.cartbtn {
-  position: relative;
-  display: inline-grid;
-  place-items: center;
-  inline-size: 44px;
-  block-size: 44px;
-  border-radius: 50%;
+  gap: var(--space-2);
+  min-block-size: 44px;
+  min-inline-size: 44px;
+  justify-content: center;
+  padding-inline: var(--space-4);
   border: 1px solid var(--c-border);
-  background: var(--c-surface);
+  border-radius: var(--r);
   color: var(--c-text);
+  background: var(--c-surface);
   text-decoration: none;
-  transition: border-color 0.2s;
+  font-size: 0.9rem;
+  white-space: nowrap;
 }
 
-.cartbtn:hover {
+.signin:hover {
   border-color: var(--c-text);
 }
 
-.cartbtn .n {
-  position: absolute;
-  inset-block-start: -4px;
-  inset-inline-end: -4px;
-  min-inline-size: 20px;
-  block-size: 20px;
-  padding-inline: 5px;
-  border-radius: 999px;
-  background: var(--c-gold);
-  color: var(--c-on-gold);
-  font-family: var(--fm);
-  font-size: 0.7rem;
-  font-weight: 600;
-  display: grid;
-  place-items: center;
-  line-height: 1;
+/* السلة · total — the dark button; the bump plays on every add. */
+.cartbtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: 44px;
+  min-inline-size: 44px;
+  justify-content: center;
+  padding-inline: var(--space-4);
+  border-radius: var(--r);
+  background: var(--c-inverse);
+  color: var(--c-on-inverse);
+  text-decoration: none;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.cartbtn:hover {
+  background: var(--c-surface-dark);
+}
+
+.cartbtn ta-money {
+  --c-muted-2: currentcolor;
 }
 
 .cartbtn.bump {
-  animation: bump 0.45s var(--ease);
+  animation: bump var(--dur-2) var(--ease);
 }
 
 @keyframes bump {
   40% {
-    transform: scale(1.18);
+    transform: scale(1.12);
   }
-}
-
-.signin {
-  display: inline-flex;
-  position: relative;
-  align-items: center;
-  min-block-size: 44px;
-  padding-inline: var(--space-4);
-  border-radius: var(--rp);
-  background: var(--c-brand-strong);
-  color: var(--c-on-brand);
-  text-decoration: none;
-  font-size: 0.85rem;
-  font-weight: 500;
-  white-space: nowrap;
 }
 
 @media (width < 600px) {
-  .signin {
-    padding-inline: 0;
-    inline-size: 44px;
-    justify-content: center;
+  .signin,
+  .cartbtn {
+    padding-inline: var(--space-3);
   }
 
-  .signin .lbl {
+  .signin .lbl,
+  .ctxt,
+  .sep {
     position: absolute;
     inline-size: 1px;
     block-size: 1px;
@@ -301,34 +298,38 @@
   }
 }
 
-@media (width < 360px) {
-  .wrap {
-    padding-inline: var(--space-3);
+.quick {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: 44px;
+  min-inline-size: 44px;
+  justify-content: center;
+  padding-inline: var(--space-4);
+  border: 0;
+  border-radius: var(--rp);
+  background: var(--c-brand-strong);
+  color: var(--c-on-brand);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@media (width < 1100px) {
+  .acts > .quick {
+    display: none;
   }
-}
-
-.signin-ic {
-  display: none;
-}
-
-@media (width < 600px) {
-  .signin-ic {
-    display: inline-flex;
-  }
-}
-
-.signin:hover {
-  background: var(--c-brand-deep);
 }
 
 .burger {
   display: inline-flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-1);
   background: none;
   border: 0;
   border-radius: var(--r);
-  padding: 10px;
+  padding: var(--space-2);
   cursor: pointer;
   min-height: 44px;
   min-width: 44px;
@@ -362,7 +363,7 @@
   transform: translateY(-6px) rotate(-45deg);
 }
 
-@media (width >= 1024px) {
+@media (width >= 1100px) {
   .burger {
     display: none;
   }
@@ -370,10 +371,10 @@
 
 .mnav {
   background: var(--c-surface);
-  border-block-end: 1px solid var(--c-border);
-  padding-block: 10px 18px;
+  border-block-start: 1px solid var(--c-border);
+  padding-block: var(--space-2) var(--space-4);
   padding-inline: var(--space-6);
-  max-block-size: calc(100dvh - 68px);
+  max-block-size: calc(100dvh - 140px);
   overflow-y: auto;
   overscroll-behavior: contain;
 }
@@ -387,7 +388,7 @@
 .mnav .ml {
   display: flex;
   align-items: center;
-  padding-block: 10px;
+  padding-block: var(--space-2);
   border-block-end: 1px solid var(--c-border);
   text-decoration: none;
   color: var(--c-text);
@@ -399,7 +400,20 @@
   color: var(--c-link);
 }
 
+.mnav .mquick {
+  inline-size: 100%;
+  justify-content: flex-start;
+  border-radius: var(--r);
+  margin-block: var(--space-1);
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .hdr,
+  .mark,
+  .burger span:not(.visually-hidden) {
+    transition: none;
+  }
+
   .cartbtn.bump {
     animation: none;
   }
@@ -407,56 +421,4 @@
   .brand:hover .mark {
     transform: none;
   }
-
-  .burger span:not(.visually-hidden) {
-    transition: none;
-  }
-}
-
-.quick {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-block-size: 44px;
-  min-inline-size: 44px;
-  justify-content: center;
-  padding-inline: 14px;
-  border: 0;
-  border-radius: var(--rp);
-  background: var(--c-brand-strong);
-  color: var(--c-on-brand);
-  font: inherit;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-@media (width < 600px) {
-  .acts > .quick {
-    display: none;
-  }
-}
-
-@media (width < 760px) {
-  .acts > .quick {
-    padding-inline: 0;
-    inline-size: 44px;
-  }
-
-  .quick .lbl {
-    position: absolute;
-    inline-size: 1px;
-    block-size: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
-}
-
-.mnav .mquick {
-  inline-size: 100%;
-  justify-content: flex-start;
-  padding-inline: 16px;
-  border-radius: 12px;
-  margin-block: 4px;
 }

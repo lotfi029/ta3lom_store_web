@@ -20,7 +20,7 @@ import { SkipLink } from '../skip-link/skip-link';
       <router-outlet />
     </main>
     <ta-footer />
-    @if (browsing()) {
+    @if (browsing() && quick.available()) {
       <button
         type="button"
         class="side-quick"

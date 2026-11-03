@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, computed, signal } from '@angular/core';
 
 /**
  * Opens the quick-donate modal ("تبرع سريع", donations MVP §1.3) from anywhere — the header button and the floating side
@@ -10,6 +10,12 @@ export class QuickDonate {
   readonly open = signal(false);
   /** True once opened: the deferred modal stays loaded afterwards. */
   readonly used = signal(false);
+  /**
+   * How many active categories accept general gifts, once any page has read `/catalog/categories` (home, the modal);
+   * null = not known yet. With none, every quick-donate entry point is hidden (owner M-4); unknown keeps them shown.
+   */
+  readonly giftCategoryCount = signal<number | null>(null);
+  readonly available = computed(() => this.giftCategoryCount() !== 0);
   /** The control to give focus back to when the modal closes (the native dialog restores it on its own too). */
   private opener: HTMLElement | null = null;
 

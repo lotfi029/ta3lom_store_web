@@ -54,7 +54,7 @@ for (const locale of ['ar', 'en'] as const) {
       await box.locator('.chip').nth(1).click();
       await box.getByRole('button', { name: /^(زيادة|Increase)/ }).click();
       await box.locator('button.add').click();
-      await expect(page.locator('a.cartbtn .n')).toHaveText('1');
+      await expect(page.locator('a.cartbtn')).toHaveAttribute('data-lines', '1');
 
       await box
         .locator('.chip', { hasText: locale === 'ar' ? 'تبرع مفتوح' : 'Open amount' })

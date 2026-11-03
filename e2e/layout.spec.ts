@@ -1,18 +1,27 @@
 import { expect, test } from '@playwright/test';
 import { expectNoA11yViolations, expectNoHorizontalScroll } from './support/a11y';
+import { resetStub } from './support/api';
+
+test.beforeEach(resetStub);
 
 /** Header, footer, skip link, language switch, theme, 404. Arabic first. */
 for (const locale of ['ar', 'en'] as const) {
   test.describe(`@smoke layout /${locale}`, () => {
-    test('header: store nav, search, cart, sign-in, language, theme', async ({ page }) => {
+    test('header: utility row, big search, cart, sign-in, language, theme (Option C)', async ({
+      page,
+    }) => {
       await page.goto(`/${locale}/`);
       const header = page.locator('header.hdr');
-      await expect(header.getByRole('navigation').first()).toBeVisible();
-      await expect(header.locator('.nav a[href$="/#projects"]')).toBeVisible();
+      const util = page.locator('.util');
+      await expect(util).toContainText(locale === 'ar' ? 'ترخيص' : 'Licence');
+      await expect(util.locator('.ulink')).toHaveAttribute('href', /^https:\/\/ta3lom\.sa/);
+      await expect(header.locator('form[role=search] #hdr-q')).toBeVisible();
+      // Empty cart: the button says "السلة" without a total; the accessible name says it is empty.
+      await expect(header.locator('a.cartbtn .ctot')).toHaveCount(0);
       await expect(header.locator('.brand')).toHaveAttribute('href', /^https:\/\/ta3lom\.sa/);
       await expect(header.locator('a.cartbtn')).toHaveAttribute('href', `/${locale}/cart`);
       await expect(header.locator('a.signin')).toHaveAttribute('href', `/${locale}/login`);
-      await expect(header.locator('a.lang')).toHaveAttribute(
+      await expect(page.locator('.util a.lang')).toHaveAttribute(
         'href',
         locale === 'ar' ? '/en/' : '/ar/',
       );
@@ -41,11 +50,15 @@ for (const locale of ['ar', 'en'] as const) {
       await expect(page).toHaveURL(/#main$/);
     });
 
-    test('search submits to the home listing (?q=)', async ({ page }) => {
-      await page.goto(`/${locale}/`);
+    test('search submits to the home listing (?q=); an empty search drops q', async ({ page }) => {
+      await page.goto(`/${locale}/cart`);
       await page.locator('#hdr-q').fill('سقيا');
       await page.locator('#hdr-q').press('Enter');
       await expect(page).toHaveURL(new RegExp(`/${locale}/\\?q=`));
+      await expect(page.locator('#hdr-q')).toHaveValue('سقيا');
+      await page.locator('#hdr-q').fill('  ');
+      await page.locator('#hdr-q').press('Enter');
+      await expect(page).toHaveURL(new RegExp(`/${locale}/$`));
     });
 
     test('mobile: burger opens the drawer, Escape closes it, no horizontal scroll at 320 px', async ({
@@ -80,7 +93,7 @@ for (const locale of ['ar', 'en'] as const) {
 
     test('language switch keeps the path', async ({ page }) => {
       await page.goto(`/${locale}/no-such-page`);
-      await expect(page.locator('a.lang')).toHaveAttribute(
+      await expect(page.locator('.util a.lang')).toHaveAttribute(
         'href',
         `/${locale === 'ar' ? 'en' : 'ar'}/no-such-page`,
       );

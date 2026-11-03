@@ -4,30 +4,38 @@ import {
   ElementRef,
   HostListener,
   afterNextRender,
+  computed,
   effect,
   inject,
   signal,
   viewChild,
 } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
+import { filter, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { StoreAuth } from '../../core/auth/store-auth';
 import { CartSummary } from '../../core/cart/cart-summary';
 import { QuickDonate } from '../../core/ui/quick-donate.service';
+import { I18nService } from '../../core/i18n/i18n';
+import { formatMoney } from '../../core/money/money-format';
 import { Icon } from '../../shared/ui/icon/icon';
+import { Money } from '../../shared/ui/money/money';
 import { AccountMenu } from '../account-menu/account-menu';
 import { LangSwitch } from '../lang-switch/lang-switch';
 import { ThemeToggle } from '../theme-toggle/theme-toggle';
 
 /**
- * Store header (prototype `.hdr`): logo → ta3lom.sa, store nav (home, projects), search (→ the home listing's `?q=`),
- * cart badge (line count, C-2) with bump, account menu or sign-in, language switch keeping the path, theme toggle,
- * mobile drawer.
+ * Store header, Option C "المتجر أولاً" (docs/r5/home-option-c-spec.md §3 rows 1–2): a dark utility row (receipt and
+ * licence text, main site, language), then logo, the big pill search (→ `/{locale}/?q=`, an empty q dropped), quick
+ * donate (hidden when no category takes general gifts, M-4), account menu or sign-in, the cart button "السلة · total"
+ * (M-2: total from `/cart/summary`, the line count in its accessible name; the bump kept), theme toggle and the mobile
+ * drawer. The category tab bar sits under it on the home page (features/store/home/category-tabs).
  * After the first render (browser only) it restores the customer session and loads the cart badge.
  */
 @Component({
   selector: 'ta-header',
-  imports: [RouterLink, RouterLinkActive, Icon, AccountMenu, LangSwitch, ThemeToggle],
+  imports: [RouterLink, Icon, Money, AccountMenu, LangSwitch, ThemeToggle],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './header.html',
   styleUrl: './header.css',
@@ -37,12 +45,26 @@ export class Header {
   protected readonly cart = inject(CartSummary);
   protected readonly quick = inject(QuickDonate);
   private readonly router = inject(Router);
+  private readonly locale = inject(I18nService).locale;
   protected readonly mainSite = environment.mainSiteUrl;
 
   protected readonly scrolled = signal(false);
   protected readonly mobileOpen = signal(false);
   protected readonly bump = signal(false);
   private readonly burger = viewChild<ElementRef<HTMLButtonElement>>('burger');
+  private readonly url = toSignal(
+    this.router.events.pipe(
+      filter((e) => e instanceof NavigationEnd),
+      map(() => this.router.url),
+    ),
+    { initialValue: this.router.url },
+  );
+  /** The search box shows the listing's current `?q=` on the home page. */
+  protected readonly currentQ = computed(() => {
+    const tree = this.router.parseUrl(this.url());
+    const onHome = (tree.root.children['primary']?.segments.length ?? 0) === 0;
+    return onHome ? (tree.queryParams['q'] ?? '') : '';
+  });
 
   constructor() {
     afterNextRender(() => {
@@ -75,11 +97,18 @@ export class Header {
     event.preventDefault();
     const q = input.value.trim();
     this.mobileOpen.set(false);
-    void this.router.navigate(['/'], { queryParams: q ? { q } : {}, fragment: 'projects' });
+    // Keeps the category and sort of the listing; a new search starts at page 1.
+    const tree = this.router.parseUrl(this.url());
+    const onHome = (tree.root.children['primary']?.segments.length ?? 0) === 0;
+    void this.router.navigate(['/'], {
+      queryParams: { ...(onHome ? tree.queryParams : {}), q: q || null, page: null },
+    });
   }
 
   protected cartLabel(): string {
     const n = this.cart.count();
-    return $localize`:@@store.layout.cart-label-r5:سلة التبرعات، ${n}:count: تبرع`;
+    if (n === 0) return $localize`:@@store.layout.cart-label-empty:سلة التبرعات فارغة`;
+    const total = formatMoney(this.cart.total(), this.locale);
+    return $localize`:@@store.layout.cart-label-c:سلة التبرعات، ${n}:count: تبرع، الإجمالي ${total}:total:`;
   }
 }
