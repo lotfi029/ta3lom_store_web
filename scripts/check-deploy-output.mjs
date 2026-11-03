@@ -101,18 +101,22 @@ try {
 
 // Deployable builds: nothing local, no maps, no ribbon in production.
 // A CI dry run prerenders a deployable config from the stub (PRERENDER_API_URL on localhost): its DATA (image URLs in
-// the prerendered HTML) may then point at the stub — tolerated with a warning; compiled code never may.
+// the prerendered HTML) may then point at the stub — tolerated with a warning; compiled code never may. The data sits
+// in attributes (`src="http://localhost:3000/…"`) AND in the hydration transfer state, where Angular escapes "/"
+// (`http://localhost:3000…`), so the stub's host:port is matched in every serialisation; any OTHER local
+// address (e.g. :5080) still fails.
 const dryRunOrigin = process.env.PRERENDER_API_URL && /localhost|127\.0\.0\.1/.test(process.env.PRERENDER_API_URL)
   ? new URL(process.env.PRERENDER_API_URL).origin
   : null;
+const dryRunHost = dryRunOrigin ? new URL(dryRunOrigin).host : null;
 let dryRunHits = 0;
 if (env.deployable) {
   const text = all.filter((f) => /\.(js|html|css|json|txt|xml)$/.test(f));
   for (const f of text) {
     let s = readFileSync(f, 'utf8');
-    if (dryRunOrigin && f.endsWith('.html') && s.includes(dryRunOrigin)) {
+    if (dryRunHost && f.endsWith('.html') && s.includes(dryRunHost)) {
       dryRunHits += 1;
-      s = s.replaceAll(dryRunOrigin, '');
+      s = s.replaceAll(dryRunHost, '');
     }
     if (/localhost|127\.0\.0\.1/.test(s)) problems.push(`${relative(BROWSER_DIR, f)} mentions localhost (stub or dev API)`);
     if (/sourceMappingURL=/.test(s)) problems.push(`${relative(BROWSER_DIR, f)} references a source map`);
