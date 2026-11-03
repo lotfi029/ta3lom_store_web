@@ -1,6 +1,7 @@
 import {
   ApplicationConfig,
   DOCUMENT,
+  ErrorHandler,
   inject,
   provideAppInitializer,
   provideBrowserGlobalErrorListeners,
@@ -12,7 +13,13 @@ import { provideRouter, withComponentInputBinding, withInMemoryScrolling } from 
 import { routes } from './app.routes';
 import { errorToastInterceptor } from './core/http/error-toast.interceptor';
 import { prerenderHttpCacheInterceptor } from './core/http/prerender-http-cache';
+import { retryInterceptor } from './core/http/retry.interceptor';
 import { storeApiInterceptor } from './core/http/store-api.interceptor';
+import {
+  ErrorReporter,
+  ReportingErrorHandler,
+  errorReportInterceptor,
+} from './core/monitoring/error-reporter';
 import { I18nService } from './core/i18n/i18n';
 
 export const appConfig: ApplicationConfig = {
@@ -30,12 +37,22 @@ export const appConfig: ApplicationConfig = {
     // which would otherwise exclude the public catalogue reads from the transfer cache. Only GETs are cached, and the
     // build has no session, so nothing personal can land in a prerendered page.
     provideClientHydration(withHttpTransferCacheOptions({ includeRequestsWithCredentials: true })),
-    // errorToast first (sees the final outcome), the store-API interceptor next (credentials, bearer, refresh),
-    // the prerender cache last (a pass-through in the browser).
+    // errorToast and the error reporter first (they see the final outcome), the store-API interceptor next
+    // (credentials, bearer, refresh), then one retry of idempotent reads on transient failures (M-7), the prerender
+    // cache last (a pass-through in the browser).
     provideHttpClient(
       withFetch(),
-      withInterceptors([errorToastInterceptor, storeApiInterceptor, prerenderHttpCacheInterceptor]),
+      withInterceptors([
+        errorToastInterceptor,
+        errorReportInterceptor,
+        storeApiInterceptor,
+        retryInterceptor,
+        prerenderHttpCacheInterceptor,
+      ]),
     ),
+    // P5: uncaught errors are reported (PII-free, off while environment.errorReportUrl is empty); no stack is shown.
+    { provide: ErrorHandler, useClass: ReportingErrorHandler },
+    provideAppInitializer(() => inject(ErrorReporter).install()),
     provideAppInitializer(() => {
       const document = inject(DOCUMENT);
       const i18n = inject(I18nService);

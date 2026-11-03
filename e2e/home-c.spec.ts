@@ -217,5 +217,22 @@ for (const locale of ['ar', 'en'] as const) {
       await expectNoHorizontalScroll(page);
       await expectNoA11yViolations(page, `/${locale}/ 320 px`);
     });
+
+    test('P5: API down at runtime → the prerendered grid stays, with a notice (no error page, no stack)', async ({
+      page,
+    }) => {
+      const all = await apiGet<Paged>('/catalog/projects?page=1&pageSize=20');
+      // Hydration replays the embedded data; the refresh after hydration then fails (and its one retry, M-7).
+      await page.route(/\/v1\/catalog\//, (r) => r.abort('connectionrefused'));
+      await page.goto(`/${locale}/`);
+      await expect(page.locator('p.stale')).toBeVisible({ timeout: 15_000 });
+      await expect(titles(page)).toHaveCount(all.items.length);
+      await expect(page.locator('ta-home-banner h1')).toBeVisible();
+      await expect(page.locator('body')).not.toContainText(/at \w+ \(|TypeError|HttpErrorResponse/);
+      await expectNoA11yViolations(page, `/${locale}/ stale`);
+      await page.unroute(/\/v1\/catalog\//);
+      await page.locator('p.stale button.retry').click();
+      await expect(page.locator('p.stale')).toHaveCount(0);
+    });
   });
 }

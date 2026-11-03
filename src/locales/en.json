@@ -606,5 +606,6 @@
   "store.home.trust-zakat-text": "A separate ledger for zakat funds",
   "store.home.trust-updates": "Delivery updates",
   "store.home.trust-updates-text": "Follow the impact of your gift",
-  "store.home.trust-label": "Why donate with us"
+  "store.home.trust-label": "Why donate with us",
+  "store.home.stale": "Couldn't refresh the data — what you see may not be the latest."
 }

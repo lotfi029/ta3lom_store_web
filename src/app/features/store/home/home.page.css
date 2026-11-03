@@ -262,3 +262,30 @@
   text-decoration: none;
   font-weight: 600;
 }
+
+/* P5: a failed refresh keeps the prerendered data on screen and says so. */
+.stale {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  margin-block: 0 var(--space-4);
+  padding-block: var(--space-2);
+  padding-inline: var(--space-4);
+  border-radius: var(--r);
+  background: var(--c-gold-tint);
+  color: var(--c-warn-text);
+  font-size: 0.9rem;
+}
+
+.retry {
+  min-block-size: 44px;
+  padding-inline: var(--space-4);
+  border-radius: var(--r);
+  border: 1px solid currentcolor;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}

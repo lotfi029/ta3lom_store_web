@@ -8,7 +8,9 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 @Component({
   selector: 'ta-env-ribbon',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<p class="ribbon" role="note" lang="ar">نسخة تجريبية · <span lang="en">Staging</span></p>`,
+  template: `<p class="ribbon" role="note" lang="ar">
+    نسخة تجريبية · <span lang="en">Staging</span>
+  </p>`,
   styles: `
     .ribbon {
       position: fixed;

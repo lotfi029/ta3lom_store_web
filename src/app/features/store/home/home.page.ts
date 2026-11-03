@@ -104,7 +104,7 @@ export class HomePage {
   );
   /** M-5: a well-formed slug the API does not list (inactive or never existed). */
   protected readonly unknownCategory = computed(
-    () => !!this.query().category && this.data.categories.hasValue() && !this.activeCategory(),
+    () => !!this.query().category && this.data.hasCategories() && !this.activeCategory(),
   );
   protected readonly pageNumbers = computed(() => pageWindow(this.query().page, this.data.pages()));
   protected readonly hasBanner = computed(() => bannerSlides(this.data.featured()).length > 0);
@@ -133,14 +133,20 @@ export class HomePage {
     });
     // M-5: a page past the end → the last page.
     effect(() => {
-      if (!this.browser || !this.data.listing.hasValue() || this.data.listing.isLoading()) return;
+      if (
+        !this.browser ||
+        !this.data.hasListing() ||
+        this.data.listing.isLoading() ||
+        this.data.stale()
+      )
+        return;
       const q = this.query();
       const page = lastPage(q.page, this.data.total());
       if (page !== q.page) untracked(() => this.replaceQuery({ ...q, page }));
     });
     // M-4: the quick-donate entry points follow the categories that take general gifts.
     effect(() => {
-      if (!this.data.categories.hasValue()) return;
+      if (!this.data.hasCategories()) return;
       const n = this.data.giftCategories().length;
       untracked(() => this.quick.giftCategoryCount.set(n));
     });
@@ -152,7 +158,7 @@ export class HomePage {
       this.lastKey = key;
     });
     effect(() => {
-      const ready = this.data.listing.hasValue() && !this.data.listing.isLoading();
+      const ready = this.data.hasListing() && !this.data.listing.isLoading();
       const text = this.countText();
       if (!this.browser || !ready || !this.pendingFocus) return;
       this.pendingFocus = false;
@@ -189,6 +195,13 @@ export class HomePage {
 
   protected pageLabel(n: number): string {
     return $localize`:@@store.home.page-label:الصفحة ${n}:n:`;
+  }
+
+  /** P5: try every home read again after a failed refresh. */
+  protected retryAll(): void {
+    this.data.home.reload();
+    this.data.categories.reload();
+    this.data.listing.reload();
   }
 
   protected onSort(value: string): void {

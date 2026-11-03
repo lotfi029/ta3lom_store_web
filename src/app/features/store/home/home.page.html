@@ -55,6 +55,14 @@
       </div>
     </div>
     <p class="visually-hidden" aria-live="polite">{{ announce() }}</p>
+    @if (data.stale()) {
+      <p class="stale" role="status">
+        <span i18n="@@store.home.stale">تعذّر تحديث البيانات — قد لا تكون المعروضة هي الأحدث.</span>
+        <button type="button" class="retry" (click)="retryAll()" i18n="@@store.ui.retry">
+          إعادة المحاولة
+        </button>
+      </p>
+    }
 
     @if (unknownCategory()) {
       <div class="empty">
@@ -68,7 +76,7 @@
           >عرض كل المشاريع</a
         >
       </div>
-    } @else if (data.listing.isLoading() && !data.listing.hasValue()) {
+    } @else if (data.listing.isLoading() && !data.hasListing()) {
       <ul class="grid" aria-hidden="true">
         @for (n of skeletons; track n) {
           <li class="skel-card">
@@ -82,7 +90,7 @@
     } @else {
       <ta-resource-state
         [loading]="false"
-        [error]="!!data.listing.error() && !data.listing.hasValue()"
+        [error]="!!data.listing.error() && !data.hasListing()"
         (retry)="data.listing.reload()"
       >
         @if (data.items().length > 0) {
@@ -145,7 +153,7 @@
               }
             </nav>
           }
-        } @else if (data.listing.hasValue()) {
+        } @else if (data.hasListing()) {
           <div class="empty">
             @if (query().q) {
               <h3 i18n="@@store.listing.empty-title">لا توجد مشاريع مطابقة</h3>
