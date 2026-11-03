@@ -1,0 +1,4 @@
+{
+  "$comment": "Production-dependency advisories accepted for a short time (owner M-9). Each entry: id (GHSA-…), package, reason, added and expires (YYYY-MM-DD, at most 30 days after added). scripts/check-audit.mjs fails on an expired entry, on an entry longer than 30 days, and on any high/critical advisory not listed here.",
+  "entries": []
+}
