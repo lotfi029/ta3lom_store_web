@@ -115,12 +115,59 @@ for (const locale of ['ar', 'en'] as const) {
       await expect(titles(page)).toHaveCount(20);
     });
 
-    test('sort: الاسم / Name follows the API order for sort=title', async ({ page }) => {
+    test('sort: الاسم / Name follows the API order for sort=title; the select keeps focus (F-2)', async ({ page }) => {
       const byTitle = await apiGet<Paged>('/catalog/projects?page=1&pageSize=20&sort=title');
       await page.goto(`/${locale}/`, { waitUntil: 'networkidle' });
+      await page.locator('#sort').focus(); // a keyboard user is on the select
       await page.locator('#sort').selectOption('title');
       await expect(page).toHaveURL(/sort=title/);
       await expect(titles(page)).toHaveText(byTitle.items.map((c) => titleOf(c, locale)));
+      await expect(page.locator('#sort')).toBeFocused();
+      await expect(page.locator('#list-h')).not.toBeFocused();
+    });
+
+    test('F-1: a page change never jumps to the top; Back restores the position without stealing focus', async ({
+      page,
+    }) => {
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await page.goto(`/${locale}/`, { waitUntil: 'networkidle' });
+      const pager = page.locator('nav.pager');
+      await pager.scrollIntoViewIfNeeded();
+      const before = await page.evaluate(() => window.scrollY);
+      expect(before).toBeGreaterThan(200);
+      await page.evaluate(() => {
+        const w = window as unknown as { minY: number };
+        w.minY = window.scrollY;
+        window.addEventListener('scroll', () => (w.minY = Math.min(w.minY, window.scrollY)));
+      });
+      await pager.locator('a', { hasText: /^2$/ }).click();
+      await expect(page).toHaveURL(/page=2/);
+      await expect(page.locator('#list-h')).toBeFocused();
+      const minY = await page.evaluate(() => (window as unknown as { minY: number }).minY);
+      expect(minY).toBeGreaterThan(0); // no jump to 0,0 on a query-only change
+      const barTop = await page.evaluate(() => document.querySelector('#list-h')!.getBoundingClientRect().top);
+      expect(barTop).toBeGreaterThanOrEqual(-2);
+      expect(barTop).toBeLessThan(400);
+
+      await page.goBack();
+      await expect(page).not.toHaveURL(/page=2/);
+      await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(before - 50);
+      // focusResults is skipped on popstate: the restored position stays (it would scroll up to the filter bar)
+      await page.waitForTimeout(400);
+      expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(before - 50);
+    });
+
+    test('L-9: the header search searches everything — drops the category and the page, keeps the sort', async ({
+      page,
+    }) => {
+      const cats = await apiGet<Cat[]>('/catalog/categories');
+      const cat = cats.find((c) => Number(c.projectCount) > 1)!;
+      await page.goto(`/${locale}/?category=${cat.slug}&sort=title`, { waitUntil: 'networkidle' });
+      await page.locator('#hdr-q').fill('a');
+      await page.locator('#hdr-q').press('Enter');
+      await expect(page).toHaveURL(/[?&]q=a/);
+      await expect(page).toHaveURL(/sort=title/);
+      await expect(page).not.toHaveURL(/category=|page=/);
     });
 
     test('empty category and unknown category (noindex) both link back to all projects', async ({
@@ -156,6 +203,9 @@ for (const locale of ['ar', 'en'] as const) {
       await page.goto(`/${locale}/?page=99`, { waitUntil: 'networkidle' });
       await expect(page).toHaveURL(new RegExp(`page=${last}$`));
       await expect(page.locator('nav.pager [aria-current=page]')).toHaveText(String(last));
+      // L-8: our own clamp neither scrolls nor moves focus
+      expect(await page.evaluate(() => window.scrollY)).toBe(0);
+      await expect(page.locator('#list-h')).not.toBeFocused();
     });
 
     test('banner: first urgent featured card is the h1; prev/next change it (no auto-rotate); CTA → /p/{slug}', async ({

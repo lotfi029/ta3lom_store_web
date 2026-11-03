@@ -2,6 +2,7 @@ import { isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   ElementRef,
   PLATFORM_ID,
   computed,
@@ -16,6 +17,8 @@ import { Router, RouterLink } from '@angular/router';
 import type { Category, CatalogSort } from '../../../core/api/api.types';
 import { CATALOG_SORTS } from '../../../core/api/api.types';
 import { refreshAfterHydration } from '../../../core/http/refresh-after-hydration';
+import { NavigationScroll } from '../../../core/routing/navigation-scroll';
+import { environment } from '../../../../environments/environment';
 import { I18nService } from '../../../core/i18n/i18n';
 import { QuickDonate } from '../../../core/ui/quick-donate.service';
 import { type JsonLd, SeoService, siteName } from '../../../core/seo/seo.service';
@@ -84,6 +87,7 @@ export class HomePage {
   private readonly router = inject(Router);
   protected readonly quick = inject(QuickDonate);
   private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly nav = inject(NavigationScroll);
 
   readonly q = input<string>();
   readonly category = input<string>();
@@ -116,9 +120,16 @@ export class HomePage {
 
   private readonly fbar = viewChild<ElementRef<HTMLElement>>('fbar');
   private lastKey: string | null = null;
-  private pendingFocus = false;
+  /** 'focus': scroll to the bar, focus the heading, announce. 'announce': announce only (sort select, F-2). */
+  private pending: 'focus' | 'announce' | null = null;
+  /** The next query change is our own rewrite (normaliser M-5 or page clamp): no scroll, no focus (L-8). */
+  private rewriting = false;
+  /** The next query change comes from the sort select: announce, keep focus on the select (F-2). */
+  private fromSort = false;
+  private announceTimer: ReturnType<typeof setTimeout> | undefined;
 
   constructor() {
+    inject(DestroyRef).onDestroy(() => clearTimeout(this.announceTimer)); // L-13
     refreshAfterHydration(this.data.home, this.data.listing, this.data.categories);
     effect(() => {
       const q = this.query();
@@ -151,18 +162,29 @@ export class HomePage {
       untracked(() => this.quick.giftCategoryCount.set(n));
     });
     // M-6: after a change of tab, sort, page or search, once the new page is in: scroll, focus, announce.
+    // Not on Back/Forward (F-1: NavigationScroll restores the position), not on our own rewrites (L-8); the sort
+    // select only announces (F-2).
     effect(() => {
       const q = this.query();
       const key = `${q.q}|${q.category}|${q.sort}|${q.page}`;
-      if (this.lastKey !== null && key !== this.lastKey) this.pendingFocus = true;
+      const changed = this.lastKey !== null && key !== this.lastKey;
       this.lastKey = key;
+      if (!changed) return;
+      untracked(() => {
+        const popstate = this.nav.lastTrigger() === 'popstate';
+        if (this.rewriting || popstate) this.pending = null;
+        else this.pending = this.fromSort ? 'announce' : 'focus';
+        this.rewriting = false;
+        this.fromSort = false;
+      });
     });
     effect(() => {
       const ready = this.data.hasListing() && !this.data.listing.isLoading();
       const text = this.countText();
-      if (!this.browser || !ready || !this.pendingFocus) return;
-      this.pendingFocus = false;
-      untracked(() => this.focusResults(text));
+      if (!this.browser || !ready || !this.pending) return;
+      const mode = this.pending;
+      this.pending = null;
+      untracked(() => this.focusResults(text, mode));
     });
     effect(() => {
       const q = this.query();
@@ -205,6 +227,7 @@ export class HomePage {
   }
 
   protected onSort(value: string): void {
+    this.fromSort = true;
     void this.router.navigate([], {
       queryParams: { sort: value === 'featured' ? null : value, page: null },
       queryParamsHandling: 'merge',
@@ -212,18 +235,25 @@ export class HomePage {
   }
 
   private replaceQuery(q: ListingQuery): void {
+    this.rewriting = true;
     void this.router.navigate([], { queryParams: toParams(q), replaceUrl: true });
   }
 
-  private focusResults(text: string): void {
+  private focusResults(text: string, mode: 'focus' | 'announce'): void {
     const bar = this.fbar()?.nativeElement;
-    if (!bar) return;
-    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
-    bar.scrollIntoView({ behavior: reduce ? 'instant' : 'smooth', block: 'start' });
-    bar.querySelector<HTMLElement>('#list-h')?.focus({ preventScroll: true });
+    if (mode === 'focus' && bar) {
+      // Only when the bar is not already at the top of the viewport (no forced scroll when it is in place, F-1).
+      const top = bar.getBoundingClientRect().top;
+      if (top < 0 || top > 8) {
+        const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+        bar.scrollIntoView({ behavior: reduce ? 'instant' : 'smooth', block: 'start' });
+      }
+      bar.querySelector<HTMLElement>('#list-h')?.focus({ preventScroll: true });
+    }
     // Re-set so the same count is announced again.
     this.announce.set('');
-    setTimeout(() => this.announce.set(text), 50);
+    clearTimeout(this.announceTimer);
+    this.announceTimer = setTimeout(() => this.announce.set(text), 50);
   }
 
   private setSeo(
@@ -239,10 +269,13 @@ export class HomePage {
         '@context': 'https://schema.org',
         '@type': 'NGO',
         name: $localize`:@@store.layout.association:جمعية التعلم الإلكتروني`,
-        url: 'https://ta3lom.sa',
-        sameAs: ['https://ta3lom.sa'],
+        url: environment.mainSiteUrl,
+        sameAs: [environment.mainSiteUrl],
       },
-      {
+    ];
+    // ItemList on page 1 only: positions would restart at 1 on every page (L-10).
+    if (q.page === 1)
+      ld.push({
         '@context': 'https://schema.org',
         '@type': 'ItemList',
         name: cat ? this.categoryName(cat) : site,
@@ -252,8 +285,7 @@ export class HomePage {
           url: this.seo.url(this.i18n.locale, `/p/${p.slug}`),
           name: this.i18n.pick(p.titleAr, p.titleEn),
         })),
-      },
-    ];
+      });
     const qText = q.q;
     this.seo.set({
       title: qText

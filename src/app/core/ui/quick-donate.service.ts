@@ -11,11 +11,12 @@ export class QuickDonate {
   /** True once opened: the deferred modal stays loaded afterwards. */
   readonly used = signal(false);
   /**
-   * How many active categories accept general gifts, once any page has read `/catalog/categories` (home, the modal);
-   * null = not known yet. With none, every quick-donate entry point is hidden (owner M-4); unknown keeps them shown.
+   * How many active categories accept general gifts, once any page (home) or the root `GiftCategories` read has seen
+   * `/catalog/categories`; null = not known yet. The entry points show only when the count is known AND > 0 (owner M-4,
+   * review 06 F-5): unknown hides them, so they never appear on a store with no gift category.
    */
   readonly giftCategoryCount = signal<number | null>(null);
-  readonly available = computed(() => this.giftCategoryCount() !== 0);
+  readonly available = computed(() => (this.giftCategoryCount() ?? 0) > 0);
   /** The control to give focus back to when the modal closes (the native dialog restores it on its own too). */
   private opener: HTMLElement | null = null;
 

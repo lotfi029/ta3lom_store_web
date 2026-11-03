@@ -41,6 +41,10 @@ everything else is for the owner (or a later session).
 - [ ] Lighthouse (mobile) on `/ar/`, `/en/`, a project page: accessibility 100, best practices ≥ 95, SEO ≥ 95,
       CLS ≤ 0.05 — **[done in CI on the container]**; performance ≥ 90, LCP ≤ 2.5 s, TBT ≤ 200 ms — **not met in CI**
       (73–79 / 2.56–2.82 s / 505–857 ms, floors recorded as REVIEW): measure on production and plan the bundle work.
+- [ ] **Lighthouse mobile ≥ 90 on the production URL** (`https://store.ta3lom.sa/ar/`, `/en/`, a project page) — go-live
+      item (review 06 §4): the CI floors are accepted for the Option C merge; the performance pass is its own task.
+- [ ] Trust row SMS wording ("برسالة نصية بعد الدفع") assumes **payments are on** (review 06 L-14): true only once
+      R5-Payments is live — check the wording at go-live.
 - [ ] axe clean ar/en × light/dark on production — **[done in CI on every route]**.
 - [ ] Google Search Console: property for `store.ta3lom.sa`, sitemap `https://store.ta3lom.sa/sitemap.xml` submitted.
 - [ ] Staging is not indexed (X-Robots-Tag, robots.txt `Disallow: /`) — **[done, checked by the build and container]**.

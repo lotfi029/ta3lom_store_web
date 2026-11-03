@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter, map } from 'rxjs';
+import { GiftCategories } from '../../core/ui/gift-categories.data';
 import { QuickDonate } from '../../core/ui/quick-donate.service';
 import { Icon } from '../../shared/ui/icon/icon';
 import { Footer } from '../footer/footer';
@@ -71,6 +72,9 @@ import { SkipLink } from '../skip-link/skip-link';
 })
 export class PublicLayout {
   protected readonly quick = inject(QuickDonate);
+  constructor() {
+    inject(GiftCategories).start(); // F-5: the gift-category count, once, after the first render
+  }
   private readonly router = inject(Router);
   /** The floating button shows while browsing (home/listing, project pages) — never over cart, checkout or forms. */
   protected readonly browsing = toSignal(

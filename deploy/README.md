@@ -49,7 +49,7 @@ node scripts/check-container.mjs store-web:staging --env staging
 
 `scripts/check-container.mjs` (also in CI) runs the image read-only with all capabilities dropped and checks: non-root,
 `/healthz`, `/` → 302 `/ar/`, the served CSP = the image's generated `csp.conf`, frame-ancestors, nosniff,
-Referrer-Policy (no-referrer on `/orders/*`), Permissions-Policy, COOP, no `Server`, HSTS only with `TLS_MODE=direct`,
+Referrer-Policy (no-referrer on `/orders/*`), Permissions-Policy, COOP, no `Server` (404s included), no HSTS (the edge sends it),
 X-Robots-Tag on staging, client-route fallbacks, real 404s, cache headers, compression, `/version.json`, robots.txt.
 
 ## 2. Web server behaviour (`deploy/Caddyfile`)
@@ -82,8 +82,9 @@ X-Robots-Tag on staging, client-route fallbacks, real 404s, cache headers, compr
 
   The container sends no HSTS in this mode (owner M-8). Keep the edge from adding its own CSP — the container's is
   generated for its build.
-- **`TLS_MODE=direct`.** This container is the edge: set `TLS_MODE=direct` and `SITE_ADDRESS=store.ta3lom.sa`, publish
-  80 and 443, and give Caddy a writable data volume (certificates) instead of the tmpfs. It then sends HSTS.
+- **No direct mode.** `TLS_MODE=direct` was removed (review 06 L-6): the image runs non-root, read-only, with all
+  capabilities dropped and no data volume, so it cannot bind :443 or keep certificates. TLS always ends at the edge, which
+  sends HSTS on the production names.
 
 ## 3. First-time VPS setup
 
@@ -99,17 +100,21 @@ X-Robots-Tag on staging, client-route fallbacks, real 404s, cache headers, compr
    ```
 
    (`/srv/store-web/.env`: `STORE_WEB_PORT=8081`.) The deploy sets `STORE_WEB_IMAGE` per run.
-4. **GHCR pull access (owner H-4).** The package stays **private**. Create a fine-grained or classic personal access
-   token with **`read:packages` only** (account settings → Developer settings → Personal access tokens), store it ONLY on
-   the VPS and log the deploy user in once:
+4. **GHCR pull access (owner H-4, review 06 L-7).** The package stays **private**. GHCR does **not** accept
+   fine-grained tokens: create a **classic** personal access token with **`read:packages` only**, on a **dedicated machine
+   user** (a GitHub account used only for pulls, given read access to the package) — a classic `read:packages` token can
+   read every package its user can see, so it must not be your own account. Store it ONLY on the VPS. Log the deploy user
+   in without the token touching shell history or the process list:
 
    ```bash
-   echo "<token>" | docker login ghcr.io -u <github-user> --password-stdin   # as the deploy user
+   read -rs GHCR_TOKEN && printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u <machine-user> --password-stdin; unset GHCR_TOKEN
    ```
 
-   The workflow never sends a registry token to the VPS. **Rotate** it before it expires: create a new token, run the
-   same `docker login` again, check a pull (`docker pull ghcr.io/lotfi029/ta3lom-store-web:staging`), then revoke the
-   old token.
+   `docker login` keeps the token base64-encoded (not encrypted) in `~/.docker/config.json` unless a credential helper is
+   configured: install `docker-credential-pass` (or `secretservice`) and set `"credsStore"` in that file first, or at
+   least keep the file `0600` and owned by the deploy user. The workflow never sends a registry token to the VPS.
+   **Rotate** it before it expires: create a new token, run the same login again, check a pull
+   (`docker pull ghcr.io/lotfi029/ta3lom-store-web:staging`), then revoke the old token.
 5. **Edge proxy** routes as in §2 (TLS edge mode), reload it.
 6. **API side.** CORS on the API = the site origin only (`https://store.ta3lom.sa`, staging its own), refresh cookies
    for that site. The web sends credentials and bearer tokens only to its API origin. The API repo's old Caddy block that
@@ -130,6 +135,10 @@ X-Robots-Tag on staging, client-route fallbacks, real 404s, cache headers, compr
 
 ## 5. Deploy
 
+Every deploy waits for **CI to succeed on the same commit** (review 06 D-1): `deploy.yml` is triggered by the CI
+workflow's completion (`workflow_run`), not by the push. The image is built, **checked with `check-container.mjs`** for
+its environment, and only then pushed. A failed CI run deploys nothing.
+
 - **Staging:** merge to `main` (or wait for the nightly, or send `repository_dispatch` `catalog-changed` from the API
   after a catalogue change). The job builds `:staging-<sha>`, then on the VPS:
 
@@ -139,8 +148,10 @@ X-Robots-Tag on staging, client-route fallbacks, real 404s, cache headers, compr
   STORE_WEB_IMAGE=ghcr.io/lotfi029/ta3lom-store-web:staging-<sha> docker compose -f docker-compose.store-web.yml -p store-web-staging up -d --wait
   ```
 
-- **Production (after R5-Payments):** push a tag `vX.Y.Z` on `main`. `production-image` builds and pushes `:X.Y.Z` and
-  `:latest`; `production` waits for the reviewer, then runs the same two commands in `/srv/store-web` with `-p store-web`.
+- **Production (after R5-Payments):** push a tag `vX.Y.Z` (strict semver — a pre-release such as `v1.2.3-rc.1` is
+  never deployed and never moves `:latest`, L-5) on `main`. CI runs on the tag; when it succeeds `production-image`
+  builds, checks and pushes `:X.Y.Z` and `:latest` (one build at a time); `production` waits for the reviewer, then runs
+  the same two commands in `/srv/store-web` with `-p store-web`.
 
 ## 6. Verify
 
@@ -155,9 +166,16 @@ The smoke check (also run by the workflow) wants `/healthz` = `ok`, `/ar/` and `
 
 ## 7. Rollback
 
-Actions → **Deploy** → *Run workflow* → environment + an earlier image tag (`staging-<sha>` or `X.Y.Z`; list them under
-the repository's Packages). The job redeploys that tag with the same compose commands and smoke-checks it (production
-still needs the reviewer). By hand on the VPS: the same two commands with the older tag.
+Actions → **Deploy** → *Run workflow*. **For production, pick "Use workflow from: <the tag>"** (e.g. `v1.2.0`), not
+`main`: the `production` environment only allows `v*` refs, so a run from `main` is rejected (review 06 L-2). Then the
+environment + an earlier image tag (list them under the repository's Packages):
+
+- `production` accepts only `X.Y.Z`; `staging` accepts only `staging-<sha>` — any other pair fails (review 06 D-2);
+- the image's `sa.ta3lom.store-web.config` label must equal the environment (`docker buildx imagetools inspect`), so a
+  staging build (noindex, staging API, ribbon) can never be redeployed to production.
+
+The job redeploys that tag with the same compose commands and smoke-checks it (production still needs the reviewer).
+By hand on the VPS: the same two commands with the older tag (check the label first).
 
 ## 8. Monitoring
 

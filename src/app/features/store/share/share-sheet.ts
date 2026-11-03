@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
+import {
+  APP_ID,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import { ToastService } from '../../../core/ui/toast.service';
 import { Dialog } from '../../../shared/ui/dialog/dialog';
 import { Icon } from '../../../shared/ui/icon/icon';
@@ -8,7 +16,6 @@ import { shareLinks } from './share-links';
  * Prototype "مشاركة": the system share sheet where the browser has one (phones), otherwise a dialog with WhatsApp,
  * X, Facebook and copy-link. Nothing is loaded from a third party; the links open in a new tab.
  */
-let nextId = 0;
 
 @Component({
   selector: 'ta-share-sheet',
@@ -24,10 +31,10 @@ let nextId = 0;
         <ta-icon name="share" [size]="16" /><span i18n="@@store.share.button">مشاركة</span>
       </button>
     }
-    <ta-dialog [(open)]="open" [labelledBy]="headingId">
+    <ta-dialog [(open)]="open" [labelledBy]="headingId()">
       <div class="sheet">
         <div class="hd">
-          <h2 [id]="headingId" i18n="@@store.share.title-project">مشاركة المشروع</h2>
+          <h2 [id]="headingId()" i18n="@@store.share.title-project">مشاركة المشروع</h2>
           <button
             type="button"
             class="x"
@@ -148,7 +155,15 @@ export class ShareSheet {
   readonly title = input.required<string>();
   /** Icon-only trigger (the compact project card, spec C-1): its accessible name carries the project title. */
   readonly compact = input(false);
-  protected readonly headingId = `share-h-${nextId++}`;
+  private readonly appId = inject(APP_ID);
+  /**
+   * Stable between the prerender and the browser (review 06 L-12: a module counter gave different ids on the server
+   * and the client): APP_ID + the project slug (last path segment of the URL) + the variant.
+   */
+  protected readonly headingId = computed(() => {
+    const slug = (this.url().split(/[?#]/)[0].replace(/\/+$/, '').split('/').pop() ?? 'p').replace(/[^a-z0-9-]/gi, '');
+    return `${this.appId}-share-${slug || 'p'}${this.compact() ? '-c' : ''}`;
+  });
   protected readonly iconLabel = computed(() => {
     const title = this.title();
     return $localize`:@@store.share.icon-label:مشاركة ${title}:title:`;

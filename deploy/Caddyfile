@@ -1,6 +1,7 @@
 # Store web runtime (container image, deploy/README.md). Serves the static build from /srv/site as a non-root user on
-# :8080, plain HTTP: TLS is terminated by the VPS edge proxy (TLS_MODE=edge, default). With TLS_MODE=direct this Caddy
-# is the edge itself and sends HSTS (owner M-8) — then put the site address in SITE_ADDRESS (e.g. store.ta3lom.sa).
+# :8080, plain HTTP: TLS is terminated by the shared VPS edge Caddy (TLS_MODE=edge, the only mode). The edge sends HSTS
+# on the production names (owner M-8). TLS_MODE=direct was removed (review 06 L-6): non-root, read-only, no data volume
+# and no NET_BIND_SERVICE cannot serve :443.
 {
 	admin off
 	persist_config off
@@ -10,7 +11,7 @@
 	}
 }
 
-{$SITE_ADDRESS::8080} {
+:8080 {
 	root * /srv/site
 	encode zstd gzip
 
@@ -20,9 +21,11 @@
 	import /etc/caddy/csp.conf
 	import /etc/caddy/env.conf
 
-	# HSTS only when this Caddy terminates TLS itself (owner M-8). Behind the edge proxy the edge sends it.
-	@direct expression `{env.TLS_MODE} == "direct"`
-	header @direct Strict-Transport-Security "max-age=31536000; includeSubDomains"
+	# E-2: order pages carry the order's status token in the link — never leak it in a Referer. Here, not in headers.conf:
+	# that file is imported again in handle_errors, where a second @orders definition is an error.
+	@orders path /ar/orders/* /en/orders/*
+	# Deferred (">"): applied when the response is written, after the shared block — else that block wins.
+	header @orders >Referrer-Policy "no-referrer"
 
 	# Liveness: static, never touches the API.
 	handle /healthz {
@@ -57,7 +60,10 @@
 		file_server
 	}
 
+	# Everything else (prerendered pages without a trailing slash such as /ar and /ar/p/<slug>, non-hashed assets,
+	# favicons): revalidate. `?` = only when no earlier rule set it, so the @hashed immutable rule wins (review 06 D-3).
 	handle {
+		header ?Cache-Control "no-cache"
 		try_files {path} {path}/index.html
 		file_server
 	}
@@ -65,6 +71,10 @@
 	# Unknown paths: real 404 status. Inside a locale the client shell renders the app's own not-found page (with the
 	# chrome and a noindex); elsewhere the static, script-free deploy/404.html.
 	handle_errors 404 {
+		# The security headers again: the error path is a separate route (review 06 L-1).
+		import /etc/caddy/headers.conf
+		import /etc/caddy/csp.conf
+		import /etc/caddy/env.conf
 		header Cache-Control "no-cache"
 		@ar path /ar/*
 		@en path /en/*

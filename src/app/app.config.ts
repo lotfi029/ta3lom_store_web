@@ -15,12 +15,9 @@ import { errorToastInterceptor } from './core/http/error-toast.interceptor';
 import { prerenderHttpCacheInterceptor } from './core/http/prerender-http-cache';
 import { retryInterceptor } from './core/http/retry.interceptor';
 import { storeApiInterceptor } from './core/http/store-api.interceptor';
-import {
-  ErrorReporter,
-  ReportingErrorHandler,
-  errorReportInterceptor,
-} from './core/monitoring/error-reporter';
+import { ReportingErrorHandler, errorReportInterceptor } from './core/monitoring/error-reporter';
 import { I18nService } from './core/i18n/i18n';
+import { provideNavigationScroll } from './core/routing/navigation-scroll';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -29,8 +26,10 @@ export const appConfig: ApplicationConfig = {
     provideRouter(
       routes,
       withComponentInputBinding(),
-      withInMemoryScrolling({ scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled' }),
+      // Restoration is done by NavigationScroll (review 06 F-1): query-only listing changes do not jump to the top.
+      withInMemoryScrolling({ scrollPositionRestoration: 'disabled', anchorScrolling: 'disabled' }),
     ),
+    provideNavigationScroll(),
     // The build-time responses embedded in each prerendered page are replayed during hydration, so the page keeps its
     // content (no blank-and-refill layout shift); every public page then reloads its data once (refresh-after-hydration).
     // `includeRequestsWithCredentials`: the store-API interceptor marks every API call `withCredentials` (refresh cookie),
@@ -51,8 +50,8 @@ export const appConfig: ApplicationConfig = {
       ]),
     ),
     // P5: uncaught errors are reported (PII-free, off while environment.errorReportUrl is empty); no stack is shown.
+    // provideBrowserGlobalErrorListeners() above routes the window's errors and rejections here: one path, one report (F-3).
     { provide: ErrorHandler, useClass: ReportingErrorHandler },
-    provideAppInitializer(() => inject(ErrorReporter).install()),
     provideAppInitializer(() => {
       const document = inject(DOCUMENT);
       const i18n = inject(I18nService);

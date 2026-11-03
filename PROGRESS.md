@@ -8,6 +8,17 @@ hosting = Docker on one VPS from the API repo (`Dockerfile`, `deploy/compose.yam
 Auth fixes (2026-10-30): sign out everywhere refreshes and retries on 401 (else signs this device out and says so); its
 success toast only on success; a transient refresh failure no longer ends the donor or staff session. Unit 268 green.
 
+## Final session (plan 01: F1 … F10)
+
+| Phase | Repo / branch | Commit | Status |
+|---|---|---|---|
+| F1 | web `claude/store-web-option-c-prod-7eb3at` | HC — review fixes | done (gates: types, typecheck, lint, test 326 + scripts 5, build:ci, home e2e 24, container check) |
+| F2–F4 | api `final/api-payments-hosting` | — | pending |
+| F5–F7 | web `final/web-payments-perf` (stacked on the branch above) | — | pending |
+| F8 | ta3lom-deploy — **not reachable from the session** (add_repo: no access) → fallback in web branch (b) `deploy/edge/` | — | pending |
+| F9 | ta3lom-web `final/store-integration` | — | pending |
+| F10 | all | — | pending |
+
 ## Option C home + production readiness (one PR "Store web — Option C home + production readiness")
 
 | Phase | Status | Commit | Tests (unit / smoke e2e / a11y) | Notes |

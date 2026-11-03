@@ -36,13 +36,27 @@ export function redactRoute(url: string): string {
     .replace(/\d{5,}/g, '#');
 }
 
-/** No e-mails, phone-like or long numbers, bearer-like tokens; one line, 200 characters at most. */
+/**
+ * No URLs with host or query, e-mails (plain or `%40`-encoded), Saudi mobiles, phone-like or long numbers, bearer-like
+ * tokens; one line, 200 characters at most. An `HttpErrorResponse` message embeds the full request URL (an admin search
+ * `?q=<name or e-mail>`, a status link `?t=<token>`): every absolute URL becomes its redacted path (no host, no query),
+ * and any path's query string is dropped (review 06 F-4).
+ */
 export function scrub(text: string): string {
   return String(text)
-    .replace(/\S+@\S+\.\S+/g, '[email]')
+    .replace(/https?:\/\/[^\s"'<>()]+/gi, (url) => {
+      try {
+        return redactRoute(new URL(url).pathname);
+      } catch {
+        return '[url]';
+      }
+    })
+    .replace(/(\/[^\s?#"'<>]*)[?#][^\s"'<>]*/g, (_m, path: string) => redactRoute(path))
+    .replace(/[^\s/?&=:"'<>]+(?:@|%40)[^\s/?&=:"'<>]+/gi, '[email]')
+    .replace(/(?:(?:\+|%2B|00)?966|\b0)5\d{8}\b/gi, '[mobile]')
     .replace(/eyJ[A-Za-z0-9_-]*(\.[A-Za-z0-9_-]*){1,2}/g, '[token]')
     .replace(/[A-Za-z0-9_-]{24,}(\.[A-Za-z0-9_-]+){0,2}/g, '[token]')
-    .replace(/\+?\d[\d\s-]{6,}\d/g, '[number]')
+    .replace(/(?:\+|%2B)?\d[\d\s-]{6,}\d/gi, '[number]')
     .replace(/\s+/g, ' ')
     .trim()
     .slice(0, 200);
@@ -51,7 +65,9 @@ export function scrub(text: string): string {
 /**
  * Client error reporter (owner brief P5, REVIEW): consent-free and PII-free — route (redacted), code, a scrubbed one-line
  * message, the build stamp; no stack, no request body, no user id, no cookies (`credentials: 'omit'`). Sources:
- * uncaught errors and unhandled rejections (window), Angular's ErrorHandler, and failed store-API calls (network/5xx).
+ * Angular's ErrorHandler — which also receives the window's uncaught errors and unhandled rejections through
+ * `provideBrowserGlobalErrorListeners()`, so there is ONE path and one report per error (review 06 F-3) — and failed
+ * store-API calls (network/5xx).
  * At most 10 reports per page, each distinct one once. Off while ERROR_REPORT_URL is empty (the default). No third-party
  * script (CSP): a plain `fetch(..., { keepalive: true })`.
  */
@@ -62,23 +78,9 @@ export class ErrorReporter {
   private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
   private readonly seen = new Set<string>();
   private sent = 0;
-  private installed = false;
 
   get enabled(): boolean {
     return this.browser && !!this.url;
-  }
-
-  install(): void {
-    if (!this.enabled || this.installed) return;
-    this.installed = true;
-    const w = this.document.defaultView;
-    w?.addEventListener('error', (e: ErrorEvent) =>
-      this.report('error', (e.error as Error | undefined)?.name ?? 'Error', e.message),
-    );
-    w?.addEventListener('unhandledrejection', (e: PromiseRejectionEvent) => {
-      const r = e.reason as { name?: string; message?: string } | undefined;
-      this.report('rejection', r?.name ?? 'Rejection', r?.message ?? String(e.reason));
-    });
   }
 
   report(kind: ErrorReport['kind'], code: string, message: string): void {
@@ -125,8 +127,14 @@ export class ReportingErrorHandler extends ErrorHandler {
 
   override handleError(error: unknown): void {
     super.handleError(error);
+    // A promise rejection's reason may be anything; window errors arrive as the thrown value (Angular unwraps them).
     const e = error as { name?: string; message?: string } | null;
-    this.reporter.report('error', e?.name ?? 'Error', e?.message ?? String(error));
+    const isError = error instanceof Error;
+    this.reporter.report(
+      isError ? 'error' : 'rejection',
+      e?.name ?? (isError ? 'Error' : 'Rejection'),
+      e?.message ?? String(error),
+    );
   }
 }
 

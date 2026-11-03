@@ -5,8 +5,10 @@
  * Checks, against a container started like production (read-only root, tmpfs /tmp, all capabilities dropped):
  *   - runs as a non-root user; /healthz 200 "ok", no-store; / → 302 /ar/
  *   - headers on /ar/: the CSP equals the image's /etc/caddy/csp.conf (generated at build), frame-ancestors 'none',
- *     nosniff, Referrer-Policy, Permissions-Policy, COOP, no Server header; HSTS ABSENT with TLS_MODE=edge (default)
- *     and PRESENT with TLS_MODE=direct (a second container); X-Robots-Tag noindex on staging only
+ *     nosniff, Referrer-Policy, Permissions-Policy, COOP, no Server header; HSTS never (the edge sends it — TLS_MODE=direct
+ *     was removed, review 06 L-6); X-Robots-Tag noindex on staging only
+ *   - prerendered pages WITHOUT a trailing slash (/ar, /ar/p/<slug>) are no-cache (review 06 D-3)
+ *   - 404s keep the security headers and send no Server header (review 06 L-1)
  *   - /ar/orders/<ref> → the client shell with Referrer-Policy no-referrer
  *   - client-only routes (cart, checkout, login, orders, account/**, admin/**, an unknown /p/<slug>) → 200 + client shell
  *   - unknown paths → 404 (locale: the client shell; root: the static 404.html)
@@ -67,7 +69,6 @@ const get = (port, path, headers = {}) =>
   fetch(`http://127.0.0.1:${port}${path}`, { redirect: 'manual', headers: { 'Accept-Encoding': 'identity', ...headers } });
 
 const MAIN = 'store-web-check';
-const DIRECT = 'store-web-check-direct';
 start(MAIN, PORT);
 try {
   if (!(await ready(PORT))) {
@@ -103,11 +104,25 @@ try {
   expect(/camera=\(\)/.test(h('permissions-policy') ?? ''), 'Permissions-Policy missing');
   expect(h('cross-origin-opener-policy') === 'same-origin', 'COOP missing');
   expect(!h('server'), `Server header leaks: ${h('server')}`);
-  expect(!h('strict-transport-security'), 'HSTS must not be sent with TLS_MODE=edge (owner M-8)');
+  expect(!h('strict-transport-security'), 'HSTS must not be sent by the image — the edge sends it (owner M-8, L-6)');
   expect(h('cache-control') === 'no-cache', `/ar/ Cache-Control is ${h('cache-control')}, expected no-cache`);
   expect(html.includes('<meta name="build"'), '/ar/ lacks the build stamp');
   if (ENV === 'staging') expect(h('x-robots-tag') === 'noindex, nofollow', 'staging must send X-Robots-Tag: noindex, nofollow');
   else expect(!h('x-robots-tag'), `X-Robots-Tag must not be sent on ${ENV}`);
+
+  // D-3: canonical/sitemap URLs without a trailing slash must revalidate too
+  r = await get(PORT, '/ar');
+  expect([200, 301, 302, 308].includes(r.status), `/ar answered ${r.status}`);
+  expect(r.headers.get('cache-control') === 'no-cache', `/ar Cache-Control is ${r.headers.get('cache-control')}, expected no-cache`);
+  const slug = /href="\/ar\/p\/([a-z0-9-]+)"/.exec(html)?.[1];
+  expect(!!slug, '/ar/ links no prerendered project page');
+  if (slug) {
+    r = await get(PORT, `/ar/p/${slug}`);
+    expect(r.status === 200, `/ar/p/${slug} answered ${r.status}`);
+    expect(r.headers.get('cache-control') === 'no-cache', `/ar/p/${slug} Cache-Control is ${r.headers.get('cache-control')}, expected no-cache`);
+  }
+  r = await get(PORT, '/favicon.ico');
+  if (r.status === 200) expect(r.headers.get('cache-control') === 'no-cache', `/favicon.ico Cache-Control is ${r.headers.get('cache-control')}`);
 
   // Compression
   r = await get(PORT, '/ar/', { 'Accept-Encoding': 'zstd, gzip' });
@@ -138,6 +153,11 @@ try {
   // 404s
   r = await get(PORT, '/ar/no-such-page');
   expect(r.status === 404 && (await r.text()).includes('<ta-root'), `/ar/no-such-page → ${r.status}, expected 404 with the app shell`);
+  for (const [n, v] of [['x-content-type-options', 'nosniff'], ['referrer-policy', 'strict-origin-when-cross-origin'], ['cross-origin-opener-policy', 'same-origin']])
+    expect(r.headers.get(n) === v, `404 ${n} is ${r.headers.get(n)}, expected ${v} (L-1)`);
+  expect(/camera=\(\)/.test(r.headers.get('permissions-policy') ?? ''), '404 Permissions-Policy missing (L-1)');
+  expect(r.headers.get('content-security-policy') === csp, '404 CSP differs from /etc/caddy/csp.conf (L-1)');
+  expect(!r.headers.get('server'), `404 Server header leaks: ${r.headers.get('server')} (L-1)`);
   r = await get(PORT, '/no-such-file.txt');
   expect(r.status === 404 && (await r.text()).includes('الصفحة غير موجودة'), `/no-such-file.txt → ${r.status}, expected the static 404 page`);
 
@@ -147,20 +167,12 @@ try {
   if (ENV === 'staging') expect(/^Disallow: \/$/m.test(robots), 'staging robots.txt must Disallow: /');
   else expect(/Sitemap: https:\/\//.test(robots), 'robots.txt must point at the sitemap');
 
-  // TLS_MODE=direct sends HSTS (owner M-8)
-  start(DIRECT, PORT + 1, ['TLS_MODE=direct']);
-  if (await ready(PORT + 1)) {
-    r = await get(PORT + 1, '/ar/');
-    expect(/max-age=31536000/.test(r.headers.get('strict-transport-security') ?? ''), 'TLS_MODE=direct must send HSTS');
-  } else problems.push('the TLS_MODE=direct container did not become healthy');
+  // The image's config label must match the environment it is checked for (review 06 D-2)
+  const label = docker('inspect', '-f', '{{index .Config.Labels "sa.ta3lom.store-web.config"}}', image);
+  expect(label === ENV, `image label sa.ta3lom.store-web.config is "${label}", expected "${ENV}"`);
 } catch (e) {
   problems.push(String(e.message ?? e));
 } finally {
-  try {
-    docker('rm', '-f', DIRECT);
-  } catch {
-    /* gone */
-  }
   if (!KEEP)
     try {
       docker('rm', '-f', MAIN);
@@ -173,4 +185,4 @@ if (problems.length) {
   console.error(`check-container: ${image} [${ENV}] — ${problems.length} problem(s):\n  - ${problems.join('\n  - ')}`);
   process.exit(1);
 }
-console.log(`check-container: ${image} [${ENV}] — headers, CSP (generated), fallbacks, 404s, cache, compression, healthz, robots, non-root: OK${KEEP ? ` (left running on :${PORT})` : ''}`);
+console.log(`check-container: ${image} [${ENV}] — headers (incl. 404s), CSP (generated), fallbacks, 404s, cache (incl. no-slash pages), compression, healthz, robots, non-root, config label: OK${KEEP ? ` (left running on :${PORT})` : ''}`);

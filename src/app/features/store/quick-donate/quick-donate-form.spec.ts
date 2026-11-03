@@ -95,6 +95,20 @@ describe('inline quick donate (Option C §3 row 4, §5; C-3; M-4)', () => {
     expect(el.querySelector('.err')?.textContent).toContain('10');
   });
 
+  it('F-5: an amount over maxLineAmount (from the config) is refused before any request', async () => {
+    const { f, el, cart } = mount([cat('fund', 'الصندوق العام')], 'inline');
+    const input = el.querySelector('input[inputmode=decimal]') as HTMLInputElement;
+    input.value = '100000.01';
+    input.dispatchEvent(new Event('input'));
+    input.dispatchEvent(new Event('blur'));
+    f.detectChanges();
+    (el.querySelector('form') as HTMLFormElement).dispatchEvent(new Event('submit'));
+    await flush();
+    f.detectChanges();
+    expect(cart.add).not.toHaveBeenCalled();
+    expect(el.querySelector('.err')?.textContent).toMatch(/100[,٬]?000/);
+  });
+
   it('M-4: an API refusal (422) is shown inline, no navigation', async () => {
     const { f, el, cart, nav } = mount([cat('fund', 'الصندوق العام')], 'inline', async () => false);
     cart.lastProblem.set({

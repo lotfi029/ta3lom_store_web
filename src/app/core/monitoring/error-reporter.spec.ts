@@ -1,6 +1,11 @@
 import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { PLATFORM_ID, provideZonelessChangeDetection } from '@angular/core';
+import {
+  ErrorHandler,
+  PLATFORM_ID,
+  provideBrowserGlobalErrorListeners,
+  provideZonelessChangeDetection,
+} from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { firstValueFrom } from 'rxjs';
 import { STORE_API_URL } from '../api/store-api-url';
@@ -28,6 +33,8 @@ function setup(url: string, platform = 'browser') {
       { provide: ERROR_REPORT_URL, useValue: url },
       { provide: PLATFORM_ID, useValue: platform },
       ReportingErrorHandler,
+      { provide: ErrorHandler, useExisting: ReportingErrorHandler },
+      provideBrowserGlobalErrorListeners(),
     ],
   });
   return { reporter: TestBed.inject(ErrorReporter), fetchSpy };
@@ -118,5 +125,44 @@ describe('ErrorReporter (P5, PII-free)', () => {
     });
     expect(JSON.stringify(bodies(fetchSpy)[0])).not.toContain('at ');
     spyConsole.mockRestore();
+  });
+
+  it('F-3: one thrown window error = one report (no second listener path)', async () => {
+    const { fetchSpy } = setup('https://errors.test/r');
+    const spyConsole = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    TestBed.inject(ErrorHandler); // environment initialisers (global listeners) run with the injector
+    const err = new TypeError('cannot read x');
+    const event = new ErrorEvent('error', { error: err, message: `Uncaught ${err.message}`, cancelable: true });
+    window.dispatchEvent(event);
+    await Promise.resolve();
+    const sent = bodies(fetchSpy).filter((b) => b.message.includes('cannot read x'));
+    expect(sent).toHaveLength(1);
+    expect(sent[0]).toMatchObject({ kind: 'error', code: 'TypeError' });
+    spyConsole.mockRestore();
+  });
+
+  it('F-3: an unhandled rejection reaches the handler once, as a rejection', () => {
+    const { fetchSpy } = setup('https://errors.test/r');
+    const spyConsole = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    TestBed.inject(ReportingErrorHandler).handleError('plain reason');
+    expect(bodies(fetchSpy)).toEqual([
+      expect.objectContaining({ kind: 'rejection', code: 'Rejection', message: 'plain reason' }),
+    ]);
+    spyConsole.mockRestore();
+  });
+
+  it('F-4: URLs lose host and query; %40 e-mails and Saudi mobiles are redacted', () => {
+    const admin = scrub(
+      'Http failure response for https://store-api.ta3lom.sa/v1/admin/customers?q=%D9%85%D8%AD%D9%85%D8%AF%20a.b%40c.sa: 500 Internal Server Error',
+    );
+    expect(admin).toContain('/v1/admin/customers');
+    expect(admin).not.toMatch(/store-api|\?q=|%40|%D9|a\.b/);
+    const status = scrub('GET https://store-api.ta3lom.sa/v1/orders/T3-26-000123/status?t=s3cr3tT0ken failed');
+    expect(status).toContain('/v1/orders/:ref/status');
+    expect(status).not.toMatch(/s3cr3t|\?t=|T3-26/);
+    expect(scrub('relative /v1/admin/customers?mobile=0551234567 failed')).not.toMatch(/055|mobile=/);
+    expect(scrub('user%40example.com left')).toBe('[email] left');
+    expect(scrub('call 0551234567 or +966551234567 or 00966551234567')).not.toMatch(/55123/);
+    expect(scrub('call %2B966551234567')).not.toMatch(/55123/);
   });
 });

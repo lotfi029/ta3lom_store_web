@@ -97,11 +97,12 @@ export class Header {
     event.preventDefault();
     const q = input.value.trim();
     this.mobileOpen.set(false);
-    // Keeps the category and sort of the listing; a new search starts at page 1.
+    // Spec (home-option-c §5): search everything — drop the category and the page, keep only the sort (review 06 L-9).
     const tree = this.router.parseUrl(this.url());
     const onHome = (tree.root.children['primary']?.segments.length ?? 0) === 0;
+    const sort = onHome ? (tree.queryParams['sort'] as string | undefined) : undefined;
     void this.router.navigate(['/'], {
-      queryParams: { ...(onHome ? tree.queryParams : {}), q: q || null, page: null },
+      queryParams: { q: q || null, sort: sort || null },
     });
   }
 

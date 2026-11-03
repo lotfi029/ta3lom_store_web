@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  linkedSignal,
+  signal,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import type { Category, ProjectCard } from '../../../core/api/api.types';
 import { I18nService } from '../../../core/i18n/i18n';
@@ -252,11 +260,12 @@ export class HomeBanner {
   readonly categories = input<readonly Category[]>([]);
 
   protected readonly slides = computed(() => bannerSlides(this.featured()));
-  protected readonly index = signal(0);
-  protected readonly slide = computed(() => {
-    const all = this.slides();
-    return all.length ? all[Math.min(this.index(), all.length - 1)] : null;
+  /** Resets to the first slide whenever the slide list changes, so a dot's aria-current always matches a slide (L-11). */
+  protected readonly index = linkedSignal({
+    source: () => this.slides().map((s) => s.id).join('|'),
+    computation: () => 0,
   });
+  protected readonly slide = computed(() => this.slides()[this.index()] ?? null);
   protected readonly announce = signal('');
   protected readonly regionLabel = $localize`:@@store.home.banner-label:حملات التبرع`;
 

@@ -25,12 +25,26 @@ for (const e of list) {
 }
 
 let report;
-try {
+// CHECK_AUDIT_REPORT=<file>: read a saved report instead of running npm (used by scripts/check-audit.spec.mjs).
+if (process.env.CHECK_AUDIT_REPORT !== undefined) report = readFileSync(process.env.CHECK_AUDIT_REPORT, 'utf8');
+else try {
   report = execFileSync('npm', ['audit', '--omit=dev', '--json'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
 } catch (e) {
   report = e.stdout; // npm audit exits 1 when it finds anything
 }
-const data = JSON.parse(report || '{}');
+// Fail closed (review 06 D-4): no output, unparsable output or a report without `metadata` means the audit did not run
+// (network, registry, npm crash) — never "no advisories".
+let data;
+try {
+  data = JSON.parse(report ?? '');
+} catch {
+  console.error(`check-audit: npm audit produced no JSON output (${(report ?? '').trim() ? 'unparsable' : 'empty'}) — failing closed`);
+  process.exit(1);
+}
+if (!data || typeof data !== 'object' || !data.metadata) {
+  console.error('check-audit: npm audit output has no metadata — the audit did not run; failing closed');
+  process.exit(1);
+}
 if (data.error) {
   console.error(`check-audit: npm audit failed: ${JSON.stringify(data.error).slice(0, 300)}`);
   process.exit(1);

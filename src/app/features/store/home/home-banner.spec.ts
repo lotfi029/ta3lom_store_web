@@ -81,4 +81,16 @@ describe('home banner (Option C §2, §3 row 4)', () => {
     f.detectChanges();
     expect(h1()).toBe('مشروع a');
   });
+
+  it('L-11: when the featured list shrinks, the index resets and aria-current points at a real slide', () => {
+    const f = mount([card('a', 'urgent'), card('b', 'urgent'), card('c', 'urgent')]);
+    const el = f.nativeElement as HTMLElement;
+    (el.querySelector('.prev') as HTMLButtonElement).click(); // → c (index 2)
+    f.detectChanges();
+    f.componentRef.setInput('featured', [card('a', 'urgent'), card('b', 'urgent')]);
+    f.detectChanges();
+    const current = el.querySelectorAll('.dot[aria-current=true]');
+    expect(current).toHaveLength(1);
+    expect(el.querySelector('h1')?.textContent?.trim()).toBe('مشروع a');
+  });
 });
