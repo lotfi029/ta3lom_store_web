@@ -34,6 +34,7 @@ import {
   toQuery,
 } from './listing';
 import { ProjectCard } from './project-card';
+import { TrustRow } from './trust-row';
 
 /** "{n} مشروعًا" with the right Arabic plural form (PluralRules), English one/other. */
 export function projectCount(n: number, locale: 'ar' | 'en'): string {
@@ -62,7 +63,15 @@ export function projectCount(n: number, locale: 'ar' | 'en'): string {
  */
 @Component({
   selector: 'ta-home-page',
-  imports: [RouterLink, ResourceState, ProjectCard, CategoryTabs, HomeBanner, QuickDonateForm],
+  imports: [
+    RouterLink,
+    ResourceState,
+    ProjectCard,
+    CategoryTabs,
+    HomeBanner,
+    QuickDonateForm,
+    TrustRow,
+  ],
   providers: [HomeData],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './home.page.html',

@@ -8,6 +8,19 @@ hosting = Docker on one VPS from the API repo (`Dockerfile`, `deploy/compose.yam
 Auth fixes (2026-10-30): sign out everywhere refreshes and retries on 401 (else signs this device out and says so); its
 success toast only on success; a transient refresh failure no longer ends the donor or staff session. Unit 268 green.
 
+## Option C home + production readiness (one PR "Store web — Option C home + production readiness")
+
+| Phase | Status | Commit | Tests (unit / smoke e2e / a11y) | Notes |
+|---|---|---|---|---|
+| H1a Seed + stub | done | H1a | 268 / 35 / 26 × 2 | 28 projects, 10 categories (1 empty) via the admin API; stub re-captured |
+| H1b Header + tabs | done | H1b | 273 / 35 / 26 × 2 | utility row, big search, cart total (M-2), quick donate gated (M-4), category tabs |
+| H1c Home body | done | H1c | 289 / 51 / 26 × 2 | banner, inline quick donate, filter bar, grid 20, pagination, compact card, M-5, M-6 |
+| H1d Trust, SEO, i18n, screens | done | H1d | see commit | trust row (M-3 flags), docs/screens/home-c/ |
+
+**TODO before go-live (owner, C-2 / Q-11):** replace `[رقم الترخيص]` / `[licence number]` in
+`@@store.layout.utility-licence` and `@@store.home.trust-licensed-text` (src/locales: messages.xlf source in the
+templates + `en.json`) with the association's licence number and confirm the trust texts.
+
 ## R5 — donations (one PR "Store web — R5 donations", API `792521a`)
 
 | Phase | Status | Commit | Screens | Tests (unit / e2e / a11y routes) | Notes |

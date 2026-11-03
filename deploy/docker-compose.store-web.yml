@@ -1,0 +1,30 @@
+# Store web on the VPS (deploy/README.md). One service, the image from GHCR (private; the VPS logs in once with a
+# read:packages token stored on the VPS — owner H-4). Bound to 127.0.0.1 only: the edge Caddy / reverse proxy on the
+# VPS terminates TLS for store.ta3lom.sa (or store-staging.ta3lom.sa) and proxies to it.
+#   STORE_WEB_IMAGE=ghcr.io/lotfi029/ta3lom-store-web:staging STORE_WEB_PORT=8081 \
+#     docker compose -f docker-compose.store-web.yml -p store-web-staging up -d
+# No secrets: the image is public static files.
+services:
+  store-web:
+    image: ${STORE_WEB_IMAGE:?set STORE_WEB_IMAGE, e.g. ghcr.io/lotfi029/ta3lom-store-web:staging}
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${STORE_WEB_PORT:-8081}:8080"
+    environment:
+      TLS_MODE: ${TLS_MODE:-edge}
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 128m
+    pids_limit: 100
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/healthz"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }

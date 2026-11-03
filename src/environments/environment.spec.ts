@@ -16,4 +16,9 @@ describe('environments', () => {
   it('has no dev payment trigger any more (R5 has no /dev confirm-payment endpoint)', () => {
     for (const env of [production, development, ci]) expect('devPaymentTrigger' in env).toBe(false);
   });
+
+  it('M-3: the zakat and delivery-update trust items are off everywhere by default', () => {
+    for (const env of [production, development, ci])
+      expect(env.trust).toEqual({ showZakat: false, showUpdates: false });
+  });
 });

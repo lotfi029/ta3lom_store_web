@@ -31,7 +31,8 @@
     "lhci": "lhci autorun",
     "screenshots": "playwright test --config scripts/playwright.screenshots.config.ts",
     "api:openapi": "node scripts/api-openapi.mjs && npm run types:gen",
-    "stub-capture": "node scripts/stub-capture.mjs"
+    "stub-capture": "node scripts/stub-capture.mjs",
+    "screenshots:home-c": "playwright test --config scripts/playwright.screenshots.config.ts screenshots-home-c"
   },
   "dependencies": {
     "@angular/aria": "^22.2.0",

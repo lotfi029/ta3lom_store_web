@@ -597,5 +597,14 @@
   "store.home.page-label": "Page {$N}",
   "store.quick.other-amount": "Other amount",
   "store.quick.unavailable": " General gifts are not available right now. ",
-  "store.share.icon-label": "Share {$TITLE}"
+  "store.share.icon-label": "Share {$TITLE}",
+  "store.home.trust-licensed": "Licensed association",
+  "store.home.trust-licensed-text": "Licence no. [licence number]",
+  "store.home.trust-receipt": "Instant receipt",
+  "store.home.trust-receipt-text": "By text message after payment",
+  "store.home.trust-zakat": "Separate zakat",
+  "store.home.trust-zakat-text": "A separate ledger for zakat funds",
+  "store.home.trust-updates": "Delivery updates",
+  "store.home.trust-updates-text": "Follow the impact of your gift",
+  "store.home.trust-label": "Why donate with us"
 }

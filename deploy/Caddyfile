@@ -1,0 +1,84 @@
+# Store web runtime (container image, deploy/README.md). Serves the static build from /srv/site as a non-root user on
+# :8080, plain HTTP: TLS is terminated by the VPS edge proxy (TLS_MODE=edge, default). With TLS_MODE=direct this Caddy
+# is the edge itself and sends HSTS (owner M-8) — then put the site address in SITE_ADDRESS (e.g. store.ta3lom.sa).
+{
+	admin off
+	persist_config off
+	auto_https disable_redirects
+	servers {
+		trusted_proxies static private_ranges
+	}
+}
+
+{$SITE_ADDRESS::8080} {
+	root * /srv/site
+	encode zstd gzip
+
+	# Security headers (deploy/caddy-headers.conf) + the build's CSP and per-environment headers (generated at build,
+	# scripts/gen-csp.mjs: csp.conf, env.conf — staging adds X-Robots-Tag: noindex, nofollow).
+	import /etc/caddy/headers.conf
+	import /etc/caddy/csp.conf
+	import /etc/caddy/env.conf
+
+	# HSTS only when this Caddy terminates TLS itself (owner M-8). Behind the edge proxy the edge sends it.
+	@direct expression `{env.TLS_MODE} == "direct"`
+	header @direct Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+	# Liveness: static, never touches the API.
+	handle /healthz {
+		header Cache-Control "no-store"
+		header Content-Type "text/plain; charset=utf-8"
+		respond "ok" 200
+	}
+
+	# The bare domain → Arabic (Arabic first).
+	@root path /
+	redir @root /ar/ 302
+
+	# Build stamp: always fresh.
+	@version path /version.json
+	header @version Cache-Control "no-store"
+
+	# Cache: fingerprinted assets for a year; HTML (incl. index.csr.html), robots and sitemap revalidate every time.
+	@hashed path_regexp hashed \-[A-Z0-9]{8}\.(js|css|woff2|woff|ttf|svg|png|jpg|webp|avif)$
+	header @hashed Cache-Control "public, max-age=31536000, immutable"
+	@html path *.html */ /robots.txt /sitemap.xml
+	header @html Cache-Control "no-cache"
+
+	# Client-rendered routes (cart, checkout, login, orders, account, admin, and projects published after the build)
+	# get the locale's client shell, status 200 — only when no prerendered file exists.
+	@client {
+		path_regexp client ^/(ar|en)/(cart|checkout|login|orders/[^/]+|account(/.*)?|admin(/.*)?|p/[a-z0-9-]+)/?$
+		not file {path}/index.html
+	}
+	handle @client {
+		header Cache-Control "no-cache"
+		rewrite * /{re.client.1}/index.csr.html
+		file_server
+	}
+
+	handle {
+		try_files {path} {path}/index.html
+		file_server
+	}
+
+	# Unknown paths: real 404 status. Inside a locale the client shell renders the app's own not-found page (with the
+	# chrome and a noindex); elsewhere the static, script-free deploy/404.html.
+	handle_errors 404 {
+		header Cache-Control "no-cache"
+		@ar path /ar/*
+		@en path /en/*
+		handle @ar {
+			rewrite * /ar/index.csr.html
+			file_server
+		}
+		handle @en {
+			rewrite * /en/index.csr.html
+			file_server
+		}
+		handle {
+			rewrite * /404.html
+			file_server
+		}
+	}
+}

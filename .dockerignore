@@ -1,0 +1,17 @@
+# Build context for the store web image (Dockerfile). Never send secrets, local state or build output.
+.git
+node_modules
+dist
+.angular
+.api
+.e2e
+e2e/.auth
+.lighthouseci
+coverage
+test-results
+playwright-report
+docs/screens
+docs/screenshots
+*.log
+.env
+.env.*

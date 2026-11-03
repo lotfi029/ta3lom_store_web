@@ -4815,7 +4815,7 @@
         <target state="translated">Donation campaigns</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home-banner.ts</context>
-          <context context-type="linenumber">251</context>
+          <context context-type="linenumber">261</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.home.banner-announce" datatype="html">
@@ -4823,7 +4823,7 @@
         <target state="translated">Campaign <x id="n" equiv-text="next + 1"/> of <x id="total" equiv-text="n"/>: <x id="title" equiv-text="this.title(s)"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home-banner.ts</context>
-          <context context-type="linenumber">260</context>
+          <context context-type="linenumber">270</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.home.banner-dot" datatype="html">
@@ -4831,7 +4831,7 @@
         <target state="translated">Campaign <x id="n" equiv-text="n"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home-banner.ts</context>
-          <context context-type="linenumber">283</context>
+          <context context-type="linenumber">293</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.home.h1-hidden" datatype="html">
@@ -4963,7 +4963,7 @@
         <target state="translated">No projects</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.ts</context>
-          <context context-type="linenumber">42</context>
+          <context context-type="linenumber">43</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.home.count-one" datatype="html">
@@ -4971,7 +4971,7 @@
         <target state="translated">1 project</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.ts</context>
-          <context context-type="linenumber">44</context>
+          <context context-type="linenumber">45</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.home.count-two" datatype="html">
@@ -4979,7 +4979,7 @@
         <target state="translated">2 projects</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.ts</context>
-          <context context-type="linenumber">46</context>
+          <context context-type="linenumber">47</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.home.count-few" datatype="html">
@@ -4987,7 +4987,7 @@
         <target state="translated"><x id="n" equiv-text="n"/> projects</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.ts</context>
-          <context context-type="linenumber">48</context>
+          <context context-type="linenumber">49</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.home.count-many" datatype="html">
@@ -4995,7 +4995,7 @@
         <target state="translated"><x id="n" equiv-text="n"/> projects</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.ts</context>
-          <context context-type="linenumber">50</context>
+          <context context-type="linenumber">51</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.home.count-other" datatype="html">
@@ -5003,7 +5003,7 @@
         <target state="translated"><x id="n" equiv-text="n"/> projects</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.ts</context>
-          <context context-type="linenumber">52</context>
+          <context context-type="linenumber">53</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.listing.sort-newest" datatype="html">
@@ -5011,7 +5011,7 @@
         <target state="translated">Newest</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.ts</context>
-          <context context-type="linenumber">173</context>
+          <context context-type="linenumber">182</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.home.sort-title" datatype="html">
@@ -5019,7 +5019,7 @@
         <target state="translated">Name</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.ts</context>
-          <context context-type="linenumber">175</context>
+          <context context-type="linenumber">184</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.home.sort-featured" datatype="html">
@@ -5027,7 +5027,7 @@
         <target state="translated">Featured</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.ts</context>
-          <context context-type="linenumber">177</context>
+          <context context-type="linenumber">186</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.home.page-label" datatype="html">
@@ -5035,7 +5035,7 @@
         <target state="translated">Page <x id="n" equiv-text="n"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.ts</context>
-          <context context-type="linenumber">182</context>
+          <context context-type="linenumber">191</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.association" datatype="html">
@@ -5043,7 +5043,7 @@
         <target state="translated">E-Learning Association</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.ts</context>
-          <context context-type="linenumber">219</context>
+          <context context-type="linenumber">228</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/project/project.page.ts</context>
@@ -5063,7 +5063,7 @@
         <target state="translated">Search results for “<x id="q" equiv-text="qText"/>”</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.ts</context>
-          <context context-type="linenumber">238</context>
+          <context context-type="linenumber">247</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.listing.seo-category" datatype="html">
@@ -5071,7 +5071,7 @@
         <target state="translated"><x id="category" equiv-text="this.categoryName(cat)"/> projects</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.ts</context>
-          <context context-type="linenumber">240</context>
+          <context context-type="linenumber">249</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.home.seo-description" datatype="html">
@@ -5079,7 +5079,7 @@
         <target state="translated">Give to the E-Learning Association's projects or to a general category: sponsorships, water, printing and spreading knowledge. Quick, secure donations in Saudi riyals.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/home/home.page.ts</context>
-          <context context-type="linenumber">242</context>
+          <context context-type="linenumber">251</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.card.badge-urgent" datatype="html">
@@ -5104,6 +5104,78 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/project/project.page.html</context>
           <context context-type="linenumber">42,44</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.home.trust-licensed" datatype="html">
+        <source>جمعية مرخّصة</source>
+        <target state="translated">Licensed association</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/trust-row.ts</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.home.trust-licensed-text" datatype="html">
+        <source>ترخيص رقم [رقم الترخيص]</source>
+        <target state="translated">Licence no. [licence number]</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/trust-row.ts</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.home.trust-receipt" datatype="html">
+        <source>إيصال فوري</source>
+        <target state="translated">Instant receipt</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/trust-row.ts</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.home.trust-receipt-text" datatype="html">
+        <source>برسالة نصية بعد الدفع</source>
+        <target state="translated">By text message after payment</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/trust-row.ts</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.home.trust-zakat" datatype="html">
+        <source>زكاة مستقلة</source>
+        <target state="translated">Separate zakat</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/trust-row.ts</context>
+          <context context-type="linenumber">36</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.home.trust-zakat-text" datatype="html">
+        <source>سجل خاص لأموال الزكاة</source>
+        <target state="translated">A separate ledger for zakat funds</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/trust-row.ts</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.home.trust-updates" datatype="html">
+        <source>تحديثات التنفيذ</source>
+        <target state="translated">Delivery updates</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/trust-row.ts</context>
+          <context context-type="linenumber">42</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.home.trust-updates-text" datatype="html">
+        <source>تابع أثر تبرعك</source>
+        <target state="translated">Follow the impact of your gift</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/trust-row.ts</context>
+          <context context-type="linenumber">43</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.home.trust-label" datatype="html">
+        <source>لماذا تتبرع معنا</source>
+        <target state="translated">Why donate with us</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/home/trust-row.ts</context>
+          <context context-type="linenumber">61</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.login.title" datatype="html">
