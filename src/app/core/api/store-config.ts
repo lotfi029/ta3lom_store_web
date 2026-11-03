@@ -4,6 +4,7 @@ import { Injectable, PLATFORM_ID, computed, inject } from '@angular/core';
 import { toInt, type CatalogConfig } from './api.types';
 import { refreshAfterHydration } from '../http/refresh-after-hydration';
 import { valueOf } from '../http/resource-value';
+import { sameJson } from '../http/same-json';
 import { STORE_API_URL } from './store-api-url';
 
 /**
@@ -18,7 +19,9 @@ import { STORE_API_URL } from './store-api-url';
 @Injectable({ providedIn: 'root' })
 export class StoreConfig {
   private readonly api = inject(STORE_API_URL);
-  readonly resource = httpResource<CatalogConfig>(() => `${this.api}/catalog/config`);
+  readonly resource = httpResource<CatalogConfig>(() => `${this.api}/catalog/config`, {
+    equal: sameJson,
+  });
 
   constructor() {
     if (isPlatformBrowser(inject(PLATFORM_ID))) refreshAfterHydration(this.resource);

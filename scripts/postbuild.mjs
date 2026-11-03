@@ -86,19 +86,19 @@ const htmlFiles = (dir) =>
     return statSync(p).isDirectory() ? htmlFiles(p) : name.endsWith('.html') ? [p] : [];
   });
 
-// Preloaded faces: both Readex Pro subsets (Arabic text also uses the Latin face for spaces, digits and punctuation)
-// and Plex Mono 400 (references, codes). Without them the swap re-wraps the hero heading (CLS, Lighthouse W-11).
-const PRELOAD = [
-  /^readex-pro-arabic-wght-[A-Z0-9]+\.woff2$/,
-  /^readex-pro-latin-wght-[A-Z0-9]+\.woff2$/,
-  /^plex-mono-latin-400-[A-Z0-9]+\.woff2$/,
-];
+// Preloaded faces (owner brief P4): only the page's own script — the Arabic Readex Pro subset on /ar, the Latin one on
+// /en. Everything else (the other subset, Plex Mono) loads on demand with font-display: swap; LHCI's CLS gate
+// (≤ 0.05) proves the swap does not shift the layout.
+const PRELOAD = {
+  ar: [/^readex-pro-arabic-wght-[A-Z0-9]+\.woff2$/],
+  en: [/^readex-pro-latin-wght-[A-Z0-9]+\.woff2$/],
+};
 
 for (const locale of ['ar', 'en']) {
   const dir = join(BROWSER_DIR, locale);
   const media = join(dir, 'media');
   const names = existsSync(media) ? readdirSync(media) : [];
-  const fonts = PRELOAD.map((re) => names.find((n) => re.test(n)));
+  const fonts = PRELOAD[locale].map((re) => names.find((n) => re.test(n)));
   if (fonts.some((f) => !f)) {
     console.error(`postbuild: a preloaded font is missing from ${relative(process.cwd(), media)}`);
     process.exitCode = 1;
@@ -110,7 +110,9 @@ for (const locale of ['ar', 'en']) {
   let count = 0;
   for (const file of htmlFiles(dir)) {
     const original = readFileSync(file, 'utf8');
-    let html = canonical(original).replace(/<meta name="build" content="[^"]*">/g, '');
+    let html = canonical(original)
+      .replace(/<meta name="build" content="[^"]*">/g, '')
+      .replace(/<link rel="preload" href="media\/[^"]+\.woff2" as="font" type="font\/woff2" crossorigin>/g, '');
     if (!html.includes(tags) && html.includes('</head>')) {
       html = html.replace('</head>', `${tags}</head>`);
       count += 1;

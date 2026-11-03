@@ -62,6 +62,16 @@ jobs:
             --build-arg VERSION="$(git describe --tags --always)" --build-arg GIT_SHA="${{ github.sha }}" \
             -t ta3lom-store-web:ci .
           node scripts/check-container.mjs ta3lom-store-web:ci --env ci --port 8099 --keep
+      - name: Lighthouse CI against the container (mobile; home + a project, ar and en — H-2)
+        run: npm run lhci
+      - name: Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: lighthouse
+          path: .lighthouseci
+          if-no-files-found: ignore
+          retention-days: 14
       - name: Staging build dry run (stub data, runtime API = staging; noindex, ribbon, generated CSP)
         env:
           PRERENDER_API_URL: http://localhost:3000/v1

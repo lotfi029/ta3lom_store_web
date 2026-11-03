@@ -44,8 +44,7 @@ export function trustItems(flags: TrustFlags): TrustItem[] {
     },
   ];
   return all.filter(
-    (i) =>
-      (i.key !== 'zakat' || flags.showZakat) && (i.key !== 'updates' || flags.showUpdates),
+    (i) => (i.key !== 'zakat' || flags.showZakat) && (i.key !== 'updates' || flags.showUpdates),
   );
 }
 
@@ -64,7 +63,8 @@ export function trustItems(flags: TrustFlags): TrustItem[] {
           <li>
             <span class="ic" aria-hidden="true"><ta-icon [name]="i.icon" [size]="20" /></span>
             <span class="tx"
-              ><strong>{{ i.title }}</strong><span class="sub">{{ i.text }}</span></span
+              ><strong>{{ i.title }}</strong
+              ><span class="sub">{{ i.text }}</span></span
             >
           </li>
         }

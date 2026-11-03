@@ -4,6 +4,7 @@ import type { Category, HomeResponse, ProjectCard, ProjectPage } from '../../../
 import { toInt } from '../../../core/api/api.types';
 import { STORE_API_URL } from '../../../core/api/store-api-url';
 import { valueOf } from '../../../core/http/resource-value';
+import { sameJson } from '../../../core/http/same-json';
 import { type ListingQuery, listingParams, pageCount } from './listing';
 
 /**
@@ -16,12 +17,17 @@ export class HomeData {
   private readonly api = inject(STORE_API_URL);
   readonly query = signal<ListingQuery>({ q: '', category: '', sort: 'featured', page: 1 });
 
-  readonly home = httpResource<HomeResponse>(() => `${this.api}/catalog/home`);
-  readonly listing = httpResource<ProjectPage>(() => ({
-    url: `${this.api}/catalog/projects`,
-    params: listingParams(this.query()),
-  }));
-  readonly categories = httpResource<Category[]>(() => `${this.api}/catalog/categories`);
+  readonly home = httpResource<HomeResponse>(() => `${this.api}/catalog/home`, { equal: sameJson });
+  readonly listing = httpResource<ProjectPage>(
+    () => ({
+      url: `${this.api}/catalog/projects`,
+      params: listingParams(this.query()),
+    }),
+    { equal: sameJson },
+  );
+  readonly categories = httpResource<Category[]>(() => `${this.api}/catalog/categories`, {
+    equal: sameJson,
+  });
 
   private readonly page = computed(() => valueOf(this.listing));
   /** The cards in the API's order (U-2). */

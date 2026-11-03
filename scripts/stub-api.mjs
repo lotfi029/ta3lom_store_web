@@ -310,7 +310,11 @@ function route(req, url, body) {
 createServer((req, res) => {
   const url = new URL(req.url ?? '/', ORIGIN);
   const origin = req.headers.origin;
-  const headers = { 'Content-Type': 'application/json; charset=utf-8', Vary: 'Origin', 'Cache-Control': 'no-store' };
+  // Like the real API: public catalogue reads carry NO Cache-Control (Angular's hydration transfer cache skips no-store
+  // responses, so the prerendered pages would re-render on hydration — CLS); everything else is no-store.
+  const publicRead = req.method === 'GET' && url.pathname.startsWith('/v1/catalog/');
+  const headers = { 'Content-Type': 'application/json; charset=utf-8', Vary: 'Origin' };
+  if (!publicRead) headers['Cache-Control'] = 'no-store';
   if (origin)
     Object.assign(headers, {
       'Access-Control-Allow-Origin': origin,
