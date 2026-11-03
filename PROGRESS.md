@@ -15,7 +15,13 @@ success toast only on success; a transient refresh failure no longer ends the do
 | H1a Seed + stub | done | H1a | 268 / 35 / 26 × 2 | 28 projects, 10 categories (1 empty) via the admin API; stub re-captured |
 | H1b Header + tabs | done | H1b | 273 / 35 / 26 × 2 | utility row, big search, cart total (M-2), quick donate gated (M-4), category tabs |
 | H1c Home body | done | H1c | 289 / 51 / 26 × 2 | banner, inline quick donate, filter bar, grid 20, pagination, compact card, M-5, M-6 |
-| H1d Trust, SEO, i18n, screens | done | H1d | see commit | trust row (M-3 flags), docs/screens/home-c/ |
+| H1d Trust, SEO, i18n, screens | done | H1d | 292 / 51 / 70 routes × 2 | trust row (M-3 flags), docs/screens/home-c/ (12 shots) |
+| P1 Build configurations | done | P1 | 294 / 51 / 70 × 2 | development/local/ci/staging/production; generated CSP; robots/sitemap per env; build stamp; staging ribbon |
+| P2 Container + web server | done | P2 | 294 / 51 / 70 × 2 + container check | Dockerfile (caddy, uid 10001, read-only), Caddyfile, compose; check-container |
+| P3 CI/CD | done | P3 | + audit gate | ci.yml pinned + container check; deploy.yml staging/production/rollback/nightly/dispatch; Dependabot; zod fixed |
+| P4 Quality bars | done (REVIEW) | P4 | 295 / 51 / 70 × 2 + LHCI | CLS 0.478 → 0 (stub no-store broke the transfer cache); a11y 100, BP 96, SEO 100; perf 73–79, LCP 2.56–2.82 s, TBT 505–857 ms (floors, REVIEW) |
+| P5 Runtime robustness | done | P5 | 313 / 53 / 70 × 2 | GET retry (M-7), kept prerendered data + notice, PII-free error reporter (off) |
+| P6 Docs + handover | done | P6 | — | runbook, production checklist, spec in docs/r5/, .session/ removed |
 
 **TODO before go-live (owner, C-2 / Q-11):** replace `[رقم الترخيص]` / `[licence number]` in
 `@@store.layout.utility-licence` and `@@store.home.trust-licensed-text` (src/locales: messages.xlf source in the
@@ -75,6 +81,11 @@ templates + `en.json`) with the association's licence number and confirm the tru
 - [x] reference/ removed; docs/W-report.md pushed
 
 ## Environment (resume notes)
+- Session HC: Docker Hub answers 429 — pull `mirror.gcr.io/library/{postgres:18,node:24-alpine,caddy:2-alpine}` and
+  re-tag; `docker build --network host --secret id=build_ca,src=/root/.ccr/ca-bundle.crt …` (the session inspects TLS);
+  Playwright 1.64's Chromium lives in `~/.cache/store-web/pw-browsers` (`PLAYWRIGHT_BROWSERS_PATH` via dev-env.sh);
+  LHCI locally: `CHROME_PATH=~/.cache/store-web/pw-browsers/chromium-1248/chrome-linux64/chrome npm run lhci`;
+  a stale `node_modules/.vitest-cache` once replayed an old module — delete it when a fix "doesn't take".
 - `. scripts/dev-env.sh && npm run api:up && npm run api:seed` — API on :5080 (postgres:18 in docker `t3s-pg` on
   :5440; `api:up` starts `dockerd` and the container), staff in `e2e/.auth/staff.json` (git-ignored).
 - Node 24 lives in `/opt/node24` (dev-env.sh puts it first on PATH).

@@ -1,9 +1,10 @@
 # Store home page — Option C "المتجر أولاً" (spec)
 
 **Date:** 3 Nov 2026 · **Decided by:** Lotfi · **Status:** chosen, ready for a store_web session
-**Design:** canvas "Ta3lom Store Landing Options", artboard **C** (updated 3 Nov to match the R5-Core API)
-**Replaces:** the home layout from W-M1 ([14-web-sync-plan](../r5-web/14-web-sync-plan.md)). Routes, card behaviour (D-W5) and API stay the same.
-**API:** [15-api-contract-r5-core](../r5-web/15-api-contract-r5-core.md) (main @ cd26a80). **No API change is needed.**
+**Design:** canvas "Ta3lom Store Landing Options", artboard **C** (updated 3 Nov to match the R5-Core API) — mockups: [1440 px](option-c/option-c-1440.png), [390 px](option-c/option-c-390.png) (sample data; colours are the `--c-*` tokens)
+**Implemented:** PR "Store web — Option C home + production readiness" (session HC); decisions in [DECISIONS.md](../../DECISIONS.md) rows HC; screenshots in [docs/screens/home-c/](../screens/home-c/)
+**Replaces:** the home layout from W-M1 ([14-web-sync-plan](14-web-sync-plan.md)). Routes, card behaviour (D-W5) and API stay the same.
+**API:** [15-api-contract-r5-core](15-api-contract-r5-core.md) (main @ cd26a80). **No API change is needed.**
 
 ---
 
