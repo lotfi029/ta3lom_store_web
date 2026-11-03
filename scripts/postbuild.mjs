@@ -86,11 +86,11 @@ const htmlFiles = (dir) =>
     return statSync(p).isDirectory() ? htmlFiles(p) : name.endsWith('.html') ? [p] : [];
   });
 
-// Preloaded faces (owner brief P4): only the page's own script — the Arabic Readex Pro subset on /ar, the Latin one on
-// /en. Everything else (the other subset, Plex Mono) loads on demand with font-display: swap; LHCI's CLS gate
-// (≤ 0.05) proves the swap does not shift the layout.
+// Preloaded faces (owner brief P4): Readex Pro only, the page's own script first. Arabic pages ALSO preload the Latin
+// subset: Arabic text uses it for digits, spaces and punctuation (W-11), and without it the banner title re-painted
+// when that face arrived — LCP 3.8 s on /ar/ in CI. English pages preload Latin only; Plex Mono loads on demand.
 const PRELOAD = {
-  ar: [/^readex-pro-arabic-wght-[A-Z0-9]+\.woff2$/],
+  ar: [/^readex-pro-arabic-wght-[A-Z0-9]+\.woff2$/, /^readex-pro-latin-wght-[A-Z0-9]+\.woff2$/],
   en: [/^readex-pro-latin-wght-[A-Z0-9]+\.woff2$/],
 };
 

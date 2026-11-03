@@ -70,6 +70,7 @@ jobs:
         with:
           name: lighthouse
           path: .lighthouseci
+          include-hidden-files: true
           if-no-files-found: ignore
           retention-days: 14
       - name: Staging build dry run (stub data, runtime API = staging; noindex, ribbon, generated CSP)
