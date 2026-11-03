@@ -45,6 +45,10 @@ jobs:
         run: npx playwright test --grep @smoke
       - name: a11y (ar/en × light/dark)
         run: npm run a11y
+      - name: Staging build dry run (stub data, runtime API = staging; noindex, ribbon, generated CSP)
+        env:
+          PRERENDER_API_URL: http://localhost:3000/v1
+        run: npm run build:staging
       - name: Production is blocked while payments are off (D-W2)
         run: '! node scripts/check-payments-flag.mjs'
       - name: Production build dry run (stub data, runtime API = production; payments guard skipped — never deployed)

@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 /**
  * Runs after `ng build` (part of `npm run build`). For the dual-locale static output (dist/store-web/browser):
- *   - copies sitemap.xml, robots.txt and the favicons to the web root (the root has no locale of its own);
- *   - copies deploy/index.html to the web root: a script-free fallback page (Caddy redirects / → /ar/ before it is read);
+ *   - copies robots.txt, sitemap.xml (none on staging) and the favicons to the web root (the root has no locale of its own);
+ *   - copies deploy/index.html (script-free fallback; Caddy redirects / → /ar/ before it is read) and deploy/404.html (the
+ *     static 404 for paths outside /ar and /en) to the web root;
+ *   - build stamp: /version.json { version, commit, builtAt, env } and <meta name="build"> on every page — no secrets
+ *     (BUILD_VERSION / BUILD_SHA from the image build args, else git);
  *   - preloads the Readex Pro faces and Plex Mono 400 on every page (Angular fingerprints them, so index.html can't);
  *   - rewrites Angular's inline event-dispatch bootstrap to ONE canonical superset call, so the site has exactly one
  *     CSP hash for it (its text otherwise varies by page content);
@@ -17,7 +20,9 @@ import {
   statSync,
   writeFileSync,
 } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { join, relative } from 'node:path';
+import { deployEnv } from './lib/envs.mjs';
 
 const BROWSER_DIR = join(process.cwd(), 'dist', 'store-web', 'browser');
 
@@ -30,8 +35,27 @@ function copyToRoot(name, sourceDir = join(BROWSER_DIR, 'ar')) {
   }
   copyFileSync(src, join(BROWSER_DIR, name));
 }
-for (const f of ['sitemap.xml', 'robots.txt', 'favicon.ico', 'favicon.svg']) copyToRoot(f);
+const ENV = deployEnv();
+for (const f of ['robots.txt', 'favicon.ico', 'favicon.svg']) copyToRoot(f);
+if (ENV.robots !== 'noindex') copyToRoot('sitemap.xml');
 copyToRoot('index.html', join(process.cwd(), 'deploy'));
+copyToRoot('404.html', join(process.cwd(), 'deploy'));
+
+const git = (...args) => {
+  try {
+    return execFileSync('git', args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
+  } catch {
+    return '';
+  }
+};
+const STAMP = {
+  version: process.env.BUILD_VERSION || git('describe', '--tags', '--always', '--dirty') || 'dev',
+  commit: process.env.BUILD_SHA || git('rev-parse', 'HEAD') || 'unknown',
+  builtAt: new Date().toISOString(),
+  env: ENV.name,
+};
+writeFileSync(join(BROWSER_DIR, 'version.json'), `${JSON.stringify(STAMP)}\n`);
+const BUILD_META = `<meta name="build" content="${STAMP.version} ${STAMP.commit.slice(0, 12)} ${STAMP.env}">`;
 
 const JSACTION_BUBBLE = [
   'click',
@@ -86,11 +110,12 @@ for (const locale of ['ar', 'en']) {
   let count = 0;
   for (const file of htmlFiles(dir)) {
     const original = readFileSync(file, 'utf8');
-    let html = canonical(original);
+    let html = canonical(original).replace(/<meta name="build" content="[^"]*">/g, '');
     if (!html.includes(tags) && html.includes('</head>')) {
       html = html.replace('</head>', `${tags}</head>`);
       count += 1;
     }
+    if (html.includes('</head>')) html = html.replace('</head>', `${BUILD_META}</head>`);
     if (html !== original) writeFileSync(file, html);
   }
   console.log(`postbuild: [${locale}] font preloads added to ${count} page(s)`);
@@ -105,4 +130,4 @@ const modes = (dir) => {
   }
 };
 modes(BROWSER_DIR);
-console.log('postbuild: web root files copied, modes normalised (dist/store-web/browser)');
+console.log(`postbuild: [${ENV.name}] web root files copied, build ${STAMP.version} (${STAMP.commit.slice(0, 12)}), modes normalised`);

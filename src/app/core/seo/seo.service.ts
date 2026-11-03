@@ -47,11 +47,15 @@ export class SeoService {
     this.meta.updateTag({ name: 'description', content: data.description });
     this.meta.updateTag({
       name: 'robots',
-      content: data.noindex
-        ? data.follow
-          ? 'noindex, follow'
-          : 'noindex, nofollow'
-        : 'index, follow',
+      // Staging (environment.robots = 'noindex') is never indexed, whatever the route says.
+      content:
+        environment.robots === 'noindex'
+          ? 'noindex, nofollow'
+          : data.noindex
+            ? data.follow
+              ? 'noindex, follow'
+              : 'noindex, nofollow'
+            : 'index, follow',
     });
     this.meta.updateTag({ property: 'og:type', content: data.ogType ?? 'website' });
     this.meta.updateTag({ property: 'og:site_name', content: site });

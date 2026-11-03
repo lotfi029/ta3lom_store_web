@@ -49,7 +49,8 @@
                 "styles": { "minify": true, "inlineCritical": false },
                 "fonts": true
               },
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "sourceMap": false
             },
             "local": {
               "fileReplacements": [
@@ -59,6 +60,15 @@
             "ci": {
               "fileReplacements": [
                 { "replace": "src/environments/environment.ts", "with": "src/environments/environment.ci.ts" }
+              ]
+            },
+            "staging": {
+              "fileReplacements": [
+                { "replace": "src/environments/environment.ts", "with": "src/environments/environment.staging.ts" },
+                {
+                  "replace": "src/app/layout/env-ribbon/env-ribbon.ts",
+                  "with": "src/app/layout/env-ribbon/env-ribbon.staging.ts"
+                }
               ]
             },
             "development": {
