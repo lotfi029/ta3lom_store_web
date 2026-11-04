@@ -1,5 +1,5 @@
 # Store web progress
-Next: R5-Payments (flip `paymentsEnabled`, gateway redirect), then the first production deploy (API repo `deploy/README.md`)
+Next: owner go-live steps (PR descriptions, docs/production-checklist.md); payments are on since the final session
 
 Local run and deploy readiness (2026-10-30): `dev-env.sh` checks Node ≥ 24.15; `api-up.sh` starts PostgreSQL from the API's
 `compose.dev.yaml`; full DoD on the real API green (types, typecheck, lint, unit, build, 65 e2e, a11y 26 × 2). Production
@@ -13,11 +13,17 @@ success toast only on success; a transient refresh failure no longer ends the do
 | Phase | Repo / branch | Commit | Status |
 |---|---|---|---|
 | F1 | web `claude/store-web-option-c-prod-7eb3at` | HC — review fixes | done (gates: types, typecheck, lint, test 326 + scripts 5, build:ci, home e2e 24, container check) |
-| F2–F4 | api `final/api-payments-hosting` | — | pending |
-| F5–F7 | web `final/web-payments-perf` (stacked on the branch above) | — | pending |
-| F8 | ta3lom-deploy — **not reachable from the session** (add_repo: no access) → fallback in web branch (b) `deploy/edge/` | — | pending |
-| F9 | ta3lom-web `final/store-integration` | — | pending |
-| F10 | all | — | pending |
+| F2–F4 | api `final/api-payments-hosting` (PR lotfi029/ta3lom_store_api#17) | F2a…F4, F5b (template samples) | done (728 tests, Domain 96.6 %, Application 90.6 %) |
+| F5a | web `final/web-payments-perf` (stacked on the branch above) | F5a — checkout and order page | done (unit 341, smoke 57, a11y) |
+| F5b | web `final/web-payments-perf` | F5b — account and admin payments | done (unit 345 + scripts 5, build:ci, smoke 27 passed on the stub, a11y) |
+| F5c | web `final/web-payments-perf` | F5c — e2e | done (payments 12/12 ar+en on the real API + fake gateway; full e2e 99 passed after a rebuild; smoke on the stub) |
+| F6.1–F6.5 | web `final/web-payments-perf` | F6.1 … F6.5 (+ F5 fix: payment http flag) | done (numbers in DECISIONS) |
+| F6.6, F6 floors | web `final/web-payments-perf` | F6.6 — transfer state measured, LHCI floors raised | done (perf ≥ 0.82, LCP ≤ 2800, TBT ≤ 450; target 90 not reached on the home — REVIEW) |
+| F7 | web `final/web-payments-perf` | F7 — hosting alignment | done |
+| F8 | ta3lom-deploy — **not reachable from the session** (add_repo: no access) → fallback in web branch (b) `deploy/edge/` | F8 — edge block (fallback) | done (caddy validate) |
+| F9 | ta3lom-web `final/store-integration` (PR lotfi029/ta3lom-web#34, draft) | F9 — store integration | done (unit 356, scripts 12, e2e 174 + 11 flag-on skipped, a11y 66 × 2; flag-on run local) |
+| F10a | web `final/web-payments-perf` | F10a — full-stack e2e | done (12/12 over the local edge, API final/api-payments-hosting 8419a46) |
+| F10b | web `final/web-payments-perf` | F10b — contract v2 and checklist | done (docs/r5/15 v2 section; checklist code items ticked) |
 
 ## Option C home + production readiness (one PR "Store web — Option C home + production readiness")
 

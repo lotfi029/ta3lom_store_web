@@ -1,6 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 
 const PORT = Number(process.env.E2E_PORT ?? 4320);
+/** F10 full-stack run (scripts/full-stack-e2e.sh): the site behind the local edge Caddy (internal TLS); no dist server. */
+const BASE = process.env.E2E_ORIGIN;
 
 /**
  * e2e runs against the BUILT output (`npm run build` first), served by scripts/serve-dist.mjs under the production CSP,
@@ -17,16 +19,19 @@ export default defineConfig({
   expect: { timeout: 10_000 },
   reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'list',
   use: {
-    baseURL: `http://localhost:${PORT}`,
+    baseURL: BASE ?? `http://localhost:${PORT}`,
+    ignoreHTTPSErrors: !!BASE,
     trace: 'retain-on-failure',
     ...devices['Desktop Chrome'],
     locale: 'ar-SA',
     reducedMotion: 'reduce',
   },
-  webServer: {
-    command: 'node scripts/serve-dist.mjs',
-    port: PORT,
-    reuseExistingServer: !process.env.CI,
-    timeout: 30_000,
-  },
+  webServer: BASE
+    ? undefined
+    : {
+        command: 'node scripts/serve-dist.mjs',
+        port: PORT,
+        reuseExistingServer: !process.env.CI,
+        timeout: 30_000,
+      },
 });

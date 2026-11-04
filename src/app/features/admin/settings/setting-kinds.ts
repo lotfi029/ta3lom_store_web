@@ -81,6 +81,44 @@ export const SETTINGS: readonly SettingDef[] = [
     label: () => $localize`:@@store.admin.set-support-mobile:جوال الدعم`,
     hint: () => $localize`:@@store.admin.set-support-mobile-hint:اتركه فارغًا لإخفائه.`,
   },
+  // Donation receipts (R5-Payments, F3a): printed on the DR/DRC PDF; empty = left out.
+  {
+    key: 'receipt_org_name_ar',
+    kind: 'text',
+    max: 300,
+    label: () => $localize`:@@store.admin.set-receipt-org-ar:اسم الجمعية على الإيصال (عربي)`,
+  },
+  {
+    key: 'receipt_org_name_en',
+    kind: 'text',
+    max: 300,
+    label: () => $localize`:@@store.admin.set-receipt-org-en:اسم الجمعية على الإيصال (إنجليزي)`,
+  },
+  {
+    key: 'receipt_licence_no',
+    kind: 'text',
+    max: 300,
+    label: () => $localize`:@@store.admin.set-receipt-licence:رقم الترخيص على الإيصال`,
+  },
+  {
+    key: 'receipt_vat_note_ar',
+    kind: 'text',
+    max: 300,
+    label: () => $localize`:@@store.admin.set-receipt-vat-ar:ملاحظة الضريبة على الإيصال (عربي)`,
+  },
+  {
+    key: 'receipt_vat_note_en',
+    kind: 'text',
+    max: 300,
+    label: () => $localize`:@@store.admin.set-receipt-vat-en:ملاحظة الضريبة على الإيصال (إنجليزي)`,
+  },
+  {
+    key: 'receipt_signature_asset_id',
+    kind: 'text',
+    max: 36,
+    label: () => $localize`:@@store.admin.set-receipt-signature:صورة التوقيع والختم (معرّف الوسيط)`,
+    hint: () => $localize`:@@store.admin.set-receipt-signature-hint:انسخ معرّف الصورة من مكتبة الوسائط، أو اتركه فارغًا.`,
+  },
 ];
 
 /** The value as an input shows it. */

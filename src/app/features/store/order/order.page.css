@@ -57,3 +57,27 @@ h2 {
   gap: 10px;
   margin-block: 20px 0;
 }
+
+/* R5-Payments states (plan §6 F5) */
+.ic.warn {
+  background: var(--c-gold-tint);
+  color: var(--c-warn-text);
+}
+
+.ic:not(.ok, .warn) {
+  background: var(--c-surface-2);
+  color: var(--c-text-2);
+}
+
+.pay-again {
+  margin-block: 4px 12px;
+}
+
+.err {
+  color: var(--c-danger);
+  margin-block: 8px 0;
+}
+
+.receipt {
+  margin-block-start: 16px;
+}

@@ -20,7 +20,10 @@ import { SkipLink } from '../skip-link/skip-link';
     <main id="main" tabindex="-1">
       <router-outlet />
     </main>
-    <ta-footer />
+    <!-- F6.3: prerendered, hydrated when it scrolls into view or is used (event replay keeps early clicks). -->
+    @defer (hydrate on viewport; hydrate on interaction) {
+      <ta-footer />
+    }
     @if (browsing() && quick.available()) {
       <button
         type="button"

@@ -1,17 +1,22 @@
-# Store web on the VPS (deploy/README.md). One service, the image from GHCR (private; the VPS logs in once with a
-# read:packages token stored on the VPS — owner H-4). Bound to 127.0.0.1 only: the edge Caddy / reverse proxy on the
-# VPS terminates TLS for store.ta3lom.sa (or store-staging.ta3lom.sa) and proxies to it.
-#   STORE_WEB_IMAGE=ghcr.io/lotfi029/ta3lom-store-web:staging STORE_WEB_PORT=8081 \
-#     docker compose -f docker-compose.store-web.yml -p store-web-staging up -d
-# No secrets: the image is public static files.
+# Store web on the shared VPS behind the EDGE Caddy (plan §6 F7; the same model as the store API's deploy/compose.yaml).
+# This file runs NO proxy and publishes NO port: the edge (ta3lom-deploy/edge, the only Caddy on 80/443, terminating TLS)
+# reaches the container over the external `edge` network by its alias — `store-web` (production) or
+# `store-web-staging` (staging); see deploy/edge/store.caddy. One file, two projects:
+#   EDGE_ALIAS=store-web         STORE_WEB_IMAGE=ghcr.io/lotfi029/ta3lom-store-web:<tag> \
+#     docker compose -f docker-compose.store-web.yml -p store-web up -d --wait
+#   EDGE_ALIAS=store-web-staging STORE_WEB_IMAGE=ghcr.io/lotfi029/ta3lom-store-web:staging-<sha> \
+#     docker compose -f docker-compose.store-web.yml -p store-web-staging up -d --wait
+# (EDGE_ALIAS also lives in each folder's .env; the deploy workflow passes it explicitly.) No secrets: the image is
+# public static files. Runbook: deploy/README.md.
 services:
   store-web:
     image: ${STORE_WEB_IMAGE:?set STORE_WEB_IMAGE, e.g. ghcr.io/lotfi029/ta3lom-store-web:staging}
     restart: unless-stopped
-    ports:
-      - "127.0.0.1:${STORE_WEB_PORT:-8081}:8080"
     environment:
-      TLS_MODE: ${TLS_MODE:-edge}
+      TLS_MODE: edge
+    networks:
+      edge:
+        aliases: ["${EDGE_ALIAS:?set EDGE_ALIAS (store-web or store-web-staging)}"]
     read_only: true
     tmpfs:
       - /tmp:size=16m,mode=1777
@@ -28,3 +33,9 @@ services:
     logging:
       driver: json-file
       options: { max-size: "10m", max-file: "3" }
+
+networks:
+  # Created once by ta3lom-deploy (edge/up.sh) with a fixed IPv4 subnet (deploy/edge/README.md); shared with the edge
+  # Caddy and the store API.
+  edge:
+    external: true

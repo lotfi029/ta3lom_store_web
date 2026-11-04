@@ -7,11 +7,14 @@ import {
   effect,
   inject,
   input,
+  signal,
   untracked,
 } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { toInt } from '../../../core/api/api.types';
+import { problemMessage } from '../../../core/api/problem-message';
+import { PaymentRedirect } from '../../../core/payments/payment-redirect';
 import { StoreAuth } from '../../../core/auth/store-auth';
 import { I18nService } from '../../../core/i18n/i18n';
 import { SeoService } from '../../../core/seo/seo.service';
@@ -30,8 +33,9 @@ export function withoutToken(href: string): string {
 }
 
 /**
- * `/orders/:ref` (W-M3, D-W2): the donation's status. While payments are off it is the end of the journey —
- * "تم تسجيل تبرعك — الدفع الإلكتروني قريبًا" with the reference and the amount, no polling. E-2: the `?t=` status token
+ * `/orders/:ref` (W-M3, plan §6 F5): where the donor lands back from the gateway — never trusted as proof of payment;
+ * the page polls the API: paid (thanks, receipt number, download), pending (the gateway has not answered yet), retry
+ * ("أعد محاولة الدفع" → a new attempt, redirect only to allow-listed hosts), expired, review, refunded (DRC). E-2: the `?t=` status token
  * is kept in memory + sessionStorage and removed from the address bar at once; the page sets
  * `Referrer-Policy: no-referrer`, is noindex and has no share bar. R3-2: signed out without a (valid) token → sign in to
  * view it (OTP), not the generic not-found.
@@ -55,8 +59,15 @@ export class OrderPage {
   readonly t = input<string>();
 
   protected readonly status = computed(() => orderStatus(this.data.state() ?? ''));
-  protected readonly pending = computed(() => this.data.state() === 'pending_payment');
   protected readonly lineCount = computed(() => toInt(this.data.value()?.lineCount));
+  protected readonly refunded = computed(
+    () => (this.data.value()?.refundedAmount ?? '0.00') !== '0.00',
+  );
+  protected readonly paying = signal(false);
+  protected readonly payError = signal<string | null>(null);
+  protected readonly downloading = signal(false);
+  protected readonly downloadError = signal<string | null>(null);
+  private readonly redirect = inject(PaymentRedirect);
 
   private readonly seo = inject(SeoService);
 
@@ -87,6 +98,48 @@ export class OrderPage {
     const w = this.doc.defaultView;
     if (!w || !w.location.search.includes('t=')) return;
     w.history.replaceState(w.history.state, '', withoutToken(w.location.href));
+  }
+
+  /** "Pay again": a new attempt; leave only for an allow-listed hosted page. */
+  protected async payAgain(): Promise<void> {
+    this.paying.set(true);
+    this.payError.set(null);
+    try {
+      const out = await this.data.payAgain();
+      if (out.kind === 'problem') {
+        this.payError.set(problemMessage(out.problem));
+      } else if (!this.redirect.go(out.url)) {
+        this.payError.set(problemMessage({ code: 'payment.gateway_unavailable', status: 503 }));
+      }
+    } finally {
+      this.paying.set(false);
+    }
+  }
+
+  /** Saves the receipt PDF (DR or DRC) through an object URL (no token in any address bar or history). */
+  protected async download(kind: 'dr' | 'drc'): Promise<void> {
+    this.downloading.set(true);
+    this.downloadError.set(null);
+    try {
+      const out = await this.data.receipt(kind);
+      if (!('blob' in out)) {
+        this.downloadError.set(problemMessage(out));
+        return;
+      }
+      const w = this.doc.defaultView;
+      if (!w) return;
+      const url = w.URL.createObjectURL(out.blob);
+      const a = this.doc.createElement('a');
+      a.href = url;
+      a.download = out.fileName;
+      a.rel = 'noopener';
+      this.doc.body.appendChild(a);
+      a.click();
+      a.remove();
+      w.setTimeout(() => w.URL.revokeObjectURL(url), 10_000);
+    } finally {
+      this.downloading.set(false);
+    }
   }
 
   protected formatDate(v: string | undefined): string {

@@ -14,15 +14,73 @@
       @case ('ready') {
         @if (data.value(); as o) {
           <div class="card" role="status">
-            @if (pending() && !data.paymentsEnabled) {
-              <span class="ic ok" aria-hidden="true"><ta-icon name="check" [size]="30" /></span>
-              <h2 i18n="@@store.order.registered">تم تسجيل تبرعك — الدفع الإلكتروني قريبًا</h2>
-              <p class="lede" i18n="@@store.order.registered-lede">
-                شكرًا لك. سجّلنا تبرعك برقمه المرجعي، وسنرسل لك رابط الدفع حين يُفعَّل الدفع
-                الإلكتروني.
-              </p>
-            } @else {
-              <h2>{{ status().label }}</h2>
+            @switch (data.phase()) {
+              @case ('paid') {
+                <span class="ic ok" aria-hidden="true"><ta-icon name="check" [size]="30" /></span>
+                <h2 i18n="@@store.order.paid-title">شكرًا لك، وصل تبرعك</h2>
+                <p class="lede" i18n="@@store.order.paid-lede">
+                  تقبّل الله منك. أرسلنا لك الإيصال برسالة نصية وعلى بريدك الإلكتروني.
+                </p>
+              }
+              @case ('pending') {
+                <span class="ic" aria-hidden="true"><ta-icon name="clock" [size]="30" /></span>
+                <h2 i18n="@@store.order.pending-title">نتحقق من دفعتك</h2>
+                <p class="lede" i18n="@@store.order.pending-lede">
+                  إن كنت أتممت الدفع فسيظهر هنا خلال لحظات. لا تُغلق الصفحة ولا تدفع مرة أخرى.
+                </p>
+                @if (data.gaveUp()) {
+                  <button
+                    type="button"
+                    class="b ghost"
+                    (click)="data.checkAgain()"
+                    i18n="@@store.order.check-again"
+                  >
+                    تحقق مرة أخرى
+                  </button>
+                }
+              }
+              @case ('retry') {
+                <span class="ic warn" aria-hidden="true"><ta-icon name="alert" [size]="30" /></span>
+                <h2 i18n="@@store.order.retry-title">لم يكتمل الدفع</h2>
+                <p class="lede" i18n="@@store.order.retry-lede">
+                  تبرعك محفوظ. يمكنك إعادة محاولة الدفع قبل انتهاء المهلة.
+                </p>
+                <button
+                  type="button"
+                  class="b primary pay-again"
+                  [disabled]="paying()"
+                  (click)="payAgain()"
+                  i18n="@@store.order.pay-again"
+                >
+                  أعد محاولة الدفع
+                </button>
+                @if (payError(); as message) {
+                  <p class="err" role="alert">{{ message }}</p>
+                }
+              }
+              @case ('expired') {
+                <span class="ic" aria-hidden="true"><ta-icon name="clock" [size]="30" /></span>
+                <h2 i18n="@@store.order.expired-title">انتهت مهلة الدفع</h2>
+                <p class="lede" i18n="@@store.order.expired-lede">
+                  لم يصلنا الدفع قبل انتهاء المهلة، فأُغلق هذا التبرع. يسعدنا أن تتبرع من جديد.
+                </p>
+              }
+              @case ('review') {
+                <span class="ic warn" aria-hidden="true"><ta-icon name="alert" [size]="30" /></span>
+                <h2 i18n="@@store.order.review-title">نراجع دفعتك</h2>
+                <p class="lede" i18n="@@store.order.review-lede">
+                  وصلتنا دفعة تحتاج إلى مراجعة. سنتواصل معك قريبًا، ولا حاجة لأن تدفع مرة أخرى.
+                </p>
+              }
+              @case ('refunded') {
+                <h2 i18n="@@store.order.refunded-title">تم استرداد تبرعك</h2>
+                <p class="lede" i18n="@@store.order.refunded-lede">
+                  أعدنا المبلغ إلى وسيلة الدفع نفسها. إيصال الإلغاء متاح أدناه.
+                </p>
+              }
+              @default {
+                <h2>{{ status().label }}</h2>
+              }
             }
             <dl class="kv">
               <div>
@@ -49,7 +107,48 @@
                 <dt i18n="@@store.order.created">التاريخ</dt>
                 <dd>{{ formatDate(o.createdAt) }}</dd>
               </div>
+              @if (o.receiptNumber) {
+                <div>
+                  <dt i18n="@@store.order.receipt-number">رقم الإيصال</dt>
+                  <dd>
+                    <bdi dir="ltr" class="mono">{{ o.receiptNumber }}</bdi>
+                  </dd>
+                </div>
+              }
+              @if (refunded()) {
+                <div>
+                  <dt i18n="@@store.order.refunded-amount">المبلغ المسترد</dt>
+                  <dd><ta-money [value]="o.refundedAmount!" /></dd>
+                </div>
+              }
             </dl>
+            @if (o.receiptAvailable) {
+              <p class="links receipt">
+                <button
+                  type="button"
+                  class="b primary"
+                  [disabled]="downloading()"
+                  (click)="download('dr')"
+                  i18n="@@store.order.download-receipt"
+                >
+                  تحميل الإيصال
+                </button>
+                @if (data.phase() === 'refunded') {
+                  <button
+                    type="button"
+                    class="b ghost"
+                    [disabled]="downloading()"
+                    (click)="download('drc')"
+                    i18n="@@store.order.download-cancellation"
+                  >
+                    تحميل إيصال الإلغاء
+                  </button>
+                }
+              </p>
+              @if (downloadError(); as message) {
+                <p class="err" role="alert">{{ message }}</p>
+              }
+            }
             <p class="links">
               @if (auth.isSignedIn()) {
                 <a

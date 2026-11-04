@@ -53,3 +53,31 @@
 .panel a {
   color: var(--c-link);
 }
+
+.act.fin {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.pay h3 {
+  font-size: 0.95rem;
+  margin-block: 16px 8px;
+}
+
+.pay .kv {
+  margin-block-end: 12px;
+}
+
+.timeline {
+  margin: 0;
+  padding-inline-start: 1.2em;
+  display: grid;
+  gap: 4px;
+  font-size: 0.88rem;
+}
+
+.dlg .field {
+  margin: 0;
+}

@@ -38,7 +38,10 @@ async function ensureAdmin(staff) {
     }
   }
   const email = `e2e-admin-${Date.now().toString(36)}@store-web.test`;
-  const out = execFileSync('dotnet', [DLL, 'create-admin', '--email', email, '--name', 'E2E Admin'], {
+  // STORE_ADMIN_CLI (F10 full-stack run): the API's own CLI in its container, e.g. `docker exec t3s-fs-api dotnet
+  // Ta3lom.Store.Api.dll`; default: the local Debug build.
+  const cli = process.env.STORE_ADMIN_CLI?.split(' ').filter(Boolean) ?? ['dotnet', DLL];
+  const out = execFileSync(cli[0], [...cli.slice(1), 'create-admin', '--email', email, '--name', 'E2E Admin'], {
     cwd: join(API_DIR, 'src/Ta3lom.Store.Api'),
     encoding: 'utf8',
   });
