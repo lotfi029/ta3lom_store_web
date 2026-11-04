@@ -277,8 +277,8 @@ Precedence for this session: live API (`e5435c1`, OpenAPI identical to the `cd26
 
 ## Fix session — Payments hardening (review 04) (branch `claude/payments-hardening`)
 
-API side: lotfi029/ta3lom_store_api#18 (same title) — **merge it first**; until then `scripts/full-stack-e2e.sh`
-defaults to `STORE_API_REF=claude/payments-hardening` (W-6) and must go back to `main` right after.
+API side: lotfi029/ta3lom_store_api#18 (same title), merged first (`1d4dac3`). While it was open,
+`scripts/full-stack-e2e.sh` defaulted to `STORE_API_REF=claude/payments-hardening` (W-6); the default is `main` again.
 
 | Date | Item | Topic | Source | Choice |
 |---|---|---|---|---|
