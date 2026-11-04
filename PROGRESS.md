@@ -18,7 +18,7 @@ success toast only on success; a transient refresh failure no longer ends the do
 | F5b | web `final/web-payments-perf` | F5b — account and admin payments | done (unit 345 + scripts 5, build:ci, smoke 27 passed on the stub, a11y) |
 | F5c | web `final/web-payments-perf` | F5c — e2e | done (payments 12/12 ar+en on the real API + fake gateway; full e2e 99 passed after a rebuild; smoke on the stub) |
 | F6.1–F6.5 | web `final/web-payments-perf` | F6.1 … F6.5 (+ F5 fix: payment http flag) | done (numbers in DECISIONS) |
-| F6.6, F6 floors | web `final/web-payments-perf` | — | pending |
+| F6.6, F6 floors | web `final/web-payments-perf` | F6.6 — transfer state measured, LHCI floors raised | done (perf ≥ 0.82, LCP ≤ 2800, TBT ≤ 450; target 90 not reached on the home — REVIEW) |
 | F7 | web `final/web-payments-perf` | F7 — hosting alignment | done |
 | F8 | ta3lom-deploy — **not reachable from the session** (add_repo: no access) → fallback in web branch (b) `deploy/edge/` | F8 — edge block (fallback) | done (caddy validate) |
 | F9 | ta3lom-web `final/store-integration` (PR lotfi029/ta3lom-web#34, draft) | F9 — store integration | done (unit 356, scripts 12, e2e 174 + 11 flag-on skipped, a11y 66 × 2; flag-on run local) |
