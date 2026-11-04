@@ -29,6 +29,8 @@ describe('environments', () => {
     }
     expect(production.paymentHosts).toEqual(['checkout.moyasar.com']);
     expect(staging.paymentHosts).toEqual(['checkout.moyasar.com']);
+    expect(production.paymentAllowHttp).toBe(false);
+    expect(staging.paymentAllowHttp).toBe(false);
   });
 
   it('has no dev payment trigger any more (R5 has no /dev confirm-payment endpoint)', () => {

@@ -22,9 +22,10 @@ describe('payment redirect allow-list (ADR-S05, A-6)', () => {
     expect(isAllowedPaymentUrl(url, prod)).toBe(false);
   });
 
-  it('allows the local fake page (http on localhost) only with its port', () => {
-    expect(isAllowedPaymentUrl('http://localhost:5080/dev/payments/fake_inv_1', dev)).toBe(true);
-    expect(isAllowedPaymentUrl('http://localhost:9999/dev/payments/fake_inv_1', dev)).toBe(false);
-    expect(isAllowedPaymentUrl('http://localhost:5080/dev/payments/fake_inv_1', prod)).toBe(false);
+  it('allows the local fake page (http) only where the environment allows http, and only with its port', () => {
+    expect(isAllowedPaymentUrl('http://localhost:5080/dev/payments/fake_inv_1', dev, true)).toBe(true);
+    expect(isAllowedPaymentUrl('http://localhost:5080/dev/payments/fake_inv_1', dev)).toBe(false);
+    expect(isAllowedPaymentUrl('http://localhost:9999/dev/payments/fake_inv_1', dev, true)).toBe(false);
+    expect(isAllowedPaymentUrl('http://localhost:5080/dev/payments/fake_inv_1', prod, true)).toBe(false);
   });
 });

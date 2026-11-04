@@ -18,6 +18,8 @@ export const environment = {
    * invoice page in staging/production; the API's own fake page (`/dev/payments/{id}`) in development, local and CI.
    */
   paymentHosts: ['localhost:5080'] as readonly string[],
+  /** http allowed for the payment page (the local fake gateway); never on staging/production. */
+  paymentAllowHttp: true,
   /** Option C trust row (owner M-3, REVIEW: move to the API config later): hidden while zakat is off / no updates. */
   trust: { showZakat: false, showUpdates: false },
   /** Client error reporter endpoint (P5, REVIEW); empty = off. Its origin must be in the CSP connect-src (gen-csp). */
