@@ -52,7 +52,12 @@
         </button>
       }
       @if (auth.isSignedIn()) {
-        <ta-account-menu />
+        <!-- F6.2: the menu (and the problem texts it shows) is a lazy chunk; pages are prerendered signed out. -->
+        @defer (on immediate) {
+          <ta-account-menu />
+        } @placeholder {
+          <span class="signin" aria-hidden="true"><ta-icon name="user" [size]="18" /></span>
+        }
       } @else {
         <a class="signin" routerLink="/login"
           ><ta-icon name="user" [size]="18" /><span class="lbl" i18n="@@store.layout.sign-in"

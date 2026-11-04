@@ -12,6 +12,9 @@
  *   - (F6.1) critical CSS is inlined by Angular (beasties): the full sheet loads as `media="print"
  *     data-beasties-media="all"` and ONE inline script at the end of <body> switches it — no inline handler; gen-csp
  *     hashes that script like every other, check-csp verifies it;
+ *   - (F6.2) inlines the locale's @font-face rules (~1.7 KB) in every page's <head>: the critical CSS (F6.1) leaves them
+ *     in the async sheet, so the first paint used system fonts and the text reflowed when the sheet arrived (CLS 0.086
+ *     on /en/). `./media/…` resolves against `<base href="/{locale}/">`;
  *   - normalises modes (0644 files, 0755 dirs).
  */
 import {
@@ -107,15 +110,24 @@ for (const locale of ['ar', 'en']) {
     process.exitCode = 1;
     continue;
   }
-  const tags = fonts
-    .map((f) => `<link rel="preload" href="media/${f}" as="font" type="font/woff2" crossorigin>`)
-    .join('');
+  const sheet = readdirSync(dir).find((n) => /^styles-[A-Z0-9]+\.css$/.test(n));
+  const faces = sheet ? (readFileSync(join(dir, sheet), 'utf8').match(/@font-face\{[^}]*\}/g) ?? []) : [];
+  if (faces.length === 0) {
+    console.error(`postbuild: no @font-face rule found in ${locale}/${sheet ?? 'styles-*.css'}`);
+    process.exitCode = 1;
+    continue;
+  }
+  const fontStyle = `<style data-fonts>${faces.join('')}</style>`;
+  const tags =
+    fonts.map((f) => `<link rel="preload" href="media/${f}" as="font" type="font/woff2" crossorigin>`).join('') +
+    fontStyle;
   let count = 0;
   for (const file of htmlFiles(dir)) {
     const original = readFileSync(file, 'utf8');
     let html = canonical(original)
       .replace(/<meta name="build" content="[^"]*">/g, '')
-      .replace(/<link rel="preload" href="media\/[^"]+\.woff2" as="font" type="font\/woff2" crossorigin>/g, '');
+      .replace(/<link rel="preload" href="media\/[^"]+\.woff2" as="font" type="font\/woff2" crossorigin>/g, '')
+      .replace(/<style data-fonts>[^<]*<\/style>/g, '');
     if (!html.includes(tags) && html.includes('</head>')) {
       html = html.replace('</head>', `${tags}</head>`);
       count += 1;
@@ -123,7 +135,7 @@ for (const locale of ['ar', 'en']) {
     if (html.includes('</head>')) html = html.replace('</head>', `${BUILD_META}</head>`);
     if (html !== original) writeFileSync(file, html);
   }
-  console.log(`postbuild: [${locale}] font preloads added to ${count} page(s)`);
+  console.log(`postbuild: [${locale}] font preloads + ${faces.length} inline @font-face rules added to ${count} page(s)`);
 }
 
 const modes = (dir) => {
