@@ -3,6 +3,7 @@ import { Client } from '../scripts/lib/store-api-client.mjs';
 import { expectNoA11yViolations, expectNoHorizontalScroll } from './support/a11y';
 import { apiGet, onStub, resetStub } from './support/api';
 import { freshMobile, otpFor } from './support/auth';
+import { payOnHostedPage } from './support/payment';
 
 interface Card {
   slug: string;
@@ -50,7 +51,7 @@ async function threeLines(page: Page, locale: 'ar' | 'en') {
 
 for (const locale of ['ar', 'en'] as const) {
   test.describe(`@smoke donate /${locale}`, () => {
-    test('three line kinds → checkout (sign in, contact) → pending order page; contact saved to /me', async ({
+    test('three line kinds → checkout (sign in, contact) → hosted payment page → paid with a receipt; contact saved to /me', async ({
       page,
     }) => {
       await threeLines(page, locale);
@@ -73,10 +74,16 @@ for (const locale of ['ar', 'en'] as const) {
       await expectNoA11yViolations(page, `/${locale}/checkout`);
       await page.locator('button.pay-btn').click();
 
+      // ADR-S05: the donor leaves for the gateway's hosted page (allow-listed host), pays, and comes back.
+      await payOnHostedPage(page, 'pay');
       await expect(page).toHaveURL(new RegExp(`/${locale}/orders/T3-\\d{2}-\\d{6}$`));
       await expect(page.locator('.osec .card h2')).toContainText(
-        locale === 'ar' ? 'تم تسجيل تبرعك' : 'registered',
+        locale === 'ar' ? 'وصل تبرعك' : 'your donation arrived',
       );
+      await expect(page.locator('.kv')).toContainText(/DR-\d{4}-\d{6}/);
+      const download = page.waitForEvent('download');
+      await page.locator('.receipt button').first().click();
+      expect((await download).suggestedFilename()).toMatch(/^DR-\d{4}-\d{6}\.pdf$/);
       expect(page.url()).not.toContain('t=');
       await expect(page.locator('meta[name=referrer]')).toHaveAttribute('content', 'no-referrer');
       await expect(page.locator('a.cartbtn')).toHaveAttribute('data-lines', '0');

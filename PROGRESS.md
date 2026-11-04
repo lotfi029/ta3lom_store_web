@@ -14,7 +14,8 @@ success toast only on success; a transient refresh failure no longer ends the do
 |---|---|---|---|
 | F1 | web `claude/store-web-option-c-prod-7eb3at` | HC — review fixes | done (gates: types, typecheck, lint, test 326 + scripts 5, build:ci, home e2e 24, container check) |
 | F2–F4 | api `final/api-payments-hosting` | — | pending |
-| F5–F7 | web `final/web-payments-perf` (stacked on the branch above) | — | pending |
+| F5a | web `final/web-payments-perf` (stacked on the branch above) | F5a — checkout and order page | done (unit 341, smoke 57, a11y) |
+| F5b–F7 | web `final/web-payments-perf` | — | pending |
 | F8 | ta3lom-deploy — **not reachable from the session** (add_repo: no access) → fallback in web branch (b) `deploy/edge/` | — | pending |
 | F9 | ta3lom-web `final/store-integration` | — | pending |
 | F10 | all | — | pending |

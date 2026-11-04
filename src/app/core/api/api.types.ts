@@ -27,7 +27,10 @@ export function toInt(value: number | string | null | undefined, fallback = 0): 
 export type ProjectStatus = 'draft' | 'published' | 'archived';
 export type ProjectBadge = 'new' | 'urgent';
 export type OrderStatusValue =
-  'pending_payment' | 'paid' | 'payment_review' | 'cancelled' | 'expired';
+  'pending_payment' | 'paid' | 'payment_review' | 'cancelled' | 'expired' | 'refunded';
+/** The latest payment attempt (R5-Payments). */
+export type PaymentStatusValue =
+  'initiated' | 'captured' | 'failed' | 'cancelled' | 'review' | 'refunded';
 export type CustomerStatus = 'active' | 'blocked' | 'anonymised';
 export type TargetKind = 'project' | 'category';
 export type CatalogSort = 'featured' | 'newest' | 'title';
@@ -70,6 +73,8 @@ export type UpdateCartLine = Schemas['UpdateCartLineRequest'];
 export type CheckoutRequest = Schemas['CheckoutRequest'];
 export type CheckoutResponse = Schemas['CheckoutResponse'];
 export type OrderStatus = Schemas['OrderStatusResponse'];
+export type CheckoutPayment = Schemas['CheckoutPayment'];
+export type PayOrderResponse = Schemas['PayOrderResponse'];
 
 // Me
 export type Me = Schemas['MeResponse'];
@@ -112,6 +117,15 @@ export type AdminOrderRow = Schemas['AdminOrderRow'];
 export type AdminOrderPage = Schemas['PagedResultOfAdminOrderRow'];
 export type AdminOrderDetail = Schemas['AdminOrderDetail'];
 export type AdminOrderLine = Schemas['AdminOrderLine'];
+export type AdminPaymentRow = Schemas['AdminPaymentRow'];
+export type AdminPaymentEventRow = Schemas['AdminPaymentEventRow'];
+export type AdminRefundRow = Schemas['AdminRefundRow'];
+export type AdminReceiptRow = Schemas['AdminReceiptRow'];
+export type AdminRefundRequest = Schemas['AdminRefundRequest'];
+export type AdminReviewRequest = Schemas['AdminReviewRequest'];
+export type AdminPaymentAction = Schemas['AdminPaymentActionResponse'];
+export type DashboardPaid = Schemas['DashboardPaid'];
+export type DashboardPaidProject = Schemas['DashboardPaidProject'];
 export type Setting = Schemas['SettingResponse'];
 export type MessageTemplate = Schemas['TemplateResponse'];
 export type TemplateInput = Schemas['TemplateInput'];

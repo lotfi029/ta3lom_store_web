@@ -31,7 +31,7 @@ npm run types:gen                # regenerate src/app/core/api/store-api.types.t
 npm run typecheck && npm run lint && npm test
 npm run build                    # both locales, prerender against $PRERENDER_API_URL/$STORE_API_URL, budgets, CSP, deploy output
 npm run build:staging            # staging (noindex, ribbon); PRERENDER_API_URL = where the build reads the catalogue
-npm run build:prod               # BLOCKED while environment.production.paymentsEnabled is false (D-W2)
+npm run build:prod               # production build (payments on since R5-Payments)
 npm run audit:prod               # no high/critical advisory in production deps (audit-allowlist.json, 30-day entries)
 docker build --build-arg CONFIG=ci -t store-web:ci . && node scripts/check-container.mjs store-web:ci --env ci --keep
 npm run lhci                     # Lighthouse (mobile) against that container on :8099; prints the owner targets
@@ -82,8 +82,10 @@ features (store | account | admin) → shared → core          layout → share
     hard-coded.
 17. **R5: donations only** — no courses, books, shipping, stock or "giving" vocabulary. `scripts/check-no-commerce.mjs`
     fails the lint on `course|book|shipping|stock|enrol|giving` anywhere in `src/` (exact API tokens allow-listed).
-18. **Payments:** no gateway code. `environment.paymentsEnabled` is `false`: checkout ends at the pending order
-    ("تم تسجيل تبرعك — الدفع الإلكتروني قريبًا"), no polling. `build:prod` fails while production's flag is false.
+18. **Payments (R5-Payments, ADR-S05):** checkout leaves for the gateway's hosted page — ONLY a host in
+    `environment.paymentHosts` (`core/payments/payment-redirect`); no card data, no gateway script on our pages. The
+    order page never trusts the return URL: it polls the API (paid / pending / retry / expired / review / refunded).
+    `/orders/{ref}/pay` and refunds carry an Idempotency-Key kept until a definite answer.
 19. **Idempotency-Key** on `POST /v1/checkout` is bound to the normalised body and kept across retries until a definite
     outcome (DECISIONS: W-1).
 

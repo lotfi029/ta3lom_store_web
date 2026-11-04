@@ -9,7 +9,7 @@ import { OrderPage, withoutToken } from './order.page';
 const API = 'https://store-api.test/v1';
 const tick = () => new Promise((r) => setTimeout(r));
 
-describe('OrderPage (D-W2, E-2, R3-2)', () => {
+describe('OrderPage (F5, E-2, R3-2)', () => {
   beforeEach(() => sessionStorage.clear());
 
   function mount(ref: string, t?: string) {
@@ -51,10 +51,12 @@ describe('OrderPage (D-W2, E-2, R3-2)', () => {
       lineCount: 2,
       createdAt: '2026-10-25T10:00:00+00:00',
       paymentDueAt: '2026-10-25T11:00:00+00:00',
+      paymentStatus: 'initiated',
+      canRetryPayment: false,
     });
     await tick();
     fixture.detectChanges();
-    expect(el.querySelector('h2')?.textContent).toContain('تم تسجيل تبرعك');
+    expect(el.querySelector('h2')?.textContent).toContain('نتحقق من دفعتك');
     expect(el.textContent).toContain('120');
     expect(el.querySelector('ta-share-sheet, ta-share-bar')).toBeNull();
     expect(sessionStorage.getItem('t3s-order-t:T3-26-000001')).toBe('secret');
@@ -72,5 +74,31 @@ describe('OrderPage (D-W2, E-2, R3-2)', () => {
   it('keeps every other parameter and the hash', () => {
     expect(withoutToken('https://x.test/ar/orders/R?t=1')).toBe('/ar/orders/R');
     expect(withoutToken('https://x.test/ar/orders/R?a=1&t=2#h')).toBe('/ar/orders/R?a=1#h');
+  });
+
+  it('F5: paid shows the thanks, the receipt number and the download button; retry shows "pay again"', async () => {
+    history.replaceState(null, '', '/ar/orders/T3-26-000002');
+    const { fixture, http, el } = mount('T3-26-000002', 'tok');
+    http
+      .expectOne((r) => r.url.includes('/status'))
+      .flush({
+        reference: 'T3-26-000002',
+        status: 'paid',
+        totalAmount: '50.00',
+        lineCount: 1,
+        createdAt: '2026-10-25T10:00:00+00:00',
+        paymentDueAt: '2026-10-25T11:00:00+00:00',
+        paymentStatus: 'captured',
+        canRetryPayment: false,
+        receiptAvailable: true,
+        receiptNumber: 'DR-2026-000003',
+        refundedAmount: '0.00',
+      });
+    await tick();
+    fixture.detectChanges();
+    expect(el.querySelector('h2')?.textContent).toContain('وصل تبرعك');
+    expect(el.textContent).toContain('DR-2026-000003');
+    expect(el.querySelector('.receipt button')).not.toBeNull();
+    expect(el.querySelector('.pay-again')).toBeNull();
   });
 });

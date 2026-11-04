@@ -11,12 +11,17 @@
  *   GET /dev/sms), refresh via a cookie, quote, checkout with Idempotency-Key replay, order status, /me, donations,
  *   export and delete. `POST /__reset` clears the state (each e2e spec calls it, so specs never see each other's data).
  * Admin: refresh answers 401 (the admin login page renders; admin journeys run against the real API only).
+ * Payments (R5-Payments, same shape as the real API's fake gateway): checkout returns `payment.redirectUrl` =
+ * `${ORIGIN}/dev/payments/{ref}` — a page with Pay / Fail buttons (ids `pay`, `fail`) that settles the order and sends the
+ * browser back to `${STUB_WEB_ORIGIN}/{locale}/orders/{ref}?t=…`; `POST /orders/{ref}/pay` opens a new attempt;
+ * `GET /orders/{ref}/receipt` returns a tiny PDF once paid.
  */
 import { createServer } from 'node:http';
 import { readFileSync } from 'node:fs';
 
 const PORT = Number(process.env.STUB_PORT ?? 3000);
 const ORIGIN = `http://localhost:${PORT}`;
+const WEB_ORIGIN = process.env.STUB_WEB_ORIGIN ?? 'http://localhost:4320';
 const raw = readFileSync(new URL('./stub-data/public.json', import.meta.url), 'utf8').replace(
   /https?:\/\/[^"/]+(\/files\/public\/)/g,
   `${ORIGIN}$1`,
@@ -173,6 +178,13 @@ function checkout(req, body) {
     createdAt: '2026-10-25T12:00:00+00:00',
     paymentDueAt: '2026-10-25T13:00:00+00:00',
     cancelledAt: null,
+    paymentStatus: 'initiated',
+    canRetryPayment: false,
+    receiptAvailable: false,
+    receiptNumber: null,
+    paidAt: null,
+    refundedAmount: '0.00',
+    locale: body?.locale === 'en' ? 'en' : 'ar',
     donorName: fullName,
     donorEmail: email,
     lines: view.lines.map((l, i) => ({
@@ -191,12 +203,42 @@ function checkout(req, body) {
   };
   state.orders.unshift(order);
   state.cart = [];
-  const response = { reference, status: 'pending_payment', totalAmount: order.totalAmount, statusToken: `st-${reference}`, payment: null };
+  const response = {
+    reference,
+    status: 'pending_payment',
+    totalAmount: order.totalAmount,
+    statusToken: `st-${reference}`,
+    payment: { redirectUrl: `${ORIGIN}/dev/payments/${reference}`, expiresAt: order.paymentDueAt },
+    paymentError: null,
+  };
   state.idem.set(key, { body: canon, response });
   return [201, response, { Location: `/v1/orders/${reference}/status` }];
 }
 
-const summary = ({ lines, cancelledAt, donorName, donorEmail, ...o }) => o;
+const summary = ({ lines, cancelledAt, donorName, donorEmail, locale, ...o }) => o;
+
+/** The fake hosted page's actions (as the real API's /dev/payments): settle or fail, then back to the order page. */
+function settle(order, success) {
+  if (order.status !== 'pending_payment') return;
+  if (success) {
+    Object.assign(order, {
+      status: 'paid',
+      paymentStatus: 'captured',
+      canRetryPayment: false,
+      receiptAvailable: true,
+      receiptNumber: `DR-2026-${order.reference.slice(-6)}`,
+      paidAt: '2026-10-25T12:05:00+00:00',
+    });
+  } else {
+    Object.assign(order, { paymentStatus: 'failed', canRetryPayment: true });
+  }
+}
+
+/** A minimal one-page PDF (the e2e only checks the download happens). */
+const PDF = Buffer.from(
+  '%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj 2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj ' +
+    '3 0 obj<</Type/Page/Parent 2 0 R/MediaBox[0 0 200 200]>>endobj\ntrailer<</Root 1 0 R>>\n%%EOF\n',
+);
 
 function listing(url) {
   const p = url.searchParams;
@@ -274,6 +316,16 @@ function route(req, url, body) {
   if (method === 'POST' && path === '/checkout/quote')
     return state.cart.length ? [200, cartView()] : [409, problem(409, 'checkout.cart_empty')];
 
+  // payments
+  const payRef = /^\/orders\/([^/]+)\/pay$/.exec(path)?.[1];
+  if (method === 'POST' && payRef) {
+    const o = state.orders.find((x) => x.reference === payRef);
+    if (!o || !(signedIn || url.searchParams.get('t') === `st-${payRef}`)) return [404, problem(404, 'order.not_found')];
+    if (o.status !== 'pending_payment') return [409, problem(409, 'payment.not_payable', { orderStatus: o.status })];
+    Object.assign(o, { paymentStatus: 'initiated', canRetryPayment: false });
+    return [200, { reference: o.reference, payment: { redirectUrl: `${ORIGIN}/dev/payments/${o.reference}`, expiresAt: o.paymentDueAt } }];
+  }
+
   // signed-in donor
   const ref = /^\/orders\/([^/]+)\/status$/.exec(path)?.[1];
   if (method === 'GET' && ref) {
@@ -319,7 +371,7 @@ createServer((req, res) => {
     Object.assign(headers, {
       'Access-Control-Allow-Origin': origin,
       'Access-Control-Allow-Credentials': 'true',
-      'Access-Control-Expose-Headers': 'ETag, Retry-After, Location, Idempotent-Replayed',
+      'Access-Control-Expose-Headers': 'ETag, Retry-After, Location, Idempotent-Replayed, Content-Disposition',
     });
   if (req.method === 'OPTIONS') {
     res.writeHead(204, {
@@ -337,6 +389,43 @@ createServer((req, res) => {
   if (url.pathname in files) {
     res.writeHead(200, { 'Content-Type': 'image/webp', 'Cache-Control': 'public, max-age=86400' });
     return res.end(Buffer.from(files[url.pathname], 'base64'));
+  }
+  const devPay = /^\/dev\/payments\/([^/]+?)(?:\/(pay|fail))?$/.exec(url.pathname);
+  if (devPay) {
+    const order = state.orders.find((x) => x.reference === devPay[1]);
+    if (!order) {
+      res.writeHead(404);
+      return res.end();
+    }
+    if (req.method === 'POST' && devPay[2]) {
+      settle(order, devPay[2] === 'pay');
+      res.writeHead(303, { Location: `${WEB_ORIGIN}/${order.locale}/orders/${order.reference}?t=st-${order.reference}` });
+      return res.end();
+    }
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    return res.end(
+      `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>Stub payment</title></head><body><main>` +
+        `<h1>Stub payment ${order.reference}</h1><p id="amount">${order.totalAmount}</p>` +
+        `<form method="post" action="/dev/payments/${order.reference}/pay"><button id="pay" type="submit">Pay</button></form>` +
+        `<form method="post" action="/dev/payments/${order.reference}/fail"><button id="fail" type="submit">Fail</button></form>` +
+        `</main></body></html>`,
+    );
+  }
+  const receiptRef = /^\/v1\/orders\/([^/]+)\/receipt$/.exec(url.pathname)?.[1] ?? /^\/v1\/me\/donations\/([^/]+)\/receipt$/.exec(url.pathname)?.[1];
+  if (req.method === 'GET' && receiptRef) {
+    const order = state.orders.find((x) => x.reference === receiptRef);
+    if (!order?.receiptAvailable) {
+      res.writeHead(404, { ...headers, 'Content-Type': 'application/problem+json' });
+      return res.end(JSON.stringify(problem(404, 'receipt.not_available')));
+    }
+    res.writeHead(200, {
+      ...headers,
+      'Content-Type': 'application/pdf',
+      'Cache-Control': 'no-store',
+      'Content-Disposition': `attachment; filename=${order.receiptNumber}.pdf`,
+      'Access-Control-Expose-Headers': 'Content-Disposition',
+    });
+    return res.end(PDF);
   }
   const chunks = [];
   req.on('data', (c) => chunks.push(c));

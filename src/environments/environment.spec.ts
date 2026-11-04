@@ -22,8 +22,13 @@ describe('environments', () => {
     expect(staging.robots).toBe('noindex');
   });
 
-  it('D-W2: payments are off everywhere until R5-Payments (scripts/check-payments-flag.mjs blocks a production build)', () => {
-    for (const env of Object.values(all)) expect(env.paymentsEnabled).toBe(false);
+  it('R5-Payments: payments are on everywhere and redirect only to allow-listed hosts', () => {
+    for (const env of Object.values(all)) {
+      expect(env.paymentsEnabled).toBe(true);
+      expect(env.paymentHosts.length).toBeGreaterThan(0);
+    }
+    expect(production.paymentHosts).toEqual(['checkout.moyasar.com']);
+    expect(staging.paymentHosts).toEqual(['checkout.moyasar.com']);
   });
 
   it('has no dev payment trigger any more (R5 has no /dev confirm-payment endpoint)', () => {

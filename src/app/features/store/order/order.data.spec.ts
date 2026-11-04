@@ -3,7 +3,14 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { STORE_API_URL } from '../../../core/api/store-api-url';
 import { StoreAuth } from '../../../core/auth/store-auth';
-import { OrderData, OrderTokens, normalizeRef, pollDelay, statusRequest } from './order.data';
+import {
+  OrderData,
+  OrderTokens,
+  normalizeRef,
+  orderPhase,
+  pollDelay,
+  statusRequest,
+} from './order.data';
 
 const API = 'https://store-api.test/v1';
 const tick = () => new Promise((r) => setTimeout(r));
@@ -68,20 +75,94 @@ describe('order status (D-W2, W-4, E-2, R3-2)', () => {
       http = TestBed.inject(HttpTestingController);
     });
 
-    it('D-W2: shows the pending order and never polls while payments are off', async () => {
+    it('F5: a pending payment is polled; a paid order stops the polling', async () => {
       signedIn = false;
       data.open('t3-26-000001', 'tok');
       TestBed.tick();
       const req = http.expectOne((r) => r.url === `${API}/orders/T3-26-000001/status`);
       expect(req.request.params.get('t')).toBe('tok');
-      req.flush(STATUS);
+      req.flush({ ...STATUS, paymentStatus: 'initiated', canRetryPayment: false });
       await tick();
       TestBed.tick();
       expect(data.view()).toBe('ready');
-      expect(data.paymentsEnabled).toBe(false);
+      expect(data.paymentsEnabled).toBe(true);
+      expect(data.phase()).toBe('pending');
+      await new Promise((r) => setTimeout(r, 2100));
+      TestBed.tick();
+      http
+        .expectOne(() => true)
+        .flush({ ...STATUS, status: 'paid', paymentStatus: 'captured', receiptAvailable: true });
+      await tick();
+      TestBed.tick();
+      expect(data.phase()).toBe('paid');
       await new Promise((r) => setTimeout(r, 2100));
       TestBed.tick();
       http.expectNone(() => true);
+    });
+
+    it('F5: a failed attempt (can retry) is not polled; pay again keeps its key until a definite answer', async () => {
+      signedIn = false;
+      data.open('T3-26-000004', 'tok4');
+      TestBed.tick();
+      http
+        .expectOne(() => true)
+        .flush({ ...STATUS, paymentStatus: 'failed', canRetryPayment: true });
+      await tick();
+      TestBed.tick();
+      expect(data.phase()).toBe('retry');
+      await new Promise((r) => setTimeout(r, 2100));
+      TestBed.tick();
+      http.expectNone(() => true);
+
+      const first = data.payAgain();
+      const r1 = http.expectOne(
+        (r) => r.method === 'POST' && r.url === `${API}/orders/T3-26-000004/pay`,
+      );
+      expect(r1.request.params.get('t')).toBe('tok4');
+      const key = r1.request.headers.get('Idempotency-Key');
+      r1.error(new ProgressEvent('error')); // network: no definite answer
+      expect((await first).kind).toBe('problem');
+      http
+        .match(() => true)
+        .forEach((r) => r.flush({ ...STATUS, paymentStatus: 'failed', canRetryPayment: true }));
+      const second = data.payAgain();
+      const r2 = http.expectOne((r) => r.method === 'POST');
+      expect(r2.request.headers.get('Idempotency-Key')).toBe(key);
+      r2.flush({
+        reference: 'T3-26-000004',
+        payment: { redirectUrl: 'https://checkout.moyasar.com/invoices/x', expiresAt: null },
+      });
+      expect(await second).toEqual({
+        kind: 'redirect',
+        url: 'https://checkout.moyasar.com/invoices/x',
+      });
+    });
+
+    it('F5: the receipt is fetched with the status token and its file name', async () => {
+      signedIn = false;
+      data.open('T3-26-000005', 'tok5');
+      TestBed.tick();
+      http.expectOne(() => true).flush({ ...STATUS, status: 'paid', receiptAvailable: true });
+      const pending = data.receipt('dr');
+      const req = http.expectOne((r) => r.url === `${API}/orders/T3-26-000005/receipt`);
+      expect(req.request.params.get('t')).toBe('tok5');
+      req.flush(new Blob(['%PDF-']), {
+        headers: { 'Content-Disposition': 'attachment; filename=DR-2026-000001.pdf' },
+      });
+      const out = await pending;
+      expect('blob' in out && out.fileName).toBe('DR-2026-000001.pdf');
+    });
+
+    it.each([
+      [{ status: 'paid' }, 'paid'],
+      [{ status: 'payment_review' }, 'review'],
+      [{ status: 'expired' }, 'expired'],
+      [{ status: 'refunded' }, 'refunded'],
+      [{ status: 'cancelled' }, 'cancelled'],
+      [{ status: 'pending_payment', canRetryPayment: true }, 'retry'],
+      [{ status: 'pending_payment', canRetryPayment: false }, 'pending'],
+    ] as const)('phase of %o is %s', (o, phase) => {
+      expect(orderPhase(o)).toBe(phase);
     });
 
     it('R3-2: signed out with no token → "sign in to view", no request', () => {

@@ -1,5 +1,5 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { HttpErrorResponse, httpResource } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams, httpResource } from '@angular/common/http';
 import {
   Injectable,
   PLATFORM_ID,
@@ -9,14 +9,40 @@ import {
   signal,
   untracked,
 } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import type { OrderStatus } from '../../../core/api/api.types';
+import type { OrderStatus, PayOrderResponse } from '../../../core/api/api.types';
+import { type StoreProblem, toProblem } from '../../../core/api/problem';
 import { STORE_API_URL } from '../../../core/api/store-api-url';
 import { StoreAuth } from '../../../core/auth/store-auth';
 import { valueOf } from '../../../core/http/resource-value';
 
 /** Order states after which polling stops. */
-export const TERMINAL = new Set(['paid', 'payment_review', 'cancelled', 'expired']);
+export const TERMINAL = new Set(['paid', 'payment_review', 'cancelled', 'expired', 'refunded']);
+
+/**
+ * What the order page shows (plan §6 F5): paid, pending (the gateway has not answered yet — keep polling), retry (the
+ * attempt failed or no page was opened: "pay again"), expired, review, refunded, cancelled.
+ */
+export type OrderPhase =
+  'paid' | 'pending' | 'retry' | 'expired' | 'review' | 'refunded' | 'cancelled';
+
+export function orderPhase(o: Pick<OrderStatus, 'status' | 'canRetryPayment'>): OrderPhase {
+  switch (o.status) {
+    case 'paid':
+      return 'paid';
+    case 'payment_review':
+      return 'review';
+    case 'expired':
+      return 'expired';
+    case 'refunded':
+      return 'refunded';
+    case 'cancelled':
+      return 'cancelled';
+    default:
+      return o.canRetryPayment ? 'retry' : 'pending';
+  }
+}
 export const FAST_MS = 2_000;
 export const FAST_FOR_MS = 60_000;
 export const SLOW_MS = 10_000;
@@ -100,6 +126,7 @@ export type OrderView = 'loading' | 'ready' | 'signIn' | 'notFound' | 'error';
 @Injectable()
 export class OrderData {
   private readonly api = inject(STORE_API_URL);
+  private readonly http = inject(HttpClient);
   private readonly auth = inject(StoreAuth);
   private readonly tokens = inject(OrderTokenStore);
   private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
@@ -118,6 +145,12 @@ export class OrderData {
   readonly value = computed(() => valueOf(this.status));
   readonly state = computed(() => this.value()?.status ?? null);
   readonly isTerminal = computed(() => TERMINAL.has(this.state() ?? ''));
+  readonly phase = computed<OrderPhase | null>(() => {
+    const v = this.value();
+    return v ? orderPhase(v) : null;
+  });
+  /** W-1 for `/pay`: one Idempotency-Key per "pay again" press, kept across its retries until a definite answer. */
+  private payKey: string | null = null;
   private readonly errorStatus = computed(() => {
     const e = this.status.error();
     return e instanceof HttpErrorResponse ? e.status : e ? 0 : null;
@@ -147,6 +180,7 @@ export class OrderData {
         !this.ref() ||
         this.status.isLoading() ||
         this.isTerminal() ||
+        this.phase() === 'retry' ||
         this.clientError() ||
         this.gaveUp()
       )
@@ -168,6 +202,71 @@ export class OrderData {
     this.token.set(urlToken || this.tokens.get(r));
     this.startedAt = Date.now();
     this.ref.set(r);
+  }
+
+  /**
+   * "Pay again" (`POST /v1/orders/{ref}/pay`, with the status token when known): a new attempt on the gateway's page.
+   * The key is kept until the API answers definitely (2xx or a 4xx), so a network retry never opens two attempts.
+   */
+  async payAgain(): Promise<
+    { kind: 'redirect'; url: string } | { kind: 'problem'; problem: StoreProblem }
+  > {
+    const ref = this.ref();
+    const token = this.token();
+    this.payKey ??= crypto.randomUUID();
+    try {
+      const res = await firstValueFrom(
+        this.http.post<PayOrderResponse>(
+          `${this.api}/orders/${encodeURIComponent(ref)}/pay`,
+          {},
+          {
+            headers: { 'Idempotency-Key': this.payKey },
+            params: token ? new HttpParams().set('t', token) : undefined,
+          },
+        ),
+      );
+      this.payKey = null;
+      return { kind: 'redirect', url: res.payment.redirectUrl };
+    } catch (e) {
+      const problem = toProblem(e);
+      if (
+        problem.status >= 400 &&
+        problem.status < 500 &&
+        problem.code !== 'idempotency.in_progress'
+      )
+        this.payKey = null;
+      this.status.reload();
+      return { kind: 'problem', problem };
+    }
+  }
+
+  /**
+   * The receipt PDF (DR, or the DRC with `kind = 'drc'`): with the status token, or the signed-in donor's route.
+   * Fetched as a blob (the bearer/credentials only go to the store API) and saved by the page.
+   */
+  async receipt(
+    kind: 'dr' | 'drc' = 'dr',
+  ): Promise<{ blob: Blob; fileName: string } | StoreProblem> {
+    const ref = encodeURIComponent(this.ref());
+    const token = this.token();
+    let params = new HttpParams();
+    if (kind === 'drc') params = params.set('kind', 'drc');
+    if (token) params = params.set('t', token);
+    const url =
+      token || !this.auth.isSignedIn()
+        ? `${this.api}/orders/${ref}/receipt`
+        : `${this.api}/me/donations/${ref}/receipt`;
+    try {
+      const res = await firstValueFrom(
+        this.http.get(url, { params, responseType: 'blob', observe: 'response' }),
+      );
+      const name =
+        /filename="?([^";]+)"?/.exec(res.headers.get('Content-Disposition') ?? '')?.[1] ??
+        `${this.ref()}.pdf`;
+      return { blob: res.body!, fileName: name };
+    } catch (e) {
+      return toProblem(e);
+    }
   }
 
   /** "Check again" after the polling stopped: a new 10-minute window. */

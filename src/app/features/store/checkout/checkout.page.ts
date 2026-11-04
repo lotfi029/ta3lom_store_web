@@ -26,6 +26,7 @@ import { SeoService } from '../../../core/seo/seo.service';
 import { Icon } from '../../../shared/ui/icon/icon';
 import { Money } from '../../../shared/ui/money/money';
 import { ResourceState } from '../../../shared/ui/resource-state/resource-state';
+import { PaymentRedirect } from '../../../core/payments/payment-redirect';
 import { environment } from '../../../../environments/environment';
 import { lineProblem } from '../cart/line-problems';
 import type { CheckoutNavState } from '../donate/donate-box';
@@ -61,6 +62,7 @@ export class CheckoutPage {
   private readonly doc = inject(DOCUMENT);
 
   protected readonly paymentsEnabled = environment.paymentsEnabled;
+  private readonly redirect = inject(PaymentRedirect);
   /** C-3: set by the donate box / quick donate when the cart already held other donations. */
   private readonly cameWithOthers = !!(
     this.doc.defaultView?.history.state as CheckoutNavState | null
@@ -180,6 +182,16 @@ export class CheckoutPage {
       switch (out.kind) {
         case 'created':
           this.tokens.remember(out.order.reference, out.order.statusToken);
+          // ADR-S05: leave for the gateway's hosted page — only an allow-listed host. No page (gateway down,
+          // `paymentError`) or a refused host → the order page, which offers "pay again".
+          if (
+            this.paymentsEnabled &&
+            out.order.payment &&
+            this.redirect.go(out.order.payment.redirectUrl)
+          ) {
+            this.cart.reset();
+            return;
+          }
           await this.done(out.order.reference);
           return;
         case 'recovered':

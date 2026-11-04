@@ -2,7 +2,6 @@
 # A production image is never re-tagged from a staging one: each runs its own build (environment, CSP, robots, sitemap).
 #   docker build --build-arg CONFIG=staging --build-arg PRERENDER_API_URL=https://store-api-staging.ta3lom.sa/v1 \
 #                --build-arg VERSION=$(git describe --tags --always) --build-arg GIT_SHA=$(git rev-parse HEAD) -t web .
-# CONFIG=production runs scripts/check-payments-flag.mjs and FAILS while paymentsEnabled is false (D-W2, R5-Payments).
 # No secret is needed or accepted: the app is public static files.
 
 ARG NODE_IMAGE=node:24-alpine
@@ -23,11 +22,8 @@ ARG CONFIG=staging
 ARG PRERENDER_API_URL=
 ARG VERSION=dev
 ARG GIT_SHA=unknown
-# CI dry run of the production image only — never set by the deploy workflow.
-ARG ALLOW_PAYMENTS_DISABLED=
 RUN case "$CONFIG" in staging|production|ci) ;; *) echo "CONFIG must be staging, production or ci" >&2; exit 1 ;; esac \
  && if [ -z "$PRERENDER_API_URL" ]; then unset PRERENDER_API_URL; fi \
- && if [ -z "$ALLOW_PAYMENTS_DISABLED" ]; then unset ALLOW_PAYMENTS_DISABLED; fi \
  && SCRIPT="build:$CONFIG" && if [ "$CONFIG" = production ]; then SCRIPT=build:prod; fi \
  && BUILD_VERSION="$VERSION" BUILD_SHA="$GIT_SHA" npm run "$SCRIPT"
 

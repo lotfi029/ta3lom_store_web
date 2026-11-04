@@ -13,7 +13,7 @@ import type { DonationLine } from '../../core/api/api.types';
 import { valueOf } from '../../core/http/resource-value';
 import { I18nService } from '../../core/i18n/i18n';
 import { SeoService } from '../../core/seo/seo.service';
-import { environment } from '../../../environments/environment';
+import { Icon } from '../../shared/ui/icon/icon';
 import { Money } from '../../shared/ui/money/money';
 import { ResourceState } from '../../shared/ui/resource-state/resource-state';
 import { StatusPill } from '../../shared/ui/status-pill/status-pill';
@@ -23,7 +23,7 @@ import { AccountData } from './account.data';
 /** `/account/donations/:ref` (W-M4): one donation — status, lines, totals, contact snapshot (`GET /v1/me/donations/{ref}`). */
 @Component({
   selector: 'ta-donation-detail-page',
-  imports: [RouterLink, Money, ResourceState, StatusPill],
+  imports: [RouterLink, Money, ResourceState, StatusPill, Icon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="tabh">
@@ -48,9 +48,21 @@ import { AccountData } from './account.data';
             }}</ta-status-pill>
             <span>{{ i18n.formatDateTime(d.createdAt) }}</span>
           </div>
-          @if (d.status === 'pending_payment' && !paymentsEnabled) {
-            <p class="banner info" role="note" i18n="@@store.order.registered">
-              تم تسجيل تبرعك — الدفع الإلكتروني قريبًا
+          @if (d.status === 'paid' || d.status === 'refunded') {
+            <p class="receipt-link">
+              <a class="b ghost" [routerLink]="['/orders', d.reference]">
+                <ta-icon name="download" [size]="16" />
+                <span i18n="@@store.account.receipt">الإيصال وحالة الدفع</span>
+              </a>
+            </p>
+          } @else if (d.status === 'pending_payment') {
+            <p class="receipt-link">
+              <a
+                class="b primary"
+                [routerLink]="['/orders', d.reference]"
+                i18n="@@store.account.complete-payment"
+                >إكمال الدفع</a
+              >
             </p>
           }
           <div class="tblwrap">
@@ -114,6 +126,15 @@ import { AccountData } from './account.data';
     }
   `,
   styles: `
+    .receipt-link {
+      margin-block: 12px;
+    }
+    .receipt-link .b {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-block-size: 44px;
+    }
     .tabh {
       display: flex;
       flex-wrap: wrap;
@@ -156,7 +177,6 @@ export class DonationDetailPage {
   protected readonly i18n = inject(I18nService);
   private readonly seo = inject(SeoService);
   readonly ref = input.required<string>();
-  protected readonly paymentsEnabled = environment.paymentsEnabled;
   protected readonly d = computed(() => valueOf(this.data.detail));
   protected readonly notFound = computed(() => {
     const e = this.data.detail.error();

@@ -6,9 +6,8 @@ name: Deploy
 #   CI succeeded on a push to main                                  → build the STAGING image, check-container on it,
 #                                                                     push (:staging-<sha>, :staging), deploy to `staging`
 #   CI succeeded on a tag vX.Y.Z (strict semver, no pre-release)    → build the PRODUCTION image, check-container on it,
-#                                                                     push (:X.Y.Z, :latest) — fails on the payments guard
-#                                                                     while paymentsEnabled = false (D-W2, expected) —
-#                                                                     then deploy after the `production` reviewer approves
+#                                                                     push (:X.Y.Z, :latest), then
+#                                                                     deploy after the `production` reviewer approves
 #   nightly, repository_dispatch "catalog-changed"                  → staging rebuild of main HEAD, only when CI on that
 #                                                                     commit succeeded (fresh prerender + sitemap)
 #   workflow_dispatch (environment, tag)                            → rollback: redeploy an earlier image tag, checked
@@ -242,10 +241,6 @@ jobs:
         run: |
           printf '%s' "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$' || { echo "::error::invalid version '$VERSION'"; exit 1; }
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-      # Fails here while environment.production.paymentsEnabled is false (D-W2): production is blocked until
-      # R5-Payments. That failure is EXPECTED and recorded (DECISIONS: P3); nothing is pushed or deployed.
-      - name: Payments guard (D-W2)
-        run: node scripts/check-payments-flag.mjs
       - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
       - uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
         with:

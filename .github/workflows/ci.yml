@@ -79,14 +79,9 @@ jobs:
         env:
           PRERENDER_API_URL: http://localhost:3000/v1
         run: npm run build:staging
-      # DELETE IN R5-PAYMENTS (review 06 L-3): this step asserts the guard FAILS while paymentsEnabled is false; it turns
-      # red the moment production's flag is flipped, so the payments PR removes it together with check-payments-flag.mjs.
-      - name: Production is blocked while payments are off (D-W2)
-        run: '! node scripts/check-payments-flag.mjs'
-      - name: Production build dry run (stub data, runtime API = production; payments guard skipped — never deployed)
+      - name: Production build dry run (stub data, runtime API = production — never deployed)
         env:
           PRERENDER_API_URL: http://localhost:3000/v1
-          ALLOW_PAYMENTS_DISABLED: '1'
         run: npm run build:prod
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: failure()
