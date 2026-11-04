@@ -14,7 +14,7 @@ everything else is for the owner (or a later session).
       methods mada, credit card, Apple Pay (domain verification for `store.ta3lom.sa`); run the API's sandbox tests once
       with a test key (`MoyasarSandboxTests`, skipped without one).
 - [ ] **Staging API hosted** at `https://store-api-staging.ta3lom.sa` (the staging deploy is skipped until it answers, H-1).
-- [ ] **API CORS** = `https://store.ta3lom.sa` only on production (staging: its own origin); refresh cookies for that site.
+- [x] **API CORS** = `https://store.ta3lom.sa` only on production (staging: its own origin); refresh cookies for that site. **[done in code: API PR #17 — Production also allows https://ta3lom.sa and www for the main-site cart badge, MainSiteCorsTests]**
 - [ ] **Edge proxy:** copy `deploy/edge/store.caddy` into ta3lom-deploy and import it (`deploy/edge/README.md`);
       the `edge` network has a fixed IPv4 subnet = the API's `EDGE_SUBNET`. This container publishes no port (F7).
 
@@ -28,8 +28,8 @@ everything else is for the owner (or a later session).
 - [ ] At least one `urgent` (or featured) project for the home banner.
 - [ ] Privacy and refund pages written and linked from the footer (Q-07).
 - [ ] SMS sender ID registered (Q-12).
-- [ ] Main site: `/donate` redirects to `https://store.ta3lom.sa/ar/` and the main navigation links the store (Q-09).
-- [ ] Zakat and delivery updates stay hidden (`environment.trust.showZakat/showUpdates = false`) until they exist (M-3).
+- [ ] Main site: `/donate` redirects to `https://store.ta3lom.sa/ar/` and the main navigation links the store (Q-09). **[code done: lotfi029/ta3lom-web#34 behind `storeEnabled` — flip at go-live]**
+- [x] Zakat and delivery updates stay hidden (`environment.trust.showZakat/showUpdates = false`) until they exist (M-3). **[done: default off, spec-checked]**
 
 ## Infrastructure (owner)
 
@@ -38,22 +38,23 @@ everything else is for the owner (or a later session).
 - [ ] VPS folders, `.env` (`EDGE_ALIAS`), deploy user, GHCR `read:packages` token logged in on the VPS (H-4).
 - [ ] GitHub environments `staging` / `production` (required reviewer, tags only), SSH secrets and known_hosts.
 - [ ] First staging deploy green (workflow smoke check), then `node scripts/smoke-deploy.mjs` by hand.
-- [ ] Backups of the API database (API runbook) — scheduled and a restore tested.
+- [ ] Backups of the API database (API runbook) — scheduled and a restore tested. **[scripts done: API `deploy/backup.sh` + `deploy/restore-test.sh` (verified on a real dump); schedule = owner]**
 - [ ] Uptime monitor on `/healthz` and `/ar/` (deploy/README.md §8), alerting the owner.
 - [ ] Error reporting: decide on an endpoint and set `errorReportUrl` (off by default; PII-free payload), or leave it off.
 
 ## Quality (before go-live, on the production URLs)
 
-- [ ] Lighthouse (mobile) on `/ar/`, `/en/`, a project page: accessibility 100, best practices ≥ 95, SEO ≥ 95,
-      CLS ≤ 0.05 — **[done in CI on the container]**; performance ≥ 90, LCP ≤ 2.5 s, TBT ≤ 200 ms — **not met in CI**
-      (73–79 / 2.56–2.82 s / 505–857 ms, floors recorded as REVIEW): measure on production and plan the bundle work.
+- [x] Lighthouse (mobile) on `/ar/`, `/en/`, a project page: accessibility 100, best practices ≥ 95, SEO ≥ 95,
+      CLS ≤ 0.05 — **[done in CI on the container]**; performance ≥ 90, LCP ≤ 2.5 s, TBT ≤ 200 ms — **partly met in CI**
+      after the F6 pass (perf 85–90, LCP 2.57–2.69 s, TBT 193–360 ms; floors raised to 0.82 / 2800 ms / 450 ms, REVIEW). **[done in CI, final session: a11y 100, BP 96, SEO 100, CLS 0.000 — perf 85–90, see DECISIONS F6]**
 - [ ] **Lighthouse mobile ≥ 90 on the production URL** (`https://store.ta3lom.sa/ar/`, `/en/`, a project page) — go-live
-      item (review 06 §4): the CI floors are accepted for the Option C merge; the performance pass is its own task.
-- [ ] Trust row SMS wording ("برسالة نصية بعد الدفع") assumes **payments are on** (review 06 L-14): true only once
-      R5-Payments is live — check the wording at go-live.
-- [ ] axe clean ar/en × light/dark on production — **[done in CI on every route]**.
+      item (review 06 §4): the F6 pass is done (DECISIONS F6); the remaining options (responsive images from the API, grid
+      hydration) are listed there.
+- [x] Trust row SMS wording ("برسالة نصية بعد الدفع") assumes **payments are on** (review 06 L-14): true only once
+      R5-Payments is live — check the wording at go-live. **[done: payments are on (F5a); the order_paid SMS is sent after settlement]**
+- [x] axe clean ar/en × light/dark on production — **[done in CI on every route]**.
 - [ ] Google Search Console: property for `store.ta3lom.sa`, sitemap `https://store.ta3lom.sa/sitemap.xml` submitted.
-- [ ] Staging is not indexed (X-Robots-Tag, robots.txt `Disallow: /`) — **[done, checked by the build and container]**.
+- [x] Staging is not indexed (X-Robots-Tag, robots.txt `Disallow: /`) — **[done, checked by the build and container]**.
 
 ## Delivered in this PR
 

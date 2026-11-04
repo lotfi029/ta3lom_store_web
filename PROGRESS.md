@@ -1,5 +1,5 @@
 # Store web progress
-Next: R5-Payments (flip `paymentsEnabled`, gateway redirect), then the first production deploy (API repo `deploy/README.md`)
+Next: owner go-live steps (PR descriptions, docs/production-checklist.md); payments are on since the final session
 
 Local run and deploy readiness (2026-10-30): `dev-env.sh` checks Node ≥ 24.15; `api-up.sh` starts PostgreSQL from the API's
 `compose.dev.yaml`; full DoD on the real API green (types, typecheck, lint, unit, build, 65 e2e, a11y 26 × 2). Production
@@ -23,7 +23,7 @@ success toast only on success; a transient refresh failure no longer ends the do
 | F8 | ta3lom-deploy — **not reachable from the session** (add_repo: no access) → fallback in web branch (b) `deploy/edge/` | F8 — edge block (fallback) | done (caddy validate) |
 | F9 | ta3lom-web `final/store-integration` (PR lotfi029/ta3lom-web#34, draft) | F9 — store integration | done (unit 356, scripts 12, e2e 174 + 11 flag-on skipped, a11y 66 × 2; flag-on run local) |
 | F10a | web `final/web-payments-perf` | F10a — full-stack e2e | done (12/12 over the local edge, API final/api-payments-hosting 8419a46) |
-| F10b | all | — | pending (contract v2, checklist, PR descriptions, ready) |
+| F10b | web `final/web-payments-perf` | F10b — contract v2 and checklist | done (docs/r5/15 v2 section; checklist code items ticked) |
 
 ## Option C home + production readiness (one PR "Store web — Option C home + production readiness")
 
