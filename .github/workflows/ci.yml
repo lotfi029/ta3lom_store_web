@@ -1,9 +1,17 @@
 name: CI
 
+# PRs and main: types → typecheck → lint → test → npm audit (prod) → build:ci → @smoke e2e (stub) → a11y →
+# container image + check (headers, CSP, fallbacks) → Lighthouse CI against that container → staging and production
+# dry runs. Actions are pinned by commit SHA (Dependabot keeps them current); the token is read-only.
 on:
   push:
     branches: [main]
+    # Release tags run CI too: deploy.yml starts only after CI succeeded on the same commit (review 06 D-1).
+    tags: ['v*.*.*']
   pull_request:
+
+permissions:
+  contents: read
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -12,16 +20,19 @@ concurrency:
 jobs:
   web:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
     env:
-      # CI has no access to the API repo: build, e2e smoke and a11y run against scripts/stub-api.mjs (DECISIONS: CI).
+      # CI has no access to the API repo: build, e2e smoke, a11y and LHCI run against scripts/stub-api.mjs (DECISIONS: CI).
       STORE_API_URL: http://localhost:3000/v1
       NG_CLI_ANALYTICS: 'false'
       NG_FORCE_TTY: 'false'
       E2E_PORT: '4320'
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # git describe for the build stamp
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
           cache: npm
@@ -33,11 +44,13 @@ jobs:
         run: npm run lint
       - name: Unit tests
         run: npm test
+      - name: npm audit — no high/critical in production dependencies (audit-allowlist.json, M-9)
+        run: npm run audit:prod
       - name: Start the stub API
         run: |
           node scripts/stub-api.mjs > stub-api.log 2>&1 &
           for i in $(seq 1 30); do curl -sf http://localhost:3000/health/ready && break; sleep 1; done
-      - name: Build (both locales, prerender, budgets, CSP, deploy output)
+      - name: Build (both locales, prerender, budgets, generated CSP, deploy output)
         run: npm run build:ci
       - name: Playwright browser
         run: npx playwright install --with-deps chromium
@@ -45,14 +58,34 @@ jobs:
         run: npx playwright test --grep @smoke
       - name: a11y (ar/en × light/dark)
         run: npm run a11y
-      - name: Production is blocked while payments are off (D-W2)
-        run: '! node scripts/check-payments-flag.mjs'
-      - name: Production build dry run (stub data, runtime API = production; payments guard skipped — never deployed)
+      - name: Container image (CONFIG=ci) — headers, generated CSP, fallbacks, 404s, cache, healthz (check-container)
+        run: |
+          docker build --network host --build-arg CONFIG=ci \
+            --build-arg VERSION="$(git describe --tags --always)" --build-arg GIT_SHA="${{ github.sha }}" \
+            -t ta3lom-store-web:ci .
+          node scripts/check-container.mjs ta3lom-store-web:ci --env ci --port 8099 --keep
+      - name: Edge block for the store (deploy/edge/store.caddy, F8) — caddy validate + fmt
+        run: bash scripts/validate-caddy.sh
+      - name: Lighthouse CI against the container (mobile; home + a project, ar and en — H-2)
+        run: npm run lhci
+      - name: Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: lighthouse
+          path: .lighthouseci
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 14
+      - name: Staging build dry run (stub data, runtime API = staging; noindex, ribbon, generated CSP)
         env:
           PRERENDER_API_URL: http://localhost:3000/v1
-          ALLOW_PAYMENTS_DISABLED: '1'
+        run: npm run build:staging
+      - name: Production build dry run (stub data, runtime API = production — never deployed)
+        env:
+          PRERENDER_API_URL: http://localhost:3000/v1
         run: npm run build:prod
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: failure()
         with:
           name: playwright-report

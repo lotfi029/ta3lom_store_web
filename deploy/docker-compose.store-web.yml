@@ -1,0 +1,41 @@
+# Store web on the shared VPS behind the EDGE Caddy (plan §6 F7; the same model as the store API's deploy/compose.yaml).
+# This file runs NO proxy and publishes NO port: the edge (ta3lom-deploy/edge, the only Caddy on 80/443, terminating TLS)
+# reaches the container over the external `edge` network by its alias — `store-web` (production) or
+# `store-web-staging` (staging); see deploy/edge/store.caddy. One file, two projects:
+#   EDGE_ALIAS=store-web         STORE_WEB_IMAGE=ghcr.io/lotfi029/ta3lom-store-web:<tag> \
+#     docker compose -f docker-compose.store-web.yml -p store-web up -d --wait
+#   EDGE_ALIAS=store-web-staging STORE_WEB_IMAGE=ghcr.io/lotfi029/ta3lom-store-web:staging-<sha> \
+#     docker compose -f docker-compose.store-web.yml -p store-web-staging up -d --wait
+# (EDGE_ALIAS also lives in each folder's .env; the deploy workflow passes it explicitly.) No secrets: the image is
+# public static files. Runbook: deploy/README.md.
+services:
+  store-web:
+    image: ${STORE_WEB_IMAGE:?set STORE_WEB_IMAGE, e.g. ghcr.io/lotfi029/ta3lom-store-web:staging}
+    restart: unless-stopped
+    environment:
+      TLS_MODE: edge
+    networks:
+      edge:
+        aliases: ["${EDGE_ALIAS:?set EDGE_ALIAS (store-web or store-web-staging)}"]
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 128m
+    pids_limit: 100
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/healthz"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+networks:
+  # Created once by ta3lom-deploy (edge/up.sh) with a fixed IPv4 subnet (deploy/edge/README.md); shared with the edge
+  # Caddy and the store API.
+  edge:
+    external: true

@@ -1,11 +1,11 @@
 {
  "meta": {
-  "apiCommit": "cd26a80"
+  "apiCommit": "e5435c1"
  },
  "/catalog/home": {
   "featured": [
    {
-    "id": "01a174b0-41d9-7f35-be63-a1849291cdbb",
+    "id": "01a1a08b-e4ec-7af2-b5c2-adcaa0d89990",
     "slug": "print-a-title",
     "titleAr": "طباعة كتاب",
     "titleEn": "Print a title",
@@ -20,13 +20,13 @@
     "fromAmount": "4.00",
     "options": [
      {
-      "id": "01a174b0-41e9-7b0d-8192-90117607bc41",
+      "id": "01a1a08b-e4ff-7956-ba2d-f40c212ac047",
       "labelAr": "نسخة عربية",
       "labelEn": "Arabic copy",
       "amount": "4.00"
      },
      {
-      "id": "01a174b0-41eb-72a8-8802-13b633cfed37",
+      "id": "01a1a08b-e502-7dcb-8e06-97f57b624015",
       "labelAr": "نسخة مترجمة",
       "labelEn": "Translated copy",
       "amount": "5.00"
@@ -35,7 +35,7 @@
     "coverAltEn": null
    },
    {
-    "id": "01a174b0-4331-702f-bb8b-59fa998d35ff",
+    "id": "01a1a08b-e61f-7def-99c5-b3d66e0d4446",
     "slug": "support-a-daiya",
     "titleAr": "كفالة داعية",
     "titleEn": "Support a daiya",
@@ -50,25 +50,25 @@
     "fromAmount": "25.00",
     "options": [
      {
-      "id": "01a174b0-4331-7ef4-8bc0-b367419eeb82",
+      "id": "01a1a08b-e61f-798e-b6c4-b7e52426969c",
       "labelAr": "ساعة",
       "labelEn": "One hour",
       "amount": "25.00"
      },
      {
-      "id": "01a174b0-4331-7b30-8421-2cdc332beb93",
+      "id": "01a1a08b-e61f-761c-8efa-c40aae0cccdf",
       "labelAr": "يوم",
       "labelEn": "One day",
       "amount": "100.00"
      },
      {
-      "id": "01a174b0-4331-73ba-bb5c-82c326fff861",
+      "id": "01a1a08b-e61f-793e-bdc4-2ff58a5fba9d",
       "labelAr": "أسبوع",
       "labelEn": "One week",
       "amount": "500.00"
      },
      {
-      "id": "01a174b0-4331-74c1-8340-acc821d158bc",
+      "id": "01a1a08b-e61f-7905-8dd2-91ba280201fa",
       "labelAr": "شهر",
       "labelEn": "One month",
       "amount": "2000.00"
@@ -77,84 +77,110 @@
     "coverAltEn": null
    },
    {
-    "id": "01a174b0-42db-7b8e-8a72-1472b3df0e89",
-    "slug": "dawah-umrah",
-    "titleAr": "العمرة الدعوية",
-    "titleEn": "Dawah Umrah",
-    "summaryAr": "تكفّل بتكاليف معتمر في رحلة دعوية.",
-    "summaryEn": null,
-    "coverUrl": "http://localhost:5080/files/public/seed/project-dawah-umrah.webp",
-    "coverAltAr": "العمرة الدعوية",
-    "badge": null,
-    "categorySlug": "dawah",
+    "id": "01a1a08d-fc23-7f15-bc47-37c820e606c4",
+    "slug": "c-mosque-cooler",
+    "titleAr": "برادة مياه لمسجد",
+    "titleEn": "Water cooler for a mosque",
+    "summaryAr": "ماء بارد للمصلين طوال العام.",
+    "summaryEn": "Cold water for worshippers all year.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfb447eb08143b486c256867c.webp",
+    "coverAltAr": "سقيا الماء",
+    "badge": "urgent",
+    "categorySlug": "c-water",
     "allowOpenAmount": true,
     "minAmount": "10.00",
-    "fromAmount": "150.00",
+    "fromAmount": "2500.00",
     "options": [
      {
-      "id": "01a174b0-42db-78f9-a8bb-c67df6392fee",
-      "labelAr": "تكلفة المعتمر",
-      "labelEn": "One pilgrim",
+      "id": "01a1a08d-fd6f-753b-89ae-fa3a4fe306c0",
+      "labelAr": "برادة",
+      "labelEn": "Cooler",
+      "amount": "2500.00"
+     }
+    ],
+    "coverAltEn": "Water"
+   },
+   {
+    "id": "01a1a08d-fdfb-7f99-b075-2091dc36450a",
+    "slug": "c-water-tank",
+    "titleAr": "خزان مياه",
+    "titleEn": "Water tank",
+    "summaryAr": "خزان يحفظ الماء للأسر المحتاجة.",
+    "summaryEn": "A tank that stores water for families in need.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfb447eb08143b486c256867c.webp",
+    "coverAltAr": "سقيا الماء",
+    "badge": "new",
+    "categorySlug": "c-water",
+    "allowOpenAmount": true,
+    "minAmount": "20.00",
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": "Water"
+   },
+   {
+    "id": "01a1a08d-ff3a-7d60-acd4-0d22f35d54dd",
+    "slug": "c-iftar",
+    "titleAr": "إفطار صائم",
+    "titleEn": "Iftar meal",
+    "summaryAr": "وجبة إفطار متكاملة للصائمين.",
+    "summaryEn": "A full iftar meal for people fasting.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfe86718cb64b5fd35bd70afe.webp",
+    "coverAltAr": "الإطعام",
+    "badge": "urgent",
+    "categorySlug": "c-feeding",
+    "allowOpenAmount": false,
+    "minAmount": "10.00",
+    "fromAmount": "15.00",
+    "options": [
+     {
+      "id": "01a1a08d-ff56-7883-b7c2-e67628b5c1c5",
+      "labelAr": "وجبة",
+      "labelEn": "Meal",
+      "amount": "15.00"
+     },
+     {
+      "id": "01a1a08d-ff56-7054-bfa6-030b920cad6b",
+      "labelAr": "عشر وجبات",
+      "labelEn": "Ten meals",
       "amount": "150.00"
      }
     ],
-    "coverAltEn": null
+    "coverAltEn": "Feeding"
    },
    {
-    "id": "01a174b0-43b6-77fe-9eef-2abc0ce2cc6f",
-    "slug": "water-wells",
-    "titleAr": "سقيا الماء",
-    "titleEn": "Water wells",
-    "summaryAr": "حفر الآبار وتوفير الماء النظيف.",
-    "summaryEn": null,
-    "coverUrl": "http://localhost:5080/files/public/seed/project-water-wells.webp",
-    "coverAltAr": "سقيا الماء",
-    "badge": null,
-    "categorySlug": "relief",
-    "allowOpenAmount": true,
+    "id": "01a1a08e-0045-76d2-b330-1a65d13947b2",
+    "slug": "c-orphan-sponsor",
+    "titleAr": "كفالة يتيم",
+    "titleEn": "Sponsor an orphan",
+    "summaryAr": "معيشة وتعليم ورعاية لطفل يتيم.",
+    "summaryEn": "Living costs, schooling and care for an orphan.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dffd37bfcb24d2dec91bfdf71.webp",
+    "coverAltAr": "كفالة الأيتام",
+    "badge": "new",
+    "categorySlug": "c-orphans",
+    "allowOpenAmount": false,
     "minAmount": "10.00",
-    "fromAmount": null,
-    "options": [],
-    "coverAltEn": null
-   },
-   {
-    "id": "01a174b0-4492-798c-9538-de8576e27b25",
-    "slug": "iftar-meals",
-    "titleAr": "إفطار صائم",
-    "titleEn": "Iftar meals",
-    "summaryAr": "وجبات إفطار للصائمين.",
-    "summaryEn": null,
-    "coverUrl": "http://localhost:5080/files/public/seed/project-iftar-meals.webp",
-    "coverAltAr": "إفطار صائم",
-    "badge": null,
-    "categorySlug": "relief",
-    "allowOpenAmount": true,
-    "minAmount": "10.00",
-    "fromAmount": null,
-    "options": [],
-    "coverAltEn": null
-   },
-   {
-    "id": "01a174b0-4504-7f58-ace6-270e55a31d9c",
-    "slug": "learner-support",
-    "titleAr": "دعم المتعلمين",
-    "titleEn": "Learner support",
-    "summaryAr": "ادعم المتعلمين في برامج الجمعية.",
-    "summaryEn": null,
-    "coverUrl": "http://localhost:5080/files/public/seed/project-learner-support.webp",
-    "coverAltAr": "دعم المتعلمين",
-    "badge": null,
-    "categorySlug": "education",
-    "allowOpenAmount": true,
-    "minAmount": "10.00",
-    "fromAmount": null,
-    "options": [],
-    "coverAltEn": null
+    "fromAmount": "300.00",
+    "options": [
+     {
+      "id": "01a1a08e-0058-7e3c-bd09-ab47c39e105e",
+      "labelAr": "شهر",
+      "labelEn": "One month",
+      "amount": "300.00"
+     },
+     {
+      "id": "01a1a08e-0058-75aa-a7cc-97b880ecaabb",
+      "labelAr": "سنة",
+      "labelEn": "One year",
+      "amount": "3600.00"
+     }
+    ],
+    "coverAltEn": "Orphan care"
    }
   ],
   "categories": [
    {
-    "id": "01a174b0-3f86-7e51-9584-96ab64b96ae4",
+    "id": "01a1a08b-e287-7a44-87b1-4c069744103e",
     "slug": "dawah",
     "nameAr": "الدعوة",
     "nameEn": "Dawah",
@@ -163,11 +189,11 @@
     "imageUrl": "http://localhost:5080/files/public/seed/category-dawah.webp",
     "imageAltAr": "الدعوة",
     "acceptsGeneralGifts": true,
-    "projectCount": 2,
+    "projectCount": 3,
     "imageAltEn": null
    },
    {
-    "id": "01a174b0-4001-7241-a5ae-55db445028b0",
+    "id": "01a1a08b-e31b-7abd-88c4-606cbc713736",
     "slug": "education",
     "nameAr": "التعليم",
     "nameEn": "Education",
@@ -176,11 +202,11 @@
     "imageUrl": "http://localhost:5080/files/public/seed/category-education.webp",
     "imageAltAr": "التعليم",
     "acceptsGeneralGifts": true,
-    "projectCount": 2,
+    "projectCount": 3,
     "imageAltEn": null
    },
    {
-    "id": "01a174b0-407d-7d40-90fc-9f515d9c666b",
+    "id": "01a1a08b-e369-7817-bd92-01a2cb76917e",
     "slug": "relief",
     "nameAr": "الإغاثة",
     "nameEn": "Relief",
@@ -190,6 +216,97 @@
     "imageAltAr": "الإغاثة",
     "acceptsGeneralGifts": true,
     "projectCount": 2,
+    "imageAltEn": null
+   },
+   {
+    "id": "01a1a08d-fa45-72cd-b685-f5f4679dc54e",
+    "slug": "c-water",
+    "nameAr": "سقيا الماء",
+    "nameEn": "Water",
+    "descriptionAr": "مشاريع سقيا الماء.",
+    "descriptionEn": "Water projects.",
+    "imageUrl": null,
+    "imageAltAr": null,
+    "acceptsGeneralGifts": false,
+    "projectCount": 4,
+    "imageAltEn": null
+   },
+   {
+    "id": "01a1a08d-fa67-71a9-bd76-e5efc41f560f",
+    "slug": "c-feeding",
+    "nameAr": "الإطعام",
+    "nameEn": "Feeding",
+    "descriptionAr": "مشاريع الإطعام.",
+    "descriptionEn": "Feeding projects.",
+    "imageUrl": null,
+    "imageAltAr": null,
+    "acceptsGeneralGifts": false,
+    "projectCount": 3,
+    "imageAltEn": null
+   },
+   {
+    "id": "01a1a08d-fa7a-7398-851c-74c23f7d485a",
+    "slug": "c-orphans",
+    "nameAr": "كفالة الأيتام",
+    "nameEn": "Orphan care",
+    "descriptionAr": "مشاريع كفالة الأيتام.",
+    "descriptionEn": "Orphan care projects.",
+    "imageUrl": null,
+    "imageAltAr": null,
+    "acceptsGeneralGifts": false,
+    "projectCount": 3,
+    "imageAltEn": null
+   },
+   {
+    "id": "01a1a08d-fa85-7c3e-8fd3-2c022b41d5a0",
+    "slug": "c-health",
+    "nameAr": "الرعاية الصحية",
+    "nameEn": "Health care",
+    "descriptionAr": "مشاريع الرعاية الصحية.",
+    "descriptionEn": "Health care projects.",
+    "imageUrl": null,
+    "imageAltAr": null,
+    "acceptsGeneralGifts": false,
+    "projectCount": 3,
+    "imageAltEn": null
+   },
+   {
+    "id": "01a1a08d-fa90-7b1f-876d-398b37eec155",
+    "slug": "c-housing",
+    "nameAr": "الإسكان",
+    "nameEn": "Housing",
+    "descriptionAr": "مشاريع الإسكان.",
+    "descriptionEn": "Housing projects.",
+    "imageUrl": null,
+    "imageAltAr": null,
+    "acceptsGeneralGifts": false,
+    "projectCount": 3,
+    "imageAltEn": null
+   },
+   {
+    "id": "01a1a08d-fa9d-7d88-be76-65feb5cb4147",
+    "slug": "c-relief",
+    "nameAr": "الإغاثة العاجلة",
+    "nameEn": "Emergency relief",
+    "descriptionAr": "مشاريع الإغاثة.",
+    "descriptionEn": "Relief projects.",
+    "imageUrl": null,
+    "imageAltAr": null,
+    "acceptsGeneralGifts": false,
+    "projectCount": 4,
+    "imageAltEn": null
+   },
+   {
+    "id": "01a1a08d-faa8-7a2e-a1dc-9cf236c0c33b",
+    "slug": "c-mosques",
+    "nameAr": "المساجد",
+    "nameEn": "Mosques",
+    "descriptionAr": "مشاريع المساجد.",
+    "descriptionEn": "Mosques projects.",
+    "imageUrl": null,
+    "imageAltAr": null,
+    "acceptsGeneralGifts": false,
+    "projectCount": 0,
     "imageAltEn": null
    }
   ],
@@ -201,7 +318,7 @@
  },
  "/catalog/categories": [
   {
-   "id": "01a174b0-3f86-7e51-9584-96ab64b96ae4",
+   "id": "01a1a08b-e287-7a44-87b1-4c069744103e",
    "slug": "dawah",
    "nameAr": "الدعوة",
    "nameEn": "Dawah",
@@ -210,11 +327,11 @@
    "imageUrl": "http://localhost:5080/files/public/seed/category-dawah.webp",
    "imageAltAr": "الدعوة",
    "acceptsGeneralGifts": true,
-   "projectCount": 2,
+   "projectCount": 3,
    "imageAltEn": null
   },
   {
-   "id": "01a174b0-4001-7241-a5ae-55db445028b0",
+   "id": "01a1a08b-e31b-7abd-88c4-606cbc713736",
    "slug": "education",
    "nameAr": "التعليم",
    "nameEn": "Education",
@@ -223,11 +340,11 @@
    "imageUrl": "http://localhost:5080/files/public/seed/category-education.webp",
    "imageAltAr": "التعليم",
    "acceptsGeneralGifts": true,
-   "projectCount": 2,
+   "projectCount": 3,
    "imageAltEn": null
   },
   {
-   "id": "01a174b0-407d-7d40-90fc-9f515d9c666b",
+   "id": "01a1a08b-e369-7817-bd92-01a2cb76917e",
    "slug": "relief",
    "nameAr": "الإغاثة",
    "nameEn": "Relief",
@@ -237,6 +354,97 @@
    "imageAltAr": "الإغاثة",
    "acceptsGeneralGifts": true,
    "projectCount": 2,
+   "imageAltEn": null
+  },
+  {
+   "id": "01a1a08d-fa45-72cd-b685-f5f4679dc54e",
+   "slug": "c-water",
+   "nameAr": "سقيا الماء",
+   "nameEn": "Water",
+   "descriptionAr": "مشاريع سقيا الماء.",
+   "descriptionEn": "Water projects.",
+   "imageUrl": null,
+   "imageAltAr": null,
+   "acceptsGeneralGifts": false,
+   "projectCount": 4,
+   "imageAltEn": null
+  },
+  {
+   "id": "01a1a08d-fa67-71a9-bd76-e5efc41f560f",
+   "slug": "c-feeding",
+   "nameAr": "الإطعام",
+   "nameEn": "Feeding",
+   "descriptionAr": "مشاريع الإطعام.",
+   "descriptionEn": "Feeding projects.",
+   "imageUrl": null,
+   "imageAltAr": null,
+   "acceptsGeneralGifts": false,
+   "projectCount": 3,
+   "imageAltEn": null
+  },
+  {
+   "id": "01a1a08d-fa7a-7398-851c-74c23f7d485a",
+   "slug": "c-orphans",
+   "nameAr": "كفالة الأيتام",
+   "nameEn": "Orphan care",
+   "descriptionAr": "مشاريع كفالة الأيتام.",
+   "descriptionEn": "Orphan care projects.",
+   "imageUrl": null,
+   "imageAltAr": null,
+   "acceptsGeneralGifts": false,
+   "projectCount": 3,
+   "imageAltEn": null
+  },
+  {
+   "id": "01a1a08d-fa85-7c3e-8fd3-2c022b41d5a0",
+   "slug": "c-health",
+   "nameAr": "الرعاية الصحية",
+   "nameEn": "Health care",
+   "descriptionAr": "مشاريع الرعاية الصحية.",
+   "descriptionEn": "Health care projects.",
+   "imageUrl": null,
+   "imageAltAr": null,
+   "acceptsGeneralGifts": false,
+   "projectCount": 3,
+   "imageAltEn": null
+  },
+  {
+   "id": "01a1a08d-fa90-7b1f-876d-398b37eec155",
+   "slug": "c-housing",
+   "nameAr": "الإسكان",
+   "nameEn": "Housing",
+   "descriptionAr": "مشاريع الإسكان.",
+   "descriptionEn": "Housing projects.",
+   "imageUrl": null,
+   "imageAltAr": null,
+   "acceptsGeneralGifts": false,
+   "projectCount": 3,
+   "imageAltEn": null
+  },
+  {
+   "id": "01a1a08d-fa9d-7d88-be76-65feb5cb4147",
+   "slug": "c-relief",
+   "nameAr": "الإغاثة العاجلة",
+   "nameEn": "Emergency relief",
+   "descriptionAr": "مشاريع الإغاثة.",
+   "descriptionEn": "Relief projects.",
+   "imageUrl": null,
+   "imageAltAr": null,
+   "acceptsGeneralGifts": false,
+   "projectCount": 4,
+   "imageAltEn": null
+  },
+  {
+   "id": "01a1a08d-faa8-7a2e-a1dc-9cf236c0c33b",
+   "slug": "c-mosques",
+   "nameAr": "المساجد",
+   "nameEn": "Mosques",
+   "descriptionAr": "مشاريع المساجد.",
+   "descriptionEn": "Mosques projects.",
+   "imageUrl": null,
+   "imageAltAr": null,
+   "acceptsGeneralGifts": false,
+   "projectCount": 0,
    "imageAltEn": null
   }
  ],
@@ -254,6 +462,28 @@
  },
  "/catalog/projects?fields=slug": {
   "slugs": [
+   "c-bread",
+   "c-dialysis",
+   "c-emergency",
+   "c-eye-care",
+   "c-food-basket",
+   "c-furniture",
+   "c-home-repair",
+   "c-iftar",
+   "c-medical-kit",
+   "c-mosque-cooler",
+   "c-orphan-eid",
+   "c-orphan-school",
+   "c-orphan-sponsor",
+   "c-patient-care",
+   "c-quran-circle",
+   "c-rent",
+   "c-shelter",
+   "c-student-bag",
+   "c-water-bottles",
+   "c-water-tank",
+   "c-water-well",
+   "c-winter-bag",
    "dawah-umrah",
    "iftar-meals",
    "learner-support",
@@ -265,7 +495,7 @@
  "/catalog/projects?pageSize=100": {
   "items": [
    {
-    "id": "01a174b0-41d9-7f35-be63-a1849291cdbb",
+    "id": "01a1a08b-e4ec-7af2-b5c2-adcaa0d89990",
     "slug": "print-a-title",
     "titleAr": "طباعة كتاب",
     "titleEn": "Print a title",
@@ -280,13 +510,13 @@
     "fromAmount": "4.00",
     "options": [
      {
-      "id": "01a174b0-41e9-7b0d-8192-90117607bc41",
+      "id": "01a1a08b-e4ff-7956-ba2d-f40c212ac047",
       "labelAr": "نسخة عربية",
       "labelEn": "Arabic copy",
       "amount": "4.00"
      },
      {
-      "id": "01a174b0-41eb-72a8-8802-13b633cfed37",
+      "id": "01a1a08b-e502-7dcb-8e06-97f57b624015",
       "labelAr": "نسخة مترجمة",
       "labelEn": "Translated copy",
       "amount": "5.00"
@@ -295,7 +525,7 @@
     "coverAltEn": null
    },
    {
-    "id": "01a174b0-42db-7b8e-8a72-1472b3df0e89",
+    "id": "01a1a08b-e5d3-7fe1-b9a8-0f468dce4cab",
     "slug": "dawah-umrah",
     "titleAr": "العمرة الدعوية",
     "titleEn": "Dawah Umrah",
@@ -310,7 +540,7 @@
     "fromAmount": "150.00",
     "options": [
      {
-      "id": "01a174b0-42db-78f9-a8bb-c67df6392fee",
+      "id": "01a1a08b-e5d3-759c-be1d-f5575dc0c572",
       "labelAr": "تكلفة المعتمر",
       "labelEn": "One pilgrim",
       "amount": "150.00"
@@ -319,7 +549,7 @@
     "coverAltEn": null
    },
    {
-    "id": "01a174b0-4331-702f-bb8b-59fa998d35ff",
+    "id": "01a1a08b-e61f-7def-99c5-b3d66e0d4446",
     "slug": "support-a-daiya",
     "titleAr": "كفالة داعية",
     "titleEn": "Support a daiya",
@@ -334,25 +564,25 @@
     "fromAmount": "25.00",
     "options": [
      {
-      "id": "01a174b0-4331-7ef4-8bc0-b367419eeb82",
+      "id": "01a1a08b-e61f-798e-b6c4-b7e52426969c",
       "labelAr": "ساعة",
       "labelEn": "One hour",
       "amount": "25.00"
      },
      {
-      "id": "01a174b0-4331-7b30-8421-2cdc332beb93",
+      "id": "01a1a08b-e61f-761c-8efa-c40aae0cccdf",
       "labelAr": "يوم",
       "labelEn": "One day",
       "amount": "100.00"
      },
      {
-      "id": "01a174b0-4331-73ba-bb5c-82c326fff861",
+      "id": "01a1a08b-e61f-793e-bdc4-2ff58a5fba9d",
       "labelAr": "أسبوع",
       "labelEn": "One week",
       "amount": "500.00"
      },
      {
-      "id": "01a174b0-4331-74c1-8340-acc821d158bc",
+      "id": "01a1a08b-e61f-7905-8dd2-91ba280201fa",
       "labelAr": "شهر",
       "labelEn": "One month",
       "amount": "2000.00"
@@ -361,7 +591,7 @@
     "coverAltEn": null
    },
    {
-    "id": "01a174b0-43b6-77fe-9eef-2abc0ce2cc6f",
+    "id": "01a1a08b-e67c-7815-9011-3cc6378cfb28",
     "slug": "water-wells",
     "titleAr": "سقيا الماء",
     "titleEn": "Water wells",
@@ -378,7 +608,7 @@
     "coverAltEn": null
    },
    {
-    "id": "01a174b0-4492-798c-9538-de8576e27b25",
+    "id": "01a1a08b-e6ec-7718-bcc7-57ab8e0cb9d3",
     "slug": "iftar-meals",
     "titleAr": "إفطار صائم",
     "titleEn": "Iftar meals",
@@ -395,7 +625,7 @@
     "coverAltEn": null
    },
    {
-    "id": "01a174b0-4504-7f58-ace6-270e55a31d9c",
+    "id": "01a1a08b-e73e-7c87-88aa-4ff3849dc062",
     "slug": "learner-support",
     "titleAr": "دعم المتعلمين",
     "titleEn": "Learner support",
@@ -410,16 +640,1058 @@
     "fromAmount": null,
     "options": [],
     "coverAltEn": null
+   },
+   {
+    "id": "01a1a08d-fc23-7f15-bc47-37c820e606c4",
+    "slug": "c-mosque-cooler",
+    "titleAr": "برادة مياه لمسجد",
+    "titleEn": "Water cooler for a mosque",
+    "summaryAr": "ماء بارد للمصلين طوال العام.",
+    "summaryEn": "Cold water for worshippers all year.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfb447eb08143b486c256867c.webp",
+    "coverAltAr": "سقيا الماء",
+    "badge": "urgent",
+    "categorySlug": "c-water",
+    "allowOpenAmount": true,
+    "minAmount": "10.00",
+    "fromAmount": "2500.00",
+    "options": [
+     {
+      "id": "01a1a08d-fd6f-753b-89ae-fa3a4fe306c0",
+      "labelAr": "برادة",
+      "labelEn": "Cooler",
+      "amount": "2500.00"
+     }
+    ],
+    "coverAltEn": "Water"
+   },
+   {
+    "id": "01a1a08d-fda8-7499-abdb-c889c0915989",
+    "slug": "c-water-well",
+    "titleAr": "حفر بئر",
+    "titleEn": "Dig a well",
+    "summaryAr": "بئر تروي قرية كاملة لسنوات.",
+    "summaryEn": "A well that serves a whole village for years.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfb447eb08143b486c256867c.webp",
+    "coverAltAr": "سقيا الماء",
+    "badge": null,
+    "categorySlug": "c-water",
+    "allowOpenAmount": false,
+    "minAmount": "10.00",
+    "fromAmount": "6000.00",
+    "options": [
+     {
+      "id": "01a1a08d-fdc3-77bb-97d8-171d19b7bf5e",
+      "labelAr": "بئر سطحية",
+      "labelEn": "Shallow well",
+      "amount": "6000.00"
+     },
+     {
+      "id": "01a1a08d-fdc3-7868-be3d-d382ca49d55f",
+      "labelAr": "بئر ارتوازية",
+      "labelEn": "Deep well",
+      "amount": "18000.00"
+     }
+    ],
+    "coverAltEn": "Water"
+   },
+   {
+    "id": "01a1a08d-fdfb-7f99-b075-2091dc36450a",
+    "slug": "c-water-tank",
+    "titleAr": "خزان مياه",
+    "titleEn": "Water tank",
+    "summaryAr": "خزان يحفظ الماء للأسر المحتاجة.",
+    "summaryEn": "A tank that stores water for families in need.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfb447eb08143b486c256867c.webp",
+    "coverAltAr": "سقيا الماء",
+    "badge": "new",
+    "categorySlug": "c-water",
+    "allowOpenAmount": true,
+    "minAmount": "20.00",
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": "Water"
+   },
+   {
+    "id": "01a1a08d-fe2f-7e94-9cdf-ba7073667e8a",
+    "slug": "c-water-bottles",
+    "titleAr": "سقيا الحجاج",
+    "titleEn": "Water for pilgrims",
+    "summaryAr": "عبوات ماء تُوزّع في المشاعر.",
+    "summaryEn": "Bottled water handed out at the holy sites.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfb447eb08143b486c256867c.webp",
+    "coverAltAr": "سقيا الماء",
+    "badge": null,
+    "categorySlug": "c-water",
+    "allowOpenAmount": true,
+    "minAmount": "10.00",
+    "fromAmount": "15.00",
+    "options": [
+     {
+      "id": "01a1a08d-fe55-707c-bec1-18d1bba8538c",
+      "labelAr": "كرتون",
+      "labelEn": "Carton",
+      "amount": "15.00"
+     }
+    ],
+    "coverAltEn": "Water"
+   },
+   {
+    "id": "01a1a08d-fef9-708c-81a9-ee8ed58a53af",
+    "slug": "c-food-basket",
+    "titleAr": "سلة غذائية لأسرة",
+    "titleEn": "Food basket for a family",
+    "summaryAr": "سلة تكفي أسرة لمدة شهر.",
+    "summaryEn": "A basket that feeds a family for a month.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfe86718cb64b5fd35bd70afe.webp",
+    "coverAltAr": "الإطعام",
+    "badge": null,
+    "categorySlug": "c-feeding",
+    "allowOpenAmount": true,
+    "minAmount": "10.00",
+    "fromAmount": "250.00",
+    "options": [
+     {
+      "id": "01a1a08d-ff0c-73d0-b285-908931fc989e",
+      "labelAr": "سلة",
+      "labelEn": "Basket",
+      "amount": "250.00"
+     },
+     {
+      "id": "01a1a08d-ff0c-73f2-879d-80695e2019b7",
+      "labelAr": "سلتان",
+      "labelEn": "Two baskets",
+      "amount": "500.00"
+     }
+    ],
+    "coverAltEn": "Feeding"
+   },
+   {
+    "id": "01a1a08d-ff3a-7d60-acd4-0d22f35d54dd",
+    "slug": "c-iftar",
+    "titleAr": "إفطار صائم",
+    "titleEn": "Iftar meal",
+    "summaryAr": "وجبة إفطار متكاملة للصائمين.",
+    "summaryEn": "A full iftar meal for people fasting.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfe86718cb64b5fd35bd70afe.webp",
+    "coverAltAr": "الإطعام",
+    "badge": "urgent",
+    "categorySlug": "c-feeding",
+    "allowOpenAmount": false,
+    "minAmount": "10.00",
+    "fromAmount": "15.00",
+    "options": [
+     {
+      "id": "01a1a08d-ff56-7883-b7c2-e67628b5c1c5",
+      "labelAr": "وجبة",
+      "labelEn": "Meal",
+      "amount": "15.00"
+     },
+     {
+      "id": "01a1a08d-ff56-7054-bfa6-030b920cad6b",
+      "labelAr": "عشر وجبات",
+      "labelEn": "Ten meals",
+      "amount": "150.00"
+     }
+    ],
+    "coverAltEn": "Feeding"
+   },
+   {
+    "id": "01a1a08d-ff8b-7fc8-ac53-6edafe332493",
+    "slug": "c-bread",
+    "titleAr": "خبز يومي",
+    "titleEn": "Daily bread",
+    "summaryAr": "خبز طازج للأسر المتعففة.",
+    "summaryEn": "Fresh bread for families in need.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfe86718cb64b5fd35bd70afe.webp",
+    "coverAltAr": "الإطعام",
+    "badge": null,
+    "categorySlug": "c-feeding",
+    "allowOpenAmount": true,
+    "minAmount": "10.00",
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": "Feeding"
+   },
+   {
+    "id": "01a1a08e-0045-76d2-b330-1a65d13947b2",
+    "slug": "c-orphan-sponsor",
+    "titleAr": "كفالة يتيم",
+    "titleEn": "Sponsor an orphan",
+    "summaryAr": "معيشة وتعليم ورعاية لطفل يتيم.",
+    "summaryEn": "Living costs, schooling and care for an orphan.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dffd37bfcb24d2dec91bfdf71.webp",
+    "coverAltAr": "كفالة الأيتام",
+    "badge": "new",
+    "categorySlug": "c-orphans",
+    "allowOpenAmount": false,
+    "minAmount": "10.00",
+    "fromAmount": "300.00",
+    "options": [
+     {
+      "id": "01a1a08e-0058-7e3c-bd09-ab47c39e105e",
+      "labelAr": "شهر",
+      "labelEn": "One month",
+      "amount": "300.00"
+     },
+     {
+      "id": "01a1a08e-0058-75aa-a7cc-97b880ecaabb",
+      "labelAr": "سنة",
+      "labelEn": "One year",
+      "amount": "3600.00"
+     }
+    ],
+    "coverAltEn": "Orphan care"
+   },
+   {
+    "id": "01a1a08e-007e-7e52-b813-28a2752b425b",
+    "slug": "c-orphan-eid",
+    "titleAr": "كسوة العيد للأيتام",
+    "titleEn": "Eid clothes for orphans",
+    "summaryAr": "ملابس العيد لإدخال الفرح على الأيتام.",
+    "summaryEn": "Eid clothes to bring joy to orphans.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dffd37bfcb24d2dec91bfdf71.webp",
+    "coverAltAr": "كفالة الأيتام",
+    "badge": null,
+    "categorySlug": "c-orphans",
+    "allowOpenAmount": true,
+    "minAmount": "25.00",
+    "fromAmount": "200.00",
+    "options": [
+     {
+      "id": "01a1a08e-0094-7d62-b54f-af41da6d4e79",
+      "labelAr": "كسوة",
+      "labelEn": "Outfit",
+      "amount": "200.00"
+     }
+    ],
+    "coverAltEn": "Orphan care"
+   },
+   {
+    "id": "01a1a08e-00b3-7ac6-a53b-ac0e76f1d784",
+    "slug": "c-orphan-school",
+    "titleAr": "تعليم يتيم",
+    "titleEn": "School for an orphan",
+    "summaryAr": "رسوم دراسية وأدوات لطفل يتيم.",
+    "summaryEn": "School fees and supplies for an orphan.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dffd37bfcb24d2dec91bfdf71.webp",
+    "coverAltAr": "كفالة الأيتام",
+    "badge": null,
+    "categorySlug": "c-orphans",
+    "allowOpenAmount": true,
+    "minAmount": "50.00",
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": "Orphan care"
+   },
+   {
+    "id": "01a1a08e-0169-76d1-936b-ec6366c1fdc4",
+    "slug": "c-patient-care",
+    "titleAr": "علاج المرضى غير القادرين",
+    "titleEn": "Care for patients in need",
+    "summaryAr": "تكاليف العلاج والأدوية للحالات المستحقة.",
+    "summaryEn": "Treatment and medicine for patients who cannot pay.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e00fd7911a2a7ca02c8784aa4.webp",
+    "coverAltAr": "الرعاية الصحية",
+    "badge": null,
+    "categorySlug": "c-health",
+    "allowOpenAmount": true,
+    "minAmount": "10.00",
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": "Health care"
+   },
+   {
+    "id": "01a1a08e-018c-74be-8583-a1757f7a94d2",
+    "slug": "c-dialysis",
+    "titleAr": "جلسات غسيل الكلى",
+    "titleEn": "Dialysis sessions",
+    "summaryAr": "جلسات غسيل كلى لمرضى محتاجين.",
+    "summaryEn": "Dialysis sessions for patients in need.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e00fd7911a2a7ca02c8784aa4.webp",
+    "coverAltAr": "الرعاية الصحية",
+    "badge": "urgent",
+    "categorySlug": "c-health",
+    "allowOpenAmount": false,
+    "minAmount": "10.00",
+    "fromAmount": "400.00",
+    "options": [
+     {
+      "id": "01a1a08e-019d-7fe9-b492-46fc6031fee1",
+      "labelAr": "جلسة",
+      "labelEn": "Session",
+      "amount": "400.00"
+     },
+     {
+      "id": "01a1a08e-019d-7c67-91f0-2b7d27a3ed59",
+      "labelAr": "شهر",
+      "labelEn": "One month",
+      "amount": "4800.00"
+     }
+    ],
+    "coverAltEn": "Health care"
+   },
+   {
+    "id": "01a1a08e-01ca-738d-9285-3f498bcd621b",
+    "slug": "c-eye-care",
+    "titleAr": "عمليات العيون",
+    "titleEn": "Eye surgery",
+    "summaryAr": "عمليات المياه البيضاء لكبار السن.",
+    "summaryEn": "Cataract surgery for older people.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e00fd7911a2a7ca02c8784aa4.webp",
+    "coverAltAr": "الرعاية الصحية",
+    "badge": null,
+    "categorySlug": "c-health",
+    "allowOpenAmount": true,
+    "minAmount": "50.00",
+    "fromAmount": "1500.00",
+    "options": [
+     {
+      "id": "01a1a08e-01da-7f87-9587-f0f544ca0ded",
+      "labelAr": "عملية",
+      "labelEn": "Operation",
+      "amount": "1500.00"
+     }
+    ],
+    "coverAltEn": "Health care"
+   },
+   {
+    "id": "01a1a08e-027f-768d-b541-2383a92a9b2c",
+    "slug": "c-home-repair",
+    "titleAr": "ترميم منازل الأسر المتعففة",
+    "titleEn": "Home repairs for families",
+    "summaryAr": "إصلاحات تجعل المنزل آمنًا للسكن.",
+    "summaryEn": "Repairs that make a home safe to live in.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e020f780a9880da724f29a60b.webp",
+    "coverAltAr": "الإسكان",
+    "badge": null,
+    "categorySlug": "c-housing",
+    "allowOpenAmount": true,
+    "minAmount": "10.00",
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": "Housing"
+   },
+   {
+    "id": "01a1a08e-02a8-71fe-a5c2-19d8f2dcb69f",
+    "slug": "c-rent",
+    "titleAr": "سداد إيجار",
+    "titleEn": "Pay the rent",
+    "summaryAr": "سداد إيجار أسرة مهددة بالإخلاء.",
+    "summaryEn": "Rent for a family at risk of eviction.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e020f780a9880da724f29a60b.webp",
+    "coverAltAr": "الإسكان",
+    "badge": "new",
+    "categorySlug": "c-housing",
+    "allowOpenAmount": true,
+    "minAmount": "100.00",
+    "fromAmount": "1500.00",
+    "options": [
+     {
+      "id": "01a1a08e-02bb-71ab-a21d-5da5404b52ec",
+      "labelAr": "شهر",
+      "labelEn": "One month",
+      "amount": "1500.00"
+     }
+    ],
+    "coverAltEn": "Housing"
+   },
+   {
+    "id": "01a1a08e-02e2-722b-8584-a879b3d61706",
+    "slug": "c-furniture",
+    "titleAr": "تأثيث منزل",
+    "titleEn": "Furnish a home",
+    "summaryAr": "أثاث أساسي لأسرة محتاجة.",
+    "summaryEn": "Basic furniture for a family in need.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e020f780a9880da724f29a60b.webp",
+    "coverAltAr": "الإسكان",
+    "badge": null,
+    "categorySlug": "c-housing",
+    "allowOpenAmount": false,
+    "minAmount": "10.00",
+    "fromAmount": "2000.00",
+    "options": [
+     {
+      "id": "01a1a08e-02f6-7ee2-b3d6-bd70cd97074a",
+      "labelAr": "غرفة",
+      "labelEn": "One room",
+      "amount": "2000.00"
+     },
+     {
+      "id": "01a1a08e-02f6-7027-b805-e6789756e62b",
+      "labelAr": "منزل",
+      "labelEn": "Whole home",
+      "amount": "8000.00"
+     }
+    ],
+    "coverAltEn": "Housing"
+   },
+   {
+    "id": "01a1a08e-03bc-7198-abca-73b86355018e",
+    "slug": "c-winter-bag",
+    "titleAr": "حقيبة شتوية للأسرة",
+    "titleEn": "Winter bag for a family",
+    "summaryAr": "بطانيات وملابس ومدفأة.",
+    "summaryEn": "Blankets, clothes and a heater.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e03267a31b02f9028fe7e9e42.webp",
+    "coverAltAr": "الإغاثة",
+    "badge": "urgent",
+    "categorySlug": "c-relief",
+    "allowOpenAmount": true,
+    "minAmount": "10.00",
+    "fromAmount": "300.00",
+    "options": [
+     {
+      "id": "01a1a08e-03d5-7f25-8a00-86b170d21958",
+      "labelAr": "حقيبة",
+      "labelEn": "Bag",
+      "amount": "300.00"
+     }
+    ],
+    "coverAltEn": "Relief"
+   },
+   {
+    "id": "01a1a08e-03f9-799d-8ca2-ef5304e4b03f",
+    "slug": "c-emergency",
+    "titleAr": "إغاثة عاجلة",
+    "titleEn": "Emergency relief",
+    "summaryAr": "مساعدة فورية للمتضررين من الكوارث.",
+    "summaryEn": "Immediate help for people hit by disasters.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e03267a31b02f9028fe7e9e42.webp",
+    "coverAltAr": "الإغاثة",
+    "badge": "urgent",
+    "categorySlug": "c-relief",
+    "allowOpenAmount": true,
+    "minAmount": "10.00",
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": "Relief"
+   },
+   {
+    "id": "01a1a08e-0423-7f17-9592-fc8c573c9aec",
+    "slug": "c-shelter",
+    "titleAr": "خيمة إيواء",
+    "titleEn": "Shelter tent",
+    "summaryAr": "خيمة تؤوي أسرة نازحة.",
+    "summaryEn": "A tent that shelters a displaced family.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e03267a31b02f9028fe7e9e42.webp",
+    "coverAltAr": "الإغاثة",
+    "badge": null,
+    "categorySlug": "c-relief",
+    "allowOpenAmount": false,
+    "minAmount": "10.00",
+    "fromAmount": "900.00",
+    "options": [
+     {
+      "id": "01a1a08e-043a-794a-a319-30ba64b4e26a",
+      "labelAr": "خيمة",
+      "labelEn": "Tent",
+      "amount": "900.00"
+     }
+    ],
+    "coverAltEn": "Relief"
+   },
+   {
+    "id": "01a1a08e-0468-73f7-8e46-8ed99b46a6a8",
+    "slug": "c-medical-kit",
+    "titleAr": "حقيبة إسعافات",
+    "titleEn": "First-aid kit",
+    "summaryAr": "حقيبة إسعافات أولية للمناطق المنكوبة.",
+    "summaryEn": "A first-aid kit for disaster areas.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e03267a31b02f9028fe7e9e42.webp",
+    "coverAltAr": "الإغاثة",
+    "badge": null,
+    "categorySlug": "c-relief",
+    "allowOpenAmount": true,
+    "minAmount": "10.00",
+    "fromAmount": "120.00",
+    "options": [
+     {
+      "id": "01a1a08e-0480-77cc-be4b-2f4538a2ee84",
+      "labelAr": "حقيبة",
+      "labelEn": "Kit",
+      "amount": "120.00"
+     },
+     {
+      "id": "01a1a08e-0480-706e-a094-86c5417cfdba",
+      "labelAr": "خمس حقائب",
+      "labelEn": "Five kits",
+      "amount": "600.00"
+     }
+    ],
+    "coverAltEn": "Relief"
+   },
+   {
+    "id": "01a1a08e-052d-767e-8257-a67fde63b32a",
+    "slug": "c-student-bag",
+    "titleAr": "حقيبة الطالب",
+    "titleEn": "School bag",
+    "summaryAr": "أدوات مدرسية لطلاب الأسر المحتاجة.",
+    "summaryEn": "School supplies for children from families in need.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e04bd76fb94edd0bf9bc5c647.webp",
+    "coverAltAr": "التعليم",
+    "badge": null,
+    "categorySlug": "education",
+    "allowOpenAmount": true,
+    "minAmount": "10.00",
+    "fromAmount": "150.00",
+    "options": [
+     {
+      "id": "01a1a08e-053f-727b-ade3-b6d8bb307dc9",
+      "labelAr": "حقيبة",
+      "labelEn": "Bag",
+      "amount": "150.00"
+     }
+    ],
+    "coverAltEn": "Education"
+   },
+   {
+    "id": "01a1a08e-05d7-7dc1-af52-635e267540a9",
+    "slug": "c-quran-circle",
+    "titleAr": "حلقة تحفيظ",
+    "titleEn": "Memorisation circle",
+    "summaryAr": "رواتب معلمي حلقات التحفيظ.",
+    "summaryEn": "Salaries for the teachers of memorisation circles.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e056b75c49ba9d41f3dc9efdf.webp",
+    "coverAltAr": "الدعوة",
+    "badge": null,
+    "categorySlug": "dawah",
+    "allowOpenAmount": true,
+    "minAmount": "50.00",
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": "Dawah"
    }
   ],
-  "total": 6,
+  "total": 28,
   "page": 1,
   "pageSize": 100
  },
  "/catalog/projects?pageSize=100&sort=newest": {
   "items": [
    {
-    "id": "01a174b0-41d9-7f35-be63-a1849291cdbb",
+    "id": "01a1a08e-05d7-7dc1-af52-635e267540a9",
+    "slug": "c-quran-circle",
+    "titleAr": "حلقة تحفيظ",
+    "titleEn": "Memorisation circle",
+    "summaryAr": "رواتب معلمي حلقات التحفيظ.",
+    "summaryEn": "Salaries for the teachers of memorisation circles.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e056b75c49ba9d41f3dc9efdf.webp",
+    "coverAltAr": "الدعوة",
+    "badge": null,
+    "categorySlug": "dawah",
+    "allowOpenAmount": true,
+    "minAmount": "50.00",
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": "Dawah"
+   },
+   {
+    "id": "01a1a08e-052d-767e-8257-a67fde63b32a",
+    "slug": "c-student-bag",
+    "titleAr": "حقيبة الطالب",
+    "titleEn": "School bag",
+    "summaryAr": "أدوات مدرسية لطلاب الأسر المحتاجة.",
+    "summaryEn": "School supplies for children from families in need.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e04bd76fb94edd0bf9bc5c647.webp",
+    "coverAltAr": "التعليم",
+    "badge": null,
+    "categorySlug": "education",
+    "allowOpenAmount": true,
+    "minAmount": "10.00",
+    "fromAmount": "150.00",
+    "options": [
+     {
+      "id": "01a1a08e-053f-727b-ade3-b6d8bb307dc9",
+      "labelAr": "حقيبة",
+      "labelEn": "Bag",
+      "amount": "150.00"
+     }
+    ],
+    "coverAltEn": "Education"
+   },
+   {
+    "id": "01a1a08e-0468-73f7-8e46-8ed99b46a6a8",
+    "slug": "c-medical-kit",
+    "titleAr": "حقيبة إسعافات",
+    "titleEn": "First-aid kit",
+    "summaryAr": "حقيبة إسعافات أولية للمناطق المنكوبة.",
+    "summaryEn": "A first-aid kit for disaster areas.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e03267a31b02f9028fe7e9e42.webp",
+    "coverAltAr": "الإغاثة",
+    "badge": null,
+    "categorySlug": "c-relief",
+    "allowOpenAmount": true,
+    "minAmount": "10.00",
+    "fromAmount": "120.00",
+    "options": [
+     {
+      "id": "01a1a08e-0480-77cc-be4b-2f4538a2ee84",
+      "labelAr": "حقيبة",
+      "labelEn": "Kit",
+      "amount": "120.00"
+     },
+     {
+      "id": "01a1a08e-0480-706e-a094-86c5417cfdba",
+      "labelAr": "خمس حقائب",
+      "labelEn": "Five kits",
+      "amount": "600.00"
+     }
+    ],
+    "coverAltEn": "Relief"
+   },
+   {
+    "id": "01a1a08e-0423-7f17-9592-fc8c573c9aec",
+    "slug": "c-shelter",
+    "titleAr": "خيمة إيواء",
+    "titleEn": "Shelter tent",
+    "summaryAr": "خيمة تؤوي أسرة نازحة.",
+    "summaryEn": "A tent that shelters a displaced family.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e03267a31b02f9028fe7e9e42.webp",
+    "coverAltAr": "الإغاثة",
+    "badge": null,
+    "categorySlug": "c-relief",
+    "allowOpenAmount": false,
+    "minAmount": "10.00",
+    "fromAmount": "900.00",
+    "options": [
+     {
+      "id": "01a1a08e-043a-794a-a319-30ba64b4e26a",
+      "labelAr": "خيمة",
+      "labelEn": "Tent",
+      "amount": "900.00"
+     }
+    ],
+    "coverAltEn": "Relief"
+   },
+   {
+    "id": "01a1a08e-03f9-799d-8ca2-ef5304e4b03f",
+    "slug": "c-emergency",
+    "titleAr": "إغاثة عاجلة",
+    "titleEn": "Emergency relief",
+    "summaryAr": "مساعدة فورية للمتضررين من الكوارث.",
+    "summaryEn": "Immediate help for people hit by disasters.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e03267a31b02f9028fe7e9e42.webp",
+    "coverAltAr": "الإغاثة",
+    "badge": "urgent",
+    "categorySlug": "c-relief",
+    "allowOpenAmount": true,
+    "minAmount": "10.00",
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": "Relief"
+   },
+   {
+    "id": "01a1a08e-03bc-7198-abca-73b86355018e",
+    "slug": "c-winter-bag",
+    "titleAr": "حقيبة شتوية للأسرة",
+    "titleEn": "Winter bag for a family",
+    "summaryAr": "بطانيات وملابس ومدفأة.",
+    "summaryEn": "Blankets, clothes and a heater.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e03267a31b02f9028fe7e9e42.webp",
+    "coverAltAr": "الإغاثة",
+    "badge": "urgent",
+    "categorySlug": "c-relief",
+    "allowOpenAmount": true,
+    "minAmount": "10.00",
+    "fromAmount": "300.00",
+    "options": [
+     {
+      "id": "01a1a08e-03d5-7f25-8a00-86b170d21958",
+      "labelAr": "حقيبة",
+      "labelEn": "Bag",
+      "amount": "300.00"
+     }
+    ],
+    "coverAltEn": "Relief"
+   },
+   {
+    "id": "01a1a08e-02e2-722b-8584-a879b3d61706",
+    "slug": "c-furniture",
+    "titleAr": "تأثيث منزل",
+    "titleEn": "Furnish a home",
+    "summaryAr": "أثاث أساسي لأسرة محتاجة.",
+    "summaryEn": "Basic furniture for a family in need.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e020f780a9880da724f29a60b.webp",
+    "coverAltAr": "الإسكان",
+    "badge": null,
+    "categorySlug": "c-housing",
+    "allowOpenAmount": false,
+    "minAmount": "10.00",
+    "fromAmount": "2000.00",
+    "options": [
+     {
+      "id": "01a1a08e-02f6-7ee2-b3d6-bd70cd97074a",
+      "labelAr": "غرفة",
+      "labelEn": "One room",
+      "amount": "2000.00"
+     },
+     {
+      "id": "01a1a08e-02f6-7027-b805-e6789756e62b",
+      "labelAr": "منزل",
+      "labelEn": "Whole home",
+      "amount": "8000.00"
+     }
+    ],
+    "coverAltEn": "Housing"
+   },
+   {
+    "id": "01a1a08e-02a8-71fe-a5c2-19d8f2dcb69f",
+    "slug": "c-rent",
+    "titleAr": "سداد إيجار",
+    "titleEn": "Pay the rent",
+    "summaryAr": "سداد إيجار أسرة مهددة بالإخلاء.",
+    "summaryEn": "Rent for a family at risk of eviction.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e020f780a9880da724f29a60b.webp",
+    "coverAltAr": "الإسكان",
+    "badge": "new",
+    "categorySlug": "c-housing",
+    "allowOpenAmount": true,
+    "minAmount": "100.00",
+    "fromAmount": "1500.00",
+    "options": [
+     {
+      "id": "01a1a08e-02bb-71ab-a21d-5da5404b52ec",
+      "labelAr": "شهر",
+      "labelEn": "One month",
+      "amount": "1500.00"
+     }
+    ],
+    "coverAltEn": "Housing"
+   },
+   {
+    "id": "01a1a08e-027f-768d-b541-2383a92a9b2c",
+    "slug": "c-home-repair",
+    "titleAr": "ترميم منازل الأسر المتعففة",
+    "titleEn": "Home repairs for families",
+    "summaryAr": "إصلاحات تجعل المنزل آمنًا للسكن.",
+    "summaryEn": "Repairs that make a home safe to live in.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e020f780a9880da724f29a60b.webp",
+    "coverAltAr": "الإسكان",
+    "badge": null,
+    "categorySlug": "c-housing",
+    "allowOpenAmount": true,
+    "minAmount": "10.00",
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": "Housing"
+   },
+   {
+    "id": "01a1a08e-01ca-738d-9285-3f498bcd621b",
+    "slug": "c-eye-care",
+    "titleAr": "عمليات العيون",
+    "titleEn": "Eye surgery",
+    "summaryAr": "عمليات المياه البيضاء لكبار السن.",
+    "summaryEn": "Cataract surgery for older people.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e00fd7911a2a7ca02c8784aa4.webp",
+    "coverAltAr": "الرعاية الصحية",
+    "badge": null,
+    "categorySlug": "c-health",
+    "allowOpenAmount": true,
+    "minAmount": "50.00",
+    "fromAmount": "1500.00",
+    "options": [
+     {
+      "id": "01a1a08e-01da-7f87-9587-f0f544ca0ded",
+      "labelAr": "عملية",
+      "labelEn": "Operation",
+      "amount": "1500.00"
+     }
+    ],
+    "coverAltEn": "Health care"
+   },
+   {
+    "id": "01a1a08e-018c-74be-8583-a1757f7a94d2",
+    "slug": "c-dialysis",
+    "titleAr": "جلسات غسيل الكلى",
+    "titleEn": "Dialysis sessions",
+    "summaryAr": "جلسات غسيل كلى لمرضى محتاجين.",
+    "summaryEn": "Dialysis sessions for patients in need.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e00fd7911a2a7ca02c8784aa4.webp",
+    "coverAltAr": "الرعاية الصحية",
+    "badge": "urgent",
+    "categorySlug": "c-health",
+    "allowOpenAmount": false,
+    "minAmount": "10.00",
+    "fromAmount": "400.00",
+    "options": [
+     {
+      "id": "01a1a08e-019d-7fe9-b492-46fc6031fee1",
+      "labelAr": "جلسة",
+      "labelEn": "Session",
+      "amount": "400.00"
+     },
+     {
+      "id": "01a1a08e-019d-7c67-91f0-2b7d27a3ed59",
+      "labelAr": "شهر",
+      "labelEn": "One month",
+      "amount": "4800.00"
+     }
+    ],
+    "coverAltEn": "Health care"
+   },
+   {
+    "id": "01a1a08e-0169-76d1-936b-ec6366c1fdc4",
+    "slug": "c-patient-care",
+    "titleAr": "علاج المرضى غير القادرين",
+    "titleEn": "Care for patients in need",
+    "summaryAr": "تكاليف العلاج والأدوية للحالات المستحقة.",
+    "summaryEn": "Treatment and medicine for patients who cannot pay.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e00fd7911a2a7ca02c8784aa4.webp",
+    "coverAltAr": "الرعاية الصحية",
+    "badge": null,
+    "categorySlug": "c-health",
+    "allowOpenAmount": true,
+    "minAmount": "10.00",
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": "Health care"
+   },
+   {
+    "id": "01a1a08e-00b3-7ac6-a53b-ac0e76f1d784",
+    "slug": "c-orphan-school",
+    "titleAr": "تعليم يتيم",
+    "titleEn": "School for an orphan",
+    "summaryAr": "رسوم دراسية وأدوات لطفل يتيم.",
+    "summaryEn": "School fees and supplies for an orphan.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dffd37bfcb24d2dec91bfdf71.webp",
+    "coverAltAr": "كفالة الأيتام",
+    "badge": null,
+    "categorySlug": "c-orphans",
+    "allowOpenAmount": true,
+    "minAmount": "50.00",
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": "Orphan care"
+   },
+   {
+    "id": "01a1a08e-007e-7e52-b813-28a2752b425b",
+    "slug": "c-orphan-eid",
+    "titleAr": "كسوة العيد للأيتام",
+    "titleEn": "Eid clothes for orphans",
+    "summaryAr": "ملابس العيد لإدخال الفرح على الأيتام.",
+    "summaryEn": "Eid clothes to bring joy to orphans.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dffd37bfcb24d2dec91bfdf71.webp",
+    "coverAltAr": "كفالة الأيتام",
+    "badge": null,
+    "categorySlug": "c-orphans",
+    "allowOpenAmount": true,
+    "minAmount": "25.00",
+    "fromAmount": "200.00",
+    "options": [
+     {
+      "id": "01a1a08e-0094-7d62-b54f-af41da6d4e79",
+      "labelAr": "كسوة",
+      "labelEn": "Outfit",
+      "amount": "200.00"
+     }
+    ],
+    "coverAltEn": "Orphan care"
+   },
+   {
+    "id": "01a1a08e-0045-76d2-b330-1a65d13947b2",
+    "slug": "c-orphan-sponsor",
+    "titleAr": "كفالة يتيم",
+    "titleEn": "Sponsor an orphan",
+    "summaryAr": "معيشة وتعليم ورعاية لطفل يتيم.",
+    "summaryEn": "Living costs, schooling and care for an orphan.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dffd37bfcb24d2dec91bfdf71.webp",
+    "coverAltAr": "كفالة الأيتام",
+    "badge": "new",
+    "categorySlug": "c-orphans",
+    "allowOpenAmount": false,
+    "minAmount": "10.00",
+    "fromAmount": "300.00",
+    "options": [
+     {
+      "id": "01a1a08e-0058-7e3c-bd09-ab47c39e105e",
+      "labelAr": "شهر",
+      "labelEn": "One month",
+      "amount": "300.00"
+     },
+     {
+      "id": "01a1a08e-0058-75aa-a7cc-97b880ecaabb",
+      "labelAr": "سنة",
+      "labelEn": "One year",
+      "amount": "3600.00"
+     }
+    ],
+    "coverAltEn": "Orphan care"
+   },
+   {
+    "id": "01a1a08d-ff8b-7fc8-ac53-6edafe332493",
+    "slug": "c-bread",
+    "titleAr": "خبز يومي",
+    "titleEn": "Daily bread",
+    "summaryAr": "خبز طازج للأسر المتعففة.",
+    "summaryEn": "Fresh bread for families in need.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfe86718cb64b5fd35bd70afe.webp",
+    "coverAltAr": "الإطعام",
+    "badge": null,
+    "categorySlug": "c-feeding",
+    "allowOpenAmount": true,
+    "minAmount": "10.00",
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": "Feeding"
+   },
+   {
+    "id": "01a1a08d-ff3a-7d60-acd4-0d22f35d54dd",
+    "slug": "c-iftar",
+    "titleAr": "إفطار صائم",
+    "titleEn": "Iftar meal",
+    "summaryAr": "وجبة إفطار متكاملة للصائمين.",
+    "summaryEn": "A full iftar meal for people fasting.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfe86718cb64b5fd35bd70afe.webp",
+    "coverAltAr": "الإطعام",
+    "badge": "urgent",
+    "categorySlug": "c-feeding",
+    "allowOpenAmount": false,
+    "minAmount": "10.00",
+    "fromAmount": "15.00",
+    "options": [
+     {
+      "id": "01a1a08d-ff56-7883-b7c2-e67628b5c1c5",
+      "labelAr": "وجبة",
+      "labelEn": "Meal",
+      "amount": "15.00"
+     },
+     {
+      "id": "01a1a08d-ff56-7054-bfa6-030b920cad6b",
+      "labelAr": "عشر وجبات",
+      "labelEn": "Ten meals",
+      "amount": "150.00"
+     }
+    ],
+    "coverAltEn": "Feeding"
+   },
+   {
+    "id": "01a1a08d-fef9-708c-81a9-ee8ed58a53af",
+    "slug": "c-food-basket",
+    "titleAr": "سلة غذائية لأسرة",
+    "titleEn": "Food basket for a family",
+    "summaryAr": "سلة تكفي أسرة لمدة شهر.",
+    "summaryEn": "A basket that feeds a family for a month.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfe86718cb64b5fd35bd70afe.webp",
+    "coverAltAr": "الإطعام",
+    "badge": null,
+    "categorySlug": "c-feeding",
+    "allowOpenAmount": true,
+    "minAmount": "10.00",
+    "fromAmount": "250.00",
+    "options": [
+     {
+      "id": "01a1a08d-ff0c-73d0-b285-908931fc989e",
+      "labelAr": "سلة",
+      "labelEn": "Basket",
+      "amount": "250.00"
+     },
+     {
+      "id": "01a1a08d-ff0c-73f2-879d-80695e2019b7",
+      "labelAr": "سلتان",
+      "labelEn": "Two baskets",
+      "amount": "500.00"
+     }
+    ],
+    "coverAltEn": "Feeding"
+   },
+   {
+    "id": "01a1a08d-fe2f-7e94-9cdf-ba7073667e8a",
+    "slug": "c-water-bottles",
+    "titleAr": "سقيا الحجاج",
+    "titleEn": "Water for pilgrims",
+    "summaryAr": "عبوات ماء تُوزّع في المشاعر.",
+    "summaryEn": "Bottled water handed out at the holy sites.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfb447eb08143b486c256867c.webp",
+    "coverAltAr": "سقيا الماء",
+    "badge": null,
+    "categorySlug": "c-water",
+    "allowOpenAmount": true,
+    "minAmount": "10.00",
+    "fromAmount": "15.00",
+    "options": [
+     {
+      "id": "01a1a08d-fe55-707c-bec1-18d1bba8538c",
+      "labelAr": "كرتون",
+      "labelEn": "Carton",
+      "amount": "15.00"
+     }
+    ],
+    "coverAltEn": "Water"
+   },
+   {
+    "id": "01a1a08d-fdfb-7f99-b075-2091dc36450a",
+    "slug": "c-water-tank",
+    "titleAr": "خزان مياه",
+    "titleEn": "Water tank",
+    "summaryAr": "خزان يحفظ الماء للأسر المحتاجة.",
+    "summaryEn": "A tank that stores water for families in need.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfb447eb08143b486c256867c.webp",
+    "coverAltAr": "سقيا الماء",
+    "badge": "new",
+    "categorySlug": "c-water",
+    "allowOpenAmount": true,
+    "minAmount": "20.00",
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": "Water"
+   },
+   {
+    "id": "01a1a08d-fda8-7499-abdb-c889c0915989",
+    "slug": "c-water-well",
+    "titleAr": "حفر بئر",
+    "titleEn": "Dig a well",
+    "summaryAr": "بئر تروي قرية كاملة لسنوات.",
+    "summaryEn": "A well that serves a whole village for years.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfb447eb08143b486c256867c.webp",
+    "coverAltAr": "سقيا الماء",
+    "badge": null,
+    "categorySlug": "c-water",
+    "allowOpenAmount": false,
+    "minAmount": "10.00",
+    "fromAmount": "6000.00",
+    "options": [
+     {
+      "id": "01a1a08d-fdc3-77bb-97d8-171d19b7bf5e",
+      "labelAr": "بئر سطحية",
+      "labelEn": "Shallow well",
+      "amount": "6000.00"
+     },
+     {
+      "id": "01a1a08d-fdc3-7868-be3d-d382ca49d55f",
+      "labelAr": "بئر ارتوازية",
+      "labelEn": "Deep well",
+      "amount": "18000.00"
+     }
+    ],
+    "coverAltEn": "Water"
+   },
+   {
+    "id": "01a1a08d-fc23-7f15-bc47-37c820e606c4",
+    "slug": "c-mosque-cooler",
+    "titleAr": "برادة مياه لمسجد",
+    "titleEn": "Water cooler for a mosque",
+    "summaryAr": "ماء بارد للمصلين طوال العام.",
+    "summaryEn": "Cold water for worshippers all year.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfb447eb08143b486c256867c.webp",
+    "coverAltAr": "سقيا الماء",
+    "badge": "urgent",
+    "categorySlug": "c-water",
+    "allowOpenAmount": true,
+    "minAmount": "10.00",
+    "fromAmount": "2500.00",
+    "options": [
+     {
+      "id": "01a1a08d-fd6f-753b-89ae-fa3a4fe306c0",
+      "labelAr": "برادة",
+      "labelEn": "Cooler",
+      "amount": "2500.00"
+     }
+    ],
+    "coverAltEn": "Water"
+   },
+   {
+    "id": "01a1a08b-e4ec-7af2-b5c2-adcaa0d89990",
     "slug": "print-a-title",
     "titleAr": "طباعة كتاب",
     "titleEn": "Print a title",
@@ -434,13 +1706,13 @@
     "fromAmount": "4.00",
     "options": [
      {
-      "id": "01a174b0-41e9-7b0d-8192-90117607bc41",
+      "id": "01a1a08b-e4ff-7956-ba2d-f40c212ac047",
       "labelAr": "نسخة عربية",
       "labelEn": "Arabic copy",
       "amount": "4.00"
      },
      {
-      "id": "01a174b0-41eb-72a8-8802-13b633cfed37",
+      "id": "01a1a08b-e502-7dcb-8e06-97f57b624015",
       "labelAr": "نسخة مترجمة",
       "labelEn": "Translated copy",
       "amount": "5.00"
@@ -449,7 +1721,7 @@
     "coverAltEn": null
    },
    {
-    "id": "01a174b0-42db-7b8e-8a72-1472b3df0e89",
+    "id": "01a1a08b-e5d3-7fe1-b9a8-0f468dce4cab",
     "slug": "dawah-umrah",
     "titleAr": "العمرة الدعوية",
     "titleEn": "Dawah Umrah",
@@ -464,7 +1736,7 @@
     "fromAmount": "150.00",
     "options": [
      {
-      "id": "01a174b0-42db-78f9-a8bb-c67df6392fee",
+      "id": "01a1a08b-e5d3-759c-be1d-f5575dc0c572",
       "labelAr": "تكلفة المعتمر",
       "labelEn": "One pilgrim",
       "amount": "150.00"
@@ -473,7 +1745,7 @@
     "coverAltEn": null
    },
    {
-    "id": "01a174b0-4331-702f-bb8b-59fa998d35ff",
+    "id": "01a1a08b-e61f-7def-99c5-b3d66e0d4446",
     "slug": "support-a-daiya",
     "titleAr": "كفالة داعية",
     "titleEn": "Support a daiya",
@@ -488,25 +1760,25 @@
     "fromAmount": "25.00",
     "options": [
      {
-      "id": "01a174b0-4331-7ef4-8bc0-b367419eeb82",
+      "id": "01a1a08b-e61f-798e-b6c4-b7e52426969c",
       "labelAr": "ساعة",
       "labelEn": "One hour",
       "amount": "25.00"
      },
      {
-      "id": "01a174b0-4331-7b30-8421-2cdc332beb93",
+      "id": "01a1a08b-e61f-761c-8efa-c40aae0cccdf",
       "labelAr": "يوم",
       "labelEn": "One day",
       "amount": "100.00"
      },
      {
-      "id": "01a174b0-4331-73ba-bb5c-82c326fff861",
+      "id": "01a1a08b-e61f-793e-bdc4-2ff58a5fba9d",
       "labelAr": "أسبوع",
       "labelEn": "One week",
       "amount": "500.00"
      },
      {
-      "id": "01a174b0-4331-74c1-8340-acc821d158bc",
+      "id": "01a1a08b-e61f-7905-8dd2-91ba280201fa",
       "labelAr": "شهر",
       "labelEn": "One month",
       "amount": "2000.00"
@@ -515,7 +1787,7 @@
     "coverAltEn": null
    },
    {
-    "id": "01a174b0-43b6-77fe-9eef-2abc0ce2cc6f",
+    "id": "01a1a08b-e67c-7815-9011-3cc6378cfb28",
     "slug": "water-wells",
     "titleAr": "سقيا الماء",
     "titleEn": "Water wells",
@@ -532,7 +1804,7 @@
     "coverAltEn": null
    },
    {
-    "id": "01a174b0-4492-798c-9538-de8576e27b25",
+    "id": "01a1a08b-e6ec-7718-bcc7-57ab8e0cb9d3",
     "slug": "iftar-meals",
     "titleAr": "إفطار صائم",
     "titleEn": "Iftar meals",
@@ -549,7 +1821,7 @@
     "coverAltEn": null
    },
    {
-    "id": "01a174b0-4504-7f58-ace6-270e55a31d9c",
+    "id": "01a1a08b-e73e-7c87-88aa-4ff3849dc062",
     "slug": "learner-support",
     "titleAr": "دعم المتعلمين",
     "titleEn": "Learner support",
@@ -566,14 +1838,31 @@
     "coverAltEn": null
    }
   ],
-  "total": 6,
+  "total": 28,
   "page": 1,
   "pageSize": 100
  },
  "/catalog/projects?pageSize=100&sort=title": {
   "items": [
    {
-    "id": "01a174b0-4492-798c-9538-de8576e27b25",
+    "id": "01a1a08e-03f9-799d-8ca2-ef5304e4b03f",
+    "slug": "c-emergency",
+    "titleAr": "إغاثة عاجلة",
+    "titleEn": "Emergency relief",
+    "summaryAr": "مساعدة فورية للمتضررين من الكوارث.",
+    "summaryEn": "Immediate help for people hit by disasters.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e03267a31b02f9028fe7e9e42.webp",
+    "coverAltAr": "الإغاثة",
+    "badge": "urgent",
+    "categorySlug": "c-relief",
+    "allowOpenAmount": true,
+    "minAmount": "10.00",
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": "Relief"
+   },
+   {
+    "id": "01a1a08b-e6ec-7718-bcc7-57ab8e0cb9d3",
     "slug": "iftar-meals",
     "titleAr": "إفطار صائم",
     "titleEn": "Iftar meals",
@@ -590,7 +1879,37 @@
     "coverAltEn": null
    },
    {
-    "id": "01a174b0-42db-7b8e-8a72-1472b3df0e89",
+    "id": "01a1a08d-ff3a-7d60-acd4-0d22f35d54dd",
+    "slug": "c-iftar",
+    "titleAr": "إفطار صائم",
+    "titleEn": "Iftar meal",
+    "summaryAr": "وجبة إفطار متكاملة للصائمين.",
+    "summaryEn": "A full iftar meal for people fasting.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfe86718cb64b5fd35bd70afe.webp",
+    "coverAltAr": "الإطعام",
+    "badge": "urgent",
+    "categorySlug": "c-feeding",
+    "allowOpenAmount": false,
+    "minAmount": "10.00",
+    "fromAmount": "15.00",
+    "options": [
+     {
+      "id": "01a1a08d-ff56-7883-b7c2-e67628b5c1c5",
+      "labelAr": "وجبة",
+      "labelEn": "Meal",
+      "amount": "15.00"
+     },
+     {
+      "id": "01a1a08d-ff56-7054-bfa6-030b920cad6b",
+      "labelAr": "عشر وجبات",
+      "labelEn": "Ten meals",
+      "amount": "150.00"
+     }
+    ],
+    "coverAltEn": "Feeding"
+   },
+   {
+    "id": "01a1a08b-e5d3-7fe1-b9a8-0f468dce4cab",
     "slug": "dawah-umrah",
     "titleAr": "العمرة الدعوية",
     "titleEn": "Dawah Umrah",
@@ -605,7 +1924,7 @@
     "fromAmount": "150.00",
     "options": [
      {
-      "id": "01a174b0-42db-78f9-a8bb-c67df6392fee",
+      "id": "01a1a08b-e5d3-759c-be1d-f5575dc0c572",
       "labelAr": "تكلفة المعتمر",
       "labelEn": "One pilgrim",
       "amount": "150.00"
@@ -614,7 +1933,308 @@
     "coverAltEn": null
    },
    {
-    "id": "01a174b0-4504-7f58-ace6-270e55a31d9c",
+    "id": "01a1a08d-fc23-7f15-bc47-37c820e606c4",
+    "slug": "c-mosque-cooler",
+    "titleAr": "برادة مياه لمسجد",
+    "titleEn": "Water cooler for a mosque",
+    "summaryAr": "ماء بارد للمصلين طوال العام.",
+    "summaryEn": "Cold water for worshippers all year.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfb447eb08143b486c256867c.webp",
+    "coverAltAr": "سقيا الماء",
+    "badge": "urgent",
+    "categorySlug": "c-water",
+    "allowOpenAmount": true,
+    "minAmount": "10.00",
+    "fromAmount": "2500.00",
+    "options": [
+     {
+      "id": "01a1a08d-fd6f-753b-89ae-fa3a4fe306c0",
+      "labelAr": "برادة",
+      "labelEn": "Cooler",
+      "amount": "2500.00"
+     }
+    ],
+    "coverAltEn": "Water"
+   },
+   {
+    "id": "01a1a08e-02e2-722b-8584-a879b3d61706",
+    "slug": "c-furniture",
+    "titleAr": "تأثيث منزل",
+    "titleEn": "Furnish a home",
+    "summaryAr": "أثاث أساسي لأسرة محتاجة.",
+    "summaryEn": "Basic furniture for a family in need.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e020f780a9880da724f29a60b.webp",
+    "coverAltAr": "الإسكان",
+    "badge": null,
+    "categorySlug": "c-housing",
+    "allowOpenAmount": false,
+    "minAmount": "10.00",
+    "fromAmount": "2000.00",
+    "options": [
+     {
+      "id": "01a1a08e-02f6-7ee2-b3d6-bd70cd97074a",
+      "labelAr": "غرفة",
+      "labelEn": "One room",
+      "amount": "2000.00"
+     },
+     {
+      "id": "01a1a08e-02f6-7027-b805-e6789756e62b",
+      "labelAr": "منزل",
+      "labelEn": "Whole home",
+      "amount": "8000.00"
+     }
+    ],
+    "coverAltEn": "Housing"
+   },
+   {
+    "id": "01a1a08e-027f-768d-b541-2383a92a9b2c",
+    "slug": "c-home-repair",
+    "titleAr": "ترميم منازل الأسر المتعففة",
+    "titleEn": "Home repairs for families",
+    "summaryAr": "إصلاحات تجعل المنزل آمنًا للسكن.",
+    "summaryEn": "Repairs that make a home safe to live in.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e020f780a9880da724f29a60b.webp",
+    "coverAltAr": "الإسكان",
+    "badge": null,
+    "categorySlug": "c-housing",
+    "allowOpenAmount": true,
+    "minAmount": "10.00",
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": "Housing"
+   },
+   {
+    "id": "01a1a08e-00b3-7ac6-a53b-ac0e76f1d784",
+    "slug": "c-orphan-school",
+    "titleAr": "تعليم يتيم",
+    "titleEn": "School for an orphan",
+    "summaryAr": "رسوم دراسية وأدوات لطفل يتيم.",
+    "summaryEn": "School fees and supplies for an orphan.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dffd37bfcb24d2dec91bfdf71.webp",
+    "coverAltAr": "كفالة الأيتام",
+    "badge": null,
+    "categorySlug": "c-orphans",
+    "allowOpenAmount": true,
+    "minAmount": "50.00",
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": "Orphan care"
+   },
+   {
+    "id": "01a1a08e-018c-74be-8583-a1757f7a94d2",
+    "slug": "c-dialysis",
+    "titleAr": "جلسات غسيل الكلى",
+    "titleEn": "Dialysis sessions",
+    "summaryAr": "جلسات غسيل كلى لمرضى محتاجين.",
+    "summaryEn": "Dialysis sessions for patients in need.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e00fd7911a2a7ca02c8784aa4.webp",
+    "coverAltAr": "الرعاية الصحية",
+    "badge": "urgent",
+    "categorySlug": "c-health",
+    "allowOpenAmount": false,
+    "minAmount": "10.00",
+    "fromAmount": "400.00",
+    "options": [
+     {
+      "id": "01a1a08e-019d-7fe9-b492-46fc6031fee1",
+      "labelAr": "جلسة",
+      "labelEn": "Session",
+      "amount": "400.00"
+     },
+     {
+      "id": "01a1a08e-019d-7c67-91f0-2b7d27a3ed59",
+      "labelAr": "شهر",
+      "labelEn": "One month",
+      "amount": "4800.00"
+     }
+    ],
+    "coverAltEn": "Health care"
+   },
+   {
+    "id": "01a1a08d-fda8-7499-abdb-c889c0915989",
+    "slug": "c-water-well",
+    "titleAr": "حفر بئر",
+    "titleEn": "Dig a well",
+    "summaryAr": "بئر تروي قرية كاملة لسنوات.",
+    "summaryEn": "A well that serves a whole village for years.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfb447eb08143b486c256867c.webp",
+    "coverAltAr": "سقيا الماء",
+    "badge": null,
+    "categorySlug": "c-water",
+    "allowOpenAmount": false,
+    "minAmount": "10.00",
+    "fromAmount": "6000.00",
+    "options": [
+     {
+      "id": "01a1a08d-fdc3-77bb-97d8-171d19b7bf5e",
+      "labelAr": "بئر سطحية",
+      "labelEn": "Shallow well",
+      "amount": "6000.00"
+     },
+     {
+      "id": "01a1a08d-fdc3-7868-be3d-d382ca49d55f",
+      "labelAr": "بئر ارتوازية",
+      "labelEn": "Deep well",
+      "amount": "18000.00"
+     }
+    ],
+    "coverAltEn": "Water"
+   },
+   {
+    "id": "01a1a08e-0468-73f7-8e46-8ed99b46a6a8",
+    "slug": "c-medical-kit",
+    "titleAr": "حقيبة إسعافات",
+    "titleEn": "First-aid kit",
+    "summaryAr": "حقيبة إسعافات أولية للمناطق المنكوبة.",
+    "summaryEn": "A first-aid kit for disaster areas.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e03267a31b02f9028fe7e9e42.webp",
+    "coverAltAr": "الإغاثة",
+    "badge": null,
+    "categorySlug": "c-relief",
+    "allowOpenAmount": true,
+    "minAmount": "10.00",
+    "fromAmount": "120.00",
+    "options": [
+     {
+      "id": "01a1a08e-0480-77cc-be4b-2f4538a2ee84",
+      "labelAr": "حقيبة",
+      "labelEn": "Kit",
+      "amount": "120.00"
+     },
+     {
+      "id": "01a1a08e-0480-706e-a094-86c5417cfdba",
+      "labelAr": "خمس حقائب",
+      "labelEn": "Five kits",
+      "amount": "600.00"
+     }
+    ],
+    "coverAltEn": "Relief"
+   },
+   {
+    "id": "01a1a08e-052d-767e-8257-a67fde63b32a",
+    "slug": "c-student-bag",
+    "titleAr": "حقيبة الطالب",
+    "titleEn": "School bag",
+    "summaryAr": "أدوات مدرسية لطلاب الأسر المحتاجة.",
+    "summaryEn": "School supplies for children from families in need.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e04bd76fb94edd0bf9bc5c647.webp",
+    "coverAltAr": "التعليم",
+    "badge": null,
+    "categorySlug": "education",
+    "allowOpenAmount": true,
+    "minAmount": "10.00",
+    "fromAmount": "150.00",
+    "options": [
+     {
+      "id": "01a1a08e-053f-727b-ade3-b6d8bb307dc9",
+      "labelAr": "حقيبة",
+      "labelEn": "Bag",
+      "amount": "150.00"
+     }
+    ],
+    "coverAltEn": "Education"
+   },
+   {
+    "id": "01a1a08e-03bc-7198-abca-73b86355018e",
+    "slug": "c-winter-bag",
+    "titleAr": "حقيبة شتوية للأسرة",
+    "titleEn": "Winter bag for a family",
+    "summaryAr": "بطانيات وملابس ومدفأة.",
+    "summaryEn": "Blankets, clothes and a heater.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e03267a31b02f9028fe7e9e42.webp",
+    "coverAltAr": "الإغاثة",
+    "badge": "urgent",
+    "categorySlug": "c-relief",
+    "allowOpenAmount": true,
+    "minAmount": "10.00",
+    "fromAmount": "300.00",
+    "options": [
+     {
+      "id": "01a1a08e-03d5-7f25-8a00-86b170d21958",
+      "labelAr": "حقيبة",
+      "labelEn": "Bag",
+      "amount": "300.00"
+     }
+    ],
+    "coverAltEn": "Relief"
+   },
+   {
+    "id": "01a1a08e-05d7-7dc1-af52-635e267540a9",
+    "slug": "c-quran-circle",
+    "titleAr": "حلقة تحفيظ",
+    "titleEn": "Memorisation circle",
+    "summaryAr": "رواتب معلمي حلقات التحفيظ.",
+    "summaryEn": "Salaries for the teachers of memorisation circles.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e056b75c49ba9d41f3dc9efdf.webp",
+    "coverAltAr": "الدعوة",
+    "badge": null,
+    "categorySlug": "dawah",
+    "allowOpenAmount": true,
+    "minAmount": "50.00",
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": "Dawah"
+   },
+   {
+    "id": "01a1a08d-ff8b-7fc8-ac53-6edafe332493",
+    "slug": "c-bread",
+    "titleAr": "خبز يومي",
+    "titleEn": "Daily bread",
+    "summaryAr": "خبز طازج للأسر المتعففة.",
+    "summaryEn": "Fresh bread for families in need.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfe86718cb64b5fd35bd70afe.webp",
+    "coverAltAr": "الإطعام",
+    "badge": null,
+    "categorySlug": "c-feeding",
+    "allowOpenAmount": true,
+    "minAmount": "10.00",
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": "Feeding"
+   },
+   {
+    "id": "01a1a08d-fdfb-7f99-b075-2091dc36450a",
+    "slug": "c-water-tank",
+    "titleAr": "خزان مياه",
+    "titleEn": "Water tank",
+    "summaryAr": "خزان يحفظ الماء للأسر المحتاجة.",
+    "summaryEn": "A tank that stores water for families in need.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfb447eb08143b486c256867c.webp",
+    "coverAltAr": "سقيا الماء",
+    "badge": "new",
+    "categorySlug": "c-water",
+    "allowOpenAmount": true,
+    "minAmount": "20.00",
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": "Water"
+   },
+   {
+    "id": "01a1a08e-0423-7f17-9592-fc8c573c9aec",
+    "slug": "c-shelter",
+    "titleAr": "خيمة إيواء",
+    "titleEn": "Shelter tent",
+    "summaryAr": "خيمة تؤوي أسرة نازحة.",
+    "summaryEn": "A tent that shelters a displaced family.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e03267a31b02f9028fe7e9e42.webp",
+    "coverAltAr": "الإغاثة",
+    "badge": null,
+    "categorySlug": "c-relief",
+    "allowOpenAmount": false,
+    "minAmount": "10.00",
+    "fromAmount": "900.00",
+    "options": [
+     {
+      "id": "01a1a08e-043a-794a-a319-30ba64b4e26a",
+      "labelAr": "خيمة",
+      "labelEn": "Tent",
+      "amount": "900.00"
+     }
+    ],
+    "coverAltEn": "Relief"
+   },
+   {
+    "id": "01a1a08b-e73e-7c87-88aa-4ff3849dc062",
     "slug": "learner-support",
     "titleAr": "دعم المتعلمين",
     "titleEn": "Learner support",
@@ -631,7 +2251,55 @@
     "coverAltEn": null
    },
    {
-    "id": "01a174b0-43b6-77fe-9eef-2abc0ce2cc6f",
+    "id": "01a1a08e-02a8-71fe-a5c2-19d8f2dcb69f",
+    "slug": "c-rent",
+    "titleAr": "سداد إيجار",
+    "titleEn": "Pay the rent",
+    "summaryAr": "سداد إيجار أسرة مهددة بالإخلاء.",
+    "summaryEn": "Rent for a family at risk of eviction.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e020f780a9880da724f29a60b.webp",
+    "coverAltAr": "الإسكان",
+    "badge": "new",
+    "categorySlug": "c-housing",
+    "allowOpenAmount": true,
+    "minAmount": "100.00",
+    "fromAmount": "1500.00",
+    "options": [
+     {
+      "id": "01a1a08e-02bb-71ab-a21d-5da5404b52ec",
+      "labelAr": "شهر",
+      "labelEn": "One month",
+      "amount": "1500.00"
+     }
+    ],
+    "coverAltEn": "Housing"
+   },
+   {
+    "id": "01a1a08d-fe2f-7e94-9cdf-ba7073667e8a",
+    "slug": "c-water-bottles",
+    "titleAr": "سقيا الحجاج",
+    "titleEn": "Water for pilgrims",
+    "summaryAr": "عبوات ماء تُوزّع في المشاعر.",
+    "summaryEn": "Bottled water handed out at the holy sites.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfb447eb08143b486c256867c.webp",
+    "coverAltAr": "سقيا الماء",
+    "badge": null,
+    "categorySlug": "c-water",
+    "allowOpenAmount": true,
+    "minAmount": "10.00",
+    "fromAmount": "15.00",
+    "options": [
+     {
+      "id": "01a1a08d-fe55-707c-bec1-18d1bba8538c",
+      "labelAr": "كرتون",
+      "labelEn": "Carton",
+      "amount": "15.00"
+     }
+    ],
+    "coverAltEn": "Water"
+   },
+   {
+    "id": "01a1a08b-e67c-7815-9011-3cc6378cfb28",
     "slug": "water-wells",
     "titleAr": "سقيا الماء",
     "titleEn": "Water wells",
@@ -648,7 +2316,37 @@
     "coverAltEn": null
    },
    {
-    "id": "01a174b0-41d9-7f35-be63-a1849291cdbb",
+    "id": "01a1a08d-fef9-708c-81a9-ee8ed58a53af",
+    "slug": "c-food-basket",
+    "titleAr": "سلة غذائية لأسرة",
+    "titleEn": "Food basket for a family",
+    "summaryAr": "سلة تكفي أسرة لمدة شهر.",
+    "summaryEn": "A basket that feeds a family for a month.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfe86718cb64b5fd35bd70afe.webp",
+    "coverAltAr": "الإطعام",
+    "badge": null,
+    "categorySlug": "c-feeding",
+    "allowOpenAmount": true,
+    "minAmount": "10.00",
+    "fromAmount": "250.00",
+    "options": [
+     {
+      "id": "01a1a08d-ff0c-73d0-b285-908931fc989e",
+      "labelAr": "سلة",
+      "labelEn": "Basket",
+      "amount": "250.00"
+     },
+     {
+      "id": "01a1a08d-ff0c-73f2-879d-80695e2019b7",
+      "labelAr": "سلتان",
+      "labelEn": "Two baskets",
+      "amount": "500.00"
+     }
+    ],
+    "coverAltEn": "Feeding"
+   },
+   {
+    "id": "01a1a08b-e4ec-7af2-b5c2-adcaa0d89990",
     "slug": "print-a-title",
     "titleAr": "طباعة كتاب",
     "titleEn": "Print a title",
@@ -663,13 +2361,13 @@
     "fromAmount": "4.00",
     "options": [
      {
-      "id": "01a174b0-41e9-7b0d-8192-90117607bc41",
+      "id": "01a1a08b-e4ff-7956-ba2d-f40c212ac047",
       "labelAr": "نسخة عربية",
       "labelEn": "Arabic copy",
       "amount": "4.00"
      },
      {
-      "id": "01a174b0-41eb-72a8-8802-13b633cfed37",
+      "id": "01a1a08b-e502-7dcb-8e06-97f57b624015",
       "labelAr": "نسخة مترجمة",
       "labelEn": "Translated copy",
       "amount": "5.00"
@@ -678,7 +2376,72 @@
     "coverAltEn": null
    },
    {
-    "id": "01a174b0-4331-702f-bb8b-59fa998d35ff",
+    "id": "01a1a08e-0169-76d1-936b-ec6366c1fdc4",
+    "slug": "c-patient-care",
+    "titleAr": "علاج المرضى غير القادرين",
+    "titleEn": "Care for patients in need",
+    "summaryAr": "تكاليف العلاج والأدوية للحالات المستحقة.",
+    "summaryEn": "Treatment and medicine for patients who cannot pay.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e00fd7911a2a7ca02c8784aa4.webp",
+    "coverAltAr": "الرعاية الصحية",
+    "badge": null,
+    "categorySlug": "c-health",
+    "allowOpenAmount": true,
+    "minAmount": "10.00",
+    "fromAmount": null,
+    "options": [],
+    "coverAltEn": "Health care"
+   },
+   {
+    "id": "01a1a08e-01ca-738d-9285-3f498bcd621b",
+    "slug": "c-eye-care",
+    "titleAr": "عمليات العيون",
+    "titleEn": "Eye surgery",
+    "summaryAr": "عمليات المياه البيضاء لكبار السن.",
+    "summaryEn": "Cataract surgery for older people.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e00fd7911a2a7ca02c8784aa4.webp",
+    "coverAltAr": "الرعاية الصحية",
+    "badge": null,
+    "categorySlug": "c-health",
+    "allowOpenAmount": true,
+    "minAmount": "50.00",
+    "fromAmount": "1500.00",
+    "options": [
+     {
+      "id": "01a1a08e-01da-7f87-9587-f0f544ca0ded",
+      "labelAr": "عملية",
+      "labelEn": "Operation",
+      "amount": "1500.00"
+     }
+    ],
+    "coverAltEn": "Health care"
+   },
+   {
+    "id": "01a1a08e-007e-7e52-b813-28a2752b425b",
+    "slug": "c-orphan-eid",
+    "titleAr": "كسوة العيد للأيتام",
+    "titleEn": "Eid clothes for orphans",
+    "summaryAr": "ملابس العيد لإدخال الفرح على الأيتام.",
+    "summaryEn": "Eid clothes to bring joy to orphans.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dffd37bfcb24d2dec91bfdf71.webp",
+    "coverAltAr": "كفالة الأيتام",
+    "badge": null,
+    "categorySlug": "c-orphans",
+    "allowOpenAmount": true,
+    "minAmount": "25.00",
+    "fromAmount": "200.00",
+    "options": [
+     {
+      "id": "01a1a08e-0094-7d62-b54f-af41da6d4e79",
+      "labelAr": "كسوة",
+      "labelEn": "Outfit",
+      "amount": "200.00"
+     }
+    ],
+    "coverAltEn": "Orphan care"
+   },
+   {
+    "id": "01a1a08b-e61f-7def-99c5-b3d66e0d4446",
     "slug": "support-a-daiya",
     "titleAr": "كفالة داعية",
     "titleEn": "Support a daiya",
@@ -693,39 +2456,854 @@
     "fromAmount": "25.00",
     "options": [
      {
-      "id": "01a174b0-4331-7ef4-8bc0-b367419eeb82",
+      "id": "01a1a08b-e61f-798e-b6c4-b7e52426969c",
       "labelAr": "ساعة",
       "labelEn": "One hour",
       "amount": "25.00"
      },
      {
-      "id": "01a174b0-4331-7b30-8421-2cdc332beb93",
+      "id": "01a1a08b-e61f-761c-8efa-c40aae0cccdf",
       "labelAr": "يوم",
       "labelEn": "One day",
       "amount": "100.00"
      },
      {
-      "id": "01a174b0-4331-73ba-bb5c-82c326fff861",
+      "id": "01a1a08b-e61f-793e-bdc4-2ff58a5fba9d",
       "labelAr": "أسبوع",
       "labelEn": "One week",
       "amount": "500.00"
      },
      {
-      "id": "01a174b0-4331-74c1-8340-acc821d158bc",
+      "id": "01a1a08b-e61f-7905-8dd2-91ba280201fa",
       "labelAr": "شهر",
       "labelEn": "One month",
       "amount": "2000.00"
      }
     ],
     "coverAltEn": null
+   },
+   {
+    "id": "01a1a08e-0045-76d2-b330-1a65d13947b2",
+    "slug": "c-orphan-sponsor",
+    "titleAr": "كفالة يتيم",
+    "titleEn": "Sponsor an orphan",
+    "summaryAr": "معيشة وتعليم ورعاية لطفل يتيم.",
+    "summaryEn": "Living costs, schooling and care for an orphan.",
+    "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dffd37bfcb24d2dec91bfdf71.webp",
+    "coverAltAr": "كفالة الأيتام",
+    "badge": "new",
+    "categorySlug": "c-orphans",
+    "allowOpenAmount": false,
+    "minAmount": "10.00",
+    "fromAmount": "300.00",
+    "options": [
+     {
+      "id": "01a1a08e-0058-7e3c-bd09-ab47c39e105e",
+      "labelAr": "شهر",
+      "labelEn": "One month",
+      "amount": "300.00"
+     },
+     {
+      "id": "01a1a08e-0058-75aa-a7cc-97b880ecaabb",
+      "labelAr": "سنة",
+      "labelEn": "One year",
+      "amount": "3600.00"
+     }
+    ],
+    "coverAltEn": "Orphan care"
    }
   ],
-  "total": 6,
+  "total": 28,
   "page": 1,
   "pageSize": 100
  },
+ "/catalog/projects/c-bread": {
+  "id": "01a1a08d-ff8b-7fc8-ac53-6edafe332493",
+  "slug": "c-bread",
+  "status": "published",
+  "titleAr": "خبز يومي",
+  "titleEn": "Daily bread",
+  "summaryAr": "خبز طازج للأسر المتعففة.",
+  "summaryEn": "Fresh bread for families in need.",
+  "bodyAr": "خبز طازج للأسر المتعففة.\n\nكل تبرع يصل إلى مستحقيه بإيصال رسمي.",
+  "bodyEn": "Fresh bread for families in need.\n\nEvery donation reaches the people it is for, with an official receipt.",
+  "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfe86718cb64b5fd35bd70afe.webp",
+  "coverAltAr": "الإطعام",
+  "coverAltEn": "Feeding",
+  "badge": null,
+  "category": {
+   "id": "01a1a08d-fa67-71a9-bd76-e5efc41f560f",
+   "slug": "c-feeding",
+   "nameAr": "الإطعام",
+   "nameEn": "Feeding"
+  },
+  "allowOpenAmount": true,
+  "minAmount": "10.00",
+  "options": [],
+  "seoTitleAr": null,
+  "seoTitleEn": null,
+  "seoDescAr": null,
+  "seoDescEn": null,
+  "publishedAt": "2026-11-03T08:37:03.012509+00:00"
+ },
+ "/catalog/projects/c-dialysis": {
+  "id": "01a1a08e-018c-74be-8583-a1757f7a94d2",
+  "slug": "c-dialysis",
+  "status": "published",
+  "titleAr": "جلسات غسيل الكلى",
+  "titleEn": "Dialysis sessions",
+  "summaryAr": "جلسات غسيل كلى لمرضى محتاجين.",
+  "summaryEn": "Dialysis sessions for patients in need.",
+  "bodyAr": "جلسات غسيل كلى لمرضى محتاجين.\n\nكل تبرع يصل إلى مستحقيه بإيصال رسمي.",
+  "bodyEn": "Dialysis sessions for patients in need.\n\nEvery donation reaches the people it is for, with an official receipt.",
+  "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e00fd7911a2a7ca02c8784aa4.webp",
+  "coverAltAr": "الرعاية الصحية",
+  "coverAltEn": "Health care",
+  "badge": "urgent",
+  "category": {
+   "id": "01a1a08d-fa85-7c3e-8fd3-2c022b41d5a0",
+   "slug": "c-health",
+   "nameAr": "الرعاية الصحية",
+   "nameEn": "Health care"
+  },
+  "allowOpenAmount": false,
+  "minAmount": "10.00",
+  "options": [
+   {
+    "id": "01a1a08e-019d-7fe9-b492-46fc6031fee1",
+    "labelAr": "جلسة",
+    "labelEn": "Session",
+    "amount": "400.00"
+   },
+   {
+    "id": "01a1a08e-019d-7c67-91f0-2b7d27a3ed59",
+    "labelAr": "شهر",
+    "labelEn": "One month",
+    "amount": "4800.00"
+   }
+  ],
+  "seoTitleAr": null,
+  "seoTitleEn": null,
+  "seoDescAr": null,
+  "seoDescEn": null,
+  "publishedAt": "2026-11-03T08:37:03.538408+00:00"
+ },
+ "/catalog/projects/c-emergency": {
+  "id": "01a1a08e-03f9-799d-8ca2-ef5304e4b03f",
+  "slug": "c-emergency",
+  "status": "published",
+  "titleAr": "إغاثة عاجلة",
+  "titleEn": "Emergency relief",
+  "summaryAr": "مساعدة فورية للمتضررين من الكوارث.",
+  "summaryEn": "Immediate help for people hit by disasters.",
+  "bodyAr": "مساعدة فورية للمتضررين من الكوارث.\n\nكل تبرع يصل إلى مستحقيه بإيصال رسمي.",
+  "bodyEn": "Immediate help for people hit by disasters.\n\nEvery donation reaches the people it is for, with an official receipt.",
+  "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e03267a31b02f9028fe7e9e42.webp",
+  "coverAltAr": "الإغاثة",
+  "coverAltEn": "Relief",
+  "badge": "urgent",
+  "category": {
+   "id": "01a1a08d-fa9d-7d88-be76-65feb5cb4147",
+   "slug": "c-relief",
+   "nameAr": "الإغاثة العاجلة",
+   "nameEn": "Emergency relief"
+  },
+  "allowOpenAmount": true,
+  "minAmount": "10.00",
+  "options": [],
+  "seoTitleAr": null,
+  "seoTitleEn": null,
+  "seoDescAr": null,
+  "seoDescEn": null,
+  "publishedAt": "2026-11-03T08:37:04.142164+00:00"
+ },
+ "/catalog/projects/c-eye-care": {
+  "id": "01a1a08e-01ca-738d-9285-3f498bcd621b",
+  "slug": "c-eye-care",
+  "status": "published",
+  "titleAr": "عمليات العيون",
+  "titleEn": "Eye surgery",
+  "summaryAr": "عمليات المياه البيضاء لكبار السن.",
+  "summaryEn": "Cataract surgery for older people.",
+  "bodyAr": "عمليات المياه البيضاء لكبار السن.\n\nكل تبرع يصل إلى مستحقيه بإيصال رسمي.",
+  "bodyEn": "Cataract surgery for older people.\n\nEvery donation reaches the people it is for, with an official receipt.",
+  "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e00fd7911a2a7ca02c8784aa4.webp",
+  "coverAltAr": "الرعاية الصحية",
+  "coverAltEn": "Health care",
+  "badge": null,
+  "category": {
+   "id": "01a1a08d-fa85-7c3e-8fd3-2c022b41d5a0",
+   "slug": "c-health",
+   "nameAr": "الرعاية الصحية",
+   "nameEn": "Health care"
+  },
+  "allowOpenAmount": true,
+  "minAmount": "50.00",
+  "options": [
+   {
+    "id": "01a1a08e-01da-7f87-9587-f0f544ca0ded",
+    "labelAr": "عملية",
+    "labelEn": "Operation",
+    "amount": "1500.00"
+   }
+  ],
+  "seoTitleAr": null,
+  "seoTitleEn": null,
+  "seoDescAr": null,
+  "seoDescEn": null,
+  "publishedAt": "2026-11-03T08:37:03.603827+00:00"
+ },
+ "/catalog/projects/c-food-basket": {
+  "id": "01a1a08d-fef9-708c-81a9-ee8ed58a53af",
+  "slug": "c-food-basket",
+  "status": "published",
+  "titleAr": "سلة غذائية لأسرة",
+  "titleEn": "Food basket for a family",
+  "summaryAr": "سلة تكفي أسرة لمدة شهر.",
+  "summaryEn": "A basket that feeds a family for a month.",
+  "bodyAr": "سلة تكفي أسرة لمدة شهر.\n\nكل تبرع يصل إلى مستحقيه بإيصال رسمي.",
+  "bodyEn": "A basket that feeds a family for a month.\n\nEvery donation reaches the people it is for, with an official receipt.",
+  "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfe86718cb64b5fd35bd70afe.webp",
+  "coverAltAr": "الإطعام",
+  "coverAltEn": "Feeding",
+  "badge": null,
+  "category": {
+   "id": "01a1a08d-fa67-71a9-bd76-e5efc41f560f",
+   "slug": "c-feeding",
+   "nameAr": "الإطعام",
+   "nameEn": "Feeding"
+  },
+  "allowOpenAmount": true,
+  "minAmount": "10.00",
+  "options": [
+   {
+    "id": "01a1a08d-ff0c-73d0-b285-908931fc989e",
+    "labelAr": "سلة",
+    "labelEn": "Basket",
+    "amount": "250.00"
+   },
+   {
+    "id": "01a1a08d-ff0c-73f2-879d-80695e2019b7",
+    "labelAr": "سلتان",
+    "labelEn": "Two baskets",
+    "amount": "500.00"
+   }
+  ],
+  "seoTitleAr": null,
+  "seoTitleEn": null,
+  "seoDescAr": null,
+  "seoDescEn": null,
+  "publishedAt": "2026-11-03T08:37:02.881565+00:00"
+ },
+ "/catalog/projects/c-furniture": {
+  "id": "01a1a08e-02e2-722b-8584-a879b3d61706",
+  "slug": "c-furniture",
+  "status": "published",
+  "titleAr": "تأثيث منزل",
+  "titleEn": "Furnish a home",
+  "summaryAr": "أثاث أساسي لأسرة محتاجة.",
+  "summaryEn": "Basic furniture for a family in need.",
+  "bodyAr": "أثاث أساسي لأسرة محتاجة.\n\nكل تبرع يصل إلى مستحقيه بإيصال رسمي.",
+  "bodyEn": "Basic furniture for a family in need.\n\nEvery donation reaches the people it is for, with an official receipt.",
+  "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e020f780a9880da724f29a60b.webp",
+  "coverAltAr": "الإسكان",
+  "coverAltEn": "Housing",
+  "badge": null,
+  "category": {
+   "id": "01a1a08d-fa90-7b1f-876d-398b37eec155",
+   "slug": "c-housing",
+   "nameAr": "الإسكان",
+   "nameEn": "Housing"
+  },
+  "allowOpenAmount": false,
+  "minAmount": "10.00",
+  "options": [
+   {
+    "id": "01a1a08e-02f6-7ee2-b3d6-bd70cd97074a",
+    "labelAr": "غرفة",
+    "labelEn": "One room",
+    "amount": "2000.00"
+   },
+   {
+    "id": "01a1a08e-02f6-7027-b805-e6789756e62b",
+    "labelAr": "منزل",
+    "labelEn": "Whole home",
+    "amount": "8000.00"
+   }
+  ],
+  "seoTitleAr": null,
+  "seoTitleEn": null,
+  "seoDescAr": null,
+  "seoDescEn": null,
+  "publishedAt": "2026-11-03T08:37:03.881002+00:00"
+ },
+ "/catalog/projects/c-home-repair": {
+  "id": "01a1a08e-027f-768d-b541-2383a92a9b2c",
+  "slug": "c-home-repair",
+  "status": "published",
+  "titleAr": "ترميم منازل الأسر المتعففة",
+  "titleEn": "Home repairs for families",
+  "summaryAr": "إصلاحات تجعل المنزل آمنًا للسكن.",
+  "summaryEn": "Repairs that make a home safe to live in.",
+  "bodyAr": "إصلاحات تجعل المنزل آمنًا للسكن.\n\nكل تبرع يصل إلى مستحقيه بإيصال رسمي.",
+  "bodyEn": "Repairs that make a home safe to live in.\n\nEvery donation reaches the people it is for, with an official receipt.",
+  "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e020f780a9880da724f29a60b.webp",
+  "coverAltAr": "الإسكان",
+  "coverAltEn": "Housing",
+  "badge": null,
+  "category": {
+   "id": "01a1a08d-fa90-7b1f-876d-398b37eec155",
+   "slug": "c-housing",
+   "nameAr": "الإسكان",
+   "nameEn": "Housing"
+  },
+  "allowOpenAmount": true,
+  "minAmount": "10.00",
+  "options": [],
+  "seoTitleAr": null,
+  "seoTitleEn": null,
+  "seoDescAr": null,
+  "seoDescEn": null,
+  "publishedAt": "2026-11-03T08:37:03.763935+00:00"
+ },
+ "/catalog/projects/c-iftar": {
+  "id": "01a1a08d-ff3a-7d60-acd4-0d22f35d54dd",
+  "slug": "c-iftar",
+  "status": "published",
+  "titleAr": "إفطار صائم",
+  "titleEn": "Iftar meal",
+  "summaryAr": "وجبة إفطار متكاملة للصائمين.",
+  "summaryEn": "A full iftar meal for people fasting.",
+  "bodyAr": "وجبة إفطار متكاملة للصائمين.\n\nكل تبرع يصل إلى مستحقيه بإيصال رسمي.",
+  "bodyEn": "A full iftar meal for people fasting.\n\nEvery donation reaches the people it is for, with an official receipt.",
+  "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfe86718cb64b5fd35bd70afe.webp",
+  "coverAltAr": "الإطعام",
+  "coverAltEn": "Feeding",
+  "badge": "urgent",
+  "category": {
+   "id": "01a1a08d-fa67-71a9-bd76-e5efc41f560f",
+   "slug": "c-feeding",
+   "nameAr": "الإطعام",
+   "nameEn": "Feeding"
+  },
+  "allowOpenAmount": false,
+  "minAmount": "10.00",
+  "options": [
+   {
+    "id": "01a1a08d-ff56-7883-b7c2-e67628b5c1c5",
+    "labelAr": "وجبة",
+    "labelEn": "Meal",
+    "amount": "15.00"
+   },
+   {
+    "id": "01a1a08d-ff56-7054-bfa6-030b920cad6b",
+    "labelAr": "عشر وجبات",
+    "labelEn": "Ten meals",
+    "amount": "150.00"
+   }
+  ],
+  "seoTitleAr": null,
+  "seoTitleEn": null,
+  "seoDescAr": null,
+  "seoDescEn": null,
+  "publishedAt": "2026-11-03T08:37:02.964796+00:00"
+ },
+ "/catalog/projects/c-medical-kit": {
+  "id": "01a1a08e-0468-73f7-8e46-8ed99b46a6a8",
+  "slug": "c-medical-kit",
+  "status": "published",
+  "titleAr": "حقيبة إسعافات",
+  "titleEn": "First-aid kit",
+  "summaryAr": "حقيبة إسعافات أولية للمناطق المنكوبة.",
+  "summaryEn": "A first-aid kit for disaster areas.",
+  "bodyAr": "حقيبة إسعافات أولية للمناطق المنكوبة.\n\nكل تبرع يصل إلى مستحقيه بإيصال رسمي.",
+  "bodyEn": "A first-aid kit for disaster areas.\n\nEvery donation reaches the people it is for, with an official receipt.",
+  "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e03267a31b02f9028fe7e9e42.webp",
+  "coverAltAr": "الإغاثة",
+  "coverAltEn": "Relief",
+  "badge": null,
+  "category": {
+   "id": "01a1a08d-fa9d-7d88-be76-65feb5cb4147",
+   "slug": "c-relief",
+   "nameAr": "الإغاثة العاجلة",
+   "nameEn": "Emergency relief"
+  },
+  "allowOpenAmount": true,
+  "minAmount": "10.00",
+  "options": [
+   {
+    "id": "01a1a08e-0480-77cc-be4b-2f4538a2ee84",
+    "labelAr": "حقيبة",
+    "labelEn": "Kit",
+    "amount": "120.00"
+   },
+   {
+    "id": "01a1a08e-0480-706e-a094-86c5417cfdba",
+    "labelAr": "خمس حقائب",
+    "labelEn": "Five kits",
+    "amount": "600.00"
+   }
+  ],
+  "seoTitleAr": null,
+  "seoTitleEn": null,
+  "seoDescAr": null,
+  "seoDescEn": null,
+  "publishedAt": "2026-11-03T08:37:04.28361+00:00"
+ },
+ "/catalog/projects/c-mosque-cooler": {
+  "id": "01a1a08d-fc23-7f15-bc47-37c820e606c4",
+  "slug": "c-mosque-cooler",
+  "status": "published",
+  "titleAr": "برادة مياه لمسجد",
+  "titleEn": "Water cooler for a mosque",
+  "summaryAr": "ماء بارد للمصلين طوال العام.",
+  "summaryEn": "Cold water for worshippers all year.",
+  "bodyAr": "ماء بارد للمصلين طوال العام.\n\nكل تبرع يصل إلى مستحقيه بإيصال رسمي.",
+  "bodyEn": "Cold water for worshippers all year.\n\nEvery donation reaches the people it is for, with an official receipt.",
+  "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfb447eb08143b486c256867c.webp",
+  "coverAltAr": "سقيا الماء",
+  "coverAltEn": "Water",
+  "badge": "urgent",
+  "category": {
+   "id": "01a1a08d-fa45-72cd-b685-f5f4679dc54e",
+   "slug": "c-water",
+   "nameAr": "سقيا الماء",
+   "nameEn": "Water"
+  },
+  "allowOpenAmount": true,
+  "minAmount": "10.00",
+  "options": [
+   {
+    "id": "01a1a08d-fd6f-753b-89ae-fa3a4fe306c0",
+    "labelAr": "برادة",
+    "labelEn": "Cooler",
+    "amount": "2500.00"
+   }
+  ],
+  "seoTitleAr": null,
+  "seoTitleEn": null,
+  "seoDescAr": null,
+  "seoDescEn": null,
+  "publishedAt": "2026-11-03T08:37:02.482651+00:00"
+ },
+ "/catalog/projects/c-orphan-eid": {
+  "id": "01a1a08e-007e-7e52-b813-28a2752b425b",
+  "slug": "c-orphan-eid",
+  "status": "published",
+  "titleAr": "كسوة العيد للأيتام",
+  "titleEn": "Eid clothes for orphans",
+  "summaryAr": "ملابس العيد لإدخال الفرح على الأيتام.",
+  "summaryEn": "Eid clothes to bring joy to orphans.",
+  "bodyAr": "ملابس العيد لإدخال الفرح على الأيتام.\n\nكل تبرع يصل إلى مستحقيه بإيصال رسمي.",
+  "bodyEn": "Eid clothes to bring joy to orphans.\n\nEvery donation reaches the people it is for, with an official receipt.",
+  "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dffd37bfcb24d2dec91bfdf71.webp",
+  "coverAltAr": "كفالة الأيتام",
+  "coverAltEn": "Orphan care",
+  "badge": null,
+  "category": {
+   "id": "01a1a08d-fa7a-7398-851c-74c23f7d485a",
+   "slug": "c-orphans",
+   "nameAr": "كفالة الأيتام",
+   "nameEn": "Orphan care"
+  },
+  "allowOpenAmount": true,
+  "minAmount": "25.00",
+  "options": [
+   {
+    "id": "01a1a08e-0094-7d62-b54f-af41da6d4e79",
+    "labelAr": "كسوة",
+    "labelEn": "Outfit",
+    "amount": "200.00"
+   }
+  ],
+  "seoTitleAr": null,
+  "seoTitleEn": null,
+  "seoDescAr": null,
+  "seoDescEn": null,
+  "publishedAt": "2026-11-03T08:37:03.268368+00:00"
+ },
+ "/catalog/projects/c-orphan-school": {
+  "id": "01a1a08e-00b3-7ac6-a53b-ac0e76f1d784",
+  "slug": "c-orphan-school",
+  "status": "published",
+  "titleAr": "تعليم يتيم",
+  "titleEn": "School for an orphan",
+  "summaryAr": "رسوم دراسية وأدوات لطفل يتيم.",
+  "summaryEn": "School fees and supplies for an orphan.",
+  "bodyAr": "رسوم دراسية وأدوات لطفل يتيم.\n\nكل تبرع يصل إلى مستحقيه بإيصال رسمي.",
+  "bodyEn": "School fees and supplies for an orphan.\n\nEvery donation reaches the people it is for, with an official receipt.",
+  "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dffd37bfcb24d2dec91bfdf71.webp",
+  "coverAltAr": "كفالة الأيتام",
+  "coverAltEn": "Orphan care",
+  "badge": null,
+  "category": {
+   "id": "01a1a08d-fa7a-7398-851c-74c23f7d485a",
+   "slug": "c-orphans",
+   "nameAr": "كفالة الأيتام",
+   "nameEn": "Orphan care"
+  },
+  "allowOpenAmount": true,
+  "minAmount": "50.00",
+  "options": [],
+  "seoTitleAr": null,
+  "seoTitleEn": null,
+  "seoDescAr": null,
+  "seoDescEn": null,
+  "publishedAt": "2026-11-03T08:37:03.332773+00:00"
+ },
+ "/catalog/projects/c-orphan-sponsor": {
+  "id": "01a1a08e-0045-76d2-b330-1a65d13947b2",
+  "slug": "c-orphan-sponsor",
+  "status": "published",
+  "titleAr": "كفالة يتيم",
+  "titleEn": "Sponsor an orphan",
+  "summaryAr": "معيشة وتعليم ورعاية لطفل يتيم.",
+  "summaryEn": "Living costs, schooling and care for an orphan.",
+  "bodyAr": "معيشة وتعليم ورعاية لطفل يتيم.\n\nكل تبرع يصل إلى مستحقيه بإيصال رسمي.",
+  "bodyEn": "Living costs, schooling and care for an orphan.\n\nEvery donation reaches the people it is for, with an official receipt.",
+  "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dffd37bfcb24d2dec91bfdf71.webp",
+  "coverAltAr": "كفالة الأيتام",
+  "coverAltEn": "Orphan care",
+  "badge": "new",
+  "category": {
+   "id": "01a1a08d-fa7a-7398-851c-74c23f7d485a",
+   "slug": "c-orphans",
+   "nameAr": "كفالة الأيتام",
+   "nameEn": "Orphan care"
+  },
+  "allowOpenAmount": false,
+  "minAmount": "10.00",
+  "options": [
+   {
+    "id": "01a1a08e-0058-7e3c-bd09-ab47c39e105e",
+    "labelAr": "شهر",
+    "labelEn": "One month",
+    "amount": "300.00"
+   },
+   {
+    "id": "01a1a08e-0058-75aa-a7cc-97b880ecaabb",
+    "labelAr": "سنة",
+    "labelEn": "One year",
+    "amount": "3600.00"
+   }
+  ],
+  "seoTitleAr": null,
+  "seoTitleEn": null,
+  "seoDescAr": null,
+  "seoDescEn": null,
+  "publishedAt": "2026-11-03T08:37:03.212183+00:00"
+ },
+ "/catalog/projects/c-patient-care": {
+  "id": "01a1a08e-0169-76d1-936b-ec6366c1fdc4",
+  "slug": "c-patient-care",
+  "status": "published",
+  "titleAr": "علاج المرضى غير القادرين",
+  "titleEn": "Care for patients in need",
+  "summaryAr": "تكاليف العلاج والأدوية للحالات المستحقة.",
+  "summaryEn": "Treatment and medicine for patients who cannot pay.",
+  "bodyAr": "تكاليف العلاج والأدوية للحالات المستحقة.\n\nكل تبرع يصل إلى مستحقيه بإيصال رسمي.",
+  "bodyEn": "Treatment and medicine for patients who cannot pay.\n\nEvery donation reaches the people it is for, with an official receipt.",
+  "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e00fd7911a2a7ca02c8784aa4.webp",
+  "coverAltAr": "الرعاية الصحية",
+  "coverAltEn": "Health care",
+  "badge": null,
+  "category": {
+   "id": "01a1a08d-fa85-7c3e-8fd3-2c022b41d5a0",
+   "slug": "c-health",
+   "nameAr": "الرعاية الصحية",
+   "nameEn": "Health care"
+  },
+  "allowOpenAmount": true,
+  "minAmount": "10.00",
+  "options": [],
+  "seoTitleAr": null,
+  "seoTitleEn": null,
+  "seoDescAr": null,
+  "seoDescEn": null,
+  "publishedAt": "2026-11-03T08:37:03.482294+00:00"
+ },
+ "/catalog/projects/c-quran-circle": {
+  "id": "01a1a08e-05d7-7dc1-af52-635e267540a9",
+  "slug": "c-quran-circle",
+  "status": "published",
+  "titleAr": "حلقة تحفيظ",
+  "titleEn": "Memorisation circle",
+  "summaryAr": "رواتب معلمي حلقات التحفيظ.",
+  "summaryEn": "Salaries for the teachers of memorisation circles.",
+  "bodyAr": "رواتب معلمي حلقات التحفيظ.\n\nكل تبرع يصل إلى مستحقيه بإيصال رسمي.",
+  "bodyEn": "Salaries for the teachers of memorisation circles.\n\nEvery donation reaches the people it is for, with an official receipt.",
+  "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e056b75c49ba9d41f3dc9efdf.webp",
+  "coverAltAr": "الدعوة",
+  "coverAltEn": "Dawah",
+  "badge": null,
+  "category": {
+   "id": "01a1a08b-e287-7a44-87b1-4c069744103e",
+   "slug": "dawah",
+   "nameAr": "الدعوة",
+   "nameEn": "Dawah"
+  },
+  "allowOpenAmount": true,
+  "minAmount": "50.00",
+  "options": [],
+  "seoTitleAr": null,
+  "seoTitleEn": null,
+  "seoDescAr": null,
+  "seoDescEn": null,
+  "publishedAt": "2026-11-03T08:37:04.617144+00:00"
+ },
+ "/catalog/projects/c-rent": {
+  "id": "01a1a08e-02a8-71fe-a5c2-19d8f2dcb69f",
+  "slug": "c-rent",
+  "status": "published",
+  "titleAr": "سداد إيجار",
+  "titleEn": "Pay the rent",
+  "summaryAr": "سداد إيجار أسرة مهددة بالإخلاء.",
+  "summaryEn": "Rent for a family at risk of eviction.",
+  "bodyAr": "سداد إيجار أسرة مهددة بالإخلاء.\n\nكل تبرع يصل إلى مستحقيه بإيصال رسمي.",
+  "bodyEn": "Rent for a family at risk of eviction.\n\nEvery donation reaches the people it is for, with an official receipt.",
+  "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e020f780a9880da724f29a60b.webp",
+  "coverAltAr": "الإسكان",
+  "coverAltEn": "Housing",
+  "badge": "new",
+  "category": {
+   "id": "01a1a08d-fa90-7b1f-876d-398b37eec155",
+   "slug": "c-housing",
+   "nameAr": "الإسكان",
+   "nameEn": "Housing"
+  },
+  "allowOpenAmount": true,
+  "minAmount": "100.00",
+  "options": [
+   {
+    "id": "01a1a08e-02bb-71ab-a21d-5da5404b52ec",
+    "labelAr": "شهر",
+    "labelEn": "One month",
+    "amount": "1500.00"
+   }
+  ],
+  "seoTitleAr": null,
+  "seoTitleEn": null,
+  "seoDescAr": null,
+  "seoDescEn": null,
+  "publishedAt": "2026-11-03T08:37:03.822537+00:00"
+ },
+ "/catalog/projects/c-shelter": {
+  "id": "01a1a08e-0423-7f17-9592-fc8c573c9aec",
+  "slug": "c-shelter",
+  "status": "published",
+  "titleAr": "خيمة إيواء",
+  "titleEn": "Shelter tent",
+  "summaryAr": "خيمة تؤوي أسرة نازحة.",
+  "summaryEn": "A tent that shelters a displaced family.",
+  "bodyAr": "خيمة تؤوي أسرة نازحة.\n\nكل تبرع يصل إلى مستحقيه بإيصال رسمي.",
+  "bodyEn": "A tent that shelters a displaced family.\n\nEvery donation reaches the people it is for, with an official receipt.",
+  "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e03267a31b02f9028fe7e9e42.webp",
+  "coverAltAr": "الإغاثة",
+  "coverAltEn": "Relief",
+  "badge": null,
+  "category": {
+   "id": "01a1a08d-fa9d-7d88-be76-65feb5cb4147",
+   "slug": "c-relief",
+   "nameAr": "الإغاثة العاجلة",
+   "nameEn": "Emergency relief"
+  },
+  "allowOpenAmount": false,
+  "minAmount": "10.00",
+  "options": [
+   {
+    "id": "01a1a08e-043a-794a-a319-30ba64b4e26a",
+    "labelAr": "خيمة",
+    "labelEn": "Tent",
+    "amount": "900.00"
+   }
+  ],
+  "seoTitleAr": null,
+  "seoTitleEn": null,
+  "seoDescAr": null,
+  "seoDescEn": null,
+  "publishedAt": "2026-11-03T08:37:04.210537+00:00"
+ },
+ "/catalog/projects/c-student-bag": {
+  "id": "01a1a08e-052d-767e-8257-a67fde63b32a",
+  "slug": "c-student-bag",
+  "status": "published",
+  "titleAr": "حقيبة الطالب",
+  "titleEn": "School bag",
+  "summaryAr": "أدوات مدرسية لطلاب الأسر المحتاجة.",
+  "summaryEn": "School supplies for children from families in need.",
+  "bodyAr": "أدوات مدرسية لطلاب الأسر المحتاجة.\n\nكل تبرع يصل إلى مستحقيه بإيصال رسمي.",
+  "bodyEn": "School supplies for children from families in need.\n\nEvery donation reaches the people it is for, with an official receipt.",
+  "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e04bd76fb94edd0bf9bc5c647.webp",
+  "coverAltAr": "التعليم",
+  "coverAltEn": "Education",
+  "badge": null,
+  "category": {
+   "id": "01a1a08b-e31b-7abd-88c4-606cbc713736",
+   "slug": "education",
+   "nameAr": "التعليم",
+   "nameEn": "Education"
+  },
+  "allowOpenAmount": true,
+  "minAmount": "10.00",
+  "options": [
+   {
+    "id": "01a1a08e-053f-727b-ade3-b6d8bb307dc9",
+    "labelAr": "حقيبة",
+    "labelEn": "Bag",
+    "amount": "150.00"
+   }
+  ],
+  "seoTitleAr": null,
+  "seoTitleEn": null,
+  "seoDescAr": null,
+  "seoDescEn": null,
+  "publishedAt": "2026-11-03T08:37:04.462405+00:00"
+ },
+ "/catalog/projects/c-water-bottles": {
+  "id": "01a1a08d-fe2f-7e94-9cdf-ba7073667e8a",
+  "slug": "c-water-bottles",
+  "status": "published",
+  "titleAr": "سقيا الحجاج",
+  "titleEn": "Water for pilgrims",
+  "summaryAr": "عبوات ماء تُوزّع في المشاعر.",
+  "summaryEn": "Bottled water handed out at the holy sites.",
+  "bodyAr": "عبوات ماء تُوزّع في المشاعر.\n\nكل تبرع يصل إلى مستحقيه بإيصال رسمي.",
+  "bodyEn": "Bottled water handed out at the holy sites.\n\nEvery donation reaches the people it is for, with an official receipt.",
+  "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfb447eb08143b486c256867c.webp",
+  "coverAltAr": "سقيا الماء",
+  "coverAltEn": "Water",
+  "badge": null,
+  "category": {
+   "id": "01a1a08d-fa45-72cd-b685-f5f4679dc54e",
+   "slug": "c-water",
+   "nameAr": "سقيا الماء",
+   "nameEn": "Water"
+  },
+  "allowOpenAmount": true,
+  "minAmount": "10.00",
+  "options": [
+   {
+    "id": "01a1a08d-fe55-707c-bec1-18d1bba8538c",
+    "labelAr": "كرتون",
+    "labelEn": "Carton",
+    "amount": "15.00"
+   }
+  ],
+  "seoTitleAr": null,
+  "seoTitleEn": null,
+  "seoDescAr": null,
+  "seoDescEn": null,
+  "publishedAt": "2026-11-03T08:37:02.697987+00:00"
+ },
+ "/catalog/projects/c-water-tank": {
+  "id": "01a1a08d-fdfb-7f99-b075-2091dc36450a",
+  "slug": "c-water-tank",
+  "status": "published",
+  "titleAr": "خزان مياه",
+  "titleEn": "Water tank",
+  "summaryAr": "خزان يحفظ الماء للأسر المحتاجة.",
+  "summaryEn": "A tank that stores water for families in need.",
+  "bodyAr": "خزان يحفظ الماء للأسر المحتاجة.\n\nكل تبرع يصل إلى مستحقيه بإيصال رسمي.",
+  "bodyEn": "A tank that stores water for families in need.\n\nEvery donation reaches the people it is for, with an official receipt.",
+  "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfb447eb08143b486c256867c.webp",
+  "coverAltAr": "سقيا الماء",
+  "coverAltEn": "Water",
+  "badge": "new",
+  "category": {
+   "id": "01a1a08d-fa45-72cd-b685-f5f4679dc54e",
+   "slug": "c-water",
+   "nameAr": "سقيا الماء",
+   "nameEn": "Water"
+  },
+  "allowOpenAmount": true,
+  "minAmount": "20.00",
+  "options": [],
+  "seoTitleAr": null,
+  "seoTitleEn": null,
+  "seoDescAr": null,
+  "seoDescEn": null,
+  "publishedAt": "2026-11-03T08:37:02.619152+00:00"
+ },
+ "/catalog/projects/c-water-well": {
+  "id": "01a1a08d-fda8-7499-abdb-c889c0915989",
+  "slug": "c-water-well",
+  "status": "published",
+  "titleAr": "حفر بئر",
+  "titleEn": "Dig a well",
+  "summaryAr": "بئر تروي قرية كاملة لسنوات.",
+  "summaryEn": "A well that serves a whole village for years.",
+  "bodyAr": "بئر تروي قرية كاملة لسنوات.\n\nكل تبرع يصل إلى مستحقيه بإيصال رسمي.",
+  "bodyEn": "A well that serves a whole village for years.\n\nEvery donation reaches the people it is for, with an official receipt.",
+  "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08dfb447eb08143b486c256867c.webp",
+  "coverAltAr": "سقيا الماء",
+  "coverAltEn": "Water",
+  "badge": null,
+  "category": {
+   "id": "01a1a08d-fa45-72cd-b685-f5f4679dc54e",
+   "slug": "c-water",
+   "nameAr": "سقيا الماء",
+   "nameEn": "Water"
+  },
+  "allowOpenAmount": false,
+  "minAmount": "10.00",
+  "options": [
+   {
+    "id": "01a1a08d-fdc3-77bb-97d8-171d19b7bf5e",
+    "labelAr": "بئر سطحية",
+    "labelEn": "Shallow well",
+    "amount": "6000.00"
+   },
+   {
+    "id": "01a1a08d-fdc3-7868-be3d-d382ca49d55f",
+    "labelAr": "بئر ارتوازية",
+    "labelEn": "Deep well",
+    "amount": "18000.00"
+   }
+  ],
+  "seoTitleAr": null,
+  "seoTitleEn": null,
+  "seoDescAr": null,
+  "seoDescEn": null,
+  "publishedAt": "2026-11-03T08:37:02.553251+00:00"
+ },
+ "/catalog/projects/c-winter-bag": {
+  "id": "01a1a08e-03bc-7198-abca-73b86355018e",
+  "slug": "c-winter-bag",
+  "status": "published",
+  "titleAr": "حقيبة شتوية للأسرة",
+  "titleEn": "Winter bag for a family",
+  "summaryAr": "بطانيات وملابس ومدفأة.",
+  "summaryEn": "Blankets, clothes and a heater.",
+  "bodyAr": "بطانيات وملابس ومدفأة.\n\nكل تبرع يصل إلى مستحقيه بإيصال رسمي.",
+  "bodyEn": "Blankets, clothes and a heater.\n\nEvery donation reaches the people it is for, with an official receipt.",
+  "coverUrl": "http://localhost:5080/files/public/images/2026/01a1a08e03267a31b02f9028fe7e9e42.webp",
+  "coverAltAr": "الإغاثة",
+  "coverAltEn": "Relief",
+  "badge": "urgent",
+  "category": {
+   "id": "01a1a08d-fa9d-7d88-be76-65feb5cb4147",
+   "slug": "c-relief",
+   "nameAr": "الإغاثة العاجلة",
+   "nameEn": "Emergency relief"
+  },
+  "allowOpenAmount": true,
+  "minAmount": "10.00",
+  "options": [
+   {
+    "id": "01a1a08e-03d5-7f25-8a00-86b170d21958",
+    "labelAr": "حقيبة",
+    "labelEn": "Bag",
+    "amount": "300.00"
+   }
+  ],
+  "seoTitleAr": null,
+  "seoTitleEn": null,
+  "seoDescAr": null,
+  "seoDescEn": null,
+  "publishedAt": "2026-11-03T08:37:04.103419+00:00"
+ },
  "/catalog/projects/dawah-umrah": {
-  "id": "01a174b0-42db-7b8e-8a72-1472b3df0e89",
+  "id": "01a1a08b-e5d3-7fe1-b9a8-0f468dce4cab",
   "slug": "dawah-umrah",
   "status": "published",
   "titleAr": "العمرة الدعوية",
@@ -739,7 +3317,7 @@
   "coverAltEn": null,
   "badge": null,
   "category": {
-   "id": "01a174b0-3f86-7e51-9584-96ab64b96ae4",
+   "id": "01a1a08b-e287-7a44-87b1-4c069744103e",
    "slug": "dawah",
    "nameAr": "الدعوة",
    "nameEn": "Dawah"
@@ -748,7 +3326,7 @@
   "minAmount": "10.00",
   "options": [
    {
-    "id": "01a174b0-42db-78f9-a8bb-c67df6392fee",
+    "id": "01a1a08b-e5d3-759c-be1d-f5575dc0c572",
     "labelAr": "تكلفة المعتمر",
     "labelEn": "One pilgrim",
     "amount": "150.00"
@@ -758,10 +3336,10 @@
   "seoTitleEn": "Dawah Umrah",
   "seoDescAr": "تكفّل بتكاليف معتمر في رحلة دعوية.",
   "seoDescEn": null,
-  "publishedAt": "2026-10-25T20:11:08.956054+00:00"
+  "publishedAt": "2026-11-03T08:34:43.873212+00:00"
  },
  "/catalog/projects/iftar-meals": {
-  "id": "01a174b0-4492-798c-9538-de8576e27b25",
+  "id": "01a1a08b-e6ec-7718-bcc7-57ab8e0cb9d3",
   "slug": "iftar-meals",
   "status": "published",
   "titleAr": "إفطار صائم",
@@ -775,7 +3353,7 @@
   "coverAltEn": null,
   "badge": null,
   "category": {
-   "id": "01a174b0-407d-7d40-90fc-9f515d9c666b",
+   "id": "01a1a08b-e369-7817-bd92-01a2cb76917e",
    "slug": "relief",
    "nameAr": "الإغاثة",
    "nameEn": "Relief"
@@ -787,10 +3365,10 @@
   "seoTitleEn": "Iftar meals",
   "seoDescAr": "وجبات إفطار للصائمين.",
   "seoDescEn": null,
-  "publishedAt": "2026-10-25T20:11:08.956054+00:00"
+  "publishedAt": "2026-11-03T08:34:43.873212+00:00"
  },
  "/catalog/projects/learner-support": {
-  "id": "01a174b0-4504-7f58-ace6-270e55a31d9c",
+  "id": "01a1a08b-e73e-7c87-88aa-4ff3849dc062",
   "slug": "learner-support",
   "status": "published",
   "titleAr": "دعم المتعلمين",
@@ -804,7 +3382,7 @@
   "coverAltEn": null,
   "badge": null,
   "category": {
-   "id": "01a174b0-4001-7241-a5ae-55db445028b0",
+   "id": "01a1a08b-e31b-7abd-88c4-606cbc713736",
    "slug": "education",
    "nameAr": "التعليم",
    "nameEn": "Education"
@@ -816,10 +3394,10 @@
   "seoTitleEn": "Learner support",
   "seoDescAr": "ادعم المتعلمين في برامج الجمعية.",
   "seoDescEn": null,
-  "publishedAt": "2026-10-25T20:11:08.956054+00:00"
+  "publishedAt": "2026-11-03T08:34:43.873212+00:00"
  },
  "/catalog/projects/print-a-title": {
-  "id": "01a174b0-41d9-7f35-be63-a1849291cdbb",
+  "id": "01a1a08b-e4ec-7af2-b5c2-adcaa0d89990",
   "slug": "print-a-title",
   "status": "published",
   "titleAr": "طباعة كتاب",
@@ -833,7 +3411,7 @@
   "coverAltEn": null,
   "badge": "new",
   "category": {
-   "id": "01a174b0-4001-7241-a5ae-55db445028b0",
+   "id": "01a1a08b-e31b-7abd-88c4-606cbc713736",
    "slug": "education",
    "nameAr": "التعليم",
    "nameEn": "Education"
@@ -842,13 +3420,13 @@
   "minAmount": "10.00",
   "options": [
    {
-    "id": "01a174b0-41e9-7b0d-8192-90117607bc41",
+    "id": "01a1a08b-e4ff-7956-ba2d-f40c212ac047",
     "labelAr": "نسخة عربية",
     "labelEn": "Arabic copy",
     "amount": "4.00"
    },
    {
-    "id": "01a174b0-41eb-72a8-8802-13b633cfed37",
+    "id": "01a1a08b-e502-7dcb-8e06-97f57b624015",
     "labelAr": "نسخة مترجمة",
     "labelEn": "Translated copy",
     "amount": "5.00"
@@ -858,10 +3436,10 @@
   "seoTitleEn": "Print a title",
   "seoDescAr": "ساهم في طباعة نسخ عربية ومترجمة توزّع مجانًا.",
   "seoDescEn": null,
-  "publishedAt": "2026-10-25T20:11:08.956054+00:00"
+  "publishedAt": "2026-11-03T08:34:43.873212+00:00"
  },
  "/catalog/projects/support-a-daiya": {
-  "id": "01a174b0-4331-702f-bb8b-59fa998d35ff",
+  "id": "01a1a08b-e61f-7def-99c5-b3d66e0d4446",
   "slug": "support-a-daiya",
   "status": "published",
   "titleAr": "كفالة داعية",
@@ -875,7 +3453,7 @@
   "coverAltEn": null,
   "badge": "urgent",
   "category": {
-   "id": "01a174b0-3f86-7e51-9584-96ab64b96ae4",
+   "id": "01a1a08b-e287-7a44-87b1-4c069744103e",
    "slug": "dawah",
    "nameAr": "الدعوة",
    "nameEn": "Dawah"
@@ -884,25 +3462,25 @@
   "minAmount": "10.00",
   "options": [
    {
-    "id": "01a174b0-4331-7ef4-8bc0-b367419eeb82",
+    "id": "01a1a08b-e61f-798e-b6c4-b7e52426969c",
     "labelAr": "ساعة",
     "labelEn": "One hour",
     "amount": "25.00"
    },
    {
-    "id": "01a174b0-4331-7b30-8421-2cdc332beb93",
+    "id": "01a1a08b-e61f-761c-8efa-c40aae0cccdf",
     "labelAr": "يوم",
     "labelEn": "One day",
     "amount": "100.00"
    },
    {
-    "id": "01a174b0-4331-73ba-bb5c-82c326fff861",
+    "id": "01a1a08b-e61f-793e-bdc4-2ff58a5fba9d",
     "labelAr": "أسبوع",
     "labelEn": "One week",
     "amount": "500.00"
    },
    {
-    "id": "01a174b0-4331-74c1-8340-acc821d158bc",
+    "id": "01a1a08b-e61f-7905-8dd2-91ba280201fa",
     "labelAr": "شهر",
     "labelEn": "One month",
     "amount": "2000.00"
@@ -912,10 +3490,10 @@
   "seoTitleEn": "Support a daiya",
   "seoDescAr": "اكفل داعية بالساعة أو اليوم أو الأسبوع أو الشهر.",
   "seoDescEn": null,
-  "publishedAt": "2026-10-25T20:11:08.956054+00:00"
+  "publishedAt": "2026-11-03T08:34:43.873212+00:00"
  },
  "/catalog/projects/water-wells": {
-  "id": "01a174b0-43b6-77fe-9eef-2abc0ce2cc6f",
+  "id": "01a1a08b-e67c-7815-9011-3cc6378cfb28",
   "slug": "water-wells",
   "status": "published",
   "titleAr": "سقيا الماء",
@@ -929,7 +3507,7 @@
   "coverAltEn": null,
   "badge": null,
   "category": {
-   "id": "01a174b0-407d-7d40-90fc-9f515d9c666b",
+   "id": "01a1a08b-e369-7817-bd92-01a2cb76917e",
    "slug": "relief",
    "nameAr": "الإغاثة",
    "nameEn": "Relief"
@@ -941,6 +3519,6 @@
   "seoTitleEn": "Water wells",
   "seoDescAr": "حفر الآبار وتوفير الماء النظيف.",
   "seoDescEn": null,
-  "publishedAt": "2026-10-25T20:11:08.956054+00:00"
+  "publishedAt": "2026-11-03T08:34:43.873212+00:00"
  }
 }

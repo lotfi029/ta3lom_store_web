@@ -167,6 +167,26 @@ export function problemMessage(problem: ProblemLike): string {
 
     case 'order.not_found':
       return $localize`:@@store.error.order-not-found:لم نجد هذا التبرع.`;
+    case 'payment.gateway_unavailable':
+      return $localize`:@@store.error.payment-gateway-unavailable:تعذّر الوصول إلى بوابة الدفع الآن. تبرعك محفوظ؛ حاول الدفع مرة أخرى بعد قليل.`;
+    case 'payment.not_payable':
+      return $localize`:@@store.error.payment-not-payable:لم يعد هذا التبرع بانتظار الدفع، أو انتهت مهلة دفعه.`;
+    case 'payment.webhook_invalid':
+      return $localize`:@@store.error.payment-webhook-invalid:تعذّر التحقق من إشعار الدفع.`;
+    case 'payment.unknown_provider':
+      return $localize`:@@store.error.payment-unknown-provider:بوابة الدفع غير معروفة.`;
+    case 'payment.refund_exceeds':
+      return $localize`:@@store.error.payment-refund-exceeds:المبلغ أكبر مما يمكن استرداده من هذا التبرع.`;
+    case 'payment.refund_failed':
+      return $localize`:@@store.error.payment-refund-failed:رفضت بوابة الدفع الاسترداد، ولم يتغير شيء في التبرع.`;
+    case 'payment.refund_not_allowed':
+      return $localize`:@@store.error.payment-refund-not-allowed:لا يوجد دفع مكتمل لهذا التبرع يمكن استرداده.`;
+    case 'payment.review_required':
+      return $localize`:@@store.error.payment-review-required:الدفعة قيد المراجعة؛ استخدم إجراءات المراجعة (قبول أو استرداد).`;
+    case 'payment.not_in_review':
+      return $localize`:@@store.error.payment-not-in-review:لا توجد دفعة قيد المراجعة لهذا التبرع.`;
+    case 'receipt.not_available':
+      return $localize`:@@store.error.receipt-not-available:الإيصال غير متاح لهذا التبرع بعد.`;
     case 'order.cancel_not_allowed':
       return $localize`:@@store.error.order-cancel-not-allowed:لا يمكن إلغاء هذا الطلب في حالته الحالية.`;
 
@@ -337,6 +357,16 @@ export const R5_ERROR_CODES: readonly string[] = [
   'checkout.contact_required',
   'order.not_found',
   'order.cancel_not_allowed',
+  'payment.gateway_unavailable',
+  'payment.not_payable',
+  'payment.webhook_invalid',
+  'payment.unknown_provider',
+  'payment.refund_exceeds',
+  'payment.refund_failed',
+  'payment.refund_not_allowed',
+  'payment.review_required',
+  'payment.not_in_review',
+  'receipt.not_available',
   'staff.email_taken',
   'staff.last_admin',
   'media.alt_required',

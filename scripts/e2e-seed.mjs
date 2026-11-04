@@ -4,11 +4,13 @@
  *   Staff: one per R5 role (admin via the API's `create-admin` CLI; store_manager, finance and viewer created by that
  *   admin). Each is signed in once: password → TOTP set-up (the secret is recorded) → the forced password change of
  *   new staff (a new strong password is recorded). Credentials: e2e/.auth/staff.json (git-ignored, E-4).
- *   Catalogue: the API's Development seed (3 categories, 6 published projects with options) — nothing to add here.
+ *   Catalogue: the API's Development seed (3 categories, 6 projects) + the Option C set (scripts/seed-catalogue.mjs:
+ *   7 more categories, one empty, and 22 projects) added by the store_manager through the admin API.
  */
 import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
 import { Client, readStaff, staffLogin, writeStaff } from './lib/store-api-client.mjs';
+import { seedCatalogue } from './seed-catalogue.mjs';
 
 const API_DIR = process.env.STORE_API_DIR ?? join(process.cwd(), '..', 'ta3lom_store_api');
 const DLL = join(API_DIR, 'src/Ta3lom.Store.Api/bin/Debug/net10.0/Ta3lom.Store.Api.dll');
@@ -36,7 +38,10 @@ async function ensureAdmin(staff) {
     }
   }
   const email = `e2e-admin-${Date.now().toString(36)}@store-web.test`;
-  const out = execFileSync('dotnet', [DLL, 'create-admin', '--email', email, '--name', 'E2E Admin'], {
+  // STORE_ADMIN_CLI (F10 full-stack run): the API's own CLI in its container, e.g. `docker exec t3s-fs-api dotnet
+  // Ta3lom.Store.Api.dll`; default: the local Debug build.
+  const cli = process.env.STORE_ADMIN_CLI?.split(' ').filter(Boolean) ?? ['dotnet', DLL];
+  const out = execFileSync(cli[0], [...cli.slice(1), 'create-admin', '--email', email, '--name', 'E2E Admin'], {
     cwd: join(API_DIR, 'src/Ta3lom.Store.Api'),
     encoding: 'utf8',
   });
@@ -69,6 +74,8 @@ async function ensureRole(admin, staff, role) {
 const staff = readStaff();
 const admin = await ensureAdmin(staff);
 for (const role of ROLES) await ensureRole(admin, staff, role);
+writeStaff(staff);
+await seedCatalogue(await staffLogin(staff.store_manager), log);
 writeStaff(staff);
 const pub = await new Client().call('GET', '/v1/catalog/projects?pageSize=100');
 const cats = await new Client().call('GET', '/v1/catalog/categories');

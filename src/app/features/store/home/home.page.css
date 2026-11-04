@@ -1,165 +1,254 @@
-/* Prototype store hero (.hero, .search, .acc) and section heads, semantic tokens only. */
-.hero {
-  background: var(--c-surface-indigo);
-  color: var(--c-on-brand);
-  position: relative;
-  overflow: hidden;
-  padding: 0;
+/* Option C home (docs/r5/home-option-c-spec.md §3 rows 4–7), semantic tokens only. */
+:host {
+  display: block;
+  background: var(--c-surface-2);
 }
 
-.hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(900px 520px at 50% -10%, var(--c-hero-glow-brand), transparent 60%),
-    radial-gradient(700px 400px at 85% 70%, var(--c-hero-glow-gold), transparent 60%);
+.wrap {
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: var(--space-6);
+  padding-block: var(--space-6) var(--space-10);
 }
 
-.hero .wrap {
-  position: relative;
-  z-index: 1;
-  padding-block: 72px 56px;
+@media (width < 600px) {
+  .wrap {
+    padding-inline: var(--space-4);
+    padding-block-start: var(--space-4);
+  }
+}
+
+/* Bands inside the page wrap: no global <section> page padding (base.css). */
+.top,
+.list {
+  padding-block: 0;
+}
+
+/* Row 4 — banner (2/3) + quick donate (1/3); the quick donate takes the row when there is no banner. */
+.top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-5);
+  margin-block-end: var(--space-6);
+}
+
+@media (width >= 900px) {
+  .top {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  }
+
+  .top.solo {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.qcard {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.eyebrow-hero {
-  display: inline-block;
-  font-size: 0.8rem;
-  font-weight: 500;
-  margin-block-end: 12px;
-  padding-block: 4px;
-  padding-inline: 12px;
-  border-radius: var(--rp);
-  background: var(--c-gold-glass);
-  color: var(--c-gold-on-dark);
-}
-
-.hero h1 {
-  font-size: clamp(2.3rem, 6.4vw, 4.4rem);
-  line-height: 1.1;
-  color: var(--c-on-brand);
-  max-inline-size: 16ch;
-  margin: 0;
-}
-
-.hero h1 em {
-  font-style: normal;
-  color: var(--c-gold-on-dark);
-}
-
-.lede {
-  color: var(--c-on-dark-78);
-  font-size: 1.1rem;
-  margin-block: 22px 30px;
-  margin-inline: auto;
-  max-inline-size: 56ch;
-}
-
-.hsearch {
-  display: flex;
-  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  border-radius: var(--r-lg);
   background: var(--c-surface);
-  border-radius: var(--rp);
-  padding-block: 6px;
-  padding-inline: 22px 6px;
-  inline-size: min(640px, 100%);
-  margin-block: 34px 0;
-  margin-inline: auto;
-  box-shadow: 0 10px 40px var(--c-media-shade-25);
-}
-
-.hsearch input {
-  border: 0;
-  background: none;
-  flex: 1;
+  border: 1px solid var(--c-border);
   min-inline-size: 0;
-  font: inherit;
-  font-size: 0.95rem;
-  padding-block: 8px;
-  color: var(--c-text);
 }
 
-.hsearch input::placeholder {
-  color: var(--c-muted);
+.qcard ta-quick-donate-form {
+  flex: 1;
 }
 
-.hsearch input:focus-visible {
-  outline: none;
-}
-
-.hsearch:focus-within {
-  outline: 2px solid var(--c-on-brand);
-  outline-offset: 2px;
-}
-
-.hsearch button {
-  font: inherit;
-  font-weight: 600;
-  min-block-size: 44px;
-  padding-inline: 20px;
-  border: 0;
-  border-radius: var(--rp);
-  background: var(--c-brand-strong);
-  color: var(--c-on-brand);
-  cursor: pointer;
-}
-
-.list {
-  padding-block: 40px 64px;
-  scroll-margin-block-start: 80px;
-}
-
-.list:focus {
-  outline: none;
-}
-
-.sec-head {
-  margin-block-end: 20px;
-}
-
-.sec-title {
-  font-size: clamp(1.5rem, 3.4vw, 2.1rem);
+.qc-h {
   margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
 }
 
-.sec-lede {
-  margin-block: 6px 0;
-  color: var(--c-muted);
+/* Row 5 — filter bar */
+.list {
+  scroll-margin-block-start: 96px;
 }
 
-.toolbar {
+.fbar {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  gap: 12px 24px;
-  margin-block-end: 28px;
+  gap: var(--space-3);
+  padding-block: var(--space-3);
+  padding-inline: var(--space-4);
+  margin-block-end: var(--space-5);
+  border-radius: var(--rc);
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  scroll-margin-block-start: 96px;
 }
 
-.toolbar .filters {
+.fhead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-4);
+  min-inline-size: 0;
+}
+
+.count {
   margin: 0;
-  flex: 1 1 420px;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.count:focus {
+  outline: none;
+}
+
+.count:focus-visible {
+  outline: 2px solid var(--c-focus);
+  outline-offset: 4px;
+}
+
+.cname {
+  color: var(--c-link);
+  margin-inline-end: var(--space-2);
+}
+
+.for {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-3);
+  color: var(--c-muted);
+  font-size: 0.9rem;
+}
+
+.clear {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+  color: var(--c-link);
 }
 
 .sort {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-2);
   font-size: 0.9rem;
+  color: var(--c-text-2);
 }
 
 .sort select {
   font: inherit;
   min-block-size: 44px;
-  padding-inline: 12px;
-  border-radius: var(--rp);
+  padding-inline: var(--space-3);
+  border-radius: var(--r);
   border: 1px solid var(--c-border);
   background: var(--c-surface);
   color: var(--c-text);
+}
+
+/* Row 6 — the grid: 4 columns on desktop, 2 on tablet, 1 on phone. */
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-5);
+}
+
+@media (width < 600px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.skel-card {
+  display: grid;
+  gap: var(--space-3);
+  padding-block-end: var(--space-4);
+  border-radius: var(--rc);
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  overflow: hidden;
+}
+
+.sk-media {
+  aspect-ratio: 3 / 2;
+  border-radius: 0;
+}
+
+.sk-line {
+  block-size: 14px;
+  margin-inline: var(--space-4);
+}
+
+.sk-line.short {
+  inline-size: 60%;
+}
+
+/* Row 7 — pagination */
+.pager {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-2);
+  margin-block-start: var(--space-8);
+}
+
+.pg {
+  display: inline-grid;
+  place-items: center;
+  min-inline-size: 46px;
+  min-block-size: 46px;
+  padding-inline: var(--space-3);
+  border-radius: var(--r);
+  border: 1px solid var(--c-border);
+  background: var(--c-surface);
+  color: var(--c-text);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.pg:hover {
+  border-color: var(--c-text);
+}
+
+.pg[aria-current='page'] {
+  background: var(--c-inverse);
+  border-color: var(--c-inverse);
+  color: var(--c-on-inverse);
+}
+
+.pg.step {
+  padding-inline: var(--space-5);
+}
+
+.gap {
+  color: var(--c-muted);
+  padding-inline: var(--space-1);
+}
+
+/* Empty, no results, unknown category */
+.empty {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+  padding-block: var(--space-9);
+  padding-inline: var(--space-4);
+  text-align: center;
+  border-radius: var(--rc);
+  background: var(--c-surface);
+  border: 1px dashed var(--c-border-2);
+}
+
+.empty h3,
+.empty p {
+  margin: 0;
+}
+
+.empty p {
+  color: var(--c-muted);
 }
 
 .reset {
@@ -174,31 +263,28 @@
   font-weight: 600;
 }
 
-.trust {
-  padding-block: 0 56px;
-}
-
-.trust p {
+/* P5: a failed refresh keeps the prerendered data on screen and says so. */
+.stale {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin: 0;
-  color: var(--c-muted);
-  font-size: 0.88rem;
+  gap: var(--space-2) var(--space-3);
+  margin-block: 0 var(--space-4);
+  padding-block: var(--space-2);
+  padding-inline: var(--space-4);
+  border-radius: var(--r);
+  background: var(--c-gold-tint);
+  color: var(--c-warn-text);
+  font-size: 0.9rem;
 }
 
-.hquick {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-block-size: 48px;
-  margin-block-end: 8px;
-  padding-inline: 24px;
-  border: 0;
-  border-radius: var(--rp);
-  background: var(--c-on-brand);
-  color: var(--c-text);
+.retry {
+  min-block-size: 44px;
+  padding-inline: var(--space-4);
+  border-radius: var(--r);
+  border: 1px solid currentcolor;
+  background: none;
+  color: inherit;
   font: inherit;
   font-weight: 600;
   cursor: pointer;

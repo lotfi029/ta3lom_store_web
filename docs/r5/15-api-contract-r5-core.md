@@ -1,4 +1,4 @@
-# 15: Store API HTTP contract (R5-Core, main @ 7b2e22e — derived from code)
+# 15: Store API HTTP contract — v2 (R5-Core + R5-Payments)
 
 > **Source of truth since API `cd26a80` (lotfi029/ta3lom_store_api#15):** the OpenAPI document published by the API CI as
 > the artifact **`store-api-openapi`**, mirrored in this repo as `docs/openapi/store-api.v1.json` (`npm run api:openapi`,
@@ -20,6 +20,80 @@ Source: `lotfi029/…/api` at `main` **7b2e22e** (ASP.NET Core minimal APIs, .NE
 `src/Ta3lom.Store.Api` (endpoints, security, filters), `src/Ta3lom.Store.Application` (DTOs, handlers, FluentValidation validators),
 `src/Ta3lom.Store.Domain` (errors, enums, constants, value objects) and `appsettings*.json`. In Development the live OpenAPI is at
 `/openapi/v1.json` and Scalar at `/docs`.
+
+
+## v2 — R5-Payments (API `final/api-payments-hosting` @ 8419a46, lotfi029/ta3lom_store_api#17)
+
+The OpenAPI snapshot `docs/openapi/store-api.v1.json` is regenerated from that branch (F5a) and stays the source of
+truth; this section summarises what v2 adds on top of R5-Core (§1–§5 below are unchanged unless noted). Payments
+follow ADR-S05: the donor pays on the gateway's **hosted page**; only the verified webhook or the reconciliation job
+settles an order; a return URL never does.
+
+**Order lifecycle.** `pending_payment` → `paid` (exact amount captured) | `payment_review` (mismatch, late or double
+payment: staff accept or refund) | `expired` (unpaid past `paymentDueAt`, job every 5 min) | `cancelled`;
+`paid` → `refunded` (full refund; a partial refund keeps `paid` and raises `refundedAmount`). Wire values are
+snake_case as in §1.9; `refunded` is new.
+
+**Checkout and paying**
+- `POST /v1/checkout` (unchanged request, Idempotency-Key bound to the body) → 201 adds `payment`
+  `{ redirectUrl, expiresAt }` (the gateway's hosted page; null when the gateway call failed) and `paymentError`
+  (a problem `code`, e.g. `payment.gateway_unavailable`, when it did). The gateway is called after the order is committed;
+  a replay without a `redirectUrl` retries the gateway.
+- `POST /v1/orders/{reference}/pay` (owner or `?t=` status token; Idempotency-Key; RL `pay`) → 200
+  `{ reference, payment: { redirectUrl, expiresAt } }`: a new attempt for an order whose last attempt failed.
+  409 `payment.not_payable` (with `orderStatus`), 409 `payment.review_required`, 503 `payment.gateway_unavailable`.
+- `GET /v1/orders/{reference}/status?t=` adds `paymentStatus` (`initiated` | `captured` | `failed` | `cancelled` |
+  `review` | `refunded`, null before any attempt), `canRetryPayment`, `receiptAvailable`, `receiptNumber`
+  (`DR-YYYY-NNNNNN`), `paidAt`, `refundedAmount`.
+
+**Webhook** — `POST /v1/payments/webhooks/{provider}` (`moyasar`; anonymous, no CORS, own RL `webhook`, body ≤ 256 KB
+checked before reading → 413). The shared secret in the body is compared in constant time (401
+`payment.webhook_invalid` otherwise); each event is stored once per (provider, event id); the payment is re-fetched
+from the gateway before settling; unknown event types are recorded and answered 200. 404 `payment.unknown_provider`.
+
+**Receipts** — `GET /v1/orders/{reference}/receipt?t=[&kind=drc]` and `GET /v1/me/donations/{reference}/receipt[?kind=drc]` (default: the DR)
+→ `application/pdf`, `Content-Disposition: attachment; filename="DR-…pdf"` (exposed to CORS), `Cache-Control:
+no-store`; 404 `receipt.not_available`. DR numbers are gapless per Riyadh year (DRC for cancellation receipts voiding a
+DR); PDFs are private files rendered by QuestPDF with the Arabic total in words.
+
+**Finance (staff, new policy `staff:finance` = admin, finance; RL `admin`; every body carries the order `version`)**
+- `POST /v1/admin/orders/{reference}/refunds` `{ amount, reason, version }` + Idempotency-Key → 200
+  `AdminPaymentActionResponse { reference, status, totalAmount, refundedAmount, receiptNumber, version }`.
+  422 `payment.refund_exceeds` (with `refundable`), 409 `payment.refund_not_allowed`, 502 `payment.refund_failed`
+  (nothing changed), 409 `concurrency.conflict`.
+- `POST /v1/admin/orders/{reference}/review/accept` `{ version, reason? }` → paid + DR; 409 `payment.not_in_review`.
+- `POST /v1/admin/orders/{reference}/review/refund` `{ version, reason }` + Idempotency-Key → refunds the reviewed payment.
+- `POST /v1/admin/orders/{reference}/receipt/resend` + Idempotency-Key → SMS + e-mail with the PDF again.
+- `GET /v1/admin/reports/donations.csv?from&to` (Riyadh dates, ≤ 366 days) → `text/csv` UTF-8 with BOM, masked
+  mobiles, formula-safe cells.
+- `GET /v1/admin/orders/{reference}` adds `version`, `paidAt`, `refundedAmount`, `refundable`, `reviewReason`,
+  `payments[]` (`AdminPaymentRow`: id, attemptNo, provider, status, method, amount, capturedAmount, refundedAmount,
+  initiatedAt, capturedAt, failureMessage, reviewReason), `events[]` (type, outcome, signatureValid, receivedAt),
+  `refunds[]` (id, amount, status, reason, requestedBy, requestedAt, completedAt), `receipts[]` (number, series,
+  amount, issuedAt, voidedBy).
+- `GET /v1/admin/dashboard` adds `paidToday` / `paidThisWeek` / `paidThisMonth` (`{ amount, count }`, net of refunds,
+  Riyadh), `pendingOrders`, `inReviewOrders`, `topProjectsByPaidAmount[]`.
+- Settings: `receipt_org_name_ar|en`, `receipt_licence_no`, `receipt_vat_note_ar|en`, `receipt_signature_asset_id`.
+  Templates: `order_paid`, `refund_processed` (SMS + e-mail; variables add `receipt_number`, `link`).
+
+**New error codes** (ar/en texts in the API resx; the web's problem messages cover each):
+| Code | Status |
+|---|---|
+| `payment.gateway_unavailable` | 503 |
+| `payment.not_payable` | 409 (+ `orderStatus`) |
+| `payment.webhook_invalid` | 401 |
+| `payment.unknown_provider` | 404 |
+| `payment.refund_exceeds` | 422 (+ `refundable`) |
+| `payment.refund_failed` | 502 |
+| `payment.refund_not_allowed` | 409 (+ `orderStatus`) |
+| `payment.review_required` | 409 |
+| `payment.not_in_review` | 409 (+ `orderStatus`) |
+| `receipt.not_available` | 404 |
+
+**CORS (Production)** adds `https://ta3lom.sa` and `https://www.ta3lom.sa` (credentials) for the main site's cart badge.
+
+**Development only** (refused elsewhere): `/dev/payments/{id}` (fake hosted page: `pay`, `fail`, `wrong-amount`, each
+posting a signed webhook through the real handler), `POST /dev/clock { advanceMinutes | reset }`, `POST /dev/jobs/{name}`.
 
 ---
 

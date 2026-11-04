@@ -79,6 +79,11 @@ export const ADMIN_ROUTES: Routes = [
         loadComponent: () => import('./templates/templates.page').then((m) => m.TemplatesPage),
       },
       {
+        path: 'reports',
+        canActivate: [staffPolicyGuard('staff:finance')],
+        loadComponent: () => import('./reports/reports.page').then((m) => m.ReportsPage),
+      },
+      {
         path: 'audit',
         canActivate: [staffPolicyGuard('staff:admin')],
         loadComponent: () => import('./audit/audit.page').then((m) => m.AuditPage),

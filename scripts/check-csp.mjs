@@ -1,88 +1,56 @@
 #!/usr/bin/env node
 /**
- * Build gate (runs after postbuild in `npm run build` / `build:ci`): the CSP in deploy/caddy-headers.conf
- * must allow EXACTLY the inline scripts the build emits, and the build must emit nothing that
- * only 'unsafe-inline' would allow (CR-01 FE-1, ADR-011).
- *
- * Walks every built HTML page in both locales and fails when:
- *   - an inline executable <script> has a sha256 that is not in script-src — this is the "the
- *     theme script and its hash drifted" guard; it prints the exact token to paste;
- *   - script-src lists a hash that no page uses any more (stale — tidy it away);
- *   - any element carries an inline event-handler attribute (onload=, onclick=, …) or a
- *     `javascript:` URL — a hash cannot allow those, and 'unsafe-hashes' is not in the policy;
- *   - script-src contains 'unsafe-inline' or 'unsafe-eval'.
- *
- * Data blocks (`type="application/json"`, `application/ld+json` — Angular's ng-state and the SEO
- * JSON-LD) are not scripts and CSP does not apply to them, so they are skipped.
- * The hash is over the element's text exactly as served — the bytes in the built file.
+ * Build gate (after gen-csp.mjs in `postbuild:checks`): the generated policy (dist/store-web/caddy/csp.conf, owner H-3)
+ * allows EXACTLY the inline scripts the build emits and nothing that only 'unsafe-inline' would allow (CR-01 FE-1).
+ * Fails when:
+ *   - an inline executable <script> has a sha256 that is not in script-src, or script-src lists a hash no page uses;
+ *   - any element carries an inline event-handler attribute (onload=, onclick=, …) or a `javascript:` URL;
+ *   - script-src contains 'unsafe-inline' or 'unsafe-eval';
+ *   - connect-src does not allow exactly 'self' + the environment's API origin (+ the error-report origin when set);
+ *   - frame-ancestors is not 'none'.
+ * Data blocks (`application/json`, `application/ld+json`) are not scripts and are skipped.
  */
-import { createHash } from 'node:crypto';
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
-import { join, relative } from 'node:path';
-import { directives, readCsp } from './lib/csp.mjs';
+import { readFileSync } from 'node:fs';
+import { relative } from 'node:path';
+import { BROWSER_DIR, directives, htmlFiles, inlineScriptHashes, readCsp } from './lib/csp.mjs';
+import { deployEnv } from './lib/envs.mjs';
 
-const BROWSER_DIR = join(process.cwd(), 'dist', 'store-web', 'browser');
-const DATA_TYPES = new Set(['application/json', 'application/ld+json']);
-
-function htmlFiles(dir) {
-  return readdirSync(dir).flatMap((name) => {
-    const path = join(dir, name);
-    if (statSync(path).isDirectory()) return htmlFiles(path);
-    return name.endsWith('.html') ? [path] : [];
-  });
-}
-
-if (!existsSync(BROWSER_DIR)) {
-  console.error('check-csp: dist/store-web/browser not found — build first.');
-  process.exit(1);
-}
-
-const scriptSrc = directives(readCsp())['script-src'] ?? [];
+const env = deployEnv();
+const d = directives(readCsp());
+const scriptSrc = d['script-src'] ?? [];
 const allowed = new Set(scriptSrc.filter((v) => v.startsWith("'sha256-")));
 const problems = [];
-if (scriptSrc.includes("'unsafe-inline'") || scriptSrc.includes("'unsafe-eval'")) {
+if (scriptSrc.includes("'unsafe-inline'") || scriptSrc.includes("'unsafe-eval'"))
   problems.push("script-src must never contain 'unsafe-inline' or 'unsafe-eval'");
-}
+if ((d['frame-ancestors'] ?? []).join(' ') !== "'none'") problems.push("frame-ancestors must be 'none'");
 
-const used = new Map(); // token -> first page it appeared on
-let pages = 0;
-// Both locale trees, plus the web-root fallback page (deploy/index.html, copied by postbuild.mjs).
-const rootPages = readdirSync(BROWSER_DIR).filter((name) => name.endsWith('.html')).map((name) => join(BROWSER_DIR, name));
-for (const files of [htmlFiles(join(BROWSER_DIR, 'ar')), htmlFiles(join(BROWSER_DIR, 'en')), rootPages]) {
-  for (const file of files) {
-    pages += 1;
-    const page = relative(BROWSER_DIR, file);
-    // Comments first: a comment may legitimately mention "<script>" or "onload=".
-    const html = readFileSync(file, 'utf8').replace(/<!--[\s\S]*?-->/g, '');
+const api = new URL(env.apiUrl).origin;
+const report = env.errorReportUrl ? new URL(env.errorReportUrl).origin : null;
+const wantConnect = ["'self'", api, ...(report && report !== api ? [report] : [])].sort().join(' ');
+const haveConnect = [...(d['connect-src'] ?? [])].sort().join(' ');
+if (haveConnect !== wantConnect)
+  problems.push(`connect-src is "${haveConnect}", expected "${wantConnect}" for DEPLOY_ENV=${env.name}`);
 
-    for (const m of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)) {
-      const attrs = m[1];
-      if (/\ssrc\s*=/i.test(attrs)) continue;
-      const type = /\stype\s*=\s*["']?([^"'\s>]+)/i.exec(attrs)?.[1]?.toLowerCase();
-      if (type && DATA_TYPES.has(type)) continue;
-      const token = `'sha256-${createHash('sha256').update(m[2], 'utf8').digest('base64')}'`;
-      if (!used.has(token)) used.set(token, { page, preview: m[2].slice(0, 70).replace(/\s+/g, ' ') });
-    }
-
-    const markup = html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '');
-    for (const m of markup.matchAll(/<[a-z][\w-]*\s[^>]*?\s(on[a-z]+)\s*=/gi)) {
-      problems.push(`${page}: inline event handler ${m[1]}= — CSP blocks it; move it into code`);
-    }
-    if (/\s(?:href|src|action)\s*=\s*["']\s*javascript:/i.test(markup)) problems.push(`${page}: a javascript: URL`);
-  }
+const used = inlineScriptHashes(BROWSER_DIR);
+const pages = htmlFiles(BROWSER_DIR);
+for (const file of pages) {
+  const page = relative(BROWSER_DIR, file);
+  const markup = readFileSync(file, 'utf8')
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '');
+  for (const m of markup.matchAll(/<[a-z][\w-]*\s[^>]*?\s(on[a-z]+)\s*=/gi))
+    problems.push(`${page}: inline event handler ${m[1]}= — CSP blocks it; move it into code`);
+  if (/\s(?:href|src|action)\s*=\s*["']\s*javascript:/i.test(markup)) problems.push(`${page}: a javascript: URL`);
 }
-
-for (const [token, where] of used) {
-  if (!allowed.has(token)) {
-    problems.push(`inline script not allowed by deploy/caddy-headers.conf — add ${token} to script-src\n      (first seen in ${where.page}: "${where.preview}…")`);
-  }
-}
-for (const token of allowed) {
-  if (!used.has(token)) problems.push(`script-src lists ${token}, which no built page uses — remove it`);
-}
+for (const [token, where] of used)
+  if (!allowed.has(token)) problems.push(`inline script ${token} not in the generated script-src (${where.page})`);
+for (const token of allowed) if (!used.has(token)) problems.push(`script-src lists ${token}, which no page uses`);
 
 if (problems.length) {
   console.error(`check-csp: ${problems.length} problem(s):\n  - ${problems.join('\n  - ')}`);
   process.exit(1);
 }
-console.log(`check-csp: ${pages} pages, ${used.size} inline script hash(es), all allowed by deploy/caddy-headers.conf; no inline handlers.`);
+console.log(
+  `check-csp: [${env.name}] ${pages.length} pages, ${used.size} inline script hash(es) allowed by the generated policy; connect-src ${wantConnect}; no inline handlers.`,
+);

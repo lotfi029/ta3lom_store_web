@@ -3,6 +3,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import type { ProjectDetail, SlugRedirect } from '../../../core/api/api.types';
 import { STORE_API_URL } from '../../../core/api/store-api-url';
 import { valueOf } from '../../../core/http/resource-value';
+import { sameJson } from '../../../core/http/same-json';
 
 /** `GET /v1/catalog/projects/{slug}` answers either the project or `{ redirectTo }` for an old slug (D-08). */
 export const isRedirect = (v: ProjectDetail | SlugRedirect | undefined): v is SlugRedirect =>
@@ -17,10 +18,13 @@ export const isRedirect = (v: ProjectDetail | SlugRedirect | undefined): v is Sl
 export class ProjectData {
   private readonly api = inject(STORE_API_URL);
   readonly slug = signal<string | null>(null);
-  readonly resource = httpResource<ProjectDetail | SlugRedirect>(() => {
-    const s = this.slug();
-    return s ? `${this.api}/catalog/projects/${encodeURIComponent(s)}` : undefined;
-  });
+  readonly resource = httpResource<ProjectDetail | SlugRedirect>(
+    () => {
+      const s = this.slug();
+      return s ? `${this.api}/catalog/projects/${encodeURIComponent(s)}` : undefined;
+    },
+    { equal: sameJson },
+  );
   private readonly value = computed(() => valueOf(this.resource));
   readonly detail = computed(() => {
     const v = this.value();

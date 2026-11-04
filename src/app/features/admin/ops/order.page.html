@@ -24,6 +24,27 @@
             }}</ta-status-pill>
           </p>
         </div>
+        <div class="act fin">
+          @if (canRefund()) {
+            <button type="button" class="btn" [disabled]="!canFinance()" aria-describedby="ao-fin-why"
+              (click)="openFinance('refund')" i18n="@@store.admin.refund">استرداد</button>
+          }
+          @if (inReview()) {
+            @if (x.status === 'payment_review') {
+              <button type="button" class="btn primary" [disabled]="!canFinance()" aria-describedby="ao-fin-why"
+                (click)="openFinance('accept')" i18n="@@store.admin.review-accept">قبول الدفعة</button>
+            }
+            <button type="button" class="btn danger" [disabled]="!canFinance()" aria-describedby="ao-fin-why"
+              (click)="openFinance('review-refund')" i18n="@@store.admin.review-refund">استرداد الدفعة قيد المراجعة</button>
+          }
+          @if (hasReceipt() && (x.status === 'paid' || x.status === 'refunded')) {
+            <button type="button" class="btn" [disabled]="!canFinance()" aria-describedby="ao-fin-why"
+              (click)="openFinance('resend')" i18n="@@store.admin.resend-receipt">إعادة إرسال الإيصال</button>
+          }
+          @if (canRefund() || inReview() || hasReceipt()) {
+            <ta-requires id="ao-fin-why" policy="staff:finance" />
+          }
+        </div>
         @if (x.status === 'pending_payment') {
           <div class="act">
             <button
@@ -124,9 +145,161 @@
           </dl>
         </section>
       </div>
+
+      <section class="panel pay" aria-labelledby="ao-pay-h">
+        <h2 id="ao-pay-h" i18n="@@store.admin.payments">الدفع</h2>
+        <dl class="kv">
+          @if (x.paidAt) {
+            <div>
+              <dt i18n="@@store.admin.paid-at">دُفع في</dt>
+              <dd>{{ i18n.formatDateTime(x.paidAt) }}</dd>
+            </div>
+          }
+          <div>
+            <dt i18n="@@store.order.refunded-amount">المبلغ المسترد</dt>
+            <dd><ta-money [value]="x.refundedAmount ?? '0.00'" /></dd>
+          </div>
+          @if (x.status === 'paid') {
+            <div>
+              <dt i18n="@@store.admin.refundable">قابل للاسترداد</dt>
+              <dd><ta-money [value]="x.refundable ?? '0.00'" /></dd>
+            </div>
+          }
+          @if (x.reviewReason) {
+            <div>
+              <dt i18n="@@store.admin.review-reason">سبب المراجعة</dt>
+              <dd>{{ x.reviewReason }}</dd>
+            </div>
+          }
+        </dl>
+        @if ((x.payments ?? []).length === 0) {
+          <p class="muted" i18n="@@store.admin.no-payments">لا توجد محاولات دفع بعد.</p>
+        } @else {
+          <div class="tbl-wrap">
+            <table class="atbl">
+              <caption class="visually-hidden" i18n="@@store.admin.payments-caption">محاولات الدفع</caption>
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col" i18n="@@store.order.status">الحالة</th>
+                  <th scope="col" i18n="@@store.admin.method">الوسيلة</th>
+                  <th scope="col" i18n="@@store.admin.captured">المدفوع</th>
+                  <th scope="col" i18n="@@store.order.refunded-amount">المبلغ المسترد</th>
+                  <th scope="col" i18n="@@store.admin.col-date">التاريخ</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (p of x.payments; track p.id) {
+                  <tr>
+                    <td><bdi>{{ int(p.attemptNo) }}</bdi></td>
+                    <td>
+                      <ta-status-pill [tone]="payLabel(p.status).tone">{{ payLabel(p.status).label }}</ta-status-pill>
+                      @if (p.failureMessage) {
+                        <small class="muted"> {{ p.failureMessage }}</small>
+                      }
+                    </td>
+                    <td>{{ methodLabel(p.method) }}</td>
+                    <td><ta-money [value]="p.capturedAmount" /></td>
+                    <td><ta-money [value]="p.refundedAmount" /></td>
+                    <td>{{ i18n.formatDateTime(p.capturedAt ?? p.initiatedAt) }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+        @if ((x.events ?? []).length > 0) {
+          <h3 i18n="@@store.admin.events">إشعارات بوابة الدفع</h3>
+          <ol class="timeline">
+            @for (e of x.events; track $index) {
+              <li>
+                <span class="mono">{{ e.type }}</span> · {{ outcomeLabel(e.outcome) }} ·
+                {{ i18n.formatDateTime(e.receivedAt) }}
+              </li>
+            }
+          </ol>
+        }
+        @if ((x.refunds ?? []).length > 0) {
+          <h3 i18n="@@store.admin.refunds">عمليات الاسترداد</h3>
+          <ul class="timeline">
+            @for (r of x.refunds; track r.id) {
+              <li>
+                <ta-money [value]="r.amount" /> · {{ r.status }} · {{ r.reason }} ·
+                <bdi dir="ltr">{{ r.requestedBy }}</bdi> · {{ i18n.formatDateTime(r.requestedAt) }}
+              </li>
+            }
+          </ul>
+        }
+        @if ((x.receipts ?? []).length > 0) {
+          <h3 i18n="@@store.admin.receipts">الإيصالات</h3>
+          <ul class="timeline">
+            @for (r of x.receipts; track r.number) {
+              <li>
+                <bdi dir="ltr" class="mono">{{ r.number }}</bdi> · <ta-money [value]="r.amount" /> ·
+                {{ i18n.formatDateTime(r.issuedAt) }}
+                @if (r.voidedBy) {
+                  · <span i18n="@@store.admin.voided-by">ألغاه</span> <bdi dir="ltr" class="mono">{{ r.voidedBy }}</bdi>
+                }
+              </li>
+            }
+          </ul>
+        }
+      </section>
     }
   </ta-resource-state>
 }
+
+<ta-dialog [open]="dialogOpen()" (openChange)="setDialogOpen($event)" labelledBy="ao-f-h" [lightDismiss]="false">
+  <form class="dlg" (submit)="$event.preventDefault(); runFinance()">
+    @switch (dialog()) {
+      @case ('refund') {
+        <h2 id="ao-f-h" i18n="@@store.admin.refund-q">استرداد مبلغ من هذا التبرع</h2>
+        <p i18n="@@store.admin.refund-lede">
+          يُعاد المبلغ إلى وسيلة الدفع نفسها ويُبلَّغ المتبرع. استرداد كامل المبلغ يُصدر إيصال إلغاء.
+        </p>
+        <div class="field">
+          <label for="ao-amount" i18n="@@store.admin.refund-amount">المبلغ (ر.س)</label>
+          <input id="ao-amount" inputmode="decimal" dir="ltr" autocomplete="off" [value]="refundAmount()"
+            (input)="refundAmount.set(text($event))" [attr.aria-invalid]="!refundValue()" />
+        </div>
+        <div class="field">
+          <label for="ao-reason" i18n="@@store.admin.refund-reason">السبب</label>
+          <input id="ao-reason" maxlength="500" [value]="refundReason()" (input)="refundReason.set(text($event))" />
+        </div>
+        <div class="field">
+          <label for="ao-typed" i18n="@@store.admin.refund-type-ref">اكتب الرقم المرجعي للتأكيد</label>
+          <input id="ao-typed" dir="ltr" autocomplete="off" [value]="typedRef()" (input)="typedRef.set(text($event))" />
+        </div>
+      }
+      @case ('accept') {
+        <h2 id="ao-f-h" i18n="@@store.admin.review-accept-q">قبول الدفعة قيد المراجعة؟</h2>
+        <p i18n="@@store.admin.review-accept-lede">
+          يُعدّ التبرع مدفوعًا بالكامل، ويُصدر إيصال التبرع ويُرسل إلى المتبرع.
+        </p>
+      }
+      @case ('review-refund') {
+        <h2 id="ao-f-h" i18n="@@store.admin.review-refund-q">استرداد الدفعة قيد المراجعة؟</h2>
+        <p i18n="@@store.admin.review-refund-lede">يُعاد كامل المبلغ المدفوع في هذه الدفعة إلى المتبرع.</p>
+        <div class="field">
+          <label for="ao-rreason" i18n="@@store.admin.refund-reason">السبب</label>
+          <input id="ao-rreason" maxlength="500" [value]="refundReason()" (input)="refundReason.set(text($event))" />
+        </div>
+      }
+      @case ('resend') {
+        <h2 id="ao-f-h" i18n="@@store.admin.resend-q">إعادة إرسال الإيصال إلى المتبرع؟</h2>
+        <p i18n="@@store.admin.resend-lede">تُرسل رسالة نصية وبريد إلكتروني مع ملف الإيصال.</p>
+      }
+    }
+    @if (financeError(); as e) {
+      <p class="err" role="alert">{{ e }}</p>
+    }
+    <div class="acts">
+      <button type="submit" class="btn primary" [disabled]="busy() || (dialog() === 'refund' && !refundReady())"
+        [attr.aria-busy]="busy()" i18n="@@store.admin.confirm">تأكيد</button>
+      <button type="button" class="btn" (click)="closeFinance()" i18n="@@store.admin.keep">رجوع</button>
+    </div>
+  </form>
+</ta-dialog>
 
 <ta-dialog [(open)]="confirmOpen" labelledBy="ao-c-h" [lightDismiss]="false">
   <div class="dlg">

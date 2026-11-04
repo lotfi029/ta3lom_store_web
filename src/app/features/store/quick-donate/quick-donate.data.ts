@@ -1,5 +1,5 @@
 import { httpResource } from '@angular/common/http';
-import { Injectable, computed, inject } from '@angular/core';
+import { Injectable, computed, effect, inject, untracked } from '@angular/core';
 import type { Category } from '../../../core/api/api.types';
 import { STORE_API_URL } from '../../../core/api/store-api-url';
 import { valueOf } from '../../../core/http/resource-value';
@@ -18,4 +18,13 @@ export class QuickDonateData {
     this.qd.used() ? `${this.api}/catalog/categories` : undefined,
   );
   readonly list = computed(() => giftCategories(valueOf(this.categories) ?? []));
+
+  constructor() {
+    // M-4: none taking general gifts → every quick-donate entry point hides.
+    effect(() => {
+      if (!this.categories.hasValue()) return;
+      const n = this.list().length;
+      untracked(() => this.qd.giftCategoryCount.set(n));
+    });
+  }
 }

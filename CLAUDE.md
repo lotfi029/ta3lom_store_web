@@ -6,7 +6,7 @@ projects with options and open amounts, general gifts to categories (DECISIONS r
 API at `https://store-api.ta3lom.sa/v1` (repo `lotfi029/ta3lom_store_api`, R5-Core).
 
 Bilingual Arabic/English, **Arabic-first, right-to-left**. Same conventions, tokens, fonts and look as `ta3lom-web`
-(copied, not shared). R5 plan and contract: [docs/r5/](docs/r5/); report: [docs/W-report-r5.md](docs/W-report-r5.md) (r4 plan: [docs/store-web-plan.md](docs/store-web-plan.md)).
+(copied, not shared). R5 plan and contract: [docs/r5/](docs/r5/) (home = Option C, [docs/r5/home-option-c-spec.md](docs/r5/home-option-c-spec.md)); go-live: [docs/production-checklist.md](docs/production-checklist.md); report: [docs/W-report-r5.md](docs/W-report-r5.md) (r4 plan: [docs/store-web-plan.md](docs/store-web-plan.md)).
 
 ## Stack
 
@@ -24,13 +24,17 @@ Bilingual Arabic/English, **Arabic-first, right-to-left**. Same conventions, tok
 ```bash
 . scripts/dev-env.sh             # dev env (Node 24, ports, local API settings) — no secrets
 npm run api:up                   # real store API on :5080 (../ta3lom_store_api, Development, postgres:18 on :5440)
-npm run api:seed                 # e2e staff per role (TOTP + forced password change) — catalogue = API dev seed
+npm run api:seed                 # e2e staff per role (TOTP + forced password change) + the Option C catalogue (admin API)
 npm run api:openapi              # refresh docs/openapi/store-api.v1.json from the local API + types:gen
 npm start                        # ng serve /ar on :4200   (npm run start:en → /en on :4201)
 npm run types:gen                # regenerate src/app/core/api/store-api.types.ts
 npm run typecheck && npm run lint && npm test
 npm run build                    # both locales, prerender against $PRERENDER_API_URL/$STORE_API_URL, budgets, CSP, deploy output
-npm run build:prod               # BLOCKED while environment.production.paymentsEnabled is false (D-W2)
+npm run build:staging            # staging (noindex, ribbon); PRERENDER_API_URL = where the build reads the catalogue
+npm run build:prod               # production build (payments on since R5-Payments)
+npm run audit:prod               # no high/critical advisory in production deps (audit-allowlist.json, 30-day entries)
+docker build --build-arg CONFIG=ci -t store-web:ci . && node scripts/check-container.mjs store-web:ci --env ci --keep
+npm run lhci                     # Lighthouse (mobile) against that container on :8099; prints the owner targets
 npm run e2e && npm run a11y      # built output on :4320, real API; axe ar/en × light/dark
 npm run stub-api                 # :3000 stub (CI); `npm run build:ci` builds against it; `npm run stub-capture` re-records it
 npm run i18n:extract             # after adding strings: XLF + en.json merge (lint fails on missing English)
@@ -68,7 +72,9 @@ features (store | account | admin) → shared → core          layout → share
 10. **Budgets are not advisory:** 150 KB initial JS, 400 KB initial transfer (gzip). Never raise them — fix the cause.
 11. **Never `bypassSecurityTrust*`** (ESLint).
 12. **Categories are API data** — chips render from `GET /catalog/categories`, never a hardcoded list.
-13. **CSP is hash-only for scripts** (`deploy/caddy-headers.conf`); `scripts/check-csp.mjs` gates every build.
+13. **CSP is hash-only for scripts**, GENERATED per build from the built pages (`scripts/gen-csp.mjs` →
+    `dist/store-web/caddy/csp.conf`, served by the image); never hand-edited or committed; `check-csp` gates every build.
+    Shared headers stay in `deploy/caddy-headers.conf`; runtime rules in `deploy/Caddyfile` (runbook `deploy/README.md`).
 14. **Semantic tokens only** (`--c-*`); no palette tokens, no colour literals outside `src/styles/tokens.css`.
 15. **Types only from `core/api/store-api.types.ts`** (generated). No hand-written DTOs.
 16. **Money is a decimal string** (`"350.00"`); arithmetic in integer halalas (`core/money`); display via `<ta-money>`.
@@ -76,8 +82,10 @@ features (store | account | admin) → shared → core          layout → share
     hard-coded.
 17. **R5: donations only** — no courses, books, shipping, stock or "giving" vocabulary. `scripts/check-no-commerce.mjs`
     fails the lint on `course|book|shipping|stock|enrol|giving` anywhere in `src/` (exact API tokens allow-listed).
-18. **Payments:** no gateway code. `environment.paymentsEnabled` is `false`: checkout ends at the pending order
-    ("تم تسجيل تبرعك — الدفع الإلكتروني قريبًا"), no polling. `build:prod` fails while production's flag is false.
+18. **Payments (R5-Payments, ADR-S05):** checkout leaves for the gateway's hosted page — ONLY a host in
+    `environment.paymentHosts` (`core/payments/payment-redirect`); no card data, no gateway script on our pages. The
+    order page never trusts the return URL: it polls the API (paid / pending / retry / expired / review / refunded).
+    `/orders/{ref}/pay` and refunds carry an Idempotency-Key kept until a definite answer.
 19. **Idempotency-Key** on `POST /v1/checkout` is bound to the normalised body and kept across retries until a definite
     outcome (DECISIONS: W-1).
 

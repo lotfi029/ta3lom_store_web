@@ -7,8 +7,8 @@ import { STORE_API_URL } from '../api/store-api-url';
 import { SILENT } from '../http/error-toast.interceptor';
 
 /**
- * The header cart badge (`GET /v1/cart/summary`) — part of the initial bundle, so it stays tiny. It shows the LINE COUNT
- * only (C-2): it counts donations; amounts are shown on the cart and checkout pages, from the re-priced cart and quote. The full cart (CartStore) is a
+ * The header cart button (`GET /v1/cart/summary`) — part of the initial bundle, so it stays tiny. Option C (owner M-2,
+ * supersedes C-2): it shows the re-priced `totalAmount` (API-5) and keeps the line count in its accessible name. The full cart (CartStore) is a
  * lazy feature service that calls `set()` after every change; the server is the truth (plan §2.4). Browser only: the
  * prerendered page never shows a badge count.
  */
@@ -20,6 +20,8 @@ export class CartSummary {
 
   private readonly state = signal<CartBadge | null>(null);
   readonly count = computed(() => toInt(this.state()?.lineCount));
+  /** The cart total as the API's decimal string (`"350.00"`); `"0.00"` before the first load. */
+  readonly total = computed(() => this.state()?.totalAmount ?? '0.00');
   /** Increments on every change that adds items — the header plays its "bump" on it. */
   readonly bumps = signal(0);
 

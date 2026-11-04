@@ -43,7 +43,7 @@ for (const locale of ['ar', 'en'] as const) {
     await expect(page.locator('h1')).toBeVisible();
     await shoot(page, `app-${locale}-{w}-3-book`);
     await page.locator('ta-buy-box .acts .b.primary').click();
-    await expect(page.locator('a.cartbtn .n')).toHaveText('2');
+    await expect(page.locator('a.cartbtn')).toHaveAttribute('data-lines', '2');
     await page.goto(`/${locale}/cart`);
     await expect(page.locator('.cline')).toHaveCount(2);
     await shoot(page, `app-${locale}-{w}-4-cart`);

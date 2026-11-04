@@ -14,7 +14,8 @@ import { OpsData } from './ops.data';
 
 /**
  * `/admin` (contract 15 §2.8): published projects, active categories, active donors, pending donations today and this
- * week, and the top five projects by pending amount (R5-Core has no payments yet, so "pending" is all there is).
+ * week, the top five projects by pending amount, and (R5-Payments) the paid totals for today / this week / this month
+ * (Riyadh dates), the orders in payment review and the top projects by paid amount.
  */
 @Component({
   selector: 'ta-admin-dashboard',

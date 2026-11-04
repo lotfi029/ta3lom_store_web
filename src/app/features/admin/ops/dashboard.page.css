@@ -98,3 +98,30 @@
 .list small {
   margin-inline-start: 6px;
 }
+
+.paid {
+  margin: 0 0 12px;
+  display: grid;
+  gap: 6px;
+}
+
+.paid div {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 0.9rem;
+}
+
+.paid dt {
+  color: var(--c-text-2);
+}
+
+.paid dd {
+  margin: 0;
+  text-align: end;
+}
+
+.cols h3 {
+  font-size: 0.95rem;
+  margin-block: 12px 8px;
+}

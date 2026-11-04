@@ -86,4 +86,40 @@ describe('ProjectCard (API-9, F-1)', () => {
     TestBed.resetTestingModule();
     expect(mount(CARD, 'ar').querySelector('img')?.getAttribute('alt')).toBe('بئر ماء');
   });
+
+  it('Option C §4 states: options only → chips, no open amount; open only → amount field, no chips', () => {
+    const optionsOnly = mount({ ...CARD, allowOpenAmount: false });
+    expect(optionsOnly.querySelectorAll('ta-donate-box input[type=radio]')).toHaveLength(2);
+    expect(optionsOnly.querySelector('ta-amount-input')).toBeNull();
+    TestBed.resetTestingModule();
+    const openOnly = mount({ ...CARD, options: [], fromAmount: null });
+    expect(openOnly.querySelectorAll('ta-donate-box input[type=radio]')).toHaveLength(0);
+    expect(openOnly.querySelector('ta-amount-input')).not.toBeNull();
+  });
+
+  it('Option C §4: badge, category name, icon share, تبرع before اضافة; no goal bar, no "from" line', () => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideZonelessChangeDetection(),
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: STORE_API_URL, useValue: API },
+        { provide: LOCALE_ID, useValue: 'ar' },
+      ],
+    });
+    const f = TestBed.createComponent(ProjectCard);
+    f.componentRef.setInput('project', { ...CARD, badge: 'urgent' });
+    f.componentRef.setInput('categoryName', 'الإغاثة');
+    f.detectChanges();
+    const el = f.nativeElement as HTMLElement;
+    expect(el.querySelector('.badge')?.textContent?.trim()).toBe('عاجل');
+    expect(el.querySelector('.cat')?.textContent?.trim()).toBe('الإغاثة');
+    expect(el.querySelector('.share-ic')?.getAttribute('aria-label')).toContain('سقيا الماء');
+    const buttons = [...el.querySelectorAll('.acts button')].map((b) => b.className);
+    expect(buttons[0]).toContain('donate');
+    expect(buttons[1]).toContain('add');
+    expect(el.querySelector('progress, .goal, .from')).toBeNull();
+    expect(el.querySelector('h3 a')?.getAttribute('href')).toBe('/p/water-wells');
+  });
 });

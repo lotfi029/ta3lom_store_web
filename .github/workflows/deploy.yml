@@ -1,0 +1,371 @@
+name: Deploy
+
+# Runbook: deploy/README.md. Images: ghcr.io/lotfi029/ta3lom-store-web (private package; the VPS pulls with its OWN
+# read:packages token — this workflow never sends a registry token to the VPS, owner H-4).
+# Deploys run ONLY after CI succeeded on the same commit (review 06 D-1):
+#   CI succeeded on a push to main                                  → build the STAGING image, check-container on it,
+#                                                                     push (:staging-<sha>, :staging), deploy to `staging`
+#   CI succeeded on a tag vX.Y.Z (strict semver, no pre-release)    → build the PRODUCTION image, check-container on it,
+#                                                                     push (:X.Y.Z, :latest), then
+#                                                                     deploy after the `production` reviewer approves
+#   nightly, repository_dispatch "catalog-changed"                  → staging rebuild of main HEAD, only when CI on that
+#                                                                     commit succeeded (fresh prerender + sitemap)
+#   workflow_dispatch (environment, tag)                            → rollback: redeploy an earlier image tag, checked
+#                                                                     against the environment and the image label (D-2)
+# Staging is SKIPPED with a warning (never a failure on main) when the staging API is unreachable (owner H-1) or the
+# SSH secrets are missing; the would-be commands are printed instead (dry run).
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+  pull_request:
+    paths: ['.github/workflows/deploy.yml', 'Dockerfile', 'deploy/**', 'scripts/smoke-deploy.mjs', 'scripts/check-container.mjs']
+  schedule:
+    - cron: '23 1 * * *' # nightly 04:23 Asia/Riyadh: fresh prerender + sitemap (C-N2)
+  repository_dispatch:
+    types: [catalog-changed]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment to redeploy
+        type: choice
+        options: [staging, production]
+        required: true
+      tag:
+        description: Existing image tag to redeploy (staging-<sha> on staging, X.Y.Z on production)
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+env:
+  IMAGE: ghcr.io/lotfi029/ta3lom-store-web
+
+jobs:
+  # Decides what (if anything) this run deploys, and from which commit. A deploy never starts unless CI succeeded on
+  # that commit (review 06 D-1).
+  gate:
+    if: github.event_name != 'pull_request' && github.event_name != 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      target: ${{ steps.decide.outputs.target }}
+      sha: ${{ steps.decide.outputs.sha }}
+      version: ${{ steps.decide.outputs.version }}
+    steps:
+      - name: Decide (CI must have succeeded on the commit)
+        id: decide
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+          RUN_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          RUN_EVENT: ${{ github.event.workflow_run.event }}
+          RUN_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          RUN_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          target=none sha= version=
+          if [ "$EVENT" = workflow_run ]; then
+            if [ "$RUN_CONCLUSION" != success ] || [ "$RUN_EVENT" != push ]; then
+              echo "CI concluded '$RUN_CONCLUSION' on a '$RUN_EVENT' event — nothing to deploy."
+            elif [ "$RUN_BRANCH" = main ]; then
+              target=staging sha="$RUN_SHA"
+            elif printf '%s' "$RUN_BRANCH" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
+              target=production sha="$RUN_SHA" version="${RUN_BRANCH#v}"
+            else
+              echo "::notice::$RUN_BRANCH is not main or a strict vX.Y.Z tag — not deployed (pre-releases never reach production, L-5)."
+            fi
+          else
+            # schedule / repository_dispatch: main HEAD, only if CI succeeded on it
+            sha="$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)"
+            ok="$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs?head_sha=$sha&status=success&per_page=1" --jq '.total_count')"
+            if [ "${ok:-0}" -gt 0 ]; then target=staging
+            else echo "::warning::CI has not succeeded on main@$sha — nightly/catalog rebuild SKIPPED (D-1)."; sha=; fi
+          fi
+          case "$sha" in ''|*[!0-9a-f]*) [ "$target" = none ] || { echo "::error::invalid sha"; exit 1; } ;; esac
+          { echo "target=$target"; echo "sha=$sha"; echo "version=$version"; } >> "$GITHUB_OUTPUT"
+          echo "Deploy target: $target ${sha:+@ $sha} ${version:+(version $version)}"
+
+  # Pull requests touching the deploy path: probe the staging API and print exactly what a main-branch run would do.
+  # No image is pushed, no secret is read, nothing is deployed.
+  staging-dry-run:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Dry run of the staging deploy
+        env:
+          PRERENDER_API_URL: https://store-api-staging.ta3lom.sa/v1
+        run: |
+          if curl -sf --max-time 15 "$PRERENDER_API_URL/catalog/config" > /dev/null; then
+            echo "Staging API is up: a main run builds and pushes $IMAGE:staging-<sha> and :staging."
+          else
+            echo "::warning::Staging API $PRERENDER_API_URL is unreachable — a main run would SKIP the staging build and deploy (H-1)."
+          fi
+          echo "A main run then executes on the staging VPS (STAGING_SSH_* secrets):"
+          echo "  cd \$STAGING_DEPLOY_DIR && EDGE_ALIAS=store-web-staging STORE_WEB_IMAGE=$IMAGE:staging-${{ github.event.pull_request.head.sha }} docker compose -f docker-compose.store-web.yml -p store-web-staging pull"
+          echo "  EDGE_ALIAS=store-web-staging STORE_WEB_IMAGE=$IMAGE:staging-${{ github.event.pull_request.head.sha }} docker compose -f docker-compose.store-web.yml -p store-web-staging up -d --wait"
+          echo "and smoke-checks: node scripts/smoke-deploy.mjs https://store-staging.ta3lom.sa <sha> --env staging"
+
+  staging:
+    needs: gate
+    if: needs.gate.outputs.target == 'staging'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+    environment:
+      name: staging
+      url: https://store-staging.ta3lom.sa
+    concurrency:
+      group: deploy-staging
+      cancel-in-progress: false
+    env:
+      PRERENDER_API_URL: https://store-api-staging.ta3lom.sa/v1
+      SITE: https://store-staging.ta3lom.sa
+      SSH_HOST: ${{ secrets.STAGING_SSH_HOST }}
+      SSH_USER: ${{ secrets.STAGING_SSH_USER }}
+      SSH_KEY: ${{ secrets.STAGING_SSH_KEY }}
+      SSH_KNOWN_HOSTS: ${{ secrets.STAGING_SSH_KNOWN_HOSTS }}
+      DEPLOY_DIR: ${{ vars.STAGING_DEPLOY_DIR || '/srv/store-web-staging' }}
+      SHA: ${{ needs.gate.outputs.sha }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.gate.outputs.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - name: Probe the staging API (H-1)
+        id: probe
+        run: |
+          if curl -sf --max-time 15 "$PRERENDER_API_URL/catalog/config" > /dev/null; then
+            echo "api=up" >> "$GITHUB_OUTPUT"
+          else
+            echo "api=down" >> "$GITHUB_OUTPUT"
+            echo "::warning::Staging API $PRERENDER_API_URL is unreachable — staging build and deploy SKIPPED (H-1). Staging goes live after the API hosting session."
+          fi
+      - name: Image tags and version
+        id: meta
+        run: |
+          echo "version=$(git describe --tags --always)" >> "$GITHUB_OUTPUT"
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+        if: steps.probe.outputs.api == 'up'
+      - uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        if: steps.probe.outputs.api == 'up'
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build the staging image (loaded, not pushed yet)
+        if: steps.probe.outputs.api == 'up'
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          load: true
+          push: false
+          tags: ${{ env.IMAGE }}:staging-${{ env.SHA }}
+          build-args: |
+            CONFIG=staging
+            PRERENDER_API_URL=${{ env.PRERENDER_API_URL }}
+            VERSION=${{ steps.meta.outputs.version }}
+            GIT_SHA=${{ env.SHA }}
+      - name: check-container on the real staging image before it is pushed (D-1)
+        if: steps.probe.outputs.api == 'up'
+        run: node scripts/check-container.mjs "$IMAGE:staging-$SHA" --env staging --port 8099
+      - name: Push the staging image
+        if: steps.probe.outputs.api == 'up'
+        run: |
+          docker tag "$IMAGE:staging-$SHA" "$IMAGE:staging"
+          docker push "$IMAGE:staging-$SHA"
+          docker push "$IMAGE:staging"
+      - name: Deploy to the staging VPS
+        id: deploy
+        if: steps.probe.outputs.api == 'up'
+        run: |
+          TAG="staging-${SHA}"
+          REMOTE="cd '$DEPLOY_DIR' && EDGE_ALIAS=store-web-staging STORE_WEB_IMAGE='$IMAGE:$TAG' docker compose -f docker-compose.store-web.yml -p store-web-staging pull && EDGE_ALIAS=store-web-staging STORE_WEB_IMAGE='$IMAGE:$TAG' docker compose -f docker-compose.store-web.yml -p store-web-staging up -d --wait"
+          if [ -z "$SSH_HOST" ] || [ -z "$SSH_USER" ] || [ -z "$SSH_KEY" ] || [ -z "$SSH_KNOWN_HOSTS" ]; then
+            echo "::warning::STAGING_SSH_* secrets are not set — deploy SKIPPED. Dry run (what would run on the VPS):"
+            echo "  ssh <STAGING_SSH_USER>@<STAGING_SSH_HOST> \"$REMOTE\""
+            echo "deployed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes "$SSH_USER@$SSH_HOST" "$REMOTE"
+          echo "deployed=true" >> "$GITHUB_OUTPUT"
+      - name: Smoke-check https://store-staging.ta3lom.sa
+        if: steps.deploy.outputs.deployed == 'true'
+        run: node scripts/smoke-deploy.mjs "$SITE" "$SHA" --env staging
+      - name: Remove the SSH key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key
+
+  production-image:
+    needs: gate
+    if: needs.gate.outputs.target == 'production'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+    # One production image build at a time, so two quick tags cannot race on :latest (review 06 L-5).
+    concurrency:
+      group: production-image
+      cancel-in-progress: false
+    env:
+      PRERENDER_API_URL: https://store-api.ta3lom.sa/v1
+      SHA: ${{ needs.gate.outputs.sha }}
+      VERSION: ${{ needs.gate.outputs.version }}
+    outputs:
+      version: ${{ steps.meta.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.gate.outputs.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - name: Version from the tag (strict X.Y.Z, passed through env — review 06 L-4)
+        id: meta
+        run: |
+          printf '%s' "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$' || { echo "::error::invalid version '$VERSION'"; exit 1; }
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+      - uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build the production image (its own build — never a re-tagged staging image; loaded, not pushed yet)
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          load: true
+          push: false
+          tags: ${{ env.IMAGE }}:${{ steps.meta.outputs.version }}
+          build-args: |
+            CONFIG=production
+            PRERENDER_API_URL=${{ env.PRERENDER_API_URL }}
+            VERSION=${{ steps.meta.outputs.version }}
+            GIT_SHA=${{ env.SHA }}
+      - name: check-container on the real production image before it is pushed (D-1)
+        run: node scripts/check-container.mjs "$IMAGE:$VERSION" --env production --port 8099
+      - name: Push the production image (:X.Y.Z and :latest — strict semver only, L-5)
+        run: |
+          docker tag "$IMAGE:$VERSION" "$IMAGE:latest"
+          docker push "$IMAGE:$VERSION"
+          docker push "$IMAGE:latest"
+
+  production:
+    needs: [gate, production-image]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # The `production` environment has a required reviewer (repository settings): this job waits for that approval.
+    environment:
+      name: production
+      url: https://store.ta3lom.sa
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+    env:
+      SITE: https://store.ta3lom.sa
+      SSH_HOST: ${{ secrets.PRODUCTION_SSH_HOST }}
+      SSH_USER: ${{ secrets.PRODUCTION_SSH_USER }}
+      SSH_KEY: ${{ secrets.PRODUCTION_SSH_KEY }}
+      SSH_KNOWN_HOSTS: ${{ secrets.PRODUCTION_SSH_KNOWN_HOSTS }}
+      DEPLOY_DIR: ${{ vars.PRODUCTION_DEPLOY_DIR || '/srv/store-web' }}
+      TAG: ${{ needs.production-image.outputs.version }}
+      SHA: ${{ needs.gate.outputs.sha }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.gate.outputs.sha }}
+          persist-credentials: false
+      - name: Deploy to the production VPS
+        run: |
+          test -n "$SSH_HOST" && test -n "$SSH_USER" && test -n "$SSH_KEY" && test -n "$SSH_KNOWN_HOSTS" \
+            || { echo "::error::PRODUCTION_SSH_* secrets are missing"; exit 1; }
+          printf '%s' "$TAG" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$' || { echo "::error::invalid version '$TAG'"; exit 1; }
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes "$SSH_USER@$SSH_HOST" \
+            "cd '$DEPLOY_DIR' && EDGE_ALIAS=store-web STORE_WEB_IMAGE='$IMAGE:$TAG' docker compose -f docker-compose.store-web.yml -p store-web pull && EDGE_ALIAS=store-web STORE_WEB_IMAGE='$IMAGE:$TAG' docker compose -f docker-compose.store-web.yml -p store-web up -d --wait"
+      - name: Smoke-check https://store.ta3lom.sa
+        run: node scripts/smoke-deploy.mjs "$SITE" "$SHA" --env production
+      - name: Remove the SSH key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key
+
+  # Run it from the TAG for production ("Use workflow from: <tag>") — the production environment only allows v* refs
+  # (deploy/README.md §7, review 06 L-2).
+  rollback:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      packages: read
+    environment:
+      name: ${{ inputs.environment }}
+    concurrency:
+      group: deploy-${{ inputs.environment }}
+      cancel-in-progress: false
+    env:
+      TARGET: ${{ inputs.environment }}
+      TAG: ${{ inputs.tag }}
+      SSH_HOST: ${{ inputs.environment == 'production' && secrets.PRODUCTION_SSH_HOST || secrets.STAGING_SSH_HOST }}
+      SSH_USER: ${{ inputs.environment == 'production' && secrets.PRODUCTION_SSH_USER || secrets.STAGING_SSH_USER }}
+      SSH_KEY: ${{ inputs.environment == 'production' && secrets.PRODUCTION_SSH_KEY || secrets.STAGING_SSH_KEY }}
+      SSH_KNOWN_HOSTS: ${{ inputs.environment == 'production' && secrets.PRODUCTION_SSH_KNOWN_HOSTS || secrets.STAGING_SSH_KNOWN_HOSTS }}
+      DEPLOY_DIR: ${{ inputs.environment == 'production' && (vars.PRODUCTION_DEPLOY_DIR || '/srv/store-web') || (vars.STAGING_DEPLOY_DIR || '/srv/store-web-staging') }}
+      PROJECT: ${{ inputs.environment == 'production' && 'store-web' || 'store-web-staging' }}
+      SITE: ${{ inputs.environment == 'production' && 'https://store.ta3lom.sa' || 'https://store-staging.ta3lom.sa' }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: The tag must belong to the environment (review 06 D-2)
+        run: |
+          case "$TARGET:$TAG" in
+            production:*[!0-9.]*|production:) echo "::error::production takes X.Y.Z tags only (got '$TAG')"; exit 1 ;;
+            staging:staging-*[!0-9a-f]*|staging:staging-) echo "::error::staging takes staging-<sha> tags only (got '$TAG')"; exit 1 ;;
+            staging:staging-*) ;;
+            production:*) printf '%s' "$TAG" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$' || { echo "::error::production takes X.Y.Z tags only (got '$TAG')"; exit 1; } ;;
+            *) echo "::error::'$TAG' is not a $TARGET tag"; exit 1 ;;
+          esac
+      - uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+      - name: The image's config label must match the environment (D-2)
+        run: |
+          label="$(docker buildx imagetools inspect "$IMAGE:$TAG" --format '{{ json .Image }}' | jq -r '.config.Labels["sa.ta3lom.store-web.config"] // empty')"
+          [ "$label" = "$TARGET" ] || { echo "::error::$IMAGE:$TAG was built for '${label:-unknown}', not $TARGET"; exit 1; }
+      - name: Redeploy ${{ inputs.tag }} to ${{ inputs.environment }}
+        run: |
+          test -n "$SSH_HOST" && test -n "$SSH_USER" && test -n "$SSH_KEY" && test -n "$SSH_KNOWN_HOSTS" \
+            || { echo "::error::SSH secrets for $TARGET are missing"; exit 1; }
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes "$SSH_USER@$SSH_HOST" \
+            "cd '$DEPLOY_DIR' && EDGE_ALIAS='$PROJECT' STORE_WEB_IMAGE='$IMAGE:$TAG' docker compose -f docker-compose.store-web.yml -p '$PROJECT' pull && EDGE_ALIAS='$PROJECT' STORE_WEB_IMAGE='$IMAGE:$TAG' docker compose -f docker-compose.store-web.yml -p '$PROJECT' up -d --wait"
+      - name: Smoke-check
+        run: node scripts/smoke-deploy.mjs "$SITE" --env "$TARGET"
+      - name: Remove the SSH key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key

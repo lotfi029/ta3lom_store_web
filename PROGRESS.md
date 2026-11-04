@@ -1,5 +1,5 @@
 # Store web progress
-Next: R5-Payments (flip `paymentsEnabled`, gateway redirect), then the first production deploy (API repo `deploy/README.md`)
+Next: owner go-live steps (PR descriptions, docs/production-checklist.md); payments are on since the final session
 
 Local run and deploy readiness (2026-10-30): `dev-env.sh` checks Node ≥ 24.15; `api-up.sh` starts PostgreSQL from the API's
 `compose.dev.yaml`; full DoD on the real API green (types, typecheck, lint, unit, build, 65 e2e, a11y 26 × 2). Production
@@ -7,6 +7,42 @@ hosting = Docker on one VPS from the API repo (`Dockerfile`, `deploy/compose.yam
 
 Auth fixes (2026-10-30): sign out everywhere refreshes and retries on 401 (else signs this device out and says so); its
 success toast only on success; a transient refresh failure no longer ends the donor or staff session. Unit 268 green.
+
+## Final session (plan 01: F1 … F10)
+
+| Phase | Repo / branch | Commit | Status |
+|---|---|---|---|
+| F1 | web `claude/store-web-option-c-prod-7eb3at` | HC — review fixes | done (gates: types, typecheck, lint, test 326 + scripts 5, build:ci, home e2e 24, container check) |
+| F2–F4 | api `final/api-payments-hosting` (PR lotfi029/ta3lom_store_api#17) | F2a…F4, F5b (template samples) | done (728 tests, Domain 96.6 %, Application 90.6 %) |
+| F5a | web `final/web-payments-perf` (stacked on the branch above) | F5a — checkout and order page | done (unit 341, smoke 57, a11y) |
+| F5b | web `final/web-payments-perf` | F5b — account and admin payments | done (unit 345 + scripts 5, build:ci, smoke 27 passed on the stub, a11y) |
+| F5c | web `final/web-payments-perf` | F5c — e2e | done (payments 12/12 ar+en on the real API + fake gateway; full e2e 99 passed after a rebuild; smoke on the stub) |
+| F6.1–F6.5 | web `final/web-payments-perf` | F6.1 … F6.5 (+ F5 fix: payment http flag) | done (numbers in DECISIONS) |
+| F6.6, F6 floors | web `final/web-payments-perf` | F6.6 — transfer state measured, LHCI floors raised | done (perf ≥ 0.82, LCP ≤ 2800, TBT ≤ 450; target 90 not reached on the home — REVIEW) |
+| F7 | web `final/web-payments-perf` | F7 — hosting alignment | done |
+| F8 | ta3lom-deploy — **not reachable from the session** (add_repo: no access) → fallback in web branch (b) `deploy/edge/` | F8 — edge block (fallback) | done (caddy validate) |
+| F9 | ta3lom-web `final/store-integration` (PR lotfi029/ta3lom-web#34, draft) | F9 — store integration | done (unit 356, scripts 12, e2e 174 + 11 flag-on skipped, a11y 66 × 2; flag-on run local) |
+| F10a | web `final/web-payments-perf` | F10a — full-stack e2e | done (12/12 over the local edge, API final/api-payments-hosting 8419a46) |
+| F10b | web `final/web-payments-perf` | F10b — contract v2 and checklist | done (docs/r5/15 v2 section; checklist code items ticked) |
+
+## Option C home + production readiness (one PR "Store web — Option C home + production readiness")
+
+| Phase | Status | Commit | Tests (unit / smoke e2e / a11y) | Notes |
+|---|---|---|---|---|
+| H1a Seed + stub | done | H1a | 268 / 35 / 26 × 2 | 28 projects, 10 categories (1 empty) via the admin API; stub re-captured |
+| H1b Header + tabs | done | H1b | 273 / 35 / 26 × 2 | utility row, big search, cart total (M-2), quick donate gated (M-4), category tabs |
+| H1c Home body | done | H1c | 289 / 51 / 26 × 2 | banner, inline quick donate, filter bar, grid 20, pagination, compact card, M-5, M-6 |
+| H1d Trust, SEO, i18n, screens | done | H1d | 292 / 51 / 70 routes × 2 | trust row (M-3 flags), docs/screens/home-c/ (12 shots) |
+| P1 Build configurations | done | P1 | 294 / 51 / 70 × 2 | development/local/ci/staging/production; generated CSP; robots/sitemap per env; build stamp; staging ribbon |
+| P2 Container + web server | done | P2 | 294 / 51 / 70 × 2 + container check | Dockerfile (caddy, uid 10001, read-only), Caddyfile, compose; check-container |
+| P3 CI/CD | done | P3 | + audit gate | ci.yml pinned + container check; deploy.yml staging/production/rollback/nightly/dispatch; Dependabot; zod fixed |
+| P4 Quality bars | done (REVIEW) | P4 | 295 / 51 / 70 × 2 + LHCI | CLS 0.478 → 0 (stub no-store broke the transfer cache); a11y 100, BP 96, SEO 100; perf 73–79, LCP 2.56–2.82 s, TBT 505–857 ms (floors, REVIEW) |
+| P5 Runtime robustness | done | P5 | 313 / 53 / 70 × 2 | GET retry (M-7), kept prerendered data + notice, PII-free error reporter (off) |
+| P6 Docs + handover | done | P6 | — | runbook, production checklist, spec in docs/r5/, .session/ removed |
+
+**TODO before go-live (owner, C-2 / Q-11):** replace `[رقم الترخيص]` / `[licence number]` in
+`@@store.layout.utility-licence` and `@@store.home.trust-licensed-text` (src/locales: messages.xlf source in the
+templates + `en.json`) with the association's licence number and confirm the trust texts.
 
 ## R5 — donations (one PR "Store web — R5 donations", API `792521a`)
 
@@ -62,6 +98,11 @@ success toast only on success; a transient refresh failure no longer ends the do
 - [x] reference/ removed; docs/W-report.md pushed
 
 ## Environment (resume notes)
+- Session HC: Docker Hub answers 429 — pull `mirror.gcr.io/library/{postgres:18,node:24-alpine,caddy:2-alpine}` and
+  re-tag; `docker build --network host --secret id=build_ca,src=/root/.ccr/ca-bundle.crt …` (the session inspects TLS);
+  Playwright 1.64's Chromium lives in `~/.cache/store-web/pw-browsers` (`PLAYWRIGHT_BROWSERS_PATH` via dev-env.sh);
+  LHCI locally: `CHROME_PATH=~/.cache/store-web/pw-browsers/chromium-1248/chrome-linux64/chrome npm run lhci`;
+  a stale `node_modules/.vitest-cache` once replayed an old module — delete it when a fix "doesn't take".
 - `. scripts/dev-env.sh && npm run api:up && npm run api:seed` — API on :5080 (postgres:18 in docker `t3s-pg` on
   :5440; `api:up` starts `dockerd` and the container), staff in `e2e/.auth/staff.json` (git-ignored).
 - Node 24 lives in `/opt/node24` (dev-env.sh puts it first on PATH).

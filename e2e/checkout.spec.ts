@@ -3,6 +3,7 @@ import { Client } from '../scripts/lib/store-api-client.mjs';
 import { expectNoA11yViolations, expectNoHorizontalScroll } from './support/a11y';
 import { apiGet, onStub, resetStub } from './support/api';
 import { freshMobile, otpFor } from './support/auth';
+import { payOnHostedPage } from './support/payment';
 
 interface Card {
   slug: string;
@@ -19,19 +20,23 @@ const name = (c: Card, locale: 'ar' | 'en') =>
 
 /** Fills the cart with the three line kinds from the UI: option × 2, an open amount, a category gift via quick donate. */
 async function threeLines(page: Page, locale: 'ar' | 'en') {
-  const { items } = await apiGet<{ items: Card[] }>('/catalog/projects?page=1&pageSize=12');
+  const { items } = await apiGet<{ items: Card[] }>('/catalog/projects?page=1&pageSize=20');
   const withOptions = items.find((c) => c.fromAmount !== null)!;
   const amountOnly = items.find((c) => c.fromAmount === null && c.allowOpenAmount)!;
   await page.goto(`/${locale}/`);
-  const a = page.locator('ta-project-card', { hasText: name(withOptions, locale) });
+  const a = page.locator('ta-project-card').filter({
+    has: page.getByRole('heading', { name: name(withOptions, locale), exact: true }),
+  });
   await a.locator('.chip').first().click();
   await a.getByRole('button', { name: /^(زيادة|Increase)/ }).click();
   await a.locator('button.add').click();
-  await expect(page.locator('a.cartbtn .n')).toHaveText('1');
-  const b = page.locator('ta-project-card', { hasText: name(amountOnly, locale) });
+  await expect(page.locator('a.cartbtn')).toHaveAttribute('data-lines', '1');
+  const b = page.locator('ta-project-card').filter({
+    has: page.getByRole('heading', { name: name(amountOnly, locale), exact: true }),
+  });
   await b.locator('input[inputmode=decimal]').fill('٧٥');
   await b.locator('button.add').click();
-  await expect(page.locator('a.cartbtn .n')).toHaveText('2');
+  await expect(page.locator('a.cartbtn')).toHaveAttribute('data-lines', '2');
 
   // Quick donate (header button): a category gift → straight to checkout.
   await page.locator('header .acts > button.quick').click();
@@ -46,7 +51,7 @@ async function threeLines(page: Page, locale: 'ar' | 'en') {
 
 for (const locale of ['ar', 'en'] as const) {
   test.describe(`@smoke donate /${locale}`, () => {
-    test('three line kinds → checkout (sign in, contact) → pending order page; contact saved to /me', async ({
+    test('three line kinds → checkout (sign in, contact) → hosted payment page → paid with a receipt; contact saved to /me', async ({
       page,
     }) => {
       await threeLines(page, locale);
@@ -69,13 +74,19 @@ for (const locale of ['ar', 'en'] as const) {
       await expectNoA11yViolations(page, `/${locale}/checkout`);
       await page.locator('button.pay-btn').click();
 
+      // ADR-S05: the donor leaves for the gateway's hosted page (allow-listed host), pays, and comes back.
+      await payOnHostedPage(page, 'pay');
       await expect(page).toHaveURL(new RegExp(`/${locale}/orders/T3-\\d{2}-\\d{6}$`));
       await expect(page.locator('.osec .card h2')).toContainText(
-        locale === 'ar' ? 'تم تسجيل تبرعك' : 'registered',
+        locale === 'ar' ? 'وصل تبرعك' : 'your donation arrived',
       );
+      await expect(page.locator('.kv')).toContainText(/DR-\d{4}-\d{6}/);
+      const download = page.waitForEvent('download');
+      await page.locator('.receipt button').first().click();
+      expect((await download).suggestedFilename()).toMatch(/^DR-\d{4}-\d{6}\.pdf$/);
       expect(page.url()).not.toContain('t=');
       await expect(page.locator('meta[name=referrer]')).toHaveAttribute('content', 'no-referrer');
-      await expect(page.locator('a.cartbtn .n')).toHaveCount(0);
+      await expect(page.locator('a.cartbtn')).toHaveAttribute('data-lines', '0');
       await expectNoA11yViolations(page);
 
       if (!onStub) {
@@ -111,7 +122,7 @@ for (const locale of ['ar', 'en'] as const) {
       await page.locator('.cfoot button.rm').click();
       await page.getByRole('dialog').locator('button.danger').click();
       await expect(page.locator('.empty')).toBeVisible();
-      await expect(page.locator('a.cartbtn .n')).toHaveCount(0);
+      await expect(page.locator('a.cartbtn')).toHaveAttribute('data-lines', '0');
     });
   });
 }

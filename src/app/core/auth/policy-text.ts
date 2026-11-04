@@ -29,6 +29,7 @@ export function policyReason(policy: StaffPolicy): string {
     case 'staff:templates':
       return $localize`:@@store.admin.requires-catalogue:يتطلب دور مدير المتجر`;
     case 'staff:orders':
+    case 'staff:finance':
       return $localize`:@@store.admin.requires-orders:يتطلب دور المالية`;
     default:
       return '';

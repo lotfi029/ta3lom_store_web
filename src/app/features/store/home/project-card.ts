@@ -4,90 +4,112 @@ import type { ProjectCard as Card } from '../../../core/api/api.types';
 import { I18nService } from '../../../core/i18n/i18n';
 import { SeoService } from '../../../core/seo/seo.service';
 import { Image } from '../../../shared/ui/image/image';
-import { Money } from '../../../shared/ui/money/money';
 import { DonateBox } from '../donate/donate-box';
 import type { DonateProject } from '../donate/donate-draft';
-import { ShareBar } from '../share/share-bar';
+import { ShareSheet } from '../share/share-sheet';
 
 /**
- * The project card (D-W5, reference card): image with a fixed ratio (lazy, alt from the API) and the share bar, title
- * linking to `/p/{slug}`, one-line summary, then the donate box (option chips → qty stepper, "تبرع مفتوح" → amount,
- * اضافة / تبرع). No progress bar. The options come with the card (`ProjectCard.options`, API-9) — no request per card.
+ * The compact project card (Option C §4, D-W5): image 3:2 (lazy, alt from the API) with the badge at the top start
+ * corner and an icon share button (spec C-1, REVIEW) at the top end; the category name; the title linking to
+ * `/p/{slug}`; a 2-line summary; then the donate box (option chips + "تبرع مفتوح" → qty stepper or amount, تبرع /
+ * اضافة). No progress bar. Options come with the card (`ProjectCard.options`, API-9) — no request per card.
  */
 @Component({
   selector: 'ta-project-card',
-  imports: [RouterLink, Image, Money, DonateBox, ShareBar],
+  imports: [RouterLink, Image, DonateBox, ShareSheet],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <article class="pcard" [attr.aria-labelledby]="'pc-' + project().id">
       <div class="media">
         @if (project().coverUrl; as src) {
-          <ta-image [src]="src" [alt]="alt()" [width]="800" [height]="500" />
+          <ta-image [src]="src" [alt]="alt()" [width]="600" [height]="400" />
         } @else {
           <div class="cover ph" aria-hidden="true"></div>
         }
         @if (project().badge === 'urgent') {
-          <span class="ribbon tag gold" i18n="@@store.card.badge-urgent">عاجل</span>
+          <span class="badge" i18n="@@store.card.badge-urgent">عاجل</span>
         } @else if (project().badge === 'new') {
-          <span class="ribbon tag green" i18n="@@store.card.badge-new">جديد</span>
+          <span class="badge" i18n="@@store.card.badge-new">جديد</span>
         }
+        <div class="share"><ta-share-sheet [url]="url()" [title]="title()" [compact]="true" /></div>
       </div>
-      <ta-share-bar [url]="url()" [title]="title()" />
-      @if (headingLevel() === 2) {
-        <h2 class="t" [id]="'pc-' + project().id">
-          <a [routerLink]="['/p', project().slug]">{{ title() }}</a>
-        </h2>
-      } @else {
-        <h3 class="t" [id]="'pc-' + project().id">
-          <a [routerLink]="['/p', project().slug]">{{ title() }}</a>
-        </h3>
-      }
-      @if (summary()) {
-        <p class="sum">{{ summary() }}</p>
-      }
-      @if (project().fromAmount; as from) {
-        <p class="from">
-          <span i18n="@@store.card.from">يبدأ من</span> <ta-money [value]="from" />
-        </p>
-      }
-      <ta-donate-box [project]="donate()" [idPrefix]="'c-' + project().slug" />
+      <div class="body">
+        @if (categoryName()) {
+          <span class="cat">{{ categoryName() }}</span>
+        }
+        @if (headingLevel() === 2) {
+          <h2 class="t" [id]="'pc-' + project().id">
+            <a [routerLink]="['/p', project().slug]">{{ title() }}</a>
+          </h2>
+        } @else {
+          <h3 class="t" [id]="'pc-' + project().id">
+            <a [routerLink]="['/p', project().slug]">{{ title() }}</a>
+          </h3>
+        }
+        @if (summary()) {
+          <p class="sum">{{ summary() }}</p>
+        }
+        <ta-donate-box [project]="donate()" [idPrefix]="'c-' + project().slug" />
+      </div>
     </article>
   `,
   styles: `
     :host {
       display: block;
+      block-size: 100%;
     }
     .pcard {
       background: var(--c-surface);
       border: 1px solid var(--c-border);
       border-radius: var(--rc);
-      padding: 14px;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      gap: 10px;
       block-size: 100%;
     }
     .media {
       position: relative;
-      aspect-ratio: 16 / 10;
-      border-radius: 12px;
-      overflow: hidden;
-      background: var(--c-surface-2);
+      aspect-ratio: 3 / 2;
+      background: var(--c-tint);
     }
     .cover {
       inline-size: 100%;
       block-size: 100%;
-      object-fit: cover;
       display: block;
     }
-    .ribbon {
+    .badge {
       position: absolute;
-      inset-block-start: 10px;
-      inset-inline-start: 10px;
+      inset-block-start: var(--space-3);
+      inset-inline-start: var(--space-3);
+      padding-block: var(--space-1);
+      padding-inline: var(--space-3);
+      border-radius: var(--rp);
+      background: var(--c-gold);
+      color: var(--c-on-gold);
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .share {
+      position: absolute;
+      inset-block-start: var(--space-2);
+      inset-inline-end: var(--space-2);
+    }
+    .body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      padding: var(--space-4);
+    }
+    .cat {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--c-link);
     }
     .t {
-      font-size: 1.04rem;
-      line-height: 1.4;
+      font-size: 1rem;
+      line-height: 1.5;
+      font-weight: 700;
       margin: 0;
     }
     .t a {
@@ -100,23 +122,16 @@ import { ShareBar } from '../share/share-bar';
     }
     .sum {
       margin: 0;
-      font-size: 0.86rem;
+      font-size: 0.875rem;
       color: var(--c-muted);
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
-    .from {
-      display: flex;
-      gap: 4px;
-      align-items: baseline;
-      margin: 0;
-      font-size: 0.82rem;
-      color: var(--c-muted);
-    }
     ta-donate-box {
       margin-block-start: auto;
+      padding-block-start: var(--space-2);
     }
   `,
 })
@@ -125,6 +140,8 @@ export class ProjectCard {
   private readonly seo = inject(SeoService);
   readonly project = input.required<Card>();
   readonly headingLevel = input<2 | 3>(3);
+  /** The category's name (from `/catalog/categories`, looked up by the page — no request per card). */
+  readonly categoryName = input('');
 
   protected readonly title = computed(() =>
     this.i18n.pick(this.project().titleAr, this.project().titleEn),

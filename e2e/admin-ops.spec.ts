@@ -32,7 +32,7 @@ for (const locale of ['ar', 'en'] as const) {
       await page.locator('tbody tr a').click();
       await expect(page).toHaveURL(new RegExp(`/${locale}/admin/orders/${ref}$`));
       await expect(page.locator('h1')).toContainText(ref);
-      await expect(page.locator('table.atbl tbody tr')).toHaveCount(1);
+      await expect(page.locator('section[aria-labelledby=ao-lines-h] table.atbl tbody tr')).toHaveCount(1);
       await expectNoA11yViolations(page, `/${locale}/admin/orders/:ref`);
 
       await page.getByRole('button', { name: t('إلغاء الطلب', 'Cancel order') }).click();

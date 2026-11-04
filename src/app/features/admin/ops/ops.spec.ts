@@ -1,6 +1,7 @@
 import type { AdminOrderLine } from '../../../core/api/api.types';
 import { problemMessage } from '../../../core/api/problem-message';
-import { lineTitle } from './order.page';
+import { lineTitle, refundAmount, refundReady } from './order.page';
+import { daySpan, REPORT_MAX_DAYS, riyadhDate, validRange } from '../reports/reports.page';
 import { orderParams, upperRef } from './ops.data';
 import { rangeOk } from './orders.page';
 
@@ -56,5 +57,37 @@ describe('admin operations', () => {
       extra: { orderStatus: 'cancelled' },
     });
     expect(msg).toContain('إلغاء');
+  });
+
+  it('refund dialog: amount within (0, refundable], two decimals; ready only with a reason and the typed reference', () => {
+    expect(refundAmount('10', '50.00')).toBe('10.00');
+    expect(refundAmount('50.00', '50.00')).toBe('50.00');
+    expect(refundAmount('50.01', '50.00')).toBeNull();
+    expect(refundAmount('0', '50.00')).toBeNull();
+    expect(refundAmount('-1', '50.00')).toBeNull();
+    expect(refundAmount('abc', '50.00')).toBeNull();
+    expect(refundAmount('١٠٫٥', '50.00')).toBe('10.50');
+    expect(refundReady('10.00', 'duplicate', ' t3-26-000001 ', 'T3-26-000001')).toBe(true);
+    expect(refundReady('10.00', ' ', 'T3-26-000001', 'T3-26-000001')).toBe(false);
+    expect(refundReady('10.00', 'x', 'T3-26-000002', 'T3-26-000001')).toBe(false);
+    expect(refundReady(null, 'x', 'T3-26-000001', 'T3-26-000001')).toBe(false);
+  });
+
+  it('a refund over the refundable amount is told from its code', () => {
+    expect(problemMessage({ status: 422, code: 'payment.refund_exceeds', extra: {} })).not.toBe('');
+  });
+
+  it('reports: Riyadh dates, inclusive ranges of at most 366 days', () => {
+    expect(riyadhDate(new Date('2026-11-03T21:30:00Z'))).toBe('2026-11-04');
+    expect(riyadhDate(new Date('2026-11-03T20:59:00Z'))).toBe('2026-11-03');
+    expect(daySpan('2026-11-01', '2026-11-01')).toBe(1);
+    expect(daySpan('2026-01-01', '2026-12-31')).toBe(365);
+    expect(validRange('2026-11-01', '2026-11-30')).toBe(true);
+    expect(validRange('2026-11-30', '2026-11-01')).toBe(false);
+    expect(validRange('2025-01-01', '2026-01-01')).toBe(true);
+    expect(daySpan('2025-01-01', '2026-01-02')).toBe(REPORT_MAX_DAYS + 1);
+    expect(validRange('2025-01-01', '2026-01-02')).toBe(false);
+    expect(validRange('2026-13-01', '2026-13-02')).toBe(false);
+    expect(validRange('', '2026-11-01')).toBe(false);
   });
 });
