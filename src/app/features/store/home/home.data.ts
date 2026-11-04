@@ -4,6 +4,7 @@ import type { Category, HomeResponse, ProjectCard, ProjectPage } from '../../../
 import { toInt } from '../../../core/api/api.types';
 import { STORE_API_URL } from '../../../core/api/store-api-url';
 import { SILENT } from '../../../core/http/error-toast.interceptor';
+import { hydrationSnapshot } from '../../../core/http/hydration-snapshot';
 import { sameJson } from '../../../core/http/same-json';
 import { stickyValue } from '../../../core/http/sticky-value';
 import { type ListingQuery, listingParams, pageCount } from './listing';
@@ -37,10 +38,17 @@ export class HomeData {
     { equal: sameJson },
   );
 
+  /** The prerendered answers stand in while hydrating (core/http/hydration-snapshot), so the DOM matches. */
+  private readonly listingSnap = hydrationSnapshot(this.listing, 'home.listing', () =>
+    JSON.stringify(this.query()),
+  );
+  private readonly homeSnap = hydrationSnapshot(this.home, 'home.home', () => '');
+  private readonly categoriesSnap = hydrationSnapshot(this.categories, 'home.categories', () => '');
+
   /** P5: the last good answers while a refresh of the same request fails (the prerendered data stays on screen). */
-  private readonly page = stickyValue(this.listing, () => JSON.stringify(this.query()));
-  private readonly homeValue = stickyValue(this.home);
-  private readonly categoriesValue = stickyValue(this.categories);
+  private readonly page = stickyValue(this.listingSnap, () => JSON.stringify(this.query()));
+  private readonly homeValue = stickyValue(this.homeSnap);
+  private readonly categoriesValue = stickyValue(this.categoriesSnap);
   /** The listing has data to show (fresh, or kept after a failed refresh). */
   readonly hasListing = computed(() => this.page() !== undefined);
   readonly hasCategories = computed(() => this.categoriesValue() !== undefined);

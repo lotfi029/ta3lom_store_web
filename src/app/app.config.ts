@@ -11,6 +11,7 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 import {
   provideClientHydration,
   withHttpTransferCacheOptions,
+  withI18nSupport,
   withIncrementalHydration,
 } from '@angular/platform-browser';
 import { provideRouter, withComponentInputBinding, withInMemoryScrolling } from '@angular/router';
@@ -40,7 +41,10 @@ export const appConfig: ApplicationConfig = {
     // which would otherwise exclude the public catalogue reads from the transfer cache. Only GETs are cached, and the
     // build has no session, so nothing personal can land in a prerendered page.
     // F6.3: incremental hydration (implies event replay) for below-the-fold blocks: footer, trust row, pager.
+    // withI18nSupport: without it every component holding an i18n block skipped hydration and was rebuilt in the
+    // browser — the whole home page, its banner text repainting after the first long task (phone LCP ~3.8 s).
     provideClientHydration(
+      withI18nSupport(),
       withIncrementalHydration(),
       withHttpTransferCacheOptions({ includeRequestsWithCredentials: true }),
     ),
