@@ -15,6 +15,9 @@
  *   - (F6.2) inlines the locale's @font-face rules (~1.7 KB) in every page's <head>: the critical CSS (F6.1) leaves them
  *     in the async sheet, so the first paint used system fonts and the text reflowed when the sheet arrived (CLS 0.086
  *     on /en/). `./media/…` resolves against `<base href="/{locale}/">`;
+ *   - (F6.4) `<link rel="preconnect">` to the environment's API origin (catalogue images, including the LCP banner/cover
+ *     image, and the data reload after hydration come from there); no `crossorigin`: images and the credentialed
+ *     fetches share that connection pool;
  *   - normalises modes (0644 files, 0755 dirs).
  */
 import {
@@ -118,7 +121,9 @@ for (const locale of ['ar', 'en']) {
     continue;
   }
   const fontStyle = `<style data-fonts>${faces.join('')}</style>`;
+  const preconnect = `<link rel="preconnect" href="${new URL(ENV.apiUrl).origin}">`;
   const tags =
+    preconnect +
     fonts.map((f) => `<link rel="preload" href="media/${f}" as="font" type="font/woff2" crossorigin>`).join('') +
     fontStyle;
   let count = 0;
@@ -127,7 +132,8 @@ for (const locale of ['ar', 'en']) {
     let html = canonical(original)
       .replace(/<meta name="build" content="[^"]*">/g, '')
       .replace(/<link rel="preload" href="media\/[^"]+\.woff2" as="font" type="font\/woff2" crossorigin>/g, '')
-      .replace(/<style data-fonts>[^<]*<\/style>/g, '');
+      .replace(/<style data-fonts>[^<]*<\/style>/g, '')
+      .replace(/<link rel="preconnect" href="[^"]+">/g, '');
     if (!html.includes(tags) && html.includes('</head>')) {
       html = html.replace('</head>', `${tags}</head>`);
       count += 1;
