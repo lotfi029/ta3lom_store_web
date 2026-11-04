@@ -32,11 +32,33 @@ for (const locale of ['ar', 'en'] as const) {
 
     test('theme toggle flips data-theme and is a pressed-state button', async ({ page }) => {
       await page.goto(`/${locale}/`);
-      const toggle = page.locator('.theme-toggle');
+      const toggle = page.locator('.acts .theme-toggle');
       const before = await page.locator('html').getAttribute('data-theme');
       await toggle.click();
       await expect(page.locator('html')).not.toHaveAttribute('data-theme', before ?? '');
       await expect(toggle).toHaveAttribute('aria-pressed', /true|false/);
+    });
+
+    test('phones: logo and actions on one row, theme toggle in the menu, header away on scroll down', async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.goto(`/${locale}/`, { waitUntil: 'networkidle' });
+      const brand = await page.locator('.hdr .brand').boundingBox();
+      const cart = await page.locator('.hdr .cartbtn').boundingBox();
+      expect(Math.abs(brand!.y + brand!.height / 2 - (cart!.y + cart!.height / 2))).toBeLessThan(12);
+      await expect(page.locator('.acts .theme-toggle')).toBeHidden();
+      await page.locator('.burger').click();
+      const before = await page.locator('html').getAttribute('data-theme');
+      await page.locator('.mtheme .theme-toggle').click();
+      await expect(page.locator('html')).not.toHaveAttribute('data-theme', before ?? '');
+      await page.locator('.burger').click();
+      await page.locator('.burger').blur();
+      for (let i = 0; i < 12; i++) await page.mouse.wheel(0, 120);
+      await expect(page.locator('.hdr')).toHaveClass(/away/);
+      await page.mouse.wheel(0, -120);
+      await expect(page.locator('.hdr')).not.toHaveClass(/away/);
+      await expectNoHorizontalScroll(page);
     });
 
     test('skip link is the first tab stop and moves focus to main', async ({ page }) => {

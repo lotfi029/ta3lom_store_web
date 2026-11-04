@@ -46,7 +46,7 @@ everything else is for the owner (or a later session).
 
 - [x] Lighthouse (mobile) on `/ar/`, `/en/`, a project page: accessibility 100, best practices ≥ 95, SEO ≥ 95,
       CLS ≤ 0.05 — **[done in CI on the container]**; performance ≥ 90, LCP ≤ 2.5 s, TBT ≤ 200 ms — **partly met in CI**
-      after the F6 pass (perf 85–90, LCP 2.57–2.69 s, TBT 193–360 ms; floors raised to 0.82 / 2800 ms / 450 ms, REVIEW). **[done in CI, final session: a11y 100, BP 96, SEO 100, CLS 0.000 — perf 85–90, see DECISIONS F6]**
+      after the F6 pass and the hydration fix (perf 92–95, LCP 2.45–2.66 s, TBT 64–135 ms; floors 0.89 / 2800 ms / 250 ms). **[done in CI, final session: a11y 100, BP 96, SEO 100, CLS 0.000 — perf 85–90, see DECISIONS F6]**
 - [ ] **Lighthouse mobile ≥ 90 on the production URL** (`https://store.ta3lom.sa/ar/`, `/en/`, a project page) — go-live
       item (review 06 §4): the F6 pass is done (DECISIONS F6); the remaining options (responsive images from the API, grid
       hydration) are listed there.

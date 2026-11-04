@@ -2,6 +2,7 @@ import { httpResource } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import type { ProjectDetail, SlugRedirect } from '../../../core/api/api.types';
 import { STORE_API_URL } from '../../../core/api/store-api-url';
+import { hydrationSnapshot } from '../../../core/http/hydration-snapshot';
 import { valueOf } from '../../../core/http/resource-value';
 import { sameJson } from '../../../core/http/same-json';
 
@@ -25,7 +26,9 @@ export class ProjectData {
     },
     { equal: sameJson },
   );
-  private readonly value = computed(() => valueOf(this.resource));
+  /** The prerendered answer stands in while hydrating (core/http/hydration-snapshot), so the page is not rebuilt. */
+  private readonly snap = hydrationSnapshot(this.resource, 'project.detail', () => this.slug());
+  private readonly value = computed(() => valueOf(this.snap));
   readonly detail = computed(() => {
     const v = this.value();
     return v && !isRedirect(v) ? v : null;

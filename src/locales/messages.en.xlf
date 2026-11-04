@@ -971,7 +971,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">108,110</context>
+          <context context-type="linenumber">111,113</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.account.title" datatype="html">
@@ -2395,11 +2395,11 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/project/project.page.html</context>
-          <context context-type="linenumber">75,76</context>
+          <context context-type="linenumber">93,94</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/project/project.page.ts</context>
-          <context context-type="linenumber">112</context>
+          <context context-type="linenumber">175</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/ui/resource-state/resource-state.html</context>
@@ -4131,11 +4131,11 @@
         <target state="translated">Refunded.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.ts</context>
-          <context context-type="linenumber">175</context>
+          <context context-type="linenumber">176</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.ts</context>
-          <context context-type="linenumber">185</context>
+          <context context-type="linenumber">186</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.review-accepted" datatype="html">
@@ -4143,7 +4143,7 @@
         <target state="translated">Payment accepted and receipt issued.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.ts</context>
-          <context context-type="linenumber">180</context>
+          <context context-type="linenumber">181</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.receipt-resent" datatype="html">
@@ -4151,7 +4151,7 @@
         <target state="translated">Receipt resent.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.ts</context>
-          <context context-type="linenumber">190</context>
+          <context context-type="linenumber">191</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.refund-pending-toast" datatype="html">
@@ -4159,7 +4159,7 @@
         <target state="translated">The refund is waiting for the payment gateway’s confirmation.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.ts</context>
-          <context context-type="linenumber">211</context>
+          <context context-type="linenumber">212</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.method-card" datatype="html">
@@ -4167,7 +4167,7 @@
         <target state="translated">Credit card</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.ts</context>
-          <context context-type="linenumber">224</context>
+          <context context-type="linenumber">225</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.order-cancelled" datatype="html">
@@ -4175,7 +4175,7 @@
         <target state="translated">Order cancelled.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.ts</context>
-          <context context-type="linenumber">246</context>
+          <context context-type="linenumber">247</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.nav-orders" datatype="html">
@@ -4247,7 +4247,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
-          <context context-type="linenumber">152</context>
+          <context context-type="linenumber">153</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/admin-nav.ts</context>
@@ -4363,7 +4363,7 @@
         <target state="translated">Handling recorded.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
-          <context context-type="linenumber">181</context>
+          <context context-type="linenumber">182</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.password-title" datatype="html">
@@ -5243,11 +5243,11 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">116,119</context>
+          <context context-type="linenumber">119,122</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/public-layout/public-layout.ts</context>
-          <context context-type="linenumber">32,33</context>
+          <context context-type="linenumber">33,34</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.cart.group-r5" datatype="html">
@@ -5831,7 +5831,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/project/project.page.ts</context>
-          <context context-type="linenumber">139</context>
+          <context context-type="linenumber">202</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/footer/footer.html</context>
@@ -6335,7 +6335,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/project/project.page.ts</context>
-          <context context-type="linenumber">111</context>
+          <context context-type="linenumber">174</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.project.unavailable-lede" datatype="html">
@@ -6347,7 +6347,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/project/project.page.ts</context>
-          <context context-type="linenumber">113</context>
+          <context context-type="linenumber">176</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.project.donate-heading" datatype="html">
@@ -6356,6 +6356,22 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/project/project.page.html</context>
           <context context-type="linenumber">60,62</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.project.bar-from" datatype="html">
+        <source>ابتداءً من</source>
+        <target state="translated">From</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/project/project.page.html</context>
+          <context context-type="linenumber">76,77</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.project.bar-donate" datatype="html">
+        <source>تبرّع الآن</source>
+        <target state="translated">Donate now</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/store/project/project.page.html</context>
+          <context context-type="linenumber">81,84</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.quick.category" datatype="html">
@@ -6463,7 +6479,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">129,132</context>
+          <context context-type="linenumber">132,135</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.my-profile" datatype="html">
@@ -6507,11 +6523,11 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">77,78</context>
+          <context context-type="linenumber">80,81</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">121,122</context>
+          <context context-type="linenumber">124,125</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.footer-association" datatype="html">
@@ -6535,7 +6551,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">139,142</context>
+          <context context-type="linenumber">142,144</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.footer-about-link" datatype="html">
@@ -6619,7 +6635,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">137,139</context>
+          <context context-type="linenumber">140,142</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.menu" datatype="html">
@@ -6627,7 +6643,7 @@
         <target state="translated">Menu</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">95,97</context>
+          <context context-type="linenumber">98,100</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.mobile-nav-label" datatype="html">
@@ -6635,7 +6651,15 @@
         <target state="translated">Mobile menu</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">104,105</context>
+          <context context-type="linenumber">107,108</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.theme" datatype="html">
+        <source>المظهر</source>
+        <target state="translated">Appearance</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/header/header.html</context>
+          <context context-type="linenumber">144,145</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.cart-label-empty" datatype="html">
@@ -6643,7 +6667,7 @@
         <target state="translated">Donations cart is empty</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.ts</context>
-          <context context-type="linenumber">111</context>
+          <context context-type="linenumber">139</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.cart-label-c" datatype="html">
@@ -6651,7 +6675,15 @@
         <target state="translated">Donations cart, <x id="count" equiv-text="n"/> donations, total <x id="total" equiv-text="total"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.ts</context>
-          <context context-type="linenumber">113</context>
+          <context context-type="linenumber">141</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.layout.back-to-top" datatype="html">
+        <source>العودة إلى الأعلى</source>
+        <target state="translated">Back to top</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/public-layout/public-layout.ts</context>
+          <context context-type="linenumber">46,47</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.skip-link" datatype="html">

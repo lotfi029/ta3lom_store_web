@@ -170,7 +170,11 @@ for (const locale of ['ar', 'en']) {
       .replace(/<style data-fonts>[^<]*<\/style>/g, '')
       .replace(/<link rel="preconnect" href="[^"]+">/g, '');
     if (!html.includes(tags) && html.includes('</head>')) {
-      html = html.replace('</head>', `${tags}</head>`);
+      // Right after <base href> (the relative media/ URLs resolve against it, so never before it) and before Angular's
+      // modulepreloaded JS: the fonts (~40 kB) no longer queue behind the scripts.
+      html = /<base href="[^"]*">/.test(html)
+        ? html.replace(/(<base href="[^"]*">)/, `$1${tags}`)
+        : html.replace('</head>', `${tags}</head>`);
       count += 1;
     }
     if (html.includes('</head>')) html = html.replace('</head>', `${BUILD_META}</head>`);

@@ -10,7 +10,7 @@
   </div>
 </div>
 
-<header class="hdr" [class.scrolled]="scrolled()">
+<header class="hdr" [class.scrolled]="scrolled()" [class.away]="away()" (focusin)="away.set(false)">
   <div class="wrap">
     <a class="brand" [href]="mainSite">
       <svg class="mark" viewBox="380 320 1250 1060" aria-hidden="true" focusable="false">
@@ -73,6 +73,9 @@
         [attr.data-lines]="cart.count()"
       >
         <ta-icon name="cart" [size]="18" />
+        @if (cart.count() > 0) {
+          <span class="cbadge" aria-hidden="true">{{ cart.count() }}</span>
+        }
         <span class="clbl" aria-hidden="true"
           ><span class="ctxt" i18n="@@store.layout.nav-cart">السلة</span>
           @if (cart.count() > 0) {
@@ -82,7 +85,7 @@
           }
         </span>
       </a>
-      <ta-theme-toggle />
+      <ta-theme-toggle class="htheme" />
       <button
         #burger
         type="button"
@@ -137,5 +140,9 @@
       >
     }
     <a class="ml" [href]="mainSite" i18n="@@store.layout.main-site">الموقع الرئيسي</a>
+    <div class="mtheme">
+      <span i18n="@@store.layout.theme">المظهر</span>
+      <ta-theme-toggle />
+    </div>
   </nav>
 </header>

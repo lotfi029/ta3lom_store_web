@@ -1,5 +1,5 @@
 import { ICONS, type IconName } from './icon.data';
-import { iconPath, shapeToPath } from './icon';
+import { absoluteStart, iconPath, shapeToPath } from './icon';
 
 describe('Icon (F6.5: one path per icon)', () => {
   it('converts circles, ellipses and rounded rects to closed path data', () => {
@@ -22,5 +22,21 @@ describe('Icon (F6.5: one path per icon)', () => {
       expect((d.match(/M/gi) ?? []).length, name).toBeGreaterThanOrEqual(shapes.length);
     }
     expect(iconPath('coins')).toContain('a7 2.5');
+  });
+
+  it('a path starting with a relative m stays where it was once joined (search handle, share, mail…)', () => {
+    expect(absoluteStart('m20 20-4.2-4.2')).toBe('M20 20l-4.2-4.2');
+    expect(absoluteStart('m8.2 10.8 7.6-4.1M8.2 13.2l7.6 4.1')).toBe('M8.2 10.8l7.6-4.1M8.2 13.2l7.6 4.1');
+    expect(absoluteStart('m13.5 6.5 4 4')).toBe('M13.5 6.5l4 4');
+    expect(absoluteStart('M5 6h4')).toBe('M5 6h4');
+    expect(absoluteStart('m3 4h2')).toBe('M3 4h2');
+    for (const name of Object.keys(ICONS) as IconName[]) {
+      // every shape, once converted, begins with an ABSOLUTE move-to, so joining shapes cannot shift any of them
+      for (const m of ICONS[name].matchAll(/<(path|circle|ellipse|rect)\s([^>]*?)\/>/g)) {
+        const attrs = Object.fromEntries([...m[2].matchAll(/([a-z-]+)="([^"]*)"/g)].map((x) => [x[1], x[2]]));
+        expect(shapeToPath(m[1], attrs)[0], name).toBe('M');
+      }
+    }
+    expect(iconPath('search')).toContain('M20 20l-4.2-4.2');
   });
 });

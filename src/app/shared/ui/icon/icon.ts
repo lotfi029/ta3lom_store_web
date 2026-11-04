@@ -4,11 +4,25 @@ import { DIRECTIONAL, ICONS, type IconName } from './icon.data';
 const n = (a: Record<string, string>, k: string): number => Number(a[k] ?? 0);
 const fmt = (x: number): string => String(Math.round(x * 1000) / 1000);
 
+const NUM = String.raw`[-+]?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?`;
+const LEADING_M = new RegExp(String.raw`^\s*m\s*(${NUM})[\s,]*(${NUM})[\s,]*`, 'i');
+
+/**
+ * A path's first `m` is absolute only because it starts the path; once paths are joined it would be relative to the
+ * previous shape. Make it an explicit `M`, and keep any implicit line-to pairs after it relative with an explicit `l`.
+ */
+export function absoluteStart(d: string): string {
+  const m = LEADING_M.exec(d);
+  if (!m || d.trimStart()[0] === 'M') return d.trim();
+  const rest = d.slice(m[0].length);
+  return `M${m[1]} ${m[2]}${/^[-+.\d]/.test(rest) ? `l${rest}` : rest}`;
+}
+
 /** One SVG shape (path, circle, ellipse, rect with optional rx) as path data. */
 export function shapeToPath(tag: string, a: Record<string, string>): string {
   switch (tag) {
     case 'path':
-      return a['d'] ?? '';
+      return absoluteStart(a['d'] ?? '');
     case 'circle':
     case 'ellipse': {
       const cx = n(a, 'cx');

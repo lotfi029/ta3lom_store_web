@@ -97,3 +97,89 @@ h1 {
 .sk-box {
   block-size: 360px;
 }
+
+/* Sticky donate bar — phones and tablets only (from 1000 px the donate box itself is sticky). */
+.dbar {
+  display: none;
+}
+
+@media (width < 1000px) {
+  .dbar {
+    display: block;
+    position: fixed;
+    inset-inline: 0;
+    inset-block-end: 0;
+    z-index: 45;
+    background: var(--c-surface);
+    border-block-start: 1px solid var(--c-border);
+    box-shadow: 0 -10px 30px var(--c-header-shadow);
+    padding-block: var(--space-3) calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
+    padding-inline: var(--space-4);
+    transform: translateY(110%);
+    transition: transform var(--dur-2) var(--ease);
+  }
+
+  .dbar.show {
+    transform: none;
+  }
+
+  /* Room for the bar under the page so nothing ends up hidden behind it. */
+  .pp {
+    padding-block-end: 112px;
+  }
+}
+
+.dbar-in {
+  max-width: 720px;
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.dbar-txt {
+  flex: 1 1 0;
+  min-inline-size: 0;
+  display: grid;
+}
+
+.dbar-t {
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dbar-from {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.3em;
+  font-size: 0.85rem;
+  color: var(--c-text-2);
+}
+
+.dbar-go {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: 48px;
+  padding-inline: var(--space-6);
+  border: 0;
+  border-radius: var(--rp);
+  background: var(--c-brand-strong);
+  color: var(--c-on-brand);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.dbar-go:hover {
+  background: var(--c-brand-deep);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dbar {
+    transition: none;
+  }
+}
