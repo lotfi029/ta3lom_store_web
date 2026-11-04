@@ -56,7 +56,7 @@
           }
         </div>
 
-        <aside class="buybox" aria-labelledby="donate-h">
+        <aside #buybox class="buybox" aria-labelledby="donate-h">
           <h2 id="donate-h" class="bh" i18n="@@store.project.donate-heading">تبرّع لهذا المشروع</h2>
           @if (donate(); as d) {
             <ta-donate-box [project]="d" idPrefix="pp" size="page" />
@@ -65,6 +65,24 @@
       </div>
     </div>
   </section>
+  <!-- Phones and tablets: the donate action stays one tap away while the donate box is off screen. -->
+  @if (donate()) {
+    <div class="dbar" [class.show]="barShown()" [attr.inert]="barShown() ? null : ''">
+      <div class="dbar-in">
+        <span class="dbar-txt">
+          <span class="dbar-t">{{ title() }}</span>
+          @if (fromAmount(); as from) {
+            <span class="dbar-from"
+              ><span i18n="@@store.project.bar-from">ابتداءً من</span> <ta-money [value]="from"
+            /></span>
+          }
+        </span>
+        <button type="button" class="dbar-go" (click)="toDonate()">
+          <ta-icon name="heart" [size]="18" /><span i18n="@@store.project.bar-donate">تبرّع الآن</span>
+        </button>
+      </div>
+    </div>
+  }
 } @else {
   <ta-resource-state
     [loading]="data.resource.isLoading() || !data.resource.error()"

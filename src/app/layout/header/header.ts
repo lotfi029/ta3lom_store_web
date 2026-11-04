@@ -33,6 +33,22 @@ import { ThemeToggle } from '../theme-toggle/theme-toggle';
  * drawer. The category tab bar sits under it on the home page (features/store/home/category-tabs).
  * After the first render (browser only) it restores the customer session and loads the cart badge.
  */
+/**
+ * Hide-on-scroll for narrow screens: away after scrolling down past the first 160 px, back on any upward scroll of
+ * 6 px or more. Never away near the top, on wide screens, with the menu open or while focus is inside the header.
+ */
+export function nextAway(
+  away: boolean,
+  lastY: number,
+  y: number,
+  ctx: { narrow: boolean; menuOpen: boolean; focusInside: boolean },
+): boolean {
+  if (!ctx.narrow || ctx.menuOpen || ctx.focusInside || y < 160) return false;
+  if (y > lastY + 6) return true;
+  if (y < lastY - 6) return false;
+  return away;
+}
+
 @Component({
   selector: 'ta-header',
   imports: [RouterLink, Icon, Money, AccountMenu, LangSwitch, ThemeToggle],
@@ -49,6 +65,9 @@ export class Header {
   protected readonly mainSite = environment.mainSiteUrl;
 
   protected readonly scrolled = signal(false);
+  /** Phones and small tablets: the header slides away while scrolling down and comes back on any scroll up. */
+  protected readonly away = signal(false);
+  private lastY = 0;
   protected readonly mobileOpen = signal(false);
   protected readonly bump = signal(false);
   private readonly burger = viewChild<ElementRef<HTMLButtonElement>>('burger');
@@ -83,7 +102,16 @@ export class Header {
 
   @HostListener('window:scroll')
   protected onScroll(): void {
-    this.scrolled.set(window.scrollY > 8);
+    const y = window.scrollY;
+    this.scrolled.set(y > 8);
+    this.away.set(
+      nextAway(this.away(), this.lastY, y, {
+        narrow: window.matchMedia('(width < 900px)').matches,
+        menuOpen: this.mobileOpen(),
+        focusInside: !!document.activeElement?.closest('.hdr'),
+      }),
+    );
+    this.lastY = y;
   }
 
   @HostListener('document:keydown.escape')

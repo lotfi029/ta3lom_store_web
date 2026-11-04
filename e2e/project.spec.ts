@@ -65,6 +65,24 @@ for (const locale of ['ar', 'en'] as const) {
       await expectNoHorizontalScroll(page);
     });
 
+    test('phones: a sticky donate bar until the donate box is in view; its button brings the box and focus', async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.goto(`/${locale}/p/support-a-daiya`, { waitUntil: 'networkidle' });
+      const bar = page.locator('.dbar');
+      await expect(bar).toHaveClass(/show/);
+      await expect(bar.locator('.dbar-from')).toContainText(/\d/);
+      await bar.locator('.dbar-go').click();
+      await expect(page.locator('.buybox')).toBeInViewport();
+      await expect(bar).not.toHaveClass(/show/);
+      await expect(page.locator('.buybox :focus')).toHaveCount(1);
+      await expectNoA11yViolations(page, `/${locale}/p phone`);
+      // Wide screens never show it (the donate box is sticky there).
+      await page.setViewportSize({ width: 1280, height: 900 });
+      await expect(bar).toBeHidden();
+    });
+
     test('an unknown slug shows "not available", noindex', async ({ page }) => {
       await page.goto(`/${locale}/p/no-such-project`);
       await expect(page.locator('.gone h1')).toBeVisible();

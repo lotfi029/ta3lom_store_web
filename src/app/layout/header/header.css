@@ -27,6 +27,30 @@
   padding-block: var(--space-2);
 }
 
+/* Phones: one line — the trust text ellipsises beside the two links (it wrapped to three lines). */
+@media (width < 600px) {
+  .uwrap {
+    flex-wrap: nowrap;
+  }
+
+  .utext {
+    flex: 1 1 0;
+    min-inline-size: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ulinks {
+    flex: none;
+    gap: 0;
+  }
+
+  .nm {
+    font-size: 0.92rem;
+  }
+}
+
 .ulinks {
   display: flex;
   align-items: center;
@@ -59,6 +83,20 @@
 
 .hdr.scrolled {
   box-shadow: 0 8px 30px var(--c-header-shadow);
+}
+
+/* Narrow screens: away while scrolling down (header.ts nextAway), back on scroll up. */
+@media (width < 900px) {
+  .hdr {
+    transition:
+      box-shadow var(--dur-1),
+      transform var(--dur-2) var(--ease);
+  }
+
+  .hdr.away {
+    transform: translateY(-100%);
+    box-shadow: none;
+  }
 }
 
 .wrap {
@@ -223,6 +261,21 @@
   }
 }
 
+/* Phones: the theme toggle lives in the menu (.mtheme) so logo and actions fit one row. */
+@media (width < 600px) {
+  .htheme {
+    display: none;
+  }
+}
+
+/* Small phones: sign-in / account also live in the menu (دخول / حسابي), so the association name is never cut. */
+@media (width < 480px) {
+  .acts > .signin,
+  .acts > ta-account-menu {
+    display: none;
+  }
+}
+
 /* حسابي / دخول — outlined, like the account menu trigger. */
 .signin {
   display: inline-flex;
@@ -247,6 +300,7 @@
 
 /* السلة · total — the dark button; the bump plays on every add. */
 .cartbtn {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
@@ -264,6 +318,36 @@
 
 .cartbtn:hover {
   background: var(--c-surface-dark);
+}
+
+/* Count badge on the cart icon: phones only (the total is shown from 600 px). */
+.cbadge {
+  display: none;
+}
+
+@media (width < 600px) {
+  .cbadge {
+    position: absolute;
+    inset-block-start: -6px;
+    inset-inline-end: -6px;
+    min-inline-size: 20px;
+    block-size: 20px;
+    padding-inline: 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: var(--c-gold);
+    color: var(--c-on-gold);
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1;
+    border: 2px solid var(--c-surface);
+  }
+
+  .ctot {
+    display: none;
+  }
 }
 
 .cartbtn ta-money {
@@ -407,6 +491,24 @@
   margin-block: var(--space-1);
 }
 
+/* The menu's theme row (phones). */
+.mtheme {
+  display: none;
+}
+
+@media (width < 600px) {
+  .mtheme {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-block-size: 44px;
+    padding-inline: var(--space-2);
+    border-block-start: 1px solid var(--c-border);
+    margin-block-start: var(--space-2);
+    padding-block-start: var(--space-2);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hdr,
   .mark,
@@ -420,5 +522,31 @@
 
   .brand:hover .mark {
     transform: none;
+  }
+}
+
+/* Narrow screens (after the base rules, which it overrides): logo and actions share the first row, the search the
+   second — it was three rows on phones. */
+@media (width < 900px) {
+  /* Logo and actions share the first row, the search the second (was three rows on phones). */
+  .wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+  }
+
+  .brand {
+    grid-row: 1;
+    grid-column: 1;
+  }
+
+  .acts {
+    grid-row: 1;
+    grid-column: 2;
+  }
+
+  .hsearch {
+    grid-row: 2;
+    grid-column: 1 / -1;
   }
 }

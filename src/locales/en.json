@@ -696,5 +696,9 @@
   "store.admin.payment-failed": "Failed",
   "store.admin.payment-cancelled": "Cancelled",
   "store.admin.payment-review": "In review",
-  "store.admin.payment-refunded": "Refunded"
+  "store.admin.payment-refunded": "Refunded",
+  "store.project.bar-from": "From",
+  "store.project.bar-donate": "Donate now",
+  "store.layout.theme": "Appearance",
+  "store.layout.back-to-top": "Back to top"
 }

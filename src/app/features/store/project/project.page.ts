@@ -1,16 +1,24 @@
 import { HttpErrorResponse } from '@angular/common/http';
+import { DOCUMENT } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
+  ElementRef,
   computed,
   effect,
   inject,
   input,
+  signal,
   untracked,
+  viewChild,
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { refreshAfterHydration } from '../../../core/http/refresh-after-hydration';
 import { I18nService } from '../../../core/i18n/i18n';
+import { fromHalalas, toHalalas } from '../../../core/money/money';
+import { Icon } from '../../../shared/ui/icon/icon';
+import { Money } from '../../../shared/ui/money/money';
 import { SeoService, siteName } from '../../../core/seo/seo.service';
 import { Image } from '../../../shared/ui/image/image';
 import { Markdown } from '../../../shared/ui/markdown/markdown';
@@ -29,7 +37,7 @@ import { projectJsonLd } from './project-seo';
  */
 @Component({
   selector: 'ta-project-page',
-  imports: [RouterLink, Image, Markdown, ResourceState, DonateBox, ShareSheet],
+  imports: [RouterLink, Image, Markdown, ResourceState, DonateBox, ShareSheet, Icon, Money],
   providers: [ProjectData],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './project.page.html',
@@ -71,6 +79,20 @@ export class ProjectPage {
   protected readonly canonical = computed(() =>
     this.seo.url(this.i18n.locale, `/p/${this.slug()}`),
   );
+  /** The smallest amount one can give here: the cheapest option, or the open-amount minimum. */
+  protected readonly fromAmount = computed(() => {
+    const p = this.p();
+    if (!p) return null;
+    const amounts = (p.options ?? []).map((o) => toHalalas(o.amount));
+    if (p.allowOpenAmount) amounts.push(toHalalas(p.minAmount));
+    return amounts.length ? fromHalalas(Math.min(...amounts)) : null;
+  });
+
+  private readonly buybox = viewChild<ElementRef<HTMLElement>>('buybox');
+  /** The sticky donate bar (phones/tablets, CSS) shows while the donate box is off screen. */
+  protected readonly barShown = signal(false);
+  private readonly doc = inject(DOCUMENT);
+
   protected readonly donate = computed<DonateProject | null>(() => {
     const p = this.p();
     return p
@@ -88,6 +110,37 @@ export class ProjectPage {
 
   constructor() {
     refreshAfterHydration(this.data.resource);
+    // Watch whichever donate box is rendered (it appears once the project has loaded). Browser only: the prerender has
+    // no IntersectionObserver.
+    const w = this.doc.defaultView;
+    const io =
+      w && 'IntersectionObserver' in w
+        ? new IntersectionObserver(([e]) => this.barShown.set(!e.isIntersecting), {
+            rootMargin: '0px 0px -80px 0px',
+          })
+        : null;
+    effect((onCleanup) => {
+      const el = this.buybox()?.nativeElement;
+      if (!io || !el) return;
+      io.observe(el);
+      onCleanup(() => {
+        io.unobserve(el);
+        this.barShown.set(false);
+      });
+    });
+    inject(DestroyRef).onDestroy(() => {
+      io?.disconnect();
+      this.doc.documentElement.style.removeProperty('--dbar-h');
+    });
+    // The floating quick-donate button sits above the bar while it shows (public-layout reads --dbar-h).
+    effect(() => {
+      const shown = this.barShown();
+      untracked(() => {
+        const root = this.doc.documentElement.style;
+        if (shown) root.setProperty('--dbar-h', '76px');
+        else root.removeProperty('--dbar-h');
+      });
+    });
     effect(() => {
       const s = this.slug();
       untracked(() => this.data.slug.set(s));
@@ -102,6 +155,16 @@ export class ProjectPage {
       const gone = this.notFound();
       untracked(() => this.setSeo(p, gone));
     });
+  }
+
+  /** The bar's button: bring the donate box into view and move focus into it (its first choice). */
+  protected toDonate(): void {
+    const box = this.buybox()?.nativeElement;
+    if (!box) return;
+    const reduce = this.doc.defaultView?.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+    box.scrollIntoView({ behavior: reduce ? 'instant' : 'smooth', block: 'center' });
+    const first = box.querySelector<HTMLElement>('button, input, select, a[href]');
+    (first ?? box).focus({ preventScroll: true });
   }
 
   private setSeo(p: ReturnType<typeof this.p>, gone: boolean): void {
