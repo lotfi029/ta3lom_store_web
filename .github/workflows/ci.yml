@@ -64,6 +64,8 @@ jobs:
             --build-arg VERSION="$(git describe --tags --always)" --build-arg GIT_SHA="${{ github.sha }}" \
             -t ta3lom-store-web:ci .
           node scripts/check-container.mjs ta3lom-store-web:ci --env ci --port 8099 --keep
+      - name: Edge block for the store (deploy/edge/store.caddy, F8) — caddy validate + fmt
+        run: bash scripts/validate-caddy.sh
       - name: Lighthouse CI against the container (mobile; home + a project, ar and en — H-2)
         run: npm run lhci
       - name: Lighthouse reports

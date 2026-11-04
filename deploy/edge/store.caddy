@@ -1,0 +1,59 @@
+# Store sites on the shared edge Caddy (plan §7 F8). ta3lom-deploy was not reachable from the final session, so this block
+# lives here and the owner copies it to ta3lom-deploy `edge/conf/store.caddy`, imported by `Caddyfile`,
+# `Caddyfile.cutover` and `Caddyfile.staging` (deploy/edge/README.md). Validated by scripts/validate-caddy.sh.
+# Upstreams are Docker aliases on the external `edge` network (no published ports):
+#   store-web / store-web-staging  — this repo's container (deploy/docker-compose.store-web.yml), :8080
+#   store-api / store-api-staging  — the store API (ta3lom_store_api deploy/compose.yaml), :8080
+# The containers send their own CSP and security headers; the edge adds only HSTS (production names) and noindex
+# (staging names). The edge sets X-Forwarded-For/Proto; the API trusts them only from the edge subnet
+# (Store__ForwardedHeaders__KnownNetworks__0 = EDGE_SUBNET).
+
+(store_hsts) {
+	header Strict-Transport-Security "max-age=31536000; includeSubDomains"
+}
+
+(store_noindex) {
+	header X-Robots-Tag "noindex, nofollow"
+}
+
+# The API: 21 MB bodies (20 MB media uploads + multipart overhead); the payment webhook is never cached or buffered so
+# the API reads the raw body itself (signature check, 256 KB limit enforced by the API).
+(store_api) {
+	request_body {
+		max_size 21MB
+	}
+	@webhook path /v1/payments/webhooks/*
+	handle @webhook {
+		header Cache-Control "no-store"
+		reverse_proxy {args[0]}:8080 {
+			flush_interval -1
+			request_buffers 0
+			response_buffers 0
+		}
+	}
+	handle {
+		reverse_proxy {args[0]}:8080
+	}
+}
+
+store.ta3lom.sa {
+	import store_hsts
+	encode zstd gzip
+	reverse_proxy store-web:8080
+}
+
+store-api.ta3lom.sa {
+	import store_hsts
+	import store_api store-api
+}
+
+store-staging.ta3lom.sa {
+	import store_noindex
+	encode zstd gzip
+	reverse_proxy store-web-staging:8080
+}
+
+store-api-staging.ta3lom.sa {
+	import store_noindex
+	import store_api store-api-staging
+}

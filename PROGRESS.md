@@ -20,7 +20,7 @@ success toast only on success; a transient refresh failure no longer ends the do
 | F6.1–F6.5 | web `final/web-payments-perf` | F6.1 … F6.5 (+ F5 fix: payment http flag) | done (numbers in DECISIONS) |
 | F6.6, F6 floors | web `final/web-payments-perf` | — | pending |
 | F7 | web `final/web-payments-perf` | F7 — hosting alignment | done |
-| F8 | ta3lom-deploy — **not reachable from the session** (add_repo: no access) → fallback in web branch (b) `deploy/edge/` | — | pending |
+| F8 | ta3lom-deploy — **not reachable from the session** (add_repo: no access) → fallback in web branch (b) `deploy/edge/` | F8 — edge block (fallback) | done (caddy validate) |
 | F9 | ta3lom-web `final/store-integration` (PR lotfi029/ta3lom-web#34, draft) | F9 — store integration | done (unit 356, scripts 12, e2e 174 + 11 flag-on skipped, a11y 66 × 2; flag-on run local) |
 | F10 | all | — | pending |
 
