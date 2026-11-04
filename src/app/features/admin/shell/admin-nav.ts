@@ -48,6 +48,12 @@ export const ADMIN_NAV: readonly AdminNavItem[] = [
     policy: 'staff:read',
   },
   {
+    path: '/admin/reports',
+    label: () => $localize`:@@store.admin.nav-reports:التقارير`,
+    icon: 'chart',
+    policy: 'staff:finance',
+  },
+  {
     path: '/admin/staff',
     label: () => $localize`:@@store.admin.nav-staff:فريق العمل`,
     icon: 'users',

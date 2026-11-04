@@ -10,7 +10,8 @@ export type StaffPolicy =
   | 'staff:customers'
   | 'staff:orders'
   | 'staff:templates'
-  | 'staff:admin';
+  | 'staff:admin'
+  | 'staff:finance';
 
 export const STAFF_ROLES: readonly StaffRole[] = ['admin', 'store_manager', 'finance', 'viewer'];
 
@@ -21,6 +22,8 @@ export const POLICY_ROLES: Readonly<Record<StaffPolicy, readonly StaffRole[]>> =
   'staff:orders': ['admin', 'finance'],
   'staff:templates': ['admin', 'store_manager'],
   'staff:admin': ['admin'],
+  /** R5-Payments: refunds, payment review, receipt resend, the donations CSV. */
+  'staff:finance': ['admin', 'finance'],
 };
 
 export function rolesAllow(roles: readonly string[], policy: StaffPolicy): boolean {

@@ -16,8 +16,9 @@ describe('R5 staff policy table (contract 15 §1.6)', () => {
     expect(who('staff:catalogue')).toEqual(['admin', 'store_manager']);
     expect(who('staff:customers')).toEqual(['admin', 'store_manager']);
     expect(who('staff:orders')).toEqual(['admin', 'finance']);
+    expect(who('staff:finance')).toEqual(['admin', 'finance']);
     expect(who('staff:templates')).toEqual(['admin', 'store_manager']);
-    expect(Object.keys(POLICY_ROLES)).toHaveLength(6);
+    expect(Object.keys(POLICY_ROLES)).toHaveLength(7);
   });
 
   it('never lets viewer write', () => {

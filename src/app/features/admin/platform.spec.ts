@@ -50,6 +50,12 @@ describe('admin platform helpers (W-08)', () => {
       'site_name_ar',
       'site_name_en',
       'support_mobile',
+      'receipt_org_name_ar',
+      'receipt_org_name_en',
+      'receipt_licence_no',
+      'receipt_vat_note_ar',
+      'receipt_vat_note_en',
+      'receipt_signature_asset_id',
     ]);
   });
 

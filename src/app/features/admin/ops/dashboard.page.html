@@ -68,11 +68,42 @@
         }
       </section>
       <section class="panel" aria-labelledby="db-pay-h">
-        <h2 id="db-pay-h" i18n="@@store.admin.payments-off-title">الدفع الإلكتروني</h2>
-        <p class="muted" i18n="@@store.admin.payments-off">
-          لم يُفعَّل الدفع الإلكتروني بعد: كل التبرعات المسجلة بانتظار الدفع، ولا تُحسب مبالغ
-          مدفوعة.
-        </p>
+        <h2 id="db-pay-h" i18n="@@store.admin.paid-title">التبرعات المدفوعة</h2>
+        <dl class="paid">
+          <div>
+            <dt i18n="@@store.admin.paid-today">اليوم</dt>
+            <dd><ta-money [value]="x.paidToday?.amount ?? '0.00'" /> <small class="muted">({{ int(x.paidToday?.count ?? 0) }})</small></dd>
+          </div>
+          <div>
+            <dt i18n="@@store.admin.paid-week">هذا الأسبوع</dt>
+            <dd><ta-money [value]="x.paidThisWeek?.amount ?? '0.00'" /> <small class="muted">({{ int(x.paidThisWeek?.count ?? 0) }})</small></dd>
+          </div>
+          <div>
+            <dt i18n="@@store.admin.paid-month">هذا الشهر</dt>
+            <dd><ta-money [value]="x.paidThisMonth?.amount ?? '0.00'" /> <small class="muted">({{ int(x.paidThisMonth?.count ?? 0) }})</small></dd>
+          </div>
+          <div>
+            <dt i18n="@@store.admin.in-review">قيد مراجعة الدفع</dt>
+            <dd>
+              <a routerLink="/admin/orders" [queryParams]="{ status: 'payment_review' }">{{ int(x.inReviewOrders ?? 0) }}</a>
+            </dd>
+          </div>
+        </dl>
+        <h3 i18n="@@store.admin.top-paid-projects">المشاريع الأعلى في المبالغ المدفوعة</h3>
+        @if ((x.topProjectsByPaidAmount ?? []).length === 0) {
+          <p class="muted" i18n="@@store.admin.no-results">لا نتائج.</p>
+        } @else {
+          <ol class="list">
+            @for (t of x.topProjectsByPaidAmount; track t.projectId) {
+              <li>
+                <span
+                  ><a [routerLink]="['/admin/projects', t.projectId]">{{ t.titleAr }}</a>
+                  <small class="muted" i18n="@@store.admin.paid-count">({{ int(t.paidOrders) }} تبرع)</small></span
+                ><ta-money [value]="t.paidAmount" />
+              </li>
+            }
+          </ol>
+        }
       </section>
     </div>
   }

@@ -2,6 +2,7 @@ import { HttpClient, httpResource } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import type {
+  AdminPaymentAction,
   AdminCustomer,
   AdminCustomerPage,
   AdminOrderDetail,
@@ -109,6 +110,52 @@ export class OpsData {
         `${this.api}/admin/orders/${encodeURIComponent(upperRef(reference))}/cancel`,
         null,
       ),
+    );
+    this.order.reload();
+    this.orders.reload();
+    this.dashboard.reload();
+    return r;
+  }
+
+  // ── R5-Payments (plan §4, §6 F5): finance actions. Each Idempotency-Key is created by the dialog and kept by it
+  // until a definite answer; the order's `version` (as read) guards against concurrent changes (409).
+
+  async refund(reference: string, amount: string, reason: string, version: number, key: string): Promise<AdminPaymentAction> {
+    return this.financeAction(`${this.orderPath(reference)}/refunds`, { amount, reason, version }, key);
+  }
+
+  async acceptReview(reference: string, version: number): Promise<AdminPaymentAction> {
+    return this.financeAction(`${this.orderPath(reference)}/review/accept`, { version, reason: null });
+  }
+
+  async refundReview(reference: string, version: number, reason: string, key: string): Promise<AdminPaymentAction> {
+    return this.financeAction(`${this.orderPath(reference)}/review/refund`, { version, reason }, key);
+  }
+
+  async resendReceipt(reference: string, key: string): Promise<AdminPaymentAction> {
+    return this.financeAction(`${this.orderPath(reference)}/receipt/resend`, {}, key);
+  }
+
+  /** `GET /admin/reports/donations.csv?from&to` (Riyadh dates, `staff:finance`) as a file. */
+  async donationsCsv(from: string, to: string): Promise<{ blob: Blob; fileName: string }> {
+    const res = await firstValueFrom(
+      this.http.get(`${this.api}/admin/reports/donations.csv`, {
+        params: { from, to },
+        responseType: 'blob',
+        observe: 'response',
+      }),
+    );
+    const name = /filename="?([^";]+)"?/.exec(res.headers.get('Content-Disposition') ?? '')?.[1] ?? `donations-${from}-${to}.csv`;
+    return { blob: res.body!, fileName: name };
+  }
+
+  private orderPath(reference: string): string {
+    return `${this.api}/admin/orders/${encodeURIComponent(upperRef(reference))}`;
+  }
+
+  private async financeAction(url: string, body: object, key?: string): Promise<AdminPaymentAction> {
+    const r = await firstValueFrom(
+      this.http.post<AdminPaymentAction>(url, body, key ? { headers: { 'Idempotency-Key': key } } : {}),
     );
     this.order.reload();
     this.orders.reload();

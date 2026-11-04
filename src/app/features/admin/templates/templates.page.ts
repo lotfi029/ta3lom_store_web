@@ -20,15 +20,11 @@ import { ResourceState } from '../../../shared/ui/resource-state/resource-state'
 import { PlatformData } from '../platform.data';
 import { Requires } from '../ui/requires';
 
-/** R5 message templates (contract 15 §2.8): the sign-in code (SMS) and staff alerts (e-mail), per locale. */
-export const TEMPLATE_KEYS = [
-  'order_paid',
-  'otp',
-  'shipment_shipped',
-  'shipment_delivered',
-  'refund_done',
-  'staff_alert',
-] as const;
+/**
+ * R5 message templates (contract 15 §2.8): the sign-in code (SMS), staff alerts (e-mail) and, since R5-Payments, the
+ * donation receipt (`order_paid`, SMS + e-mail with the PDF) and the refund notice (`refund_processed`), per locale.
+ */
+export const TEMPLATE_KEYS = ['otp', 'order_paid', 'refund_processed', 'staff_alert'] as const;
 
 /** A local preview: every `{{ name }}` shows as `[name]` (what the API's test send does for unset variables). */
 export function previewText(text: string | null | undefined): string {
@@ -58,7 +54,7 @@ export class TemplatesPage {
 
   protected readonly canEdit = computed(() => this.auth.can('staff:templates'));
   /** The values the API renders a test with (Scriban `{{ name }}`), contract 15 §2.8. */
-  protected readonly variables = 'code, name, reference, amount, subject, body';
+  protected readonly variables = 'code, name, reference, amount, receipt_number, link, subject, body';
   protected readonly list = computed(() =>
     (valueOf(this.data.templates) ?? []).filter((t) =>
       (TEMPLATE_KEYS as readonly string[]).includes(t.key),
