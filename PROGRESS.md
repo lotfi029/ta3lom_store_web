@@ -16,7 +16,8 @@ success toast only on success; a transient refresh failure no longer ends the do
 | F2–F4 | api `final/api-payments-hosting` (PR lotfi029/ta3lom_store_api#17) | F2a…F4, F5b (template samples) | done (728 tests, Domain 96.6 %, Application 90.6 %) |
 | F5a | web `final/web-payments-perf` (stacked on the branch above) | F5a — checkout and order page | done (unit 341, smoke 57, a11y) |
 | F5b | web `final/web-payments-perf` | F5b — account and admin payments | done (unit 345 + scripts 5, build:ci, smoke 27 passed on the stub, a11y) |
-| F5c–F7 | web `final/web-payments-perf` | — | pending |
+| F5c | web `final/web-payments-perf` | F5c — e2e | done (payments 12/12 ar+en on the real API + fake gateway; full e2e 99 passed after a rebuild; smoke on the stub) |
+| F6–F7 | web `final/web-payments-perf` | — | pending |
 | F8 | ta3lom-deploy — **not reachable from the session** (add_repo: no access) → fallback in web branch (b) `deploy/edge/` | — | pending |
 | F9 | ta3lom-web `final/store-integration` (PR lotfi029/ta3lom-web#34, draft) | F9 — store integration | done (unit 356, scripts 12, e2e 174 + 11 flag-on skipped, a11y 66 × 2; flag-on run local) |
 | F10 | all | — | pending |
