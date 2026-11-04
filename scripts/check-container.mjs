@@ -12,7 +12,9 @@
  *   - /ar/orders/<ref> → the client shell with Referrer-Policy no-referrer
  *   - client-only routes (cart, checkout, login, orders, account/**, admin/**, an unknown /p/<slug>) → 200 + client shell
  *   - unknown paths → 404 (locale: the client shell; root: the static 404.html)
- *   - cache: fingerprinted JS/CSS/fonts `immutable` for a year; HTML and index.csr.html `no-cache`; version.json no-store
+ *   - cache: fingerprinted JS/CSS/fonts `immutable` for a year — incl. a LAZY chunk named by main.js (review 04 S-7: mixed
+ *     case, `_`, `-`); HTML and index.csr.html `no-cache`; version.json no-store
+ *   - /.well-known/apple-developer-merchantid-domain-association: 200, text/plain, no-cache (Apple Pay on Moyasar)
  *   - gzip/zstd compression on HTML; /version.json carries the commit; robots.txt per environment
  * With --keep the main container is left running (LHCI runs against it next, H-2); stop it with `docker rm -f`.
  */
@@ -129,12 +131,28 @@ try {
   expect(['gzip', 'zstd'].includes(r.headers.get('content-encoding') ?? ''), 'HTML is not compressed (zstd/gzip)');
 
   // Cache of fingerprinted assets
-  const asset = /(?:src|href)="((?:main|chunk|polyfills|styles)-[A-Z0-9]{8}\.(?:js|css))"/.exec(html)?.[1];
+  const HASH = '[A-Za-z0-9_-]{8}';
+  const asset = new RegExp(`(?:src|href)="((?:main|chunk|polyfills|styles)-${HASH}\\.(?:js|css))"`).exec(html)?.[1];
   expect(!!asset, 'no fingerprinted asset referenced by /ar/');
+  const immutable = 'public, max-age=31536000, immutable';
   if (asset) {
     r = await get(PORT, `/ar/${asset}`);
-    expect(r.status === 200 && r.headers.get('cache-control') === 'public, max-age=31536000, immutable', `/ar/${asset} is not immutable (${r.headers.get('cache-control')})`);
+    expect(r.status === 200 && r.headers.get('cache-control') === immutable, `/ar/${asset} is not immutable (${r.headers.get('cache-control')})`);
   }
+  // S-7: a lazy chunk (not in the HTML: main.js imports it) must be immutable too, whatever the case of its hash.
+  const main = /src="(main-[A-Za-z0-9_-]{8}\.js)"/.exec(html)?.[1];
+  const lazy = main ? new RegExp(`chunk-${HASH}\\.js`).exec(await (await get(PORT, `/ar/${main}`)).text())?.[0] : undefined;
+  expect(!!lazy, 'main.js names no lazy chunk');
+  if (lazy) {
+    r = await get(PORT, `/ar/${lazy}`);
+    expect(r.status === 200 && r.headers.get('cache-control') === immutable, `lazy chunk /ar/${lazy} is not immutable (${r.headers.get('cache-control')})`);
+  }
+
+  // Apple Pay domain association (served at the root, plain text, revalidated: the owner replaces the placeholder).
+  r = await get(PORT, '/.well-known/apple-developer-merchantid-domain-association');
+  expect(r.status === 200, `/.well-known/apple-developer-merchantid-domain-association answered ${r.status}`);
+  expect((r.headers.get('content-type') ?? '').startsWith('text/plain'), `the Apple Pay file is served as ${r.headers.get('content-type')}, expected text/plain`);
+  expect(r.headers.get('cache-control') === 'no-cache', `the Apple Pay file Cache-Control is ${r.headers.get('cache-control')}, expected no-cache`);
 
   // Client-only routes → the client shell
   const shells = {

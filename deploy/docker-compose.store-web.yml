@@ -8,8 +8,12 @@
 #     docker compose -f docker-compose.store-web.yml -p store-web-staging up -d --wait
 # (EDGE_ALIAS also lives in each folder's .env; the deploy workflow passes it explicitly.) No secrets: the image is
 # public static files. Runbook: deploy/README.md.
+# Review 04 H-1: the service is `web`, NOT `store-web` — Compose adds the service name as a DNS alias on every network,
+# so a service called `store-web` in the STAGING project also answered to `store-web` on the shared edge network and the
+# edge could route production traffic to staging. Only EDGE_ALIAS may name an environment on `edge`
+# (scripts/check-edge-aliases.sh proves it with both projects side by side, in CI).
 services:
-  store-web:
+  web:
     image: ${STORE_WEB_IMAGE:?set STORE_WEB_IMAGE, e.g. ghcr.io/lotfi029/ta3lom-store-web:staging}
     restart: unless-stopped
     environment:

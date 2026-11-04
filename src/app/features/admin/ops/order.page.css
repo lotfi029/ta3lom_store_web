@@ -81,3 +81,18 @@
 .dlg .field {
   margin: 0;
 }
+
+/* Review 04 W-2: a refund waiting for the gateway. */
+.pending {
+  margin-block: 8px 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--c-border);
+  background: var(--c-tint);
+  color: var(--c-text);
+}
+
+.pending-note {
+  flex-basis: 100%;
+  margin: 0;
+}

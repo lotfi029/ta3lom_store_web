@@ -1,0 +1,4 @@
+PLACEHOLDER — not a valid Apple Pay domain association.
+The owner replaces this whole file with the one downloaded from the Moyasar dashboard (Settings → Apple Pay → domain
+verification for store.ta3lom.sa) before a production release. A production build fails while this text is here
+(scripts/check-deploy-output.mjs); a staging build warns. Runbook: deploy/README.md, "Apple Pay".

@@ -4,6 +4,8 @@ import { lineTitle, refundAmount, refundReady } from './order.page';
 import { daySpan, REPORT_MAX_DAYS, riyadhDate, validRange } from '../reports/reports.page';
 import { orderParams, upperRef } from './ops.data';
 import { rangeOk } from './orders.page';
+import { validNote } from './orphans.page';
+import { refundSource, refundStatus, reviewReason } from '../../../shared/ui/status-pill/status-labels';
 
 const line = (o: Partial<AdminOrderLine>): AdminOrderLine => ({
   lineNo: 1,
@@ -90,4 +92,25 @@ describe('admin operations', () => {
     expect(validRange('2026-13-01', '2026-13-02')).toBe(false);
     expect(validRange('', '2026-11-01')).toBe(false);
   });
+
+  it('review 04 W-4: review reasons, refund states and sources have labels; the new codes have messages', () => {
+    expect(reviewReason('external_refund')).toContain('استرداد');
+    expect(reviewReason('voided_after_capture')).toContain('ألغت');
+    expect(reviewReason('amount_mismatch')).not.toBe('amount_mismatch');
+    expect(refundStatus('requested').tone).toBe('warning');
+    expect(refundSource('gateway')).toContain('بوابة');
+    expect(refundSource('store')).toContain('المتجر');
+    expect(problemMessage({ status: 409, code: 'payment.review_partial', extra: { captured: '31.00', total: '32.00' } })).toContain('31');
+    expect(problemMessage({ status: 422, code: 'checkout.below_minimum', extra: { minimum: '1.00' } })).toContain('1');
+    const fallback = problemMessage({ status: 409, code: 'nope' });
+    for (const code of ['payment.refund_pending', 'payment.orphan_not_found', 'payment.orphan_resolved'])
+      expect(problemMessage({ status: 409, code }), code).not.toBe(fallback);
+  });
+
+  it('review 04 W-3: an orphan resolution note is 1–500 characters', () => {
+    expect(validNote('  ')).toBe(false);
+    expect(validNote('refunded on the dashboard')).toBe(true);
+    expect(validNote('x'.repeat(501))).toBe(false);
+  });
 });
+

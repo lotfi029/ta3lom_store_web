@@ -14,3 +14,12 @@ export const onStub = /localhost:3000/.test(API);
 export async function resetStub(): Promise<void> {
   if (onStub) await fetch(`${API.replace(/\/v1$/, '')}/__reset`, { method: 'POST' });
 }
+
+/** Stub only: makes the next checkout behave as with the gateway down (no payment attempt, review 04 S-6). */
+export async function stubCase(name: 'no-attempt'): Promise<void> {
+  await fetch(`${API.replace(/\/v1$/, '')}/__case`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ case: name }),
+  });
+}

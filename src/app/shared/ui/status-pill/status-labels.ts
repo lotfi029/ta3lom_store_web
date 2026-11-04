@@ -68,3 +68,43 @@ export function customerStatus(status: string): { label: string; tone: PillTone 
       return { label: status, tone: 'neutral' };
   }
 }
+
+/** Why a payment or an order is in payment review (review 04 W-4: incl. the new external_refund, voided_after_capture). */
+export function reviewReason(reason: string | null | undefined): string {
+  switch (reason) {
+    case 'amount_mismatch':
+      return $localize`:@@store.admin.review-amount-mismatch:مبلغ مختلف عن مبلغ التبرع`;
+    case 'late_capture':
+      return $localize`:@@store.admin.review-late-capture:دفعة وصلت بعد انتهاء المهلة`;
+    case 'double_payment':
+      return $localize`:@@store.admin.review-double-payment:دفعة مكررة`;
+    case 'external_refund':
+      return $localize`:@@store.admin.review-external-refund:استرداد من خارج المتجر قبل اعتماد الدفعة`;
+    case 'voided_after_capture':
+      return $localize`:@@store.admin.review-voided:ألغت البوابة دفعة سبق تحصيلها`;
+    default:
+      return reason ?? '—';
+  }
+}
+
+/** Refund states (review 04 P-3: `requested` = waiting for the gateway's confirmation). */
+export function refundStatus(status: string): { label: string; tone: PillTone } {
+  switch (status) {
+    case 'requested':
+      return { label: $localize`:@@store.admin.refund-requested:بانتظار تأكيد البوابة`, tone: 'warning' };
+    case 'succeeded':
+      return { label: $localize`:@@store.admin.refund-succeeded:تم`, tone: 'success' };
+    case 'failed':
+      return { label: $localize`:@@store.admin.refund-failed:لم يتم`, tone: 'danger' };
+    default:
+      return { label: status, tone: 'neutral' };
+  }
+}
+
+/** Who made a refund (review 04 A-2): finance in the store, or someone on the gateway's dashboard. */
+export function refundSource(source: string | null | undefined): string {
+  return source === 'gateway'
+    ? $localize`:@@store.admin.refund-source-gateway:من لوحة بوابة الدفع`
+    : $localize`:@@store.admin.refund-source-store:من المتجر`;
+}
+

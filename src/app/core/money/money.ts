@@ -43,3 +43,19 @@ export const compare = (a: Money, b: Money): number => Math.sign(toHalalas(a) - 
 export const isZero = (a: Money | null | undefined): boolean => !a || toHalalas(a) === 0;
 /** Normalises `"350"` / `"350.5"` → `"350.00"` / `"350.50"`. */
 export const normalize = (a: Money): Money => fromHalalas(toHalalas(a));
+
+/**
+ * The smallest amount the payment gateway accepts (Moyasar: 100 halalas; the API refuses a lower checkout total with
+ * `checkout.below_minimum`). Review 04 W-5: an amount field's minimum is never below it, whatever the settings say.
+ */
+export const GATEWAY_MINIMUM = '1.00';
+
+/** max(min, GATEWAY_MINIMUM) — `min` null or unparsable counts as no minimum. */
+export function atLeastGatewayMinimum(min: string | null): string {
+  if (!min) return GATEWAY_MINIMUM;
+  try {
+    return compare(min, GATEWAY_MINIMUM) >= 0 ? normalize(min) : GATEWAY_MINIMUM;
+  } catch {
+    return GATEWAY_MINIMUM;
+  }
+}

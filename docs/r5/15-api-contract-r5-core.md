@@ -1,4 +1,22 @@
-# 15: Store API HTTP contract — v2 (R5-Core + R5-Payments)
+# 15: Store API HTTP contract — v3 (R5-Core + R5-Payments + payments hardening)
+
+> **v3 — payments hardening (review 04, lotfi029/ta3lom_store_api#18, branch `claude/payments-hardening`).** The
+> OpenAPI snapshot `docs/openapi/store-api.v1.json` is regenerated from that branch (`info.x-api-commit`). Additions:
+> - `POST /v1/admin/orders/{ref}/refunds` and `…/review/refund` may answer **202** with the same body and
+>   `refund: "pending"` (the gateway gave no definite answer); a retry with the SAME Idempotency-Key never refunds twice:
+>   the API reconciles with the gateway and answers 200 (`refund: "succeeded"`), 202 again, or 502 `payment.refund_failed`.
+>   200 bodies carry `refund: "succeeded"`. New 409 `payment.refund_pending` (another refund waits for the gateway).
+> - `AdminOrderDetail.refunds[]` adds `source` (`store` | `gateway` — made on the gateway's dashboard and imported,
+>   `requestedBy = "moyasar"`); refund `status` may be `requested`.
+> - Review reasons add `external_refund` and `voided_after_capture`. `POST …/review/accept` answers 409
+>   `payment.review_partial` {captured, total} when less than the total was kept.
+> - `GET /v1/admin/payments/orphans?resolved=false|true` → `OrphanPaymentRow[]` {id, provider, providerPaymentId,
+>   providerInvoiceId, amount, currency, receivedAt, resolvedAt, resolvedBy, resolutionNote};
+>   `POST /v1/admin/payments/orphans/{id}/resolve` {note: 1–500} → the row; 404 `payment.orphan_not_found`, 409
+>   `payment.orphan_resolved`. Both `staff:finance`. `DashboardResponse.openOrphanPayments`.
+> - `POST /v1/checkout`: 422 `checkout.below_minimum` {minimum: "1.00"} under the gateway's floor; the
+>   `min_gift_amount` setting is refused below 1.00.
+> - CORS: the main site (`ta3lom.sa`, `www`) may only `GET /v1/cart/summary` (credentials, simple request).
 
 > **Source of truth since API `cd26a80` (lotfi029/ta3lom_store_api#15):** the OpenAPI document published by the API CI as
 > the artifact **`store-api-openapi`**, mirrored in this repo as `docs/openapi/store-api.v1.json` (`npm run api:openapi`,

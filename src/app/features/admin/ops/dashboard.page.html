@@ -88,6 +88,14 @@
               <a routerLink="/admin/orders" [queryParams]="{ status: 'payment_review' }">{{ int(x.inReviewOrders ?? 0) }}</a>
             </dd>
           </div>
+          <div>
+            <dt i18n="@@store.admin.open-orphans">دفعات بلا طلب</dt>
+            <dd>
+              <a routerLink="/admin/payments/orphans" class="count" [class.alert]="int(x.openOrphanPayments ?? 0) > 0">{{
+                int(x.openOrphanPayments ?? 0)
+              }}</a>
+            </dd>
+          </div>
         </dl>
         <h3 i18n="@@store.admin.top-paid-projects">المشاريع الأعلى في المبالغ المدفوعة</h3>
         @if ((x.topProjectsByPaidAmount ?? []).length === 0) {
