@@ -9,6 +9,9 @@
  *   - preloads the Readex Pro faces and Plex Mono 400 on every page (Angular fingerprints them, so index.html can't);
  *   - rewrites Angular's inline event-dispatch bootstrap to ONE canonical superset call, so the site has exactly one
  *     CSP hash for it (its text otherwise varies by page content);
+ *   - (F6.1) critical CSS is inlined by Angular (beasties): the full sheet loads as `media="print"
+ *     data-beasties-media="all"` and ONE inline script at the end of <body> switches it — no inline handler; gen-csp
+ *     hashes that script like every other, check-csp verifies it;
  *   - normalises modes (0644 files, 0755 dirs).
  */
 import {
