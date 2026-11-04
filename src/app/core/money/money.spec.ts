@@ -1,5 +1,7 @@
 import {
+  GATEWAY_MINIMUM,
   add,
+  atLeastGatewayMinimum,
   compare,
   fromHalalas,
   isZero,
@@ -61,5 +63,15 @@ describe('money display', () => {
 
   it('formats a decimal string exactly (no binary rounding)', () => {
     expect(formatAmount('1234567.89', 'en')).toBe('1,234,567.89');
+  });
+});
+
+describe('atLeastGatewayMinimum (review 04 W-5)', () => {
+  it('is max(min, 1.00)', () => {
+    expect(GATEWAY_MINIMUM).toBe('1.00');
+    expect(atLeastGatewayMinimum(null)).toBe('1.00');
+    expect(atLeastGatewayMinimum('0.50')).toBe('1.00');
+    expect(atLeastGatewayMinimum('10')).toBe('10.00');
+    expect(atLeastGatewayMinimum('not money')).toBe('1.00');
   });
 });

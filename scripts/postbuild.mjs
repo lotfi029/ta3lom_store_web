@@ -4,6 +4,7 @@
  *   - copies robots.txt, sitemap.xml (none on staging) and the favicons to the web root (the root has no locale of its own);
  *   - copies deploy/index.html (script-free fallback; Caddy redirects / → /ar/ before it is read) and deploy/404.html (the
  *     static 404 for paths outside /ar and /en) to the web root;
+ *   - copies deploy/well-known/apple-developer-merchantid-domain-association to /.well-known/ (Apple Pay, review 04);
  *   - build stamp: /version.json { version, commit, builtAt, env } and <meta name="build"> on every page — no secrets
  *     (BUILD_VERSION / BUILD_SHA from the image build args, else git);
  *   - preloads the Readex Pro faces and Plex Mono 400 on every page (Angular fingerprints them, so index.html can't);
@@ -27,6 +28,7 @@ import {
   chmodSync,
   copyFileSync,
   existsSync,
+  mkdirSync,
   readdirSync,
   readFileSync,
   statSync,
@@ -37,6 +39,7 @@ import { join, relative } from 'node:path';
 import { deployEnv } from './lib/envs.mjs';
 
 const BROWSER_DIR = join(process.cwd(), 'dist', 'store-web', 'browser');
+const APPLE_PAY_FILE = 'apple-developer-merchantid-domain-association';
 
 function copyToRoot(name, sourceDir = join(BROWSER_DIR, 'ar')) {
   const src = join(sourceDir, name);
@@ -52,6 +55,13 @@ for (const f of ['robots.txt', 'favicon.ico', 'favicon.svg']) copyToRoot(f);
 if (ENV.robots !== 'noindex') copyToRoot('sitemap.xml');
 copyToRoot('index.html', join(process.cwd(), 'deploy'));
 copyToRoot('404.html', join(process.cwd(), 'deploy'));
+// Apple Pay on Moyasar's hosted page: the domain association file at the web root (review 04). The repository holds a
+// placeholder; check-deploy-output fails a real production build until the owner puts Moyasar's file in its place.
+mkdirSync(join(BROWSER_DIR, '.well-known'), { recursive: true });
+copyFileSync(
+  join(process.cwd(), 'deploy', 'well-known', APPLE_PAY_FILE),
+  join(BROWSER_DIR, '.well-known', APPLE_PAY_FILE),
+);
 
 const git = (...args) => {
   try {

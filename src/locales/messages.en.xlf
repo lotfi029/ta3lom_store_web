@@ -51,7 +51,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">242</context>
+          <context context-type="linenumber">261</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.http-error" datatype="html">
@@ -454,12 +454,28 @@
           <context context-type="linenumber">166</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="store.error.checkout-below-minimum-value" datatype="html">
+        <source>أقل مجموع يمكن دفعه <x id="min" equiv-text="min"/>. أضف إلى تبرعك ثم أعد المحاولة.</source>
+        <target state="translated">The smallest total that can be paid is <x id="min" equiv-text="min"/>. Add to your donation and try again.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">170</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.checkout-below-minimum" datatype="html">
+        <source>مجموع التبرع أقل مما تقبله بوابة الدفع.</source>
+        <target state="translated">The donation total is below what the payment gateway accepts.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">171</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="store.error.order-not-found" datatype="html">
         <source>لم نجد هذا التبرع.</source>
         <target state="translated">We couldn’t find this order.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">169</context>
+          <context context-type="linenumber">175</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/account/donation-detail.page.ts</context>
@@ -479,7 +495,7 @@
         <target state="translated">The payment gateway can’t be reached right now. Your donation is saved; try paying again shortly.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">171</context>
+          <context context-type="linenumber">177</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.payment-not-payable" datatype="html">
@@ -487,7 +503,7 @@
         <target state="translated">This donation is no longer awaiting payment, or its payment time has passed.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">173</context>
+          <context context-type="linenumber">179</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.payment-webhook-invalid" datatype="html">
@@ -495,7 +511,7 @@
         <target state="translated">The payment notification could not be verified.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">175</context>
+          <context context-type="linenumber">181</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.payment-unknown-provider" datatype="html">
@@ -503,7 +519,7 @@
         <target state="translated">Unknown payment provider.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">177</context>
+          <context context-type="linenumber">183</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.payment-refund-exceeds" datatype="html">
@@ -511,7 +527,7 @@
         <target state="translated">The amount is more than can still be refunded for this donation.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">179</context>
+          <context context-type="linenumber">185</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.payment-refund-failed" datatype="html">
@@ -519,7 +535,7 @@
         <target state="translated">The payment gateway refused the refund; nothing changed on the donation.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">181</context>
+          <context context-type="linenumber">187</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.payment-refund-not-allowed" datatype="html">
@@ -527,7 +543,7 @@
         <target state="translated">This donation has no completed payment that can be refunded.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">183</context>
+          <context context-type="linenumber">189</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.payment-review-required" datatype="html">
@@ -535,7 +551,7 @@
         <target state="translated">The payment is in review; use the review actions (accept or refund).</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">185</context>
+          <context context-type="linenumber">191</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.payment-not-in-review" datatype="html">
@@ -543,7 +559,47 @@
         <target state="translated">This donation has no payment in review.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">187</context>
+          <context context-type="linenumber">193</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.payment-refund-pending" datatype="html">
+        <source>استرداد سابق لهذا التبرع ما زال بانتظار تأكيد البوابة. انتظر حتى يكتمل.</source>
+        <target state="translated">An earlier refund of this donation is still waiting for the gateway’s confirmation. Wait until it completes.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">195</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.payment-review-partial-value" datatype="html">
+        <source>حصّلت البوابة <x id="captured" equiv-text="captured"/> فقط من <x id="total" equiv-text="total"/>؛ لا يمكن قبول الدفعة. استردّها بدلًا من ذلك.</source>
+        <target state="translated">The gateway kept only <x id="captured" equiv-text="captured"/> of <x id="total" equiv-text="total"/>; the payment can’t be accepted. Refund it instead.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">200</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.payment-review-partial" datatype="html">
+        <source>ما حصّلته البوابة أقل من مبلغ التبرع؛ لا يمكن قبول الدفعة. استردّها بدلًا من ذلك.</source>
+        <target state="translated">The gateway kept less than the donation total; the payment can’t be accepted. Refund it instead.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">201</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.payment-orphan-not-found" datatype="html">
+        <source>لم نجد هذه الدفعة.</source>
+        <target state="translated">We couldn’t find this payment.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">204</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.error.payment-orphan-resolved" datatype="html">
+        <source>سبق تسجيل معالجة هذه الدفعة.</source>
+        <target state="translated">This payment’s handling is already recorded.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
+          <context context-type="linenumber">206</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.receipt-not-available" datatype="html">
@@ -551,7 +607,7 @@
         <target state="translated">No receipt is available for this donation yet.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">189</context>
+          <context context-type="linenumber">208</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.order-cancel-not-allowed" datatype="html">
@@ -559,7 +615,7 @@
         <target state="translated">This order can’t be cancelled in its current status.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">191</context>
+          <context context-type="linenumber">210</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.staff-email-taken" datatype="html">
@@ -567,7 +623,7 @@
         <target state="translated">This email is used by another staff member.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">194</context>
+          <context context-type="linenumber">213</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.staff-last-admin" datatype="html">
@@ -575,7 +631,7 @@
         <target state="translated">The last active administrator cannot be removed.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">196</context>
+          <context context-type="linenumber">215</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.media-alt-required" datatype="html">
@@ -583,7 +639,7 @@
         <target state="translated">Add Arabic alt text to the image.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">198</context>
+          <context context-type="linenumber">217</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/catalog/media-upload.ts</context>
@@ -599,7 +655,7 @@
         <target state="translated">This file type isn’t allowed.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">200</context>
+          <context context-type="linenumber">219</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/catalog/media-upload.ts</context>
@@ -611,7 +667,7 @@
         <target state="translated">The file is larger than <x id="mb" equiv-text="mb"/> MB.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">204</context>
+          <context context-type="linenumber">223</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.media-too-large" datatype="html">
@@ -619,7 +675,7 @@
         <target state="translated">The file is too large.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">205</context>
+          <context context-type="linenumber">224</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.media-image-required" datatype="html">
@@ -627,7 +683,7 @@
         <target state="translated">Choose a published image from the media library.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">208</context>
+          <context context-type="linenumber">227</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.setting-unknown-key" datatype="html">
@@ -635,7 +691,7 @@
         <target state="translated">This setting is unknown.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">210</context>
+          <context context-type="linenumber">229</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.setting-invalid-value" datatype="html">
@@ -643,7 +699,7 @@
         <target state="translated">The value isn’t valid for this setting.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">212</context>
+          <context context-type="linenumber">231</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.category-not-found" datatype="html">
@@ -651,7 +707,7 @@
         <target state="translated">We could not find this category.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">214</context>
+          <context context-type="linenumber">233</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.category-slug-taken" datatype="html">
@@ -659,7 +715,7 @@
         <target state="translated">This slug is used by another category.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">216</context>
+          <context context-type="linenumber">235</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.project-not-found" datatype="html">
@@ -667,7 +723,7 @@
         <target state="translated">This project is not available.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">218</context>
+          <context context-type="linenumber">237</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/catalog/project-editor.page.html</context>
@@ -679,7 +735,7 @@
         <target state="translated">This link is used by another project (or was one of its earlier links).</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">220</context>
+          <context context-type="linenumber">239</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.project-publish-incomplete" datatype="html">
@@ -687,7 +743,7 @@
         <target state="translated">The project cannot be published until the required details are complete.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">222</context>
+          <context context-type="linenumber">241</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.project-invalid-transition" datatype="html">
@@ -695,7 +751,7 @@
         <target state="translated">The project cannot move to this state now.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">224</context>
+          <context context-type="linenumber">243</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.project-option-label-taken-value" datatype="html">
@@ -703,7 +759,7 @@
         <target state="translated">The name “<x id="label" equiv-text="label"/>” is used by another option of this project.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">228</context>
+          <context context-type="linenumber">247</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.project-option-label-taken" datatype="html">
@@ -711,7 +767,7 @@
         <target state="translated">This option name is used by another option of this project.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">229</context>
+          <context context-type="linenumber">248</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.template-render-failed-at" datatype="html">
@@ -719,7 +775,7 @@
         <target state="translated">The template has a syntax error (line <x id="line" equiv-text="line"/>, column <x id="column" equiv-text="String(column ?? &apos;?&apos;)"/>).</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">235</context>
+          <context context-type="linenumber">254</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.template-render-failed" datatype="html">
@@ -727,7 +783,7 @@
         <target state="translated">The template has a syntax error.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">236</context>
+          <context context-type="linenumber">255</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.fallback-server" datatype="html">
@@ -735,7 +791,7 @@
         <target state="translated">Something went wrong. Please try again later.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">240</context>
+          <context context-type="linenumber">259</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.fallback" datatype="html">
@@ -743,7 +799,7 @@
         <target state="translated">The request couldn’t be completed.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">243</context>
+          <context context-type="linenumber">262</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.password-too-short" datatype="html">
@@ -751,7 +807,7 @@
         <target state="translated">At least 12 characters.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">297</context>
+          <context context-type="linenumber">316</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.password-too-long" datatype="html">
@@ -759,7 +815,7 @@
         <target state="translated">At most 128 characters.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">299</context>
+          <context context-type="linenumber">318</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.password-common" datatype="html">
@@ -767,7 +823,7 @@
         <target state="translated">A common password or repeated characters.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">301</context>
+          <context context-type="linenumber">320</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.error.password-same" datatype="html">
@@ -775,7 +831,7 @@
         <target state="translated">Same as the current password.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/core/api/problem-message.ts</context>
-          <context context-type="linenumber">303</context>
+          <context context-type="linenumber">322</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.role-admin" datatype="html">
@@ -915,7 +971,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">103,105</context>
+          <context context-type="linenumber">108,110</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.account.title" datatype="html">
@@ -1099,11 +1155,11 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">77,79</context>
+          <context context-type="linenumber">82,84</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">96,97</context>
+          <context context-type="linenumber">101,102</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orders.page.html</context>
@@ -1159,7 +1215,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">117,119</context>
+          <context context-type="linenumber">122,124</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/staff/staff.page.html</context>
@@ -1191,7 +1247,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.ts</context>
-          <context context-type="linenumber">37</context>
+          <context context-type="linenumber">44</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/cart/cart-line.ts</context>
@@ -1291,7 +1347,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">184,185</context>
+          <context context-type="linenumber">189,190</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/order/order.page.html</context>
@@ -1575,7 +1631,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/admin-nav.ts</context>
-          <context context-type="linenumber">76</context>
+          <context context-type="linenumber">82</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.audit-lede" datatype="html">
@@ -1675,7 +1731,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/dashboard.page.html</context>
-          <context context-type="linenumber">94,96</context>
+          <context context-type="linenumber">102,104</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/donor.page.html</context>
@@ -3362,12 +3418,20 @@
           <context context-type="linenumber">86,88</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="store.admin.open-orphans" datatype="html">
+        <source>دفعات بلا طلب</source>
+        <target state="translated">Payments without an order</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/ops/dashboard.page.html</context>
+          <context context-type="linenumber">92,94</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="store.admin.top-paid-projects" datatype="html">
         <source>المشاريع الأعلى في المبالغ المدفوعة</source>
         <target state="translated">Top projects by paid amount</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/dashboard.page.html</context>
-          <context context-type="linenumber">92,93</context>
+          <context context-type="linenumber">100,101</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.paid-count" datatype="html">
@@ -3375,7 +3439,7 @@
         <target state="translated">(<x id="INTERPOLATION" equiv-text="{{ int(t.paidOrders) }}"/> donations)</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/dashboard.page.html</context>
-          <context context-type="linenumber">101,102</context>
+          <context context-type="linenumber">109,110</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.sections" datatype="html">
@@ -3383,7 +3447,7 @@
         <target state="translated">Admin sections</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/dashboard.page.html</context>
-          <context context-type="linenumber">112,114</context>
+          <context context-type="linenumber">120,122</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/admin-shell.html</context>
@@ -3447,11 +3511,11 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">127,128</context>
+          <context context-type="linenumber">132,133</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">188,190</context>
+          <context context-type="linenumber">193,195</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orders.page.html</context>
@@ -3479,7 +3543,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">111,113</context>
+          <context context-type="linenumber">116,118</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orders.page.html</context>
@@ -3495,7 +3559,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">123,124</context>
+          <context context-type="linenumber">128,129</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.marketing" datatype="html">
@@ -3583,11 +3647,15 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">299,302</context>
+          <context context-type="linenumber">318,321</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">325,327</context>
+          <context context-type="linenumber">344,346</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
+          <context context-type="linenumber">124,126</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.donor" datatype="html">
@@ -3599,7 +3667,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">102,104</context>
+          <context context-type="linenumber">107,109</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orders.page.html</context>
@@ -3667,7 +3735,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">105,107</context>
+          <context context-type="linenumber">110,112</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/staff/staff.page.html</context>
@@ -3734,16 +3802,24 @@
           <context context-type="linenumber">42,44</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="store.admin.refund-pending-note" datatype="html">
+        <source> استرداد بانتظار تأكيد بوابة الدفع؛ لا يمكن بدء استرداد آخر حتى يكتمل. </source>
+        <target state="translated">A refund is waiting for the payment gateway’s confirmation; another refund can’t start until it completes.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
+          <context context-type="linenumber">46,49</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="store.admin.cancel-order" datatype="html">
         <source> إلغاء الطلب </source>
         <target state="translated">Cancel order</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">58,60</context>
+          <context context-type="linenumber">63,65</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">322,324</context>
+          <context context-type="linenumber">341,343</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.col-lines" datatype="html">
@@ -3751,7 +3827,7 @@
         <target state="translated">Donations</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">69,70</context>
+          <context context-type="linenumber">74,75</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orders.page.html</context>
@@ -3763,7 +3839,7 @@
         <target state="translated">Donation</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">74,75</context>
+          <context context-type="linenumber">79,80</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.col-qty" datatype="html">
@@ -3771,7 +3847,7 @@
         <target state="translated">Quantity</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">75,76</context>
+          <context context-type="linenumber">80,81</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.col-unit" datatype="html">
@@ -3779,7 +3855,7 @@
         <target state="translated">Unit amount</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">76,77</context>
+          <context context-type="linenumber">81,82</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.payment-due" datatype="html">
@@ -3787,7 +3863,7 @@
         <target state="translated">Payment due by</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">131,132</context>
+          <context context-type="linenumber">136,137</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.cancelled-at" datatype="html">
@@ -3795,7 +3871,7 @@
         <target state="translated">Cancelled on</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">136,138</context>
+          <context context-type="linenumber">141,143</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.payments" datatype="html">
@@ -3803,7 +3879,7 @@
         <target state="translated">Payment</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">150,152</context>
+          <context context-type="linenumber">155,157</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.paid-at" datatype="html">
@@ -3811,7 +3887,7 @@
         <target state="translated">Paid at</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">154,155</context>
+          <context context-type="linenumber">159,160</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.order.refunded-amount" datatype="html">
@@ -3819,11 +3895,11 @@
         <target state="translated">Refunded amount</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">159,160</context>
+          <context context-type="linenumber">164,165</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">187,188</context>
+          <context context-type="linenumber">192,193</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/order/order.page.html</context>
@@ -3835,7 +3911,7 @@
         <target state="translated">Refundable</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">164,165</context>
+          <context context-type="linenumber">169,170</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.review-reason" datatype="html">
@@ -3843,7 +3919,7 @@
         <target state="translated">Review reason</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">170,171</context>
+          <context context-type="linenumber">175,176</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.no-payments" datatype="html">
@@ -3851,7 +3927,7 @@
         <target state="translated">No payment attempts yet.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">176,178</context>
+          <context context-type="linenumber">181,183</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.payments-caption" datatype="html">
@@ -3859,7 +3935,7 @@
         <target state="translated">Payment attempts</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">180,182</context>
+          <context context-type="linenumber">185,187</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.method" datatype="html">
@@ -3867,7 +3943,7 @@
         <target state="translated">Method</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">185,186</context>
+          <context context-type="linenumber">190,191</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.captured" datatype="html">
@@ -3875,7 +3951,7 @@
         <target state="translated">Captured</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">186,187</context>
+          <context context-type="linenumber">191,192</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.events" datatype="html">
@@ -3883,7 +3959,7 @@
         <target state="translated">Gateway notifications</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">212,213</context>
+          <context context-type="linenumber">217,218</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.refunds" datatype="html">
@@ -3891,7 +3967,7 @@
         <target state="translated">Refunds</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">223,224</context>
+          <context context-type="linenumber">228,229</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.receipts" datatype="html">
@@ -3899,7 +3975,7 @@
         <target state="translated">Receipts</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">234,235</context>
+          <context context-type="linenumber">241,242</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.voided-by" datatype="html">
@@ -3907,7 +3983,7 @@
         <target state="translated">Voided by</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">241</context>
+          <context context-type="linenumber">248</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.refund-q" datatype="html">
@@ -3915,7 +3991,7 @@
         <target state="translated">Refund an amount of this donation</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">256,257</context>
+          <context context-type="linenumber">263,264</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.refund-lede" datatype="html">
@@ -3923,7 +3999,7 @@
         <target state="translated">The amount goes back to the same payment method and the donor is notified. A full refund issues a cancellation receipt.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">258,260</context>
+          <context context-type="linenumber">265,267</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.refund-amount" datatype="html">
@@ -3931,7 +4007,7 @@
         <target state="translated">Amount (SAR)</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">261,262</context>
+          <context context-type="linenumber">268,269</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.refund-reason" datatype="html">
@@ -3939,11 +4015,11 @@
         <target state="translated">Reason</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">266,267</context>
+          <context context-type="linenumber">273,274</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">284,285</context>
+          <context context-type="linenumber">291,292</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.refund-type-ref" datatype="html">
@@ -3951,7 +4027,7 @@
         <target state="translated">Type the reference to confirm</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">270,271</context>
+          <context context-type="linenumber">277,278</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.review-accept-q" datatype="html">
@@ -3959,7 +4035,7 @@
         <target state="translated">Accept the payment in review?</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">275,276</context>
+          <context context-type="linenumber">282,283</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.review-accept-lede" datatype="html">
@@ -3967,7 +4043,7 @@
         <target state="translated">The donation counts as fully paid; the donation receipt is issued and sent to the donor.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">277,280</context>
+          <context context-type="linenumber">284,287</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.review-refund-q" datatype="html">
@@ -3975,7 +4051,7 @@
         <target state="translated">Refund the payment in review?</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">281,282</context>
+          <context context-type="linenumber">288,289</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.review-refund-lede" datatype="html">
@@ -3983,7 +4059,7 @@
         <target state="translated">The full amount captured in this payment goes back to the donor.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">282,284</context>
+          <context context-type="linenumber">289,291</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.resend-q" datatype="html">
@@ -3991,7 +4067,7 @@
         <target state="translated">Resend the receipt to the donor?</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">289,290</context>
+          <context context-type="linenumber">296,297</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.resend-lede" datatype="html">
@@ -3999,7 +4075,23 @@
         <target state="translated">An SMS and an e-mail with the receipt file are sent.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">290,293</context>
+          <context context-type="linenumber">297,300</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.admin.refund-pending" datatype="html">
+        <source> لم تؤكد بوابة الدفع الاسترداد بعد. لن يُرسل مرة ثانية: «تحقق مجددًا» يسأل البوابة عن نتيجته، وتؤكده المتابعة التلقائية خلال دقائق إن أغلقت هذه النافذة. </source>
+        <target state="translated">The payment gateway hasn’t confirmed the refund yet. It won’t be sent twice: “Check again” asks the gateway for its result, and the automatic follow-up confirms it within minutes if you close this window.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
+          <context context-type="linenumber">302,306</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.admin.check-again" datatype="html">
+        <source>تحقق مجددًا</source>
+        <target state="translated">Check again</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
+          <context context-type="linenumber">313,315</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.confirm" datatype="html">
@@ -4007,7 +4099,11 @@
         <target state="translated">Confirm</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">298,299</context>
+          <context context-type="linenumber">315,317</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
+          <context context-type="linenumber">123,124</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/staff/staff.page.html</context>
@@ -4019,7 +4115,7 @@
         <target state="translated">Cancel this order?</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">306,307</context>
+          <context context-type="linenumber">325,326</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.cancel-order-lede" datatype="html">
@@ -4027,7 +4123,7 @@
         <target state="translated">The order is cancelled and the donor is told. A cancellation can’t be undone.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">308,311</context>
+          <context context-type="linenumber">327,330</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.refund-done" datatype="html">
@@ -4035,11 +4131,11 @@
         <target state="translated">Refunded.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.ts</context>
-          <context context-type="linenumber">154</context>
+          <context context-type="linenumber">175</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.ts</context>
-          <context context-type="linenumber">162</context>
+          <context context-type="linenumber">185</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.review-accepted" datatype="html">
@@ -4047,7 +4143,7 @@
         <target state="translated">Payment accepted and receipt issued.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.ts</context>
-          <context context-type="linenumber">158</context>
+          <context context-type="linenumber">180</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.receipt-resent" datatype="html">
@@ -4055,7 +4151,15 @@
         <target state="translated">Receipt resent.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.ts</context>
-          <context context-type="linenumber">166</context>
+          <context context-type="linenumber">190</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.admin.refund-pending-toast" datatype="html">
+        <source>الاسترداد بانتظار تأكيد بوابة الدفع.</source>
+        <target state="translated">The refund is waiting for the payment gateway’s confirmation.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/ops/order.page.ts</context>
+          <context context-type="linenumber">211</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.method-card" datatype="html">
@@ -4063,7 +4167,7 @@
         <target state="translated">Credit card</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.ts</context>
-          <context context-type="linenumber">189</context>
+          <context context-type="linenumber">224</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.order-cancelled" datatype="html">
@@ -4071,7 +4175,7 @@
         <target state="translated">Order cancelled.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.ts</context>
-          <context context-type="linenumber">211</context>
+          <context context-type="linenumber">246</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.nav-orders" datatype="html">
@@ -4128,6 +4232,138 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/settings/setting-kinds.ts</context>
           <context context-type="linenumber">188</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.admin.nav-orphans" datatype="html">
+        <source>دفعات بلا طلب</source>
+        <target state="translated">Payments without an order</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
+          <context context-type="linenumber">31,32</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
+          <context context-type="linenumber">56,58</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
+          <context context-type="linenumber">152</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/shell/admin-nav.ts</context>
+          <context context-type="linenumber">58</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.admin.orphans-lede" datatype="html">
+        <source> دفعات حصّلتها بوابة الدفع ولا يقابلها طلب في المتجر. عالجها من لوحة البوابة ثم سجّل ما فعلته. </source>
+        <target state="translated">Payments the gateway captured that match no order in the store. Handle them in the gateway’s dashboard, then record what you did.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
+          <context context-type="linenumber">33,36</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.admin.orphans-filter" datatype="html">
+        <source>عرض</source>
+        <target state="translated">Show</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.admin.orphans-open" datatype="html">
+        <source>بانتظار المعالجة</source>
+        <target state="translated">To handle</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
+          <context context-type="linenumber">41,42</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.admin.orphans-resolved" datatype="html">
+        <source>تمت معالجتها</source>
+        <target state="translated">Handled</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
+          <context context-type="linenumber">43,45</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.admin.orphans-none" datatype="html">
+        <source>لا توجد دفعات هنا.</source>
+        <target state="translated">No payments here.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
+          <context context-type="linenumber">52,54</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.admin.orphans-received" datatype="html">
+        <source>وصلت</source>
+        <target state="translated">Received</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
+          <context context-type="linenumber">59,60</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.admin.orphans-payment" datatype="html">
+        <source>رقم الدفعة في البوابة</source>
+        <target state="translated">Gateway payment id</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
+          <context context-type="linenumber">60,61</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.admin.amount" datatype="html">
+        <source>المبلغ</source>
+        <target state="translated">Amount</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
+          <context context-type="linenumber">61,62</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.admin.orphans-note" datatype="html">
+        <source>المعالجة</source>
+        <target state="translated">Handling</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
+          <context context-type="linenumber">63,65</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.admin.actions" datatype="html">
+        <source>إجراءات</source>
+        <target state="translated">Actions</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
+          <context context-type="linenumber">65,67</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.admin.orphans-resolve" datatype="html">
+        <source>تسجيل المعالجة</source>
+        <target state="translated">Record the handling</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
+          <context context-type="linenumber">95,97</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.admin.orphans-resolve-q" datatype="html">
+        <source>ماذا فعلت بهذه الدفعة؟</source>
+        <target state="translated">What did you do with this payment?</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
+          <context context-type="linenumber">110,112</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.admin.orphans-note-label" datatype="html">
+        <source>الملاحظة (مثلًا: استُردت من لوحة البوابة)</source>
+        <target state="translated">Note (e.g. refunded in the gateway’s dashboard)</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
+          <context context-type="linenumber">115,116</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.admin.orphans-resolved-toast" datatype="html">
+        <source>سُجّلت المعالجة.</source>
+        <target state="translated">Handling recorded.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
+          <context context-type="linenumber">181</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.password-title" datatype="html">
@@ -4503,7 +4739,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/admin-nav.ts</context>
-          <context context-type="linenumber">64</context>
+          <context context-type="linenumber">70</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.settings-lede" datatype="html">
@@ -4527,7 +4763,7 @@
         <target state="translated">Team</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/admin-nav.ts</context>
-          <context context-type="linenumber">58</context>
+          <context context-type="linenumber">64</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/staff/staff.page.html</context>
@@ -4547,7 +4783,7 @@
         <target state="translated">Message templates</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/admin-nav.ts</context>
-          <context context-type="linenumber">70</context>
+          <context context-type="linenumber">76</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/templates/templates.page.html</context>
@@ -5007,11 +5243,11 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">111,114</context>
+          <context context-type="linenumber">116,119</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/public-layout/public-layout.ts</context>
-          <context context-type="linenumber">29,30</context>
+          <context context-type="linenumber">32,33</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.cart.group-r5" datatype="html">
@@ -5923,11 +6159,11 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/order/order.page.ts</context>
-          <context context-type="linenumber">76</context>
+          <context context-type="linenumber">71</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/order/order.page.ts</context>
-          <context context-type="linenumber">77</context>
+          <context context-type="linenumber">72</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.order.paid-title" datatype="html">
@@ -6227,7 +6463,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">124,127</context>
+          <context context-type="linenumber">129,132</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.my-profile" datatype="html">
@@ -6271,11 +6507,11 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">72,73</context>
+          <context context-type="linenumber">77,78</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">116,117</context>
+          <context context-type="linenumber">121,122</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.footer-association" datatype="html">
@@ -6299,7 +6535,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">134,137</context>
+          <context context-type="linenumber">139,142</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.footer-about-link" datatype="html">
@@ -6379,11 +6615,11 @@
         <target state="translated">Sign in</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">59,62</context>
+          <context context-type="linenumber">64,67</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">132,134</context>
+          <context context-type="linenumber">137,139</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.menu" datatype="html">
@@ -6391,7 +6627,7 @@
         <target state="translated">Menu</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">90,92</context>
+          <context context-type="linenumber">95,97</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.mobile-nav-label" datatype="html">
@@ -6399,7 +6635,7 @@
         <target state="translated">Mobile menu</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/header/header.html</context>
-          <context context-type="linenumber">99,100</context>
+          <context context-type="linenumber">104,105</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.cart-label-empty" datatype="html">
@@ -6648,6 +6884,86 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/ui/status-pill/status-labels.ts</context>
           <context context-type="linenumber">66</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.admin.review-amount-mismatch" datatype="html">
+        <source>مبلغ مختلف عن مبلغ التبرع</source>
+        <target state="translated">Amount differs from the donation</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/status-pill/status-labels.ts</context>
+          <context context-type="linenumber">76</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.admin.review-late-capture" datatype="html">
+        <source>دفعة وصلت بعد انتهاء المهلة</source>
+        <target state="translated">Payment arrived after the deadline</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/status-pill/status-labels.ts</context>
+          <context context-type="linenumber">78</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.admin.review-double-payment" datatype="html">
+        <source>دفعة مكررة</source>
+        <target state="translated">Double payment</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/status-pill/status-labels.ts</context>
+          <context context-type="linenumber">80</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.admin.review-external-refund" datatype="html">
+        <source>استرداد من خارج المتجر قبل اعتماد الدفعة</source>
+        <target state="translated">Refunded outside the store before it was accepted</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/status-pill/status-labels.ts</context>
+          <context context-type="linenumber">82</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.admin.review-voided" datatype="html">
+        <source>ألغت البوابة دفعة سبق تحصيلها</source>
+        <target state="translated">The gateway voided a payment already captured</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/status-pill/status-labels.ts</context>
+          <context context-type="linenumber">84</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.admin.refund-requested" datatype="html">
+        <source>بانتظار تأكيد البوابة</source>
+        <target state="translated">Waiting for the gateway</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/status-pill/status-labels.ts</context>
+          <context context-type="linenumber">94</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.admin.refund-succeeded" datatype="html">
+        <source>تم</source>
+        <target state="translated">Done</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/status-pill/status-labels.ts</context>
+          <context context-type="linenumber">96</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.admin.refund-failed" datatype="html">
+        <source>لم يتم</source>
+        <target state="translated">Not done</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/status-pill/status-labels.ts</context>
+          <context context-type="linenumber">98</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.admin.refund-source-gateway" datatype="html">
+        <source>من لوحة بوابة الدفع</source>
+        <target state="translated">From the gateway’s dashboard</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/status-pill/status-labels.ts</context>
+          <context context-type="linenumber">107</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="store.admin.refund-source-store" datatype="html">
+        <source>من المتجر</source>
+        <target state="translated">From the store</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/status-pill/status-labels.ts</context>
+          <context context-type="linenumber">108</context>
         </context-group>
       </trans-unit>
     </body>

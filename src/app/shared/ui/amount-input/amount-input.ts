@@ -10,7 +10,7 @@ import {
 import { I18nService } from '../../../core/i18n/i18n';
 import { type AmountCheck, checkAmount, displayAmount } from '../../../core/money/amount';
 import { currencyLabel, formatMoney } from '../../../core/money/money-format';
-import { compare, normalize } from '../../../core/money/money';
+import { atLeastGatewayMinimum, compare, normalize } from '../../../core/money/money';
 
 /** The message for a failed check (shown after blur or a submit attempt). */
 export function amountMessage(check: AmountCheck, locale: 'ar' | 'en'): string | null {
@@ -30,8 +30,8 @@ export function amountMessage(check: AmountCheck, locale: 'ar' | 'en'): string |
 /**
  * The donation amount field ("تبرع مفتوح"): optional preset buttons (from `/catalog/config` amountPresets, those within
  * the limits), a text field with `inputmode="decimal"` that accepts Arabic digits and normalises them to Western digits
- * on blur, and the min/max check (min = the project's `minAmount` or the config's `minGiftAmount`, max = the config's
- * `maxLineAmount`). Emits the normalised amount (`"50.00"`) when valid, else null. Presentational.
+ * on blur, and the min/max check (min = the project's `minAmount` or the config's `minGiftAmount` — never below the
+ * gateway's 1.00, review 04 W-5 — max = the config's `maxLineAmount`). Emits the normalised amount (`"50.00"`) when valid, else null. Presentational.
  */
 @Component({
   selector: 'ta-amount-input',
@@ -160,7 +160,9 @@ export class AmountInput {
 
   protected readonly cur = currencyLabel(this.locale);
   protected readonly presetsLabel = $localize`:@@store.amount.presets:مبالغ مقترحة`;
-  readonly check = computed(() => checkAmount(this.raw(), this.min(), this.max()));
+  /** W-5: max(min, 1.00) — the gateway refuses less. */
+  readonly floor = computed(() => atLeastGatewayMinimum(this.min()));
+  readonly check = computed(() => checkAmount(this.raw(), this.floor(), this.max()));
   protected readonly error = computed(() =>
     this.touched() ? amountMessage(this.check(), this.locale) : null,
   );
@@ -168,7 +170,7 @@ export class AmountInput {
   protected readonly shownPresets = computed(() =>
     this.presets().filter(
       (p) =>
-        (!this.min() || compare(p, this.min() as string) >= 0) &&
+        compare(p, this.floor()) >= 0 &&
         (!this.max() || compare(p, this.max() as string) <= 0),
     ),
   );

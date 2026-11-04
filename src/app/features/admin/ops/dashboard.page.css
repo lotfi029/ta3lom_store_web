@@ -125,3 +125,9 @@
   font-size: 0.95rem;
   margin-block: 12px 8px;
 }
+
+/* Review 04 W-3: open orphan payments need finance's attention. */
+.count.alert {
+  color: var(--c-danger);
+  font-weight: 700;
+}

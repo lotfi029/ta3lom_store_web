@@ -38,12 +38,18 @@
 	@root path /
 	redir @root /ar/ 302
 
+	# Apple Pay domain association (Moyasar hosted page): no extension, so the type is set here; the owner replaces the
+	# file, so it revalidates. Deferred (">") so file_server's default type does not win.
+	@applepay path /.well-known/apple-developer-merchantid-domain-association
+	header @applepay >Content-Type "text/plain; charset=utf-8"
+
 	# Build stamp: always fresh.
 	@version path /version.json
 	header @version Cache-Control "no-store"
 
 	# Cache: fingerprinted assets for a year; HTML (incl. index.csr.html), robots and sitemap revalidate every time.
-	@hashed path_regexp hashed \-[A-Z0-9]{8}\.(js|css|woff2|woff|ttf|svg|png|jpg|webp|avif)$
+	# Review 04 S-7: the build's hashes are mixed case with `_` and `-` (lazy chunks such as chunk-Bu-ojct4.js).
+	@hashed path_regexp hashed \-[A-Za-z0-9_-]{8}\.(js|css|woff2|woff|ttf|svg|png|jpg|webp|avif)$
 	header @hashed Cache-Control "public, max-age=31536000, immutable"
 	@html path *.html */ /robots.txt /sitemap.xml
 	header @html Cache-Control "no-cache"

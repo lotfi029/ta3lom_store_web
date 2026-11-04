@@ -7,6 +7,7 @@ import {
   OrderData,
   OrderTokens,
   normalizeRef,
+  TERMINAL,
   orderPhase,
   pollDelay,
   statusRequest,
@@ -53,6 +54,13 @@ describe('order status (D-W2, W-4, E-2, R3-2)', () => {
     expect(pollDelay(0)).toBe(2000);
     expect(pollDelay(61_000)).toBe(10_000);
     expect(pollDelay(11 * 60_000)).toBeNull();
+  });
+
+  it('S-8: payment review is not final — asked every 60 s, with no time limit', () => {
+    expect(TERMINAL.has('payment_review')).toBe(false);
+    expect(pollDelay(0, 'review')).toBe(60_000);
+    expect(pollDelay(2 * 60 * 60_000, 'review')).toBe(60_000);
+    for (const s of ['paid', 'cancelled', 'expired', 'refunded']) expect(TERMINAL.has(s)).toBe(true);
   });
 
   describe('OrderData', () => {
@@ -160,7 +168,10 @@ describe('order status (D-W2, W-4, E-2, R3-2)', () => {
       [{ status: 'refunded' }, 'refunded'],
       [{ status: 'cancelled' }, 'cancelled'],
       [{ status: 'pending_payment', canRetryPayment: true }, 'retry'],
-      [{ status: 'pending_payment', canRetryPayment: false }, 'pending'],
+      [{ status: 'pending_payment', canRetryPayment: false, paymentStatus: 'initiated' }, 'pending'],
+      // S-6: no attempt at all (gateway down at checkout) → pay again, not "checking" forever.
+      [{ status: 'pending_payment', canRetryPayment: false, paymentStatus: null }, 'retry'],
+      [{ status: 'pending_payment', canRetryPayment: false }, 'retry'],
     ] as const)('phase of %o is %s', (o, phase) => {
       expect(orderPhase(o)).toBe(phase);
     });

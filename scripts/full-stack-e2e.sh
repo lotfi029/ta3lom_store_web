@@ -20,7 +20,9 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$HERE"
 # shellcheck source=dev-env.sh
 . scripts/dev-env.sh >/dev/null
-STORE_API_REF="${STORE_API_REF:-main}"
+# W-6 (review 04): the API side of this branch is lotfi029/ta3lom_store_api#18 (`claude/payments-hardening`). Until it
+# merges, that ref is the default; set it back to `main` right after the API PR merges (merge the API first).
+STORE_API_REF="${STORE_API_REF:-claude/payments-hardening}"
 API_SRC_REPO="${STORE_API_DIR:-$HERE/../ta3lom_store_api}"
 P=t3s-fs                       # container/network prefix
 NET="$P-edge"

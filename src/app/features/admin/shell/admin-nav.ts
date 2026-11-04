@@ -54,6 +54,12 @@ export const ADMIN_NAV: readonly AdminNavItem[] = [
     policy: 'staff:finance',
   },
   {
+    path: '/admin/payments/orphans',
+    label: () => $localize`:@@store.admin.nav-orphans:دفعات بلا طلب`,
+    icon: 'alert',
+    policy: 'staff:finance',
+  },
+  {
     path: '/admin/staff',
     label: () => $localize`:@@store.admin.nav-staff:فريق العمل`,
     icon: 'users',

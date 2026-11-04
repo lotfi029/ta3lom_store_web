@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import { Client } from '../scripts/lib/store-api-client.mjs';
 import { expectNoA11yViolations, expectNoHorizontalScroll } from './support/a11y';
-import { apiGet, onStub, resetStub } from './support/api';
+import { apiGet, onStub, resetStub, stubCase } from './support/api';
 import { freshMobile, otpFor } from './support/auth';
 import { payOnHostedPage } from './support/payment';
 
@@ -103,6 +103,29 @@ for (const locale of ['ar', 'en'] as const) {
         expect(me.body.fullName).toBe('سارة المتبرعة');
         expect(me.body.email).toBe(email.toLowerCase());
       }
+    });
+
+    // Review 04 S-6: the gateway was down at checkout — the order exists with NO payment attempt. The order page offers
+    // "pay again" (not an endless "checking"), and paying from there settles it.
+    test('no attempt at checkout (gateway down) → the order page offers "pay again" → paid', async ({ page }) => {
+      test.skip(!onStub, 'the stub decides the gateway outage (POST /__case)');
+      await threeLines(page, locale);
+      const mobile = freshMobile();
+      const started = Date.now() - 50;
+      await page.locator('#otp-mobile').fill(mobile);
+      await page.locator('#otp-mobile').press('Enter');
+      await page.locator('#otp-code').fill(await otpFor(mobile, started));
+      await page.locator('#co-name').fill('متبرع');
+      await page.locator('#co-email').fill(`no-attempt-${Date.now()}@example.com`);
+      await stubCase('no-attempt');
+      await page.locator('button.pay-btn').click();
+
+      await expect(page).toHaveURL(new RegExp(`/${locale}/orders/T3-\\d{2}-\\d{6}`));
+      await expect(page.locator('button.pay-again')).toBeVisible();
+      await expectNoA11yViolations(page, `/${locale}/orders no attempt`);
+      await page.locator('button.pay-again').click();
+      await payOnHostedPage(page, 'pay');
+      await expect(page.locator('.osec .card h2')).toContainText(locale === 'ar' ? 'وصل تبرعك' : 'your donation arrived');
     });
 
     test('cart page: three kinds, edit an amount, remove, clear', async ({ page }) => {

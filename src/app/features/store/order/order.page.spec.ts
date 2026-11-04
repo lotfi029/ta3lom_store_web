@@ -2,9 +2,10 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { Router, provideRouter, withComponentInputBinding } from '@angular/router';
+import { RouterTestingHarness } from '@angular/router/testing';
 import { STORE_API_URL } from '../../../core/api/store-api-url';
-import { OrderPage, withoutToken } from './order.page';
+import { OrderPage } from './order.page';
 
 const API = 'https://store-api.test/v1';
 const tick = () => new Promise((r) => setTimeout(r));
@@ -12,33 +13,37 @@ const tick = () => new Promise((r) => setTimeout(r));
 describe('OrderPage (F5, E-2, R3-2)', () => {
   beforeEach(() => sessionStorage.clear());
 
-  function mount(ref: string, t?: string) {
+  /** Mounted through the real route (`orders/:ref`, inputs bound from the URL), as in the app. */
+  async function mount(url: string) {
     TestBed.configureTestingModule({
       providers: [
         provideZonelessChangeDetection(),
-        provideRouter([]),
+        provideRouter([{ path: 'orders/:ref', component: OrderPage }], withComponentInputBinding()),
         provideHttpClient(),
         provideHttpClientTesting(),
         { provide: STORE_API_URL, useValue: API },
       ],
     });
-    const fixture = TestBed.createComponent(OrderPage);
-    fixture.componentRef.setInput('ref', ref);
-    if (t) fixture.componentRef.setInput('t', t);
-    fixture.detectChanges();
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl(url, OrderPage);
+    harness.detectChanges();
     TestBed.tick();
+    await tick();
     const http = TestBed.inject(HttpTestingController);
     http
       .match(`${API}/auth/refresh`)
       .forEach((r) => r.flush({ code: 'auth.refresh_invalid' }, { status: 401, statusText: 'x' }));
-    return { fixture, http, el: fixture.nativeElement as HTMLElement };
+    return {
+      fixture: { detectChanges: () => harness.detectChanges() },
+      http,
+      el: harness.routeNativeElement as HTMLElement,
+      router: TestBed.inject(Router),
+    };
   }
 
-  it('E-2: the token is removed from the URL after load, kept for the request, and no-referrer is set', async () => {
-    history.replaceState(null, '', '/ar/orders/T3-26-000001?t=secret&x=1#top');
-    const { fixture, http, el } = mount('t3-26-000001', 'secret');
-    expect(location.search).toBe('?x=1');
-    expect(location.hash).toBe('#top');
+  it('E-2 / S-9: the token leaves the URL through the router, is kept for the request, and no-referrer is set', async () => {
+    const { fixture, http, el, router } = await mount('/orders/t3-26-000001?t=secret&x=1#top');
+    expect(router.url).toBe('/orders/t3-26-000001?x=1#top'); // the router's own state, every other parameter kept
     expect(document.querySelector('meta[name=referrer]')?.getAttribute('content')).toBe(
       'no-referrer',
     );
@@ -63,22 +68,20 @@ describe('OrderPage (F5, E-2, R3-2)', () => {
   });
 
   it('R3-2: signed out with no token → sign in to view (OTP), no status request', async () => {
-    history.replaceState(null, '', '/ar/orders/T3-26-000009');
-    const { fixture, http, el } = mount('T3-26-000009');
+    const { fixture, http, el } = await mount('/orders/T3-26-000009');
     await tick();
     fixture.detectChanges();
     http.expectNone((r) => r.url.includes('/orders/'));
     expect(el.querySelector('ta-otp-sign-in')).not.toBeNull();
   });
 
-  it('keeps every other parameter and the hash', () => {
-    expect(withoutToken('https://x.test/ar/orders/R?t=1')).toBe('/ar/orders/R');
-    expect(withoutToken('https://x.test/ar/orders/R?a=1&t=2#h')).toBe('/ar/orders/R?a=1#h');
+  it('S-9: a URL without a token is left alone (no navigation)', async () => {
+    const { router } = await mount('/orders/T3-26-000010?a=1#h');
+    expect(router.url).toBe('/orders/T3-26-000010?a=1#h');
   });
 
   it('F5: paid shows the thanks, the receipt number and the download button; retry shows "pay again"', async () => {
-    history.replaceState(null, '', '/ar/orders/T3-26-000002');
-    const { fixture, http, el } = mount('T3-26-000002', 'tok');
+    const { fixture, http, el } = await mount('/orders/T3-26-000002?t=tok');
     http
       .expectOne((r) => r.url.includes('/status'))
       .flush({

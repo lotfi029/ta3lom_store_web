@@ -164,6 +164,12 @@ export function problemMessage(problem: ProblemLike): string {
       return $localize`:@@store.error.checkout-lines-invalid:بعض تبرعات السلة تحتاج مراجعة. صحّحها ثم أعد المحاولة.`;
     case 'checkout.contact_required':
       return $localize`:@@store.error.checkout-contact-required:أدخل الاسم والبريد الإلكتروني.`;
+    case 'checkout.below_minimum': {
+      const min = money(x['minimum']);
+      return min
+        ? $localize`:@@store.error.checkout-below-minimum-value:أقل مجموع يمكن دفعه ${min}:min:. أضف إلى تبرعك ثم أعد المحاولة.`
+        : $localize`:@@store.error.checkout-below-minimum:مجموع التبرع أقل مما تقبله بوابة الدفع.`;
+    }
 
     case 'order.not_found':
       return $localize`:@@store.error.order-not-found:لم نجد هذا التبرع.`;
@@ -185,6 +191,19 @@ export function problemMessage(problem: ProblemLike): string {
       return $localize`:@@store.error.payment-review-required:الدفعة قيد المراجعة؛ استخدم إجراءات المراجعة (قبول أو استرداد).`;
     case 'payment.not_in_review':
       return $localize`:@@store.error.payment-not-in-review:لا توجد دفعة قيد المراجعة لهذا التبرع.`;
+    case 'payment.refund_pending':
+      return $localize`:@@store.error.payment-refund-pending:استرداد سابق لهذا التبرع ما زال بانتظار تأكيد البوابة. انتظر حتى يكتمل.`;
+    case 'payment.review_partial': {
+      const captured = money(x['captured']);
+      const total = money(x['total']);
+      return captured && total
+        ? $localize`:@@store.error.payment-review-partial-value:حصّلت البوابة ${captured}:captured: فقط من ${total}:total:؛ لا يمكن قبول الدفعة. استردّها بدلًا من ذلك.`
+        : $localize`:@@store.error.payment-review-partial:ما حصّلته البوابة أقل من مبلغ التبرع؛ لا يمكن قبول الدفعة. استردّها بدلًا من ذلك.`;
+    }
+    case 'payment.orphan_not_found':
+      return $localize`:@@store.error.payment-orphan-not-found:لم نجد هذه الدفعة.`;
+    case 'payment.orphan_resolved':
+      return $localize`:@@store.error.payment-orphan-resolved:سبق تسجيل معالجة هذه الدفعة.`;
     case 'receipt.not_available':
       return $localize`:@@store.error.receipt-not-available:الإيصال غير متاح لهذا التبرع بعد.`;
     case 'order.cancel_not_allowed':
@@ -355,6 +374,7 @@ export const R5_ERROR_CODES: readonly string[] = [
   'checkout.cart_empty',
   'checkout.lines_invalid',
   'checkout.contact_required',
+  'checkout.below_minimum',
   'order.not_found',
   'order.cancel_not_allowed',
   'payment.gateway_unavailable',
@@ -366,6 +386,10 @@ export const R5_ERROR_CODES: readonly string[] = [
   'payment.refund_not_allowed',
   'payment.review_required',
   'payment.not_in_review',
+  'payment.refund_pending',
+  'payment.review_partial',
+  'payment.orphan_not_found',
+  'payment.orphan_resolved',
   'receipt.not_available',
   'staff.email_taken',
   'staff.last_admin',

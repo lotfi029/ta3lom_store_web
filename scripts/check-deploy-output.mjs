@@ -10,6 +10,8 @@
  *     production → the home is indexable and the sitemap lists /ar/, /en/ and every /p/:slug with hreflang pairs.
  *   - deployable builds (staging, production): no stub or localhost URL anywhere, no source maps, no staging ribbon in
  *     production, the build stamp present.
+ *   - Apple Pay (review 04, W-7): /.well-known/apple-developer-merchantid-domain-association is present; while it is the
+ *     repository's PLACEHOLDER a staging build (and a CI dry run of production) warns, a real production build fails.
  *   - every file world-readable. Budgets are checked by check-bundle-budget.mjs (same postbuild chain).
  */
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
@@ -136,6 +138,16 @@ const check = (p) => {
 };
 check(BROWSER_DIR);
 
+const APPLE_PAY = '.well-known/apple-developer-merchantid-domain-association';
+let applePayWarning = '';
+if (!existsSync(join(BROWSER_DIR, APPLE_PAY)) || statSync(join(BROWSER_DIR, APPLE_PAY)).size === 0) problems.push(`${APPLE_PAY} is missing`);
+else if (read(APPLE_PAY).startsWith('PLACEHOLDER')) {
+  const message = `${APPLE_PAY} is still the placeholder — put Moyasar's file in deploy/well-known/ (deploy/README.md, "Apple Pay")`;
+  if (env.name === 'production' && !dryRunOrigin) problems.push(message);
+  else if (env.deployable) applePayWarning = message;
+}
+
+if (applePayWarning) console.warn(`check-deploy-output: WARNING — ${applePayWarning}.`);
 if (dryRunHits)
   console.warn(`check-deploy-output: WARNING — ${dryRunHits} prerendered page(s) carry data from ${dryRunOrigin} (dry run only; never deploy this output).`);
 if (problems.length) {

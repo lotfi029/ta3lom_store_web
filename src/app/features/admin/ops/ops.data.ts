@@ -11,6 +11,7 @@ import type {
   CustomerStatus,
   Dashboard,
   OrderStatusValue,
+  OrphanPayment,
 } from '../../../core/api/api.types';
 import { STORE_API_URL } from '../../../core/api/store-api-url';
 import { StaffAuth } from '../../../core/auth/staff-auth';
@@ -83,6 +84,24 @@ export class OpsData {
       ? `${this.api}/admin/orders/${encodeURIComponent(upperRef(ref))}`
       : undefined;
   });
+
+  /** Review 04 A-3/W-3: orphan payments, open (`resolved = false`) or resolved — finance only. */
+  readonly orphansResolved = signal(false);
+  private readonly finance = computed(() => this.auth.isSignedIn() && this.auth.can('staff:finance'));
+  readonly orphans = httpResource<OrphanPayment[]>(() =>
+    this.finance()
+      ? { url: `${this.api}/admin/payments/orphans`, params: { resolved: this.orphansResolved() } }
+      : undefined,
+  );
+
+  async resolveOrphan(id: string, note: string): Promise<OrphanPayment> {
+    const r = await firstValueFrom(
+      this.http.post<OrphanPayment>(`${this.api}/admin/payments/orphans/${encodeURIComponent(id)}/resolve`, { note }),
+    );
+    this.orphans.reload();
+    this.dashboard.reload();
+    return r;
+  }
 
   readonly donorFilter = signal<DonorFilter>({ q: '', status: '', page: 1 });
   readonly donors = httpResource<AdminCustomerPage>(() => {

@@ -93,4 +93,25 @@ describe('AmountInput', () => {
     expect(input.getAttribute('aria-describedby')).toBe('amt-err');
     expect(input.getAttribute('inputmode')).toBe('decimal');
   });
+
+  it('W-5: the minimum is never below the gateway\'s 1.00, whatever min says', async () => {
+    const { fixture, host, input, el } = render();
+    host.min.set('0.50');
+    fixture.detectChanges();
+    type(input, '0.75');
+    input.dispatchEvent(new Event('blur'));
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(host.amount).toBeNull();
+    expect(el.querySelector('.err')?.textContent).toContain('1');
+    type(input, '1');
+    fixture.detectChanges();
+    expect(host.amount).toBe('1.00');
+    host.min.set(null);
+    fixture.detectChanges();
+    type(input, '0.99');
+    fixture.detectChanges();
+    expect(host.amount).toBeNull();
+  });
 });
+
