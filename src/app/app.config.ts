@@ -8,7 +8,11 @@ import {
   provideZonelessChangeDetection,
 } from '@angular/core';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
-import { provideClientHydration, withHttpTransferCacheOptions } from '@angular/platform-browser';
+import {
+  provideClientHydration,
+  withHttpTransferCacheOptions,
+  withIncrementalHydration,
+} from '@angular/platform-browser';
 import { provideRouter, withComponentInputBinding, withInMemoryScrolling } from '@angular/router';
 import { routes } from './app.routes';
 import { errorToastInterceptor } from './core/http/error-toast.interceptor';
@@ -35,7 +39,11 @@ export const appConfig: ApplicationConfig = {
     // `includeRequestsWithCredentials`: the store-API interceptor marks every API call `withCredentials` (refresh cookie),
     // which would otherwise exclude the public catalogue reads from the transfer cache. Only GETs are cached, and the
     // build has no session, so nothing personal can land in a prerendered page.
-    provideClientHydration(withHttpTransferCacheOptions({ includeRequestsWithCredentials: true })),
+    // F6.3: incremental hydration (implies event replay) for below-the-fold blocks: footer, trust row, pager.
+    provideClientHydration(
+      withIncrementalHydration(),
+      withHttpTransferCacheOptions({ includeRequestsWithCredentials: true }),
+    ),
     // errorToast and the error reporter first (they see the final outcome), the store-API interceptor next
     // (credentials, bearer, refresh), then one retry of idempotent reads on transient failures (M-7), the prerender
     // cache last (a pass-through in the browser).
