@@ -18,6 +18,9 @@
  *   - (F6.4) `<link rel="preconnect">` to the environment's API origin (catalogue images, including the LCP banner/cover
  *     image, and the data reload after hydration come from there); no `crossorigin`: images and the credentialed
  *     fetches share that connection pool;
+ *   - keeps a `<link rel="modulepreload">` only for chunks the entry scripts import STATICALLY: Angular 22.2.4+ also
+ *     preloads the current route's lazy chunks, which loads them before first paint and pushed initial JS over the
+ *     150 kB budget (Angular group update #21). Those chunks still load, as before, when the route asks for them;
  *   - normalises modes (0644 files, 0755 dirs).
  */
 import {
@@ -89,6 +92,28 @@ const canonical = (html) =>
     return fits(bubble, JSACTION_BUBBLE) && fits(capture, JSACTION_CAPTURE) ? CANONICAL : call;
   });
 
+/** The chunks the page's entry scripts (`<script type="module" src>`) import statically, transitively. */
+const STATIC_IMPORT = /(?:^|[;}\s])import\s*(?:[^"'();]*?from\s*)?["']\.\/([^"']+\.js)["']/g;
+function staticClosure(dir, entries) {
+  const seen = new Set();
+  const queue = [...entries];
+  while (queue.length) {
+    const f = queue.pop();
+    if (seen.has(f) || !existsSync(join(dir, f))) continue;
+    seen.add(f);
+    for (const m of readFileSync(join(dir, f), 'utf8').matchAll(STATIC_IMPORT)) queue.push(m[1]);
+  }
+  return seen;
+}
+const entryScripts = (html) =>
+  [...html.matchAll(/<script src="([^"]+\.js)" type="module">/g)].map((m) => m[1]);
+/** Drops modulepreload links for chunks outside the static closure (lazy-route preloads). */
+function initialPreloadsOnly(dir, html) {
+  const keep = staticClosure(dir, entryScripts(html));
+  if (keep.size === 0) return html;
+  return html.replace(/<link rel="modulepreload" href="([^"]+)">/g, (tag, href) => (keep.has(href) ? tag : ''));
+}
+
 const htmlFiles = (dir) =>
   readdirSync(dir).flatMap((name) => {
     const p = join(dir, name);
@@ -129,7 +154,7 @@ for (const locale of ['ar', 'en']) {
   let count = 0;
   for (const file of htmlFiles(dir)) {
     const original = readFileSync(file, 'utf8');
-    let html = canonical(original)
+    let html = initialPreloadsOnly(dir, canonical(original))
       .replace(/<meta name="build" content="[^"]*">/g, '')
       .replace(/<link rel="preload" href="media\/[^"]+\.woff2" as="font" type="font\/woff2" crossorigin>/g, '')
       .replace(/<style data-fonts>[^<]*<\/style>/g, '')
