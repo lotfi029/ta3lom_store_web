@@ -7,6 +7,11 @@ updates:
       interval: weekly
       day: sunday
     open-pull-requests-limit: 10
+    ignore:
+      # @angular/build 22.x requires typescript >=6.0 <6.1; TypeScript 7 broke `npm ci` on main (#26). Lift this with the
+      # Angular major that supports it.
+      - dependency-name: typescript
+        versions: ['>=6.1.0']
     groups:
       angular:
         patterns: ['@angular/*', '@angular-devkit/*', '@schematics/angular', 'angular-eslint', '@angular-eslint/*']
