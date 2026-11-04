@@ -31,7 +31,7 @@ export class Client {
     this.token = null;
   }
   async call(method, path, body, headers = {}) {
-    const h = { Origin: 'http://localhost:4320', 'Accept-Language': 'ar', ...headers };
+    const h = { Origin: process.env.E2E_ORIGIN ?? 'http://localhost:4320', 'Accept-Language': 'ar', ...headers };
     if (this.token) h.Authorization = `Bearer ${this.token}`;
     if (this.cookies.size) h.Cookie = [...this.cookies].map(([k, v]) => `${k}=${v}`).join('; ');
     let payload;

@@ -5,7 +5,7 @@
  */
 export const environment = {
   production: true,
-  envName: 'staging' as 'development' | 'local' | 'ci' | 'staging' | 'production',
+  envName: 'staging' as 'development' | 'local' | 'ci' | 'fullstack' | 'staging' | 'production',
   apiUrl: 'https://store-api-staging.ta3lom.sa/v1',
   siteOrigin: 'https://store-staging.ta3lom.sa',
   mainSiteUrl: 'https://ta3lom.sa',

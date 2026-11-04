@@ -4,7 +4,7 @@
  */
 export const environment = {
   production: true,
-  envName: 'ci' as 'development' | 'local' | 'ci' | 'staging' | 'production',
+  envName: 'ci' as 'development' | 'local' | 'ci' | 'fullstack' | 'staging' | 'production',
   apiUrl: 'http://localhost:3000/v1',
   siteOrigin: 'https://store.ta3lom.sa',
   mainSiteUrl: 'https://ta3lom.sa',

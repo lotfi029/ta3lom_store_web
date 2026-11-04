@@ -13,6 +13,7 @@
     "prebuild": "DEPLOY_ENV=local node scripts/routes.mjs",
     "build": "export DEPLOY_ENV=local && ng build --configuration production,local && npm run postbuild:checks",
     "build:ci": "export DEPLOY_ENV=ci && node scripts/routes.mjs && ng build --configuration production,ci && npm run postbuild:checks",
+    "build:fullstack": "export DEPLOY_ENV=fullstack && node scripts/routes.mjs && ng build --configuration production,fullstack && npm run postbuild:checks",
     "build:staging": "export DEPLOY_ENV=staging && node scripts/routes.mjs && ng build --configuration production,staging && npm run postbuild:checks",
     "build:prod": "export DEPLOY_ENV=production && node scripts/routes.mjs && ng build --configuration production && npm run postbuild:checks",
     "postbuild:checks": "node scripts/postbuild.mjs && node scripts/gen-csp.mjs && node scripts/check-deploy-output.mjs && node scripts/check-csp.mjs && node scripts/check-bundle-budget.mjs",

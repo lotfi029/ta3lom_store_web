@@ -22,7 +22,8 @@ success toast only on success; a transient refresh failure no longer ends the do
 | F7 | web `final/web-payments-perf` | F7 — hosting alignment | done |
 | F8 | ta3lom-deploy — **not reachable from the session** (add_repo: no access) → fallback in web branch (b) `deploy/edge/` | F8 — edge block (fallback) | done (caddy validate) |
 | F9 | ta3lom-web `final/store-integration` (PR lotfi029/ta3lom-web#34, draft) | F9 — store integration | done (unit 356, scripts 12, e2e 174 + 11 flag-on skipped, a11y 66 × 2; flag-on run local) |
-| F10 | all | — | pending |
+| F10a | web `final/web-payments-perf` | F10a — full-stack e2e | done (12/12 over the local edge, API final/api-payments-hosting 8419a46) |
+| F10b | all | — | pending (contract v2, checklist, PR descriptions, ready) |
 
 ## Option C home + production readiness (one PR "Store web — Option C home + production readiness")
 

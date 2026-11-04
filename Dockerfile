@@ -22,7 +22,7 @@ ARG CONFIG=staging
 ARG PRERENDER_API_URL=
 ARG VERSION=dev
 ARG GIT_SHA=unknown
-RUN case "$CONFIG" in staging|production|ci) ;; *) echo "CONFIG must be staging, production or ci" >&2; exit 1 ;; esac \
+RUN case "$CONFIG" in staging|production|ci|fullstack) ;; *) echo "CONFIG must be staging, production, ci or fullstack" >&2; exit 1 ;; esac \
  && if [ -z "$PRERENDER_API_URL" ]; then unset PRERENDER_API_URL; fi \
  && SCRIPT="build:$CONFIG" && if [ "$CONFIG" = production ]; then SCRIPT=build:prod; fi \
  && BUILD_VERSION="$VERSION" BUILD_SHA="$GIT_SHA" npm run "$SCRIPT"

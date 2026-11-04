@@ -1,10 +1,11 @@
 import { environment as production } from './environment.production';
 import { environment as development } from './environment';
 import { environment as ci } from './environment.ci';
+import { environment as fullstack } from './environment.fullstack';
 import { environment as local } from './environment.local';
 import { environment as staging } from './environment.staging';
 
-const all = { production, development, ci, local, staging };
+const all = { production, development, ci, local, staging, fullstack };
 
 describe('environments', () => {
   it('points production at the store API origin over https', () => {
@@ -31,6 +32,15 @@ describe('environments', () => {
     expect(staging.paymentHosts).toEqual(['checkout.moyasar.com']);
     expect(production.paymentAllowHttp).toBe(false);
     expect(staging.paymentAllowHttp).toBe(false);
+  });
+
+  it('fullstack (F10 e2e only): production host names, noindex, the fake page on the API host, https only', () => {
+    expect(fullstack.envName).toBe('fullstack');
+    expect(fullstack.apiUrl).toBe(production.apiUrl);
+    expect(fullstack.siteOrigin).toBe(production.siteOrigin);
+    expect(fullstack.robots).toBe('noindex');
+    expect(fullstack.paymentHosts).toEqual(['store-api.ta3lom.sa']);
+    expect(fullstack.paymentAllowHttp).toBe(false);
   });
 
   it('has no dev payment trigger any more (R5 has no /dev confirm-payment endpoint)', () => {

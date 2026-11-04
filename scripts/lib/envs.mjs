@@ -23,6 +23,14 @@ export const ENVS = {
     deployable: false,
     errorReportUrl: '',
   },
+  // F10 full-stack e2e (scripts/full-stack-e2e.sh): production names served locally; never published.
+  fullstack: {
+    apiUrl: 'https://store-api.ta3lom.sa/v1',
+    site: 'https://store.ta3lom.sa',
+    robots: 'noindex',
+    deployable: false,
+    errorReportUrl: '',
+  },
   staging: {
     apiUrl: 'https://store-api-staging.ta3lom.sa/v1',
     site: 'https://store-staging.ta3lom.sa',
