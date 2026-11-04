@@ -565,6 +565,12 @@
           "reference": {
             "type": "string"
           },
+          "refund": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "refundedAmount": {
             "type": "string"
           },
@@ -1063,6 +1069,9 @@
           "requestedBy": {
             "type": "string"
           },
+          "source": {
+            "type": "string"
+          },
           "status": {
             "type": "string"
           }
@@ -1074,7 +1083,8 @@
           "reason",
           "requestedBy",
           "requestedAt",
-          "completedAt"
+          "completedAt",
+          "source"
         ],
         "type": "object"
       },
@@ -1888,6 +1898,14 @@
               "string"
             ]
           },
+          "openOrphanPayments": {
+            "format": "int32",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ]
+          },
           "paidThisMonth": {
             "$ref": "#/components/schemas/DashboardPaid"
           },
@@ -2403,6 +2421,74 @@
           "lineCount",
           "createdAt",
           "paymentDueAt"
+        ],
+        "type": "object"
+      },
+      "OrphanPaymentRow": {
+        "properties": {
+          "amount": {
+            "type": "string"
+          },
+          "currency": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "provider": {
+            "type": "string"
+          },
+          "providerInvoiceId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "providerPaymentId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "receivedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "resolutionNote": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "resolvedAt": {
+            "format": "date-time",
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "resolvedBy": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "provider",
+          "providerPaymentId",
+          "providerInvoiceId",
+          "amount",
+          "currency",
+          "receivedAt",
+          "resolvedAt",
+          "resolvedBy",
+          "resolutionNote"
         ],
         "type": "object"
       },
@@ -3211,6 +3297,17 @@
         ],
         "type": "object"
       },
+      "ResolveOrphanRequest": {
+        "properties": {
+          "note": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "note"
+        ],
+        "type": "object"
+      },
       "SessionResponse": {
         "properties": {
           "accessToken": {
@@ -3700,7 +3797,7 @@
   "info": {
     "title": "Ta3lom.Store.Api | v1",
     "version": "1.0.0",
-    "x-api-commit": "7fc1acee82df7d0c1df4af074de11dd3c355962a"
+    "x-api-commit": "c7578b11ce590bf792a36ff7a4ea6dd5f93f9d9c"
   },
   "openapi": "3.1.1",
   "paths": {
@@ -5325,6 +5422,16 @@
             },
             "description": "OK"
           },
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminPaymentActionResponse"
+                }
+              }
+            },
+            "description": "Accepted"
+          },
           "400": {
             "content": {
               "application/problem+json": {
@@ -5513,6 +5620,16 @@
             },
             "description": "OK"
           },
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminPaymentActionResponse"
+                }
+              }
+            },
+            "description": "Accepted"
+          },
           "401": {
             "content": {
               "application/problem+json": {
@@ -5566,6 +5683,148 @@
         },
         "tags": [
           "Admin · Orders"
+        ]
+      }
+    },
+    "/v1/admin/payments/orphans": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "resolved",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/OrphanPaymentRow"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden"
+          }
+        },
+        "tags": [
+          "Admin · Payments"
+        ]
+      }
+    },
+    "/v1/admin/payments/orphans/{id}/resolve": {
+      "post": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResolveOrphanRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrphanPaymentRow"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            },
+            "description": "Conflict"
+          }
+        },
+        "tags": [
+          "Admin · Payments"
         ]
       }
     },
@@ -8313,7 +8572,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:5080/"
+      "url": "http://localhost/"
     }
   ],
   "tags": [
@@ -8340,6 +8599,9 @@
     },
     {
       "name": "Admin · Orders"
+    },
+    {
+      "name": "Admin · Payments"
     },
     {
       "name": "Admin · Templates"

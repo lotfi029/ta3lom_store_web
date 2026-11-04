@@ -10,6 +10,8 @@
  *   cart lines (three shapes, limits from the recorded config), OTP sign-in (any 6 digits; the "SMS" is at
  *   GET /dev/sms), refresh via a cookie, quote, checkout with Idempotency-Key replay, order status, /me, donations,
  *   export and delete. `POST /__reset` clears the state (each e2e spec calls it, so specs never see each other's data).
+ *   `POST /__case {"case":"no-attempt"}` (review 04 S-6): the NEXT checkout behaves as with the gateway down — the
+ *   order is placed with no payment attempt (`payment: null`, `paymentError`, `paymentStatus: null`); cleared by reset.
  * Admin: refresh answers 401 (the admin login page renders; admin journeys run against the real API only).
  * Payments (R5-Payments, same shape as the real API's fake gateway): checkout returns `payment.redirectUrl` =
  * `${ORIGIN}/dev/payments/{ref}` — a page with Pay / Fail buttons (ids `pay`, `fail`) that settles the order and sends the
@@ -58,7 +60,7 @@ const money = (h) => `${Math.trunc(h / 100)}.${String(h % 100).padStart(2, '0')}
 // ── state ─────────────────────────────────────────────────────────────────────────────────────────────────
 let state;
 function reset() {
-  state = { cart: [], signedIn: false, sms: [], me: null, orders: [], idem: new Map(), seq: 0, lineSeq: 0 };
+  state = { cart: [], signedIn: false, sms: [], me: null, orders: [], idem: new Map(), seq: 0, lineSeq: 0, nextCase: null };
 }
 reset();
 const ME = (mobile) => ({
@@ -201,6 +203,9 @@ function checkout(req, body) {
       amount: l.amount,
     })),
   };
+  const noAttempt = state.nextCase === 'no-attempt';
+  state.nextCase = null;
+  if (noAttempt) Object.assign(order, { paymentStatus: null, canRetryPayment: false });
   state.orders.unshift(order);
   state.cart = [];
   const response = {
@@ -208,8 +213,8 @@ function checkout(req, body) {
     status: 'pending_payment',
     totalAmount: order.totalAmount,
     statusToken: `st-${reference}`,
-    payment: { redirectUrl: `${ORIGIN}/dev/payments/${reference}`, expiresAt: order.paymentDueAt },
-    paymentError: null,
+    payment: noAttempt ? null : { redirectUrl: `${ORIGIN}/dev/payments/${reference}`, expiresAt: order.paymentDueAt },
+    paymentError: noAttempt ? 'payment.gateway_unavailable' : null,
   };
   state.idem.set(key, { body: canon, response });
   return [201, response, { Location: `/v1/orders/${reference}/status` }];
@@ -262,6 +267,7 @@ function route(req, url, body) {
   const hasRefresh = /(?:^|;\s*)stub_rt=1/.test(req.headers.cookie ?? '');
 
   if (method === 'POST' && path === '/__reset') return reset(), [204, null];
+  if (method === 'POST' && path === '/__case') return (state.nextCase = body?.case ?? null), [204, null];
   if (method === 'GET' && url.pathname === '/dev/sms') return [200, [...state.sms].reverse()];
 
   // catalogue

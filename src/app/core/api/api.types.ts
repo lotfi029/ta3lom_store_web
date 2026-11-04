@@ -124,6 +124,8 @@ export type AdminReceiptRow = Schemas['AdminReceiptRow'];
 export type AdminRefundRequest = Schemas['AdminRefundRequest'];
 export type AdminReviewRequest = Schemas['AdminReviewRequest'];
 export type AdminPaymentAction = Schemas['AdminPaymentActionResponse'];
+/** Review 04 A-3: a captured payment with no order of ours (`GET /admin/payments/orphans`). */
+export type OrphanPayment = Schemas['OrphanPaymentRow'];
 export type DashboardPaid = Schemas['DashboardPaid'];
 export type DashboardPaidProject = Schemas['DashboardPaidProject'];
 export type Setting = Schemas['SettingResponse'];

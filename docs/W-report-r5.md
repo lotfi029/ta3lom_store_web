@@ -41,8 +41,9 @@ U-1…U-4, R3-1…R3-3 — every one is a row in `DECISIONS.md`).
 
 ## 4. Known limits
 
-- **Payments are off** (`environment.paymentsEnabled = false`): checkout ends at the pending order; `build:prod`
-  fails until R5-Payments flips the flag (only the CI dry run may bypass it, with a warning).
+- **Payments are on** (R5-Payments; review 04 S-17 corrected this line): checkout leaves for Moyasar's hosted page,
+  the order page polls the API; `build:prod` requires `paymentsEnabled` (it is true everywhere) and, since review 04,
+  Moyasar's Apple Pay domain file instead of the placeholder.
 - Projects published after a build are client-rendered until the next build (E-1 follow-up: rebuild on publish).
 - The public API caches project pages for 60 s: a browser that just saw an old slug may show it for up to a minute.
 - Admin journeys cannot run on the stub (it answers the staff refresh with 401); CI covers the admin with unit specs

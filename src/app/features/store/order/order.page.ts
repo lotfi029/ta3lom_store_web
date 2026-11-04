@@ -11,7 +11,7 @@ import {
   untracked,
 } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toInt } from '../../../core/api/api.types';
 import { problemMessage } from '../../../core/api/problem-message';
 import { PaymentRedirect } from '../../../core/payments/payment-redirect';
@@ -24,13 +24,6 @@ import { StatusPill } from '../../../shared/ui/status-pill/status-pill';
 import { orderStatus } from '../../../shared/ui/status-pill/status-labels';
 import { OtpSignIn } from '../login/otp-sign-in';
 import { OrderData } from './order.data';
-
-/** Removes `t` from a URL (E-2), keeping every other parameter and the hash. */
-export function withoutToken(href: string): string {
-  const u = new URL(href);
-  u.searchParams.delete('t');
-  return u.pathname + (u.search === '?' ? '' : u.search) + u.hash;
-}
 
 /**
  * `/orders/:ref` (W-M3, plan §6 F5): where the donor lands back from the gateway — never trusted as proof of payment;
@@ -54,6 +47,8 @@ export class OrderPage {
   protected readonly i18n = inject(I18nService);
   private readonly doc = inject(DOCUMENT);
   private readonly meta = inject(Meta);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   readonly ref = input.required<string>();
   readonly t = input<string>();
@@ -93,11 +88,19 @@ export class OrderPage {
     void this.auth.ensureSession();
   }
 
-  /** E-2: drop `t` from the address bar without a navigation (the history entry is replaced). */
+  /**
+   * E-2: drop `t` from the address bar, replacing the history entry. Review 04 S-9: through the router, so its own URL
+   * state loses the token too (a raw `history.replaceState` left it there for the next navigation to put back).
+   */
   private stripToken(): void {
-    const w = this.doc.defaultView;
-    if (!w || !w.location.search.includes('t=')) return;
-    w.history.replaceState(w.history.state, '', withoutToken(w.location.href));
+    if (!this.router.url.includes('t=')) return;
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { t: null },
+      queryParamsHandling: 'merge',
+      preserveFragment: true,
+      replaceUrl: true,
+    });
   }
 
   /** "Pay again": a new attempt; leave only for an allow-listed hosted page. */

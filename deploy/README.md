@@ -12,11 +12,12 @@ by the VPS from GHCR. Go-live checklist: [docs/production-checklist.md](../docs/
 | Built on | push to `main`, nightly 01:23 UTC, `repository_dispatch: catalog-changed` | tag `vX.Y.Z` |
 | Deployed | automatically (`staging` environment) | after the `production` environment's required reviewer approves |
 | Robots | `noindex, nofollow` everywhere (meta, `X-Robots-Tag`, `robots.txt Disallow: /`, no sitemap), "نسخة تجريبية" ribbon | indexable, sitemap |
-| Payments guard | not applied | **applied — production is blocked until R5-Payments** |
+| Payments | **on** (Moyasar hosted page; `paymentsEnabled: true`) | **on** |
+| Apple Pay file | placeholder allowed (warning) | **Moyasar's real file required** — the build fails on the placeholder |
 
-**What blocks production today:** `environment.production.ts` has `paymentsEnabled: false` (D-W2). `npm run build:prod`
-and the production image build run `scripts/check-payments-flag.mjs` and FAIL until R5-Payments turns it on. That is
-expected; a tag push today produces a failed `production-image` job and deploys nothing.
+**Payments are on** since R5-Payments (review 04 S-17): `paymentsEnabled` is true in every environment, checkout leaves
+for Moyasar's hosted page and the order page polls the API. Before the first production release the owner puts the
+Apple Pay domain association file from the Moyasar dashboard in `deploy/well-known/` (section "Apple Pay" below).
 
 ## 1. Build and image (what CI does)
 
@@ -31,7 +32,6 @@ always talks to its environment's `apiUrl`. The build fails unless every gate pa
 
 | Gate | What it checks |
 |---|---|
-| `check-payments-flag.mjs` | production only: `paymentsEnabled` is true (D-W2) |
 | `postbuild.mjs` | root files (robots, sitemap, favicons, `index.html`, `404.html`), font preload, build stamp (`/version.json`, `<meta name="build">`) |
 | `gen-csp.mjs` | writes `dist/store-web/caddy/csp.conf` (CSP with the build's script hashes + the env's API origin) and `env.conf` — generated, never committed |
 | `check-deploy-output.mjs` | per environment: API URL compiled in, CSP connect-src, canonical host, robots/sitemap, build stamp, no localhost, no source maps, no ribbon in production, every route prerendered |
@@ -126,8 +126,11 @@ X-Robots-Tag on staging, client-route fallbacks, real 404s, cache headers, compr
 
 ## 5. Deploy
 
-Every deploy waits for **CI to succeed on the same commit** (review 06 D-1): `deploy.yml` is triggered by the CI
-workflow's completion (`workflow_run`), not by the push. The image is built, **checked with `check-container.mjs`** for
+Every deploy waits for **CI to succeed on the same commit** (review 06 D-1). Staging: `deploy.yml` is triggered by the
+CI workflow's completion on `main` (`workflow_run`). Production (review 04 H-3): by the **tag push itself**, so the run's
+ref is the tag and the `production` environment's "`v*` tags only" rule applies; its gate requires
+`refs/tags/vX.Y.Z`, the tagged commit on `main`, and waits (≤ 45 min) until CI's check run `web` on that commit
+succeeded. The image is built, **checked with `check-container.mjs`** for
 its environment, and only then pushed. A failed CI run deploys nothing.
 
 - **Staging:** merge to `main` (or wait for the nightly, or send `repository_dispatch` `catalog-changed` from the API
@@ -139,10 +142,22 @@ its environment, and only then pushed. A failed CI run deploys nothing.
   STORE_WEB_IMAGE=ghcr.io/lotfi029/ta3lom-store-web:staging-<sha> docker compose -f docker-compose.store-web.yml -p store-web-staging up -d --wait
   ```
 
-- **Production (after R5-Payments):** push a tag `vX.Y.Z` (strict semver — a pre-release such as `v1.2.3-rc.1` is
-  never deployed and never moves `:latest`, L-5) on `main`. CI runs on the tag; when it succeeds `production-image`
+- **Production:** push a tag `vX.Y.Z` (strict semver — a pre-release such as `v1.2.3-rc.1` is
+  never deployed and never moves `:latest`, L-5) on `main`. CI runs on the tag; once it succeeded `production-image`
   builds, checks and pushes `:X.Y.Z` and `:latest` (one build at a time); `production` waits for the reviewer, then runs
   the same two commands in `/srv/store-web` with `-p store-web`.
+
+**Edge aliases (review 04 H-1).** The compose service is called `web`, never `store-web`: Compose gives every service
+its own name as a DNS alias on each network, so a staging service named `store-web` also answered to the production
+alias on the shared `edge` network. Only `EDGE_ALIAS` names an environment there. CI runs both projects side by side
+(`scripts/check-edge-aliases.sh`) and fails if `store-web` resolves to anything but the production container.
+
+**Apple Pay (review 04).** Moyasar's hosted page offers Apple Pay only on a verified domain: Apple fetches
+`https://store.ta3lom.sa/.well-known/apple-developer-merchantid-domain-association` (served `text/plain`, `no-cache`;
+`check-container` asserts both). The repository holds a PLACEHOLDER in `deploy/well-known/`; the owner replaces it with
+the file from the Moyasar dashboard (Settings → Apple Pay → domains), commits it, and verifies the domain there.
+`check-deploy-output` warns on staging and in CI's production dry run, and **fails a real production build** while the
+placeholder is in place.
 
 ## 6. Verify
 

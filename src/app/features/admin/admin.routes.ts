@@ -84,6 +84,11 @@ export const ADMIN_ROUTES: Routes = [
         loadComponent: () => import('./reports/reports.page').then((m) => m.ReportsPage),
       },
       {
+        path: 'payments/orphans',
+        canActivate: [staffPolicyGuard('staff:finance')],
+        loadComponent: () => import('./ops/orphans.page').then((m) => m.OrphansPage),
+      },
+      {
         path: 'audit',
         canActivate: [staffPolicyGuard('staff:admin')],
         loadComponent: () => import('./audit/audit.page').then((m) => m.AuditPage),

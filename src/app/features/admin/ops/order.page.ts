@@ -23,7 +23,13 @@ import { ToastService } from '../../../core/ui/toast.service';
 import { Dialog } from '../../../shared/ui/dialog/dialog';
 import { Money } from '../../../shared/ui/money/money';
 import { ResourceState } from '../../../shared/ui/resource-state/resource-state';
-import { orderStatus, paymentStatus } from '../../../shared/ui/status-pill/status-labels';
+import {
+  orderStatus,
+  paymentStatus,
+  refundSource,
+  refundStatus,
+  reviewReason,
+} from '../../../shared/ui/status-pill/status-labels';
 import { StatusPill } from '../../../shared/ui/status-pill/status-pill';
 import { Requires } from '../ui/requires';
 import { OpsData, upperRef } from './ops.data';
@@ -83,12 +89,17 @@ export class AdminOrderPage {
   protected readonly notFound = computed(() => toProblem(this.data.order.error()).status === 404);
   protected readonly label = orderStatus;
   protected readonly payLabel = paymentStatus;
+  protected readonly refundLabel = refundStatus;
+  protected readonly sourceLabel = refundSource;
+  protected readonly reasonLabel = reviewReason;
   protected readonly int = toInt;
   protected readonly canCancel = computed(
     () => this.o()?.status === 'pending_payment' && this.auth.can('staff:orders'),
   );
   protected readonly canFinance = computed(() => this.auth.can('staff:finance'));
   protected readonly inReview = computed(() => (this.o()?.payments ?? []).some((p) => p.status === 'review'));
+  /** Review 04 A-6/W-2: a refund still waiting for the gateway blocks every new one (the API answers 409 too). */
+  protected readonly pendingRefund = computed(() => (this.o()?.refunds ?? []).some((r) => r.status === 'requested'));
   protected readonly canRefund = computed(() => this.o()?.status === 'paid' && toHalalas(this.o()?.refundable ?? '0') > 0);
   protected readonly hasReceipt = computed(() => (this.o()?.receipts ?? []).some((r) => r.series === 'DR'));
 
@@ -99,6 +110,8 @@ export class AdminOrderPage {
   protected readonly refundReason = signal('');
   protected readonly typedRef = signal('');
   protected readonly financeError = signal<string | null>(null);
+  /** W-2: the gateway gave no definite answer (202): the dialog stays, with its key, so "check again" reconciles. */
+  protected readonly financePending = signal(false);
   private financeKey: string | null = null;
 
   /** The refund amount as a valid decimal string within (0, refundable], else null. */
@@ -128,6 +141,7 @@ export class AdminOrderPage {
 
   protected openFinance(kind: 'refund' | 'accept' | 'review-refund' | 'resend'): void {
     this.financeError.set(null);
+    this.financePending.set(false);
     this.financeKey = crypto.randomUUID();
     this.typedRef.set('');
     this.refundReason.set('');
@@ -137,6 +151,7 @@ export class AdminOrderPage {
 
   protected closeFinance(): void {
     this.dialog.set(null);
+    this.financePending.set(false);
     this.financeKey = null;
   }
 
@@ -155,18 +170,22 @@ export class AdminOrderPage {
     try {
       const key = (this.financeKey ??= crypto.randomUUID());
       switch (kind) {
-        case 'refund':
-          await this.data.refund(o.reference, this.refundValue()!, this.refundReason().trim(), version, key);
+        case 'refund': {
+          const r = await this.data.refund(o.reference, this.refundValue()!, this.refundReason().trim(), version, key);
+          if (this.stillPending(r)) return;
           this.toast.show($localize`:@@store.admin.refund-done:تم الاسترداد.`, 'success');
           break;
+        }
         case 'accept':
           await this.data.acceptReview(o.reference, version);
           this.toast.show($localize`:@@store.admin.review-accepted:قُبلت الدفعة وأُصدر الإيصال.`, 'success');
           break;
-        case 'review-refund':
-          await this.data.refundReview(o.reference, version, this.refundReason().trim() || 'payment review', key);
+        case 'review-refund': {
+          const r = await this.data.refundReview(o.reference, version, this.refundReason().trim() || 'payment review', key);
+          if (this.stillPending(r)) return;
           this.toast.show($localize`:@@store.admin.refund-done:تم الاسترداد.`, 'success');
           break;
+        }
         case 'resend':
           await this.data.resendReceipt(o.reference, key);
           this.toast.show($localize`:@@store.admin.receipt-resent:أُعيد إرسال الإيصال.`, 'success');
@@ -181,6 +200,17 @@ export class AdminOrderPage {
     } finally {
       this.busy.set(false);
     }
+  }
+
+  /**
+   * 202 `refund: "pending"`: not a failure and not done. The key is KEPT (a retry with it never sends a second refund:
+   * the API reconciles it with the gateway) and the dialog stays open with the explanation.
+   */
+  private stillPending(r: { refund?: string | null }): boolean {
+    if (r.refund !== 'pending') return false;
+    this.financePending.set(true);
+    this.toast.show($localize`:@@store.admin.refund-pending-toast:الاسترداد بانتظار تأكيد بوابة الدفع.`, 'info');
+    return true;
   }
 
   protected text(e: Event): string {

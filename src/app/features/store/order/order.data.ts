@@ -17,8 +17,11 @@ import { STORE_API_URL } from '../../../core/api/store-api-url';
 import { StoreAuth } from '../../../core/auth/store-auth';
 import { valueOf } from '../../../core/http/resource-value';
 
-/** Order states after which polling stops. */
-export const TERMINAL = new Set(['paid', 'payment_review', 'cancelled', 'expired', 'refunded']);
+/**
+ * Order states after which polling stops. `payment_review` is not final (review 04 S-8): finance accepts or refunds it,
+ * so the page keeps asking — slowly, every {@link REVIEW_MS}.
+ */
+export const TERMINAL = new Set(['paid', 'cancelled', 'expired', 'refunded']);
 
 /**
  * What the order page shows (plan §6 F5): paid, pending (the gateway has not answered yet — keep polling), retry (the
@@ -27,7 +30,9 @@ export const TERMINAL = new Set(['paid', 'payment_review', 'cancelled', 'expired
 export type OrderPhase =
   'paid' | 'pending' | 'retry' | 'expired' | 'review' | 'refunded' | 'cancelled';
 
-export function orderPhase(o: Pick<OrderStatus, 'status' | 'canRetryPayment'>): OrderPhase {
+export function orderPhase(
+  o: Pick<OrderStatus, 'status' | 'canRetryPayment' | 'paymentStatus'>,
+): OrderPhase {
   switch (o.status) {
     case 'paid':
       return 'paid';
@@ -40,16 +45,25 @@ export function orderPhase(o: Pick<OrderStatus, 'status' | 'canRetryPayment'>): 
     case 'cancelled':
       return 'cancelled';
     default:
-      return o.canRetryPayment ? 'retry' : 'pending';
+      // Review 04 S-6: no attempt at all (the gateway was down at checkout) → "pay again", not an endless "checking".
+      return o.canRetryPayment || (o.status === 'pending_payment' && o.paymentStatus == null)
+        ? 'retry'
+        : 'pending';
   }
 }
 export const FAST_MS = 2_000;
 export const FAST_FOR_MS = 60_000;
 export const SLOW_MS = 10_000;
 export const GIVE_UP_MS = 10 * 60_000;
+/** Review 04 S-8: an order in payment review is asked about once a minute, with no time limit. */
+export const REVIEW_MS = 60_000;
 
-/** Polling cadence (payments on only): every 2 s for 60 s, then every 10 s; null once 10 minutes have passed. */
-export function pollDelay(elapsedMs: number): number | null {
+/**
+ * Polling cadence (payments on only): every 2 s for 60 s, then every 10 s; null once 10 minutes have passed. In
+ * payment review: every 60 s until a final state.
+ */
+export function pollDelay(elapsedMs: number, phase: OrderPhase | null = null): number | null {
+  if (phase === 'review') return REVIEW_MS;
   if (elapsedMs >= GIVE_UP_MS) return null;
   return elapsedMs < FAST_FOR_MS ? FAST_MS : SLOW_MS;
 }
@@ -185,7 +199,7 @@ export class OrderData {
         this.gaveUp()
       )
         return;
-      const delay = pollDelay(Date.now() - this.startedAt);
+      const delay = pollDelay(Date.now() - this.startedAt, this.phase());
       if (delay === null) {
         untracked(() => this.gaveUp.set(true));
         return;

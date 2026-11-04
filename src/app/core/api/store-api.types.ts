@@ -1594,6 +1594,15 @@ export interface paths {
                         "application/json": components["schemas"]["AdminPaymentActionResponse"];
                     };
                 };
+                /** @description Accepted */
+                202: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminPaymentActionResponse"];
+                    };
+                };
                 /** @description Bad Request */
                 400: {
                     headers: {
@@ -1775,6 +1784,15 @@ export interface paths {
                         "application/json": components["schemas"]["AdminPaymentActionResponse"];
                     };
                 };
+                /** @description Accepted */
+                202: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminPaymentActionResponse"];
+                    };
+                };
                 /** @description Unauthorized */
                 401: {
                     headers: {
@@ -1813,6 +1831,147 @@ export interface paths {
                 };
                 /** @description Bad Gateway */
                 502: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/payments/orphans": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    resolved?: boolean;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["OrphanPaymentRow"][];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/payments/orphans/{id}/resolve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ResolveOrphanRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["OrphanPaymentRow"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -4854,6 +5013,7 @@ export interface components {
         AdminPaymentActionResponse: {
             receiptNumber: null | string;
             reference: string;
+            refund?: null | string;
             refundedAmount: string;
             status: string;
             totalAmount: string;
@@ -4975,6 +5135,7 @@ export interface components {
             /** Format: date-time */
             requestedAt: string;
             requestedBy: string;
+            source: string;
             status: string;
         };
         AdminReviewRequest: {
@@ -5164,6 +5325,8 @@ export interface components {
             activeDonors: number | string;
             /** Format: int32 */
             inReviewOrders?: number | string;
+            /** Format: int32 */
+            openOrphanPayments?: number | string;
             paidThisMonth?: components["schemas"]["DashboardPaid"];
             paidThisWeek?: components["schemas"]["DashboardPaid"];
             paidToday?: components["schemas"]["DashboardPaid"];
@@ -5288,6 +5451,21 @@ export interface components {
             refundedAmount?: string;
             status: string;
             totalAmount: string;
+        };
+        OrphanPaymentRow: {
+            amount: string;
+            currency: null | string;
+            /** Format: uuid */
+            id: string;
+            provider: string;
+            providerInvoiceId: null | string;
+            providerPaymentId: null | string;
+            /** Format: date-time */
+            receivedAt: string;
+            resolutionNote: null | string;
+            /** Format: date-time */
+            resolvedAt: null | string;
+            resolvedBy: null | string;
         };
         OtpRequestedResponse: {
             /** Format: int32 */
@@ -5455,6 +5633,9 @@ export interface components {
         RequestOtpRequest: {
             locale: null | string;
             mobile: string;
+        };
+        ResolveOrphanRequest: {
+            note: string;
         };
         SessionResponse: {
             accessToken: string;
