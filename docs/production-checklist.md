@@ -6,12 +6,17 @@ everything else is for the owner (or a later session).
 
 ## Blockers
 
-- [ ] **Payments on (R5-Payments).** `paymentsEnabled: true` in `src/environments/environment.production.ts` with the
-      gateway flow; until then `build:prod`, the production image and the tag deploy fail on purpose (D-W2).
+- [x] **Payments on (R5-Payments).** `paymentsEnabled: true` in every environment, checkout → Moyasar hosted page
+      (allow-listed `paymentHosts`), order page polls the API — **[done, final session F5a]**; `build:prod` builds.
+- [ ] **Moyasar dashboard (owner):** live publishable/secret keys and the webhook secret into the API's secret files
+      (`ta3lom_store_api` `deploy/secrets.md`, never the repo); webhook URL
+      `https://store-api.ta3lom.sa/v1/payments/webhooks/moyasar` (staging: `store-api-staging…`, test keys); payment
+      methods mada, credit card, Apple Pay (domain verification for `store.ta3lom.sa`); run the API's sandbox tests once
+      with a test key (`MoyasarSandboxTests`, skipped without one).
 - [ ] **Staging API hosted** at `https://store-api-staging.ta3lom.sa` (the staging deploy is skipped until it answers, H-1).
 - [ ] **API CORS** = `https://store.ta3lom.sa` only on production (staging: its own origin); refresh cookies for that site.
-- [ ] **API repo deploy** proxies `store.ta3lom.sa` to this container (it no longer serves the files or imports
-      `caddy-headers.conf` for the CSP — the CSP is generated per image).
+- [ ] **Edge proxy:** copy `deploy/edge/store.caddy` into ta3lom-deploy and import it (`deploy/edge/README.md`);
+      the `edge` network has a fixed IPv4 subnet = the API's `EDGE_SUBNET`. This container publishes no port (F7).
 
 ## Content (owner)
 
@@ -28,8 +33,9 @@ everything else is for the owner (or a later session).
 
 ## Infrastructure (owner)
 
-- [ ] DNS for `store.ta3lom.sa` and `store-staging.ta3lom.sa`; edge proxy with TLS + HSTS (TLS_MODE=edge).
-- [ ] VPS folders, `.env` (ports), deploy user, GHCR `read:packages` token logged in on the VPS (H-4).
+- [ ] DNS for `store.ta3lom.sa`, `store-api.ta3lom.sa` and the two staging names; the edge terminates TLS and sends
+      HSTS on the production names (`deploy/edge/store.caddy`).
+- [ ] VPS folders, `.env` (`EDGE_ALIAS`), deploy user, GHCR `read:packages` token logged in on the VPS (H-4).
 - [ ] GitHub environments `staging` / `production` (required reviewer, tags only), SSH secrets and known_hosts.
 - [ ] First staging deploy green (workflow smoke check), then `node scripts/smoke-deploy.mjs` by hand.
 - [ ] Backups of the API database (API runbook) — scheduled and a restore tested.

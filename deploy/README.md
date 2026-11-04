@@ -65,26 +65,17 @@ X-Robots-Tag on staging, client-route fallbacks, real 404s, cache headers, compr
 - Headers: `deploy/caddy-headers.conf` (nosniff, Referrer-Policy, Permissions-Policy, COOP, no `Server`, no-referrer on
   orders) + the generated `csp.conf` and `env.conf`.
 
-### TLS: two modes
+### TLS: the edge model (F7)
 
-- **`TLS_MODE=edge` (default, recommended).** The VPS already runs an edge Caddy (or nginx/Traefik) that terminates TLS
-  for every site. The container listens on `127.0.0.1:<port>` only; the edge proxies to it and sends HSTS:
-
-  ```caddy
-  store.ta3lom.sa {
-  	header Strict-Transport-Security "max-age=31536000; includeSubDomains"
-  	reverse_proxy 127.0.0.1:8081
-  }
-  store-staging.ta3lom.sa {
-  	reverse_proxy 127.0.0.1:8082
-  }
-  ```
-
-  The container sends no HSTS in this mode (owner M-8). Keep the edge from adding its own CSP — the container's is
-  generated for its build.
+- The VPS runs ONE edge Caddy (repo `ta3lom-deploy`, `edge/`) on 80/443 that terminates TLS for every site. This
+  container publishes **no port**: it joins the external Docker network `edge` with the alias `store-web` (production) or
+  `store-web-staging` (staging), and the edge proxies to `store-web:8080` / `store-web-staging:8080`. The store block for
+  the edge is `deploy/edge/store.caddy` in this repo (copy it into ta3lom-deploy — `deploy/edge/README.md`); it sends
+  HSTS on the production names and `X-Robots-Tag: noindex` on the staging names.
+- The container sends no HSTS (owner M-8) and the edge must not add its own CSP — the container's is generated per
+  build.
 - **No direct mode.** `TLS_MODE=direct` was removed (review 06 L-6): the image runs non-root, read-only, with all
-  capabilities dropped and no data volume, so it cannot bind :443 or keep certificates. TLS always ends at the edge, which
-  sends HSTS on the production names.
+  capabilities dropped and no data volume, so it cannot bind :443 or keep certificates.
 
 ## 3. First-time VPS setup
 
@@ -95,11 +86,11 @@ X-Robots-Tag on staging, client-route fallbacks, real 404s, cache headers, compr
 
    ```bash
    # /srv/store-web-staging/.env
-   STORE_WEB_PORT=8082
-   TLS_MODE=edge
+   EDGE_ALIAS=store-web-staging
    ```
 
-   (`/srv/store-web/.env`: `STORE_WEB_PORT=8081`.) The deploy sets `STORE_WEB_IMAGE` per run.
+   (`/srv/store-web/.env`: `EDGE_ALIAS=store-web`.) The deploy passes `EDGE_ALIAS` and `STORE_WEB_IMAGE` per run. The
+   `edge` network must exist first (ta3lom-deploy `edge/up.sh`, fixed IPv4 subnet — `deploy/edge/README.md`).
 4. **GHCR pull access (owner H-4, review 06 L-7).** The package stays **private**. GHCR does **not** accept
    fine-grained tokens: create a **classic** personal access token with **`read:packages` only**, on a **dedicated machine
    user** (a GitHub account used only for pulls, given read access to the package) — a classic `read:packages` token can
@@ -115,7 +106,7 @@ X-Robots-Tag on staging, client-route fallbacks, real 404s, cache headers, compr
    least keep the file `0600` and owned by the deploy user. The workflow never sends a registry token to the VPS.
    **Rotate** it before it expires: create a new token, run the same login again, check a pull
    (`docker pull ghcr.io/lotfi029/ta3lom-store-web:staging`), then revoke the old token.
-5. **Edge proxy** routes as in §2 (TLS edge mode), reload it.
+5. **Edge proxy:** import `store.caddy` (§2) in the edge Caddyfile(s) and reload the edge.
 6. **API side.** CORS on the API = the site origin only (`https://store.ta3lom.sa`, staging its own), refresh cookies
    for that site. The web sends credentials and bearer tokens only to its API origin. The API repo's old Caddy block that
    served these files and imported `caddy-headers.conf` for its CSP must be replaced by the reverse proxy above (the CSP

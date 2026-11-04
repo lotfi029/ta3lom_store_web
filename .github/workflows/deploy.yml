@@ -106,8 +106,8 @@ jobs:
             echo "::warning::Staging API $PRERENDER_API_URL is unreachable — a main run would SKIP the staging build and deploy (H-1)."
           fi
           echo "A main run then executes on the staging VPS (STAGING_SSH_* secrets):"
-          echo "  cd \$STAGING_DEPLOY_DIR && STORE_WEB_IMAGE=$IMAGE:staging-${{ github.event.pull_request.head.sha }} docker compose -f docker-compose.store-web.yml -p store-web-staging pull"
-          echo "  STORE_WEB_IMAGE=$IMAGE:staging-${{ github.event.pull_request.head.sha }} docker compose -f docker-compose.store-web.yml -p store-web-staging up -d --wait"
+          echo "  cd \$STAGING_DEPLOY_DIR && EDGE_ALIAS=store-web-staging STORE_WEB_IMAGE=$IMAGE:staging-${{ github.event.pull_request.head.sha }} docker compose -f docker-compose.store-web.yml -p store-web-staging pull"
+          echo "  EDGE_ALIAS=store-web-staging STORE_WEB_IMAGE=$IMAGE:staging-${{ github.event.pull_request.head.sha }} docker compose -f docker-compose.store-web.yml -p store-web-staging up -d --wait"
           echo "and smoke-checks: node scripts/smoke-deploy.mjs https://store-staging.ta3lom.sa <sha> --env staging"
 
   staging:
@@ -190,7 +190,7 @@ jobs:
         if: steps.probe.outputs.api == 'up'
         run: |
           TAG="staging-${SHA}"
-          REMOTE="cd '$DEPLOY_DIR' && STORE_WEB_IMAGE='$IMAGE:$TAG' docker compose -f docker-compose.store-web.yml -p store-web-staging pull && STORE_WEB_IMAGE='$IMAGE:$TAG' docker compose -f docker-compose.store-web.yml -p store-web-staging up -d --wait"
+          REMOTE="cd '$DEPLOY_DIR' && EDGE_ALIAS=store-web-staging STORE_WEB_IMAGE='$IMAGE:$TAG' docker compose -f docker-compose.store-web.yml -p store-web-staging pull && EDGE_ALIAS=store-web-staging STORE_WEB_IMAGE='$IMAGE:$TAG' docker compose -f docker-compose.store-web.yml -p store-web-staging up -d --wait"
           if [ -z "$SSH_HOST" ] || [ -z "$SSH_USER" ] || [ -z "$SSH_KEY" ] || [ -z "$SSH_KNOWN_HOSTS" ]; then
             echo "::warning::STAGING_SSH_* secrets are not set — deploy SKIPPED. Dry run (what would run on the VPS):"
             echo "  ssh <STAGING_SSH_USER>@<STAGING_SSH_HOST> \"$REMOTE\""
@@ -301,7 +301,7 @@ jobs:
           printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
           printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
           ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes "$SSH_USER@$SSH_HOST" \
-            "cd '$DEPLOY_DIR' && STORE_WEB_IMAGE='$IMAGE:$TAG' docker compose -f docker-compose.store-web.yml -p store-web pull && STORE_WEB_IMAGE='$IMAGE:$TAG' docker compose -f docker-compose.store-web.yml -p store-web up -d --wait"
+            "cd '$DEPLOY_DIR' && EDGE_ALIAS=store-web STORE_WEB_IMAGE='$IMAGE:$TAG' docker compose -f docker-compose.store-web.yml -p store-web pull && EDGE_ALIAS=store-web STORE_WEB_IMAGE='$IMAGE:$TAG' docker compose -f docker-compose.store-web.yml -p store-web up -d --wait"
       - name: Smoke-check https://store.ta3lom.sa
         run: node scripts/smoke-deploy.mjs "$SITE" "$SHA" --env production
       - name: Remove the SSH key
@@ -363,7 +363,7 @@ jobs:
           printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
           printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
           ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes "$SSH_USER@$SSH_HOST" \
-            "cd '$DEPLOY_DIR' && STORE_WEB_IMAGE='$IMAGE:$TAG' docker compose -f docker-compose.store-web.yml -p '$PROJECT' pull && STORE_WEB_IMAGE='$IMAGE:$TAG' docker compose -f docker-compose.store-web.yml -p '$PROJECT' up -d --wait"
+            "cd '$DEPLOY_DIR' && EDGE_ALIAS='$PROJECT' STORE_WEB_IMAGE='$IMAGE:$TAG' docker compose -f docker-compose.store-web.yml -p '$PROJECT' pull && EDGE_ALIAS='$PROJECT' STORE_WEB_IMAGE='$IMAGE:$TAG' docker compose -f docker-compose.store-web.yml -p '$PROJECT' up -d --wait"
       - name: Smoke-check
         run: node scripts/smoke-deploy.mjs "$SITE" --env "$TARGET"
       - name: Remove the SSH key
