@@ -1,6 +1,13 @@
 <div class="ahead">
   <div>
     <h1 i18n="@@store.admin.home-title">لوحة إدارة المتجر</h1>
+    @if (paymentsOff()) {
+      <p class="mode-badge" role="status">
+        <ta-icon name="clock" [size]="16" /><span i18n="@@store.admin.showcase-badge"
+          >وضع العرض — الدفع متوقف</span
+        >
+      </p>
+    }
     <p><span i18n="@@store.admin.your-roles">أدوارك:</span> {{ roles() }}</p>
   </div>
 </div>

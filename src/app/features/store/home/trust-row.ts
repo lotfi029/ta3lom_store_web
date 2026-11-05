@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { environment } from '../../../../environments/environment';
+import { SHOWCASE } from '../../../core/showcase/showcase';
 import { Icon } from '../../../shared/ui/icon/icon';
 import type { IconName } from '../../../shared/ui/icon/icon.data';
 
@@ -15,8 +16,11 @@ interface TrustItem {
   text: string;
 }
 
-/** The items to show (Option C §3 row 8): licensed and receipt always; zakat and updates only behind their flags. */
-export function trustItems(flags: TrustFlags): TrustItem[] {
+/**
+ * The items to show (Option C §3 row 8): licensed and receipt always; zakat and updates only behind their flags.
+ * Showcase mode: no receipt item ("by SMS after payment" — nothing can be paid yet).
+ */
+export function trustItems(flags: TrustFlags, showcase = false): TrustItem[] {
   const all: TrustItem[] = [
     {
       key: 'licensed',
@@ -44,7 +48,10 @@ export function trustItems(flags: TrustFlags): TrustItem[] {
     },
   ];
   return all.filter(
-    (i) => (i.key !== 'zakat' || flags.showZakat) && (i.key !== 'updates' || flags.showUpdates),
+    (i) =>
+      (i.key !== 'zakat' || flags.showZakat) &&
+      (i.key !== 'updates' || flags.showUpdates) &&
+      (i.key !== 'receipt' || !showcase),
   );
 }
 
@@ -123,5 +130,6 @@ export function trustItems(flags: TrustFlags): TrustItem[] {
 })
 export class TrustRow {
   readonly flags = input<TrustFlags>(environment.trust);
-  protected readonly items = computed(() => trustItems(this.flags()));
+  private readonly showcase = inject(SHOWCASE);
+  protected readonly items = computed(() => trustItems(this.flags(), this.showcase));
 }

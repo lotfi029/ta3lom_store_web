@@ -1,10 +1,16 @@
 import { Routes } from '@angular/router';
-import { cartNotEmptyGuard, customerGuard, guestOnlyGuard } from './core/guards/guards';
+import {
+  cartNotEmptyGuard,
+  customerGuard,
+  guestOnlyGuard,
+  showcaseGuard,
+} from './core/guards/guards';
 import { PublicLayout } from './layout/public-layout/public-layout';
 
 /**
  * D-W3: every path sits under /{ar,en} (the locale build's base href); there is no /store prefix (ADR-S09).
  * `/` is home + listing (?q&category&sort&page), `/p/:slug` a project; r4's catalogue and search routes are gone (D-W4).
+ * Showcase mode: cart, checkout, orders, account and login redirect home (`showcaseGuard`, first guard).
  */
 export const routes: Routes = [
   // The staff admin has its own shell; it must come before the storefront's catch-all.
@@ -22,28 +28,30 @@ export const routes: Routes = [
       },
       {
         path: 'cart',
+        canActivate: [showcaseGuard],
         loadComponent: () => import('./features/store/cart/cart.page').then((m) => m.CartPage),
       },
       {
         path: 'checkout',
-        canActivate: [cartNotEmptyGuard],
+        canActivate: [showcaseGuard, cartNotEmptyGuard],
         loadComponent: () =>
           import('./features/store/checkout/checkout.page').then((m) => m.CheckoutPage),
       },
       {
         path: 'orders/:ref',
+        canActivate: [showcaseGuard],
         loadComponent: () => import('./features/store/order/order.page').then((m) => m.OrderPage),
       },
       {
         path: 'account',
-        canActivate: [customerGuard],
+        canActivate: [showcaseGuard, customerGuard],
         loadComponent: () => import('./features/account/account-shell').then((m) => m.AccountShell),
         loadChildren: () =>
           import('./features/account/account.routes').then((m) => m.ACCOUNT_ROUTES),
       },
       {
         path: 'login',
-        canActivate: [guestOnlyGuard],
+        canActivate: [showcaseGuard, guestOnlyGuard],
         loadComponent: () => import('./features/store/login/login.page').then((m) => m.LoginPage),
       },
       {

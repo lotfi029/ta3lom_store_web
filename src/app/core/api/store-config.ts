@@ -41,4 +41,6 @@ export class StoreConfig {
     return v ? toInt(v.maxQuantity) : null;
   });
   readonly amountPresets = computed<readonly string[]>(() => this.value()?.amountPresets ?? []);
+  /** Showcase mode on the API (`Store:Payments:Provider = none`): false; null until the config answers. */
+  readonly paymentsEnabled = computed(() => this.value()?.paymentsEnabled ?? null);
 }

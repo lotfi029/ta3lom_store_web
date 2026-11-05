@@ -8,6 +8,12 @@ describe('trust row (Option C §3 row 8, owner M-3)', () => {
     ]);
   });
 
+  it('showcase mode: no "instant receipt by SMS after payment" (nothing can be paid yet)', () => {
+    expect(trustItems({ showZakat: false, showUpdates: false }, true).map((i) => i.key)).toEqual([
+      'licensed',
+    ]);
+  });
+
   it('each flag adds its item, in the mockup order', () => {
     expect(trustItems({ showZakat: true, showUpdates: false }).map((i) => i.key)).toEqual([
       'licensed',

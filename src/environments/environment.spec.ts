@@ -4,8 +4,9 @@ import { environment as ci } from './environment.ci';
 import { environment as fullstack } from './environment.fullstack';
 import { environment as local } from './environment.local';
 import { environment as staging } from './environment.staging';
+import { environment as ciShowcase } from './environment.ci-showcase';
 
-const all = { production, development, ci, local, staging, fullstack };
+const all = { production, development, ci, local, staging, fullstack, ciShowcase };
 
 describe('environments', () => {
   it('points production at the store API origin over https', () => {
@@ -23,11 +24,8 @@ describe('environments', () => {
     expect(staging.robots).toBe('noindex');
   });
 
-  it('R5-Payments: payments are on everywhere and redirect only to allow-listed hosts', () => {
-    for (const env of Object.values(all)) {
-      expect(env.paymentsEnabled).toBe(true);
-      expect(env.paymentHosts.length).toBeGreaterThan(0);
-    }
+  it('R5-Payments: payments redirect only to allow-listed hosts', () => {
+    for (const env of Object.values(all)) expect(env.paymentHosts.length).toBeGreaterThan(0);
     expect(production.paymentHosts).toEqual(['checkout.moyasar.com']);
     expect(staging.paymentHosts).toEqual(['checkout.moyasar.com']);
     expect(production.paymentAllowHttp).toBe(false);
@@ -41,6 +39,21 @@ describe('environments', () => {
     expect(fullstack.robots).toBe('noindex');
     expect(fullstack.paymentHosts).toEqual(['store-api.ta3lom.sa']);
     expect(fullstack.paymentAllowHttp).toBe(false);
+  });
+
+  it('showcase: on for staging and production (no payment provider yet), off for development, local, ci and fullstack', () => {
+    expect(production.showcase).toBe(true);
+    expect(staging.showcase).toBe(true);
+    for (const env of [development, local, ci, fullstack]) expect(env.showcase).toBe(false);
+  });
+
+  it('ci-showcase (the @showcase e2e on the stub): the ci build with showcase on', () => {
+    expect({ ...ciShowcase, showcase: false }).toEqual(ci);
+    expect(ciShowcase.showcase).toBe(true);
+  });
+
+  it('has no paymentsEnabled switch any more: showcase never creates an order (no "pledge" branch)', () => {
+    for (const env of Object.values(all)) expect('paymentsEnabled' in env).toBe(false);
   });
 
   it('has no dev payment trigger any more (R5 has no /dev confirm-payment endpoint)', () => {

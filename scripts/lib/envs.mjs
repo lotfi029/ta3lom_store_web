@@ -7,6 +7,7 @@
  *   robots      `index` | `noindex` (staging: noindex everywhere — meta, X-Robots-Tag, robots.txt Disallow: /)
  *   deployable  false for builds that must never be published (local, ci)
  *   errorReportUrl  client error endpoint (P5); '' = reporter off. Its origin joins connect-src.
+ *   showcase    showcase mode (no payments: no cart/checkout/sign-in routes, read-only donate boxes, the «قريبًا» note)
  */
 export const ENVS = {
   local: {
@@ -15,6 +16,7 @@ export const ENVS = {
     robots: 'index',
     deployable: false,
     errorReportUrl: '',
+    showcase: false,
   },
   ci: {
     apiUrl: 'http://localhost:3000/v1',
@@ -22,6 +24,16 @@ export const ENVS = {
     robots: 'index',
     deployable: false,
     errorReportUrl: '',
+    showcase: false,
+  },
+  // The ci build with showcase on: the @showcase e2e on the stub (environment.ci-showcase.ts). Never published.
+  'ci-showcase': {
+    apiUrl: 'http://localhost:3000/v1',
+    site: 'https://store.ta3lom.sa',
+    robots: 'index',
+    deployable: false,
+    errorReportUrl: '',
+    showcase: true,
   },
   // F10 full-stack e2e (scripts/full-stack-e2e.sh): production names served locally; never published.
   fullstack: {
@@ -30,6 +42,7 @@ export const ENVS = {
     robots: 'noindex',
     deployable: false,
     errorReportUrl: '',
+    showcase: false,
   },
   staging: {
     apiUrl: 'https://store-api-staging.ta3lom.sa/v1',
@@ -37,6 +50,7 @@ export const ENVS = {
     robots: 'noindex',
     deployable: true,
     errorReportUrl: '',
+    showcase: true,
   },
   production: {
     apiUrl: 'https://store-api.ta3lom.sa/v1',
@@ -44,6 +58,7 @@ export const ENVS = {
     robots: 'index',
     deployable: true,
     errorReportUrl: '',
+    showcase: true,
   },
 };
 

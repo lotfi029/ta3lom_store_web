@@ -21,8 +21,10 @@ import { NavigationScroll } from '../../../core/routing/navigation-scroll';
 import { environment } from '../../../../environments/environment';
 import { I18nService } from '../../../core/i18n/i18n';
 import { QuickDonate } from '../../../core/ui/quick-donate.service';
+import { SHOWCASE } from '../../../core/showcase/showcase';
 import { type JsonLd, SeoService, siteName } from '../../../core/seo/seo.service';
 import { ResourceState } from '../../../shared/ui/resource-state/resource-state';
+import { ShowcaseNote } from '../../../shared/ui/showcase-note/showcase-note';
 import { QuickDonateForm } from '../quick-donate/quick-donate-form';
 import { CategoryTabs } from './category-tabs';
 import { HomeBanner, bannerSlides } from './home-banner';
@@ -74,6 +76,7 @@ export function projectCount(n: number, locale: 'ar' | 'en'): string {
     HomeBanner,
     QuickDonateForm,
     TrustRow,
+    ShowcaseNote,
   ],
   providers: [HomeData],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -86,6 +89,8 @@ export class HomePage {
   private readonly seo = inject(SeoService);
   private readonly router = inject(Router);
   protected readonly quick = inject(QuickDonate);
+  /** Showcase mode (SW-2): the «قريبًا» banner under the hero (the quick-donate card is off with QuickDonate). */
+  protected readonly showcase = inject(SHOWCASE);
   private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
   private readonly nav = inject(NavigationScroll);
 

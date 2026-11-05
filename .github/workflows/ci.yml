@@ -87,6 +87,14 @@ jobs:
         env:
           PRERENDER_API_URL: http://localhost:3000/v1
         run: npm run build:prod
+      # Showcase mode (deploy without payments, SW-7): the ci build with showcase on, then the @showcase specs on the
+      # stub — home/project read only with the note, donor routes go home without rendering, axe ar/en × light/dark.
+      - name: Showcase build (ci + showcase, stub API)
+        run: npm run build:ci-showcase
+      - name: e2e @showcase (stub API)
+        env:
+          E2E_SHOWCASE: '1'
+        run: npx playwright test --grep @showcase
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: failure()
         with:

@@ -5,6 +5,7 @@ import { StaffAuth } from '../auth/staff-auth';
 import { StoreAuth } from '../auth/store-auth';
 import type { StaffPolicy } from '../auth/policies';
 import { CartSummary } from '../cart/cart-summary';
+import { SHOWCASE } from '../showcase/showcase';
 
 /** A same-site path the app may navigate back to (`/…`, never `//host` or `/\host`), else the fallback. */
 export function safeReturnUrl(value: string | null | undefined, fallback: string): string {
@@ -12,6 +13,13 @@ export function safeReturnUrl(value: string | null | undefined, fallback: string
     ? value
     : fallback;
 }
+
+/**
+ * Showcase mode (SW-3): cart, checkout, orders, login and account go to the locale home (`/` under the /ar or /en base
+ * href) before their page is loaded, so nothing flashes. First in every such route's `canActivate`.
+ */
+export const showcaseGuard: CanActivateFn = () =>
+  inject(SHOWCASE) ? inject(Router).createUrlTree(['/']) : true;
 
 /** Signed-in donor, else /login?returnUrl=… (account pages). */
 export const customerGuard: CanActivateFn = async (_route, state) => {

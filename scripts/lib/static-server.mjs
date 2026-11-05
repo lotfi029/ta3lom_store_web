@@ -31,7 +31,7 @@ function resolveFile(root, urlPath) {
   for (const c of candidates)
     if (c.startsWith(root) && existsSync(c) && statSync(c).isFile())
       return { file: c, fallback: false };
-  const locale = safe.split('/').filter(Boolean)[0];
+  const locale = safe.split(/[/\\]/).filter(Boolean)[0]; // normalize() gives backslashes on Windows
   if (locale === 'ar' || locale === 'en') {
     for (const shell of ['index.csr.html', 'index.html']) {
       const f = join(root, locale, shell);

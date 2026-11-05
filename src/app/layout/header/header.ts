@@ -19,6 +19,7 @@ import { CartSummary } from '../../core/cart/cart-summary';
 import { QuickDonate } from '../../core/ui/quick-donate.service';
 import { I18nService } from '../../core/i18n/i18n';
 import { formatMoney } from '../../core/money/money-format';
+import { SHOWCASE } from '../../core/showcase/showcase';
 import { Icon } from '../../shared/ui/icon/icon';
 import { Money } from '../../shared/ui/money/money';
 import { AccountMenu } from '../account-menu/account-menu';
@@ -60,6 +61,8 @@ export class Header {
   protected readonly auth = inject(StoreAuth);
   protected readonly cart = inject(CartSummary);
   protected readonly quick = inject(QuickDonate);
+  /** Showcase mode (SW-2): no cart, sign-in or account entries and no session restore / cart read. */
+  protected readonly showcase = inject(SHOWCASE);
   private readonly router = inject(Router);
   private readonly locale = inject(I18nService).locale;
   protected readonly mainSite = environment.mainSiteUrl;
@@ -87,7 +90,7 @@ export class Header {
 
   constructor() {
     afterNextRender(() => {
-      void this.auth.ensureSession().then(() => this.cart.load());
+      if (!this.showcase) void this.auth.ensureSession().then(() => this.cart.load());
     });
     let last = this.cart.bumps();
     effect((onCleanup) => {

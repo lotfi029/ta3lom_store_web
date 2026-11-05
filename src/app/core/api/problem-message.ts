@@ -171,6 +171,12 @@ export function problemMessage(problem: ProblemLike): string {
         : $localize`:@@store.error.checkout-below-minimum:مجموع التبرع أقل مما تقبله بوابة الدفع.`;
     }
 
+    // Showcase mode (deploy without payments): an old tab calling a switched-off route.
+    case 'store.payments_disabled':
+      return $localize`:@@store.error.store-payments-disabled:التبرع الإلكتروني غير متاح بعد؛ يمكنك تصفّح المشاريع الآن.`;
+    case 'store.signin_disabled':
+      return $localize`:@@store.error.store-signin-disabled:تسجيل دخول المتبرعين غير متاح بعد.`;
+
     case 'order.not_found':
       return $localize`:@@store.error.order-not-found:لم نجد هذا التبرع.`;
     case 'payment.gateway_unavailable':
@@ -327,6 +333,8 @@ export function passwordReason(reason: string): string {
 
 /** Every R5 code with its own message — the unit test checks each one maps to a non-empty, code-specific text. */
 export const R5_ERROR_CODES: readonly string[] = [
+  'store.payments_disabled',
+  'store.signin_disabled',
   'validation.failed',
   'http.not_found',
   'http.rate_limited',

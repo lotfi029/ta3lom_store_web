@@ -24,6 +24,12 @@
   padding-block: 0;
 }
 
+/* Showcase mode (SW-2): the «قريبًا» banner between the hero and the listing. */
+.sc-banner {
+  display: block;
+  margin-block: calc(-1 * var(--space-2)) var(--space-6);
+}
+
 /* Row 4 — banner (2/3) + quick donate (1/3); the quick donate takes the row when there is no banner. */
 .top {
   display: grid;

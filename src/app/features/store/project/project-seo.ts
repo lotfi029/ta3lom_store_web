@@ -6,13 +6,15 @@ import { compare } from '../../../core/money/money';
 
 /**
  * JSON-LD of a project page: a schema.org `DonateAction` (the project is what the visitor gives to; the NGO is the
- * recipient) and the `BreadcrumbList` home → category → project.
+ * recipient) and the `BreadcrumbList` home → category → project. Showcase mode (SW-2): no `DonateAction` (nothing can
+ * be donated online yet), the breadcrumb stays.
  */
 export function projectJsonLd(
   p: ProjectDetail,
   locale: Locale,
   urls: { home: string; category: string; page: string },
   names: { home: string; association: string },
+  showcase: boolean,
 ): JsonLd[] {
   const title = pick(locale, p.titleAr, p.titleEn);
   const action: JsonLd = {
@@ -32,7 +34,7 @@ export function projectJsonLd(
     },
   };
   return [
-    action,
+    ...(showcase ? [] : [action]),
     breadcrumbJsonLd([
       [names.home, urls.home],
       [pick(locale, p.category.nameAr, p.category.nameEn), urls.category],
