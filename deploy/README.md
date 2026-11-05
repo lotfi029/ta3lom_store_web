@@ -12,19 +12,47 @@ by the VPS from GHCR. Go-live checklist: [docs/production-checklist.md](../docs/
 | Built on | push to `main`, nightly 01:23 UTC, `repository_dispatch: catalog-changed` | tag `vX.Y.Z` |
 | Deployed | automatically (`staging` environment) | after the `production` environment's required reviewer approves |
 | Robots | `noindex, nofollow` everywhere (meta, `X-Robots-Tag`, `robots.txt Disallow: /`, no sitemap), "نسخة تجريبية" ribbon | indexable, sitemap |
-| Payments | **on** (Moyasar hosted page; `paymentsEnabled: true`) | **on** |
-| Apple Pay file | placeholder allowed (warning) | **Moyasar's real file required** — the build fails on the placeholder |
+| Payments | **off — showcase mode** (`showcase: true`) until Moyasar | **off — showcase mode** until Moyasar |
+| Apple Pay file | placeholder allowed (warning) | placeholder allowed in showcase (warning); **Moyasar's real file required** once `showcase: false` — the build fails on the placeholder |
 
-**Payments are on** since R5-Payments (review 04 S-17): `paymentsEnabled` is true in every environment, checkout leaves
-for Moyasar's hosted page and the order page polls the API. Before the first production release the owner puts the
-Apple Pay domain association file from the Moyasar dashboard in `deploy/well-known/` (section "Apple Pay" below).
+**Showcase mode** (until the association subscribes to Moyasar): staging and production are built with
+`showcase: true` — section "Showcase mode" below. The payment flows (checkout → Moyasar hosted page, order page polling)
+stay in the code and run in local, CI and full-stack builds (`showcase: false`).
+
+## Showcase mode (deploy without payments)
+
+**What donors see** (`environment.showcase = true`):
+
+- categories and projects as before, with every option and its price **read only** (the open amount as "from <minimum>"),
+  and «التبرع الإلكتروني قريبًا» / "Online donations open soon" in place of the donate controls; the same note as a banner
+  under the home hero; the home slide's link says «تعرّف على المشروع» instead of «تبرع الآن»;
+- no cart, sign-in/account or quick-donate entry in the header (desktop and mobile), no floating quick-donate button, no
+  cart or donations link in the footer, no sticky donate bar on phones, no `DonateAction` in the project JSON-LD;
+- `/cart`, `/checkout`, `/orders/:ref`, `/login`, `/account/**` go to the locale home (a guard, before the page loads);
+  they were never in the sitemap. The staff admin is unchanged; its dashboard shows "وضع العرض — الدفع متوقف" when the
+  API says `paymentsEnabled: false` (`GET /v1/catalog/config`); the finance screens stay reachable (empty).
+- An old tab that still calls the API gets 409 `store.payments_disabled` / `store.signin_disabled`, shown in Arabic or
+  English.
+
+The API runs in showcase too (`ta3lom_store_api` `deploy/README.md` "Showcase mode": `PAYMENTS_PROVIDER=none`,
+`CUSTOMER_SIGNIN=false`). `check-deploy-output` fails a showcase build whose sitemap lists a donor-only route or whose
+prerendered pages lack the note, and a live build that shows the note.
+
+**Switch payments on** (after the Moyasar subscription; the API first, then one web build):
+
+1. API: Moyasar keys and webhook, Unifonic SMS, then `PAYMENTS_PROVIDER=moyasar`, `CUSTOMER_SIGNIN=true` (API runbook).
+2. Web: `showcase: false` in `src/environments/environment.staging.ts` and `environment.production.ts` (and
+   `scripts/lib/envs.mjs` `staging`/`production`; `environment.spec.ts` says which value each environment has).
+3. Web: Moyasar's Apple Pay domain file in `deploy/well-known/` (section "Apple Pay" below) — a production build with
+   `showcase: false` fails on the placeholder.
+4. Staging (push to `main`) → a sandbox donation and its refund; then tag `vX.Y.Z` for production. No data changes.
 
 ## 1. Build and image (what CI does)
 
 ```bash
 npm ci
 npm run build:staging      # DEPLOY_ENV=staging: routes → ng build (production,staging) → postbuild checks
-npm run build:prod         # payments guard first; DEPLOY_ENV=production
+npm run build:prod         # DEPLOY_ENV=production (showcase until Moyasar)
 ```
 
 `PRERENDER_API_URL` is where the BUILD reads the catalogue (C-1; default: the environment's own API); the compiled app
@@ -157,7 +185,7 @@ alias on the shared `edge` network. Only `EDGE_ALIAS` names an environment there
 `check-container` asserts both). The repository holds a PLACEHOLDER in `deploy/well-known/`; the owner replaces it with
 the file from the Moyasar dashboard (Settings → Apple Pay → domains), commits it, and verifies the domain there.
 `check-deploy-output` warns on staging and in CI's production dry run, and **fails a real production build** while the
-placeholder is in place.
+placeholder is in place — except a showcase build (no payments yet), which only warns (SW-5).
 
 ## 6. Verify
 
