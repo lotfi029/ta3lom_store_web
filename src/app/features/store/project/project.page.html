@@ -57,7 +57,11 @@
         </div>
 
         <aside #buybox class="buybox" aria-labelledby="donate-h">
-          <h2 id="donate-h" class="bh" i18n="@@store.project.donate-heading">تبرّع لهذا المشروع</h2>
+          @if (showcase) {
+            <h2 id="donate-h" class="bh" i18n="@@store.project.options-heading">خيارات التبرع</h2>
+          } @else {
+            <h2 id="donate-h" class="bh" i18n="@@store.project.donate-heading">تبرّع لهذا المشروع</h2>
+          }
           @if (donate(); as d) {
             <ta-donate-box [project]="d" idPrefix="pp" size="page" />
           }
@@ -65,8 +69,8 @@
       </div>
     </div>
   </section>
-  <!-- Phones and tablets: the donate action stays one tap away while the donate box is off screen. -->
-  @if (donate()) {
+  <!-- Phones and tablets: the donate action stays one tap away while the donate box is off screen (not in showcase). -->
+  @if (donate() && !showcase) {
     <div class="dbar" [class.show]="barShown()" [attr.inert]="barShown() ? null : ''">
       <div class="dbar-in">
         <span class="dbar-txt">

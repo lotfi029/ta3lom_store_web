@@ -12,8 +12,12 @@ export const environment = {
   mainSiteUrl: 'https://ta3lom.sa',
   /** `noindex` = every page `noindex, nofollow` whatever the route says (staging). */
   robots: 'noindex' as 'index' | 'noindex',
-  /** R5-Payments: checkout leaves for the gateway's hosted page; the order page polls until a final state. */
-  paymentsEnabled: true,
+  /**
+   * Showcase mode (deploy without payments): donors see categories and projects with their options and prices, read
+   * only, and «التبرع الإلكتروني قريبًا»; no cart, checkout, order, donor sign-in or account (those routes go home).
+   * Off: the payment flows run here (unit, e2e, full-stack).
+   */
+  showcase: false,
   /**
    * The only hosts the web ever redirects a donor to for payment (ADR-S05; https except localhost). Moyasar's hosted
    * invoice page in staging/production; the API's own fake page (`/dev/payments/{id}`) in development, local and CI.

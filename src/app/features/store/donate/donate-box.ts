@@ -14,6 +14,7 @@ import { CartStore } from '../../../core/cart/cart-store';
 import { CartSummary } from '../../../core/cart/cart-summary';
 import { I18nService } from '../../../core/i18n/i18n';
 import { ToastService } from '../../../core/ui/toast.service';
+import { SHOWCASE } from '../../../core/showcase/showcase';
 import { AmountInput } from '../../../shared/ui/amount-input/amount-input';
 import { Icon } from '../../../shared/ui/icon/icon';
 import {
@@ -21,7 +22,9 @@ import {
   OptionPicker,
   type PickerOption,
 } from '../../../shared/ui/option-picker/option-picker';
+import { Money } from '../../../shared/ui/money/money';
 import { QtyStepper } from '../../../shared/ui/qty-stepper/qty-stepper';
+import { ShowcaseNote } from '../../../shared/ui/showcase-note/showcase-note';
 import { type DonateProject, donateDraft, initialChoice } from './donate-draft';
 
 /** Navigation state the checkout reads (C-3): the cart held other donations before "تبرع". */
@@ -35,12 +38,38 @@ export interface CheckoutNavState {
  * line to the cart (toast with a link + header badge), **تبرع** adds it and goes to checkout (C-3: the checkout lists
  * every line and says so when the cart already had others). Limits come from `/catalog/config` and the project's
  * `minAmount` (W-5); API problems are shown inline with their values.
+ * Showcase mode (SW-2): the options and prices as a read-only list (and the open amount's minimum), then
+ * «التبرع الإلكتروني قريبًا» — no chips, stepper, amount field or buttons, nothing reaches the cart.
  */
 @Component({
   selector: 'ta-donate-box',
-  imports: [OptionPicker, QtyStepper, AmountInput, Icon],
+  imports: [OptionPicker, QtyStepper, AmountInput, Icon, Money, ShowcaseNote],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
+    @if (showcase) {
+      <div class="box ro" [class.large]="size() === 'page'">
+        @if (project().options === null) {
+          <div class="skel chips-skel" aria-hidden="true"></div>
+        } @else if (pickerOptions().length || project().allowOpenAmount) {
+          <ul class="ro-list" [attr.aria-label]="legend()">
+            @for (o of pickerOptions(); track o.id) {
+              <li>
+                <span class="t">{{ o.label }}</span><bdi class="p"><ta-money [value]="o.amount" /></bdi>
+              </li>
+            }
+            @if (project().allowOpenAmount) {
+              <li>
+                <span class="t" i18n="@@store.showcase.open-amount">مبلغ مفتوح</span
+                ><bdi class="p" i18n="@@store.showcase.open-from"
+                  >من <ta-money [value]="project().minAmount"
+                /></bdi>
+              </li>
+            }
+          </ul>
+        }
+        <ta-showcase-note />
+      </div>
+    } @else {
     <div class="box" [class.large]="size() === 'page'">
       @if (project().options === null) {
         <div class="skel chips-skel" aria-hidden="true"></div>
@@ -103,6 +132,7 @@ export interface CheckoutNavState {
         </button>
       </div>
     </div>
+    }
   `,
   styles: `
     .box {
@@ -111,6 +141,26 @@ export interface CheckoutNavState {
     }
     .chips-skel {
       block-size: 44px;
+    }
+    .ro-list {
+      display: grid;
+      gap: 6px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .ro-list li {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--space-2);
+      min-block-size: 32px;
+      padding-block: 4px;
+      border-block-end: 1px solid var(--c-border);
+    }
+    .ro-list .p {
+      font-weight: 600;
+      white-space: nowrap;
     }
     .qty {
       display: flex;
@@ -169,6 +219,7 @@ export interface CheckoutNavState {
   `,
 })
 export class DonateBox {
+  protected readonly showcase = inject(SHOWCASE);
   protected readonly config = inject(StoreConfig);
   private readonly cart = inject(CartStore);
   private readonly summary = inject(CartSummary);

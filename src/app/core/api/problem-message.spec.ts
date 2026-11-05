@@ -12,6 +12,18 @@ describe('problem → message (contract 15 §4, R5)', () => {
     }
   });
 
+  it('SW-4 showcase: an old tab that still calls a switched-off route gets the «قريبًا» texts', () => {
+    expect(problemMessage({ code: 'store.payments_disabled', status: 409 })).toBe(
+      'التبرع الإلكتروني غير متاح بعد؛ يمكنك تصفّح المشاريع الآن.',
+    );
+    expect(problemMessage({ code: 'store.signin_disabled', status: 409 })).toBe(
+      'تسجيل دخول المتبرعين غير متاح بعد.',
+    );
+    expect(R5_ERROR_CODES).toEqual(
+      expect.arrayContaining(['store.payments_disabled', 'store.signin_disabled']),
+    );
+  });
+
   it('carries no r4 commerce codes', () => {
     expect(
       R5_ERROR_CODES.some((c) =>

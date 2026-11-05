@@ -1,4 +1,5 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
+import { SHOWCASE } from '../showcase/showcase';
 
 /**
  * Opens the quick-donate modal ("تبرع سريع", donations MVP §1.3) from anywhere — the header button and the floating side
@@ -16,7 +17,9 @@ export class QuickDonate {
    * review 06 F-5): unknown hides them, so they never appear on a store with no gift category.
    */
   readonly giftCategoryCount = signal<number | null>(null);
-  readonly available = computed(() => (this.giftCategoryCount() ?? 0) > 0);
+  /** Showcase mode (SW-2): never — no header button, no floating button, no home card. */
+  readonly available = computed(() => !this.showcase && (this.giftCategoryCount() ?? 0) > 0);
+  private readonly showcase = inject(SHOWCASE);
   /** The control to give focus back to when the modal closes (the native dialog restores it on its own too). */
   private opener: HTMLElement | null = null;
 

@@ -131,3 +131,18 @@
   color: var(--c-danger);
   font-weight: 700;
 }
+
+/* SW-6: showcase mode (payments off on the API). */
+.mode-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-block: 6px 0;
+  padding-block: 4px;
+  padding-inline: 10px;
+  border-radius: 999px;
+  background: var(--c-gold-tint);
+  color: var(--c-text);
+  font-size: 0.85rem;
+  font-weight: 600;
+}

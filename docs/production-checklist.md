@@ -6,9 +6,12 @@ everything else is for the owner (or a later session).
 
 ## Blockers
 
-- [x] **Payments on (R5-Payments).** `paymentsEnabled: true` in every environment, checkout → Moyasar hosted page
-      (allow-listed `paymentHosts`), order page polls the API — **[done, final session F5a]**; `build:prod` builds.
-- [ ] **Moyasar dashboard (owner):** live publishable/secret keys and the webhook secret into the API's secret files
+- [x] **Showcase mode (deploy without payments).** Staging and production are built with `showcase: true` and the API
+      runs with `PAYMENTS_PROVIDER=none`, `CUSTOMER_SIGNIN=false`: donors see categories and projects only; staff admin
+      works (deploy/README.md "Showcase mode") — **[done, PR "Showcase mode (deploy without payments)"]**.
+- [ ] **After Moyasar — switch payments on:** `showcase: false` (staging + production), the Apple Pay file, the API env
+      (deploy/README.md "Switch payments on"). The payment flows themselves are done (R5-Payments, F5a) and tested in CI.
+- [ ] **After Moyasar — Moyasar dashboard (owner):** live publishable/secret keys and the webhook secret into the API's secret files
       (`ta3lom_store_api` `deploy/secrets.md`, never the repo); webhook URL
       `https://store-api.ta3lom.sa/v1/payments/webhooks/moyasar` (staging: `store-api-staging…`, test keys); payment
       methods mada, credit card, Apple Pay (domain verification for `store.ta3lom.sa`); run the API's sandbox tests once
@@ -50,8 +53,8 @@ everything else is for the owner (or a later session).
 - [ ] **Lighthouse mobile ≥ 90 on the production URL** (`https://store.ta3lom.sa/ar/`, `/en/`, a project page) — go-live
       item (review 06 §4): the F6 pass is done (DECISIONS F6); the remaining options (responsive images from the API, grid
       hydration) are listed there.
-- [x] Trust row SMS wording ("برسالة نصية بعد الدفع") assumes **payments are on** (review 06 L-14): true only once
-      R5-Payments is live — check the wording at go-live. **[done: payments are on (F5a); the order_paid SMS is sent after settlement]**
+- [ ] **After Moyasar:** trust row SMS wording ("برسالة نصية بعد الدفع") assumes **payments are on** (review 06 L-14) —
+      check it when payments are switched on (in showcase no order and no SMS exist).
 - [x] axe clean ar/en × light/dark on production — **[done in CI on every route]**.
 - [ ] Google Search Console: property for `store.ta3lom.sa`, sitemap `https://store.ta3lom.sa/sitemap.xml` submitted.
 - [x] Staging is not indexed (X-Robots-Tag, robots.txt `Disallow: /`) — **[done, checked by the build and container]**.

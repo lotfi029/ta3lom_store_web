@@ -11,13 +11,17 @@
  *   - deployable builds (staging, production): no stub or localhost URL anywhere, no source maps, no staging ribbon in
  *     production, the build stamp present.
  *   - Apple Pay (review 04, W-7): /.well-known/apple-developer-merchantid-domain-association is present; while it is the
- *     repository's PLACEHOLDER a staging build (and a CI dry run of production) warns, a real production build fails.
+ *     repository's PLACEHOLDER a staging build (and a CI dry run of production) warns, a real production build fails —
+ *     unless it is a showcase build (SW-5: no payments yet), which only warns.
+ *   - showcase (SW-5, lib/showcase-checks.mjs): no cart/checkout/orders/login/account URL in the sitemap and the
+ *     «التبرع الإلكتروني قريبًا» note on every prerendered page; a live build shows the note nowhere.
  *   - every file world-readable. Budgets are checked by check-bundle-budget.mjs (same postbuild chain).
  */
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { BROWSER_DIR, CADDY_DIR, directives, htmlFiles, readCsp } from './lib/csp.mjs';
 import { deployEnv } from './lib/envs.mjs';
+import { applePayVerdict, showcaseProblems } from './lib/showcase-checks.mjs';
 
 const env = deployEnv();
 const problems = [];
@@ -141,11 +145,29 @@ check(BROWSER_DIR);
 const APPLE_PAY = '.well-known/apple-developer-merchantid-domain-association';
 let applePayWarning = '';
 if (!existsSync(join(BROWSER_DIR, APPLE_PAY)) || statSync(join(BROWSER_DIR, APPLE_PAY)).size === 0) problems.push(`${APPLE_PAY} is missing`);
-else if (read(APPLE_PAY).startsWith('PLACEHOLDER')) {
-  const message = `${APPLE_PAY} is still the placeholder — put Moyasar's file in deploy/well-known/ (deploy/README.md, "Apple Pay")`;
-  if (env.name === 'production' && !dryRunOrigin) problems.push(message);
-  else if (env.deployable) applePayWarning = message;
+else {
+  const verdict = applePayVerdict({
+    envName: env.name,
+    deployable: env.deployable,
+    dryRun: !!dryRunOrigin,
+    placeholder: read(APPLE_PAY).startsWith('PLACEHOLDER'),
+    showcase: env.showcase,
+  });
+  if (verdict.problem) problems.push(`${APPLE_PAY}: ${verdict.problem}`);
+  if (verdict.warning) applePayWarning = `${APPLE_PAY}: ${verdict.warning}`;
 }
+
+// SW-5: showcase builds never lead a donor to a payment; live builds never say "soon".
+problems.push(
+  ...showcaseProblems({
+    showcase: env.showcase,
+    sitemap: existsSync(join(BROWSER_DIR, 'sitemap.xml')) ? read('sitemap.xml') : null,
+    pages: routes
+      .map((r) => `${r.replace(/^\/+|\/+$/g, '')}/index.html`)
+      .filter((f) => existsSync(join(BROWSER_DIR, f)))
+      .map((f) => ({ path: f, html: read(f) })),
+  }),
+);
 
 if (applePayWarning) console.warn(`check-deploy-output: WARNING — ${applePayWarning}.`);
 if (dryRunHits)
@@ -155,5 +177,5 @@ if (problems.length) {
   process.exit(1);
 }
 console.log(
-  `check-deploy-output: [${env.name}] ${REQUIRED.length} required files, ${routes.length} prerendered routes; API ${env.apiUrl} compiled in and allowed by the CSP; canonical ${env.site}; robots ${env.robots}${env.deployable ? '; no localhost, no source maps' : ''}.`,
+  `check-deploy-output: [${env.name}${env.showcase ? ', showcase' : ''}] ${REQUIRED.length} required files, ${routes.length} prerendered routes; API ${env.apiUrl} compiled in and allowed by the CSP; canonical ${env.site}; robots ${env.robots}${env.deployable ? '; no localhost, no source maps' : ''}.`,
 );

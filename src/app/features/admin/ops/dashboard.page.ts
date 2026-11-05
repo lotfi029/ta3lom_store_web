@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { toInt } from '../../../core/api/api.types';
+import { StoreConfig } from '../../../core/api/store-config';
 import { roleLabel } from '../../../core/auth/policy-text';
 import { StaffAuth } from '../../../core/auth/staff-auth';
 import { valueOf } from '../../../core/http/resource-value';
@@ -29,6 +30,9 @@ export class DashboardPage {
   private readonly auth = inject(StaffAuth);
   protected readonly i18n = inject(I18nService);
   private readonly seo = inject(SeoService);
+  /** SW-6: the API runs in showcase mode (payments off) — said on the dashboard; finance screens stay reachable. */
+  private readonly config = inject(StoreConfig);
+  protected readonly paymentsOff = computed(() => this.config.paymentsEnabled() === false);
 
   protected readonly d = computed(() => valueOf(this.data.dashboard));
   protected readonly roles = computed(() => this.auth.roles().map(roleLabel).join('، '));

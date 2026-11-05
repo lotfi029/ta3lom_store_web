@@ -130,13 +130,6 @@
                 </div>
               </section>
 
-              @if (!paymentsEnabled) {
-                <p class="banner info" role="note" i18n="@@store.checkout.payments-soon">
-                  الدفع الإلكتروني قريبًا: نسجّل تبرعك الآن برقم مرجعي، ونرسل لك رابط الدفع عند
-                  تفعيله.
-                </p>
-              }
-
               <button
                 type="submit"
                 class="b cta pay-btn"
@@ -144,11 +137,7 @@
                 [attr.aria-busy]="busy()"
               >
                 <ta-icon name="heart" [size]="18" />
-                @if (paymentsEnabled) {
-                  <span i18n="@@store.checkout.pay">ادفع الآن</span>
-                } @else {
-                  <span i18n="@@store.checkout.register">تأكيد التبرع</span>
-                }
+                <span i18n="@@store.checkout.pay">ادفع الآن</span>
               </button>
             </form>
           }

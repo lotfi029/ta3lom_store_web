@@ -10,7 +10,6 @@ import {
   untracked,
 } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { environment } from '../../../../environments/environment';
 import type { OrderStatus, PayOrderResponse } from '../../../core/api/api.types';
 import { type StoreProblem, toProblem } from '../../../core/api/problem';
 import { STORE_API_URL } from '../../../core/api/store-api-url';
@@ -133,9 +132,8 @@ export function statusRequest(
 export type OrderView = 'loading' | 'ready' | 'signIn' | 'notFound' | 'error';
 
 /**
- * The order page data (`GET /v1/orders/{reference}/status`). With `environment.paymentsEnabled = false` (D-W2) the
- * pending order is the end state: no polling. With payments on, it polls until a terminal state or 10 minutes, and
- * stops at once on any 4xx (W-4).
+ * The order page data (`GET /v1/orders/{reference}/status`): it polls until a terminal state or 10 minutes, and stops
+ * at once on any 4xx (W-4). (Showcase mode never reaches this page: the route goes home.)
  */
 @Injectable()
 export class OrderData {
@@ -144,8 +142,6 @@ export class OrderData {
   private readonly auth = inject(StoreAuth);
   private readonly tokens = inject(OrderTokenStore);
   private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
-  readonly paymentsEnabled = environment.paymentsEnabled;
-
   readonly ref = signal('');
   readonly token = signal<string | null>(null);
   readonly gaveUp = signal(false);
@@ -190,7 +186,6 @@ export class OrderData {
     effect((onCleanup) => {
       if (
         !this.browser ||
-        !this.paymentsEnabled ||
         !this.ref() ||
         this.status.isLoading() ||
         this.isTerminal() ||

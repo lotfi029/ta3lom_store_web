@@ -93,7 +93,6 @@ describe('order status (D-W2, W-4, E-2, R3-2)', () => {
       await tick();
       TestBed.tick();
       expect(data.view()).toBe('ready');
-      expect(data.paymentsEnabled).toBe(true);
       expect(data.phase()).toBe('pending');
       await new Promise((r) => setTimeout(r, 2100));
       TestBed.tick();

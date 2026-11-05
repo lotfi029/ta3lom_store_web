@@ -5,7 +5,7 @@ import base from '../playwright.config';
 export default defineConfig({
   ...base,
   testDir: '.',
-  testMatch: /screenshots(-home-c)?\.spec\.ts/,
+  testMatch: /screenshots(-home-c|-showcase)?\.spec\.ts/,
   reporter: 'line',
   // The web server command is relative to the repo root (this config lives in scripts/).
   webServer: { ...(base.webServer as object), cwd: process.cwd() } as typeof base.webServer,

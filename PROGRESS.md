@@ -107,3 +107,16 @@ templates + `en.json`) with the association's licence number and confirm the tru
   :5440; `api:up` starts `dockerd` and the container), staff in `e2e/.auth/staff.json` (git-ignored).
 - Node 24 lives in `/opt/node24` (dev-env.sh puts it first on PATH).
 - Never `pkill -f` with a pattern that appears in your own command line; stop servers by port (`fuser -k 4320/tcp`).
+
+## Showcase mode (branch `claude/showcase-mode`)
+
+| Item | Status | Tests (red first) |
+|---|---|---|
+| SW-1 environments, `paymentsEnabled` removed | done | environment.spec (ci-showcase missing → red) |
+| SW-2 read-only donate box, header/footer/home/trust row, JSON-LD | done | src/app/showcase.spec.ts (compile red, then 14 green), trust-row.spec |
+| SW-3 `showcaseGuard` | done | showcase.guard.spec.ts (red: no guard) |
+| SW-4 problem messages | done | problem-message.spec (red 1/9) |
+| SW-5 deploy-output checks | done | scripts/tests/showcase-checks.test.mjs (red: no module) |
+| SW-6 admin badge, OpenAPI/types | done | dashboard-showcase.spec.ts (red 2/2) |
+| SW-7 @showcase e2e + axe, screenshots | done | e2e/showcase.spec.ts on `build:ci-showcase` |
+| SW-8 docs | done | — |

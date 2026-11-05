@@ -316,9 +316,7 @@
   "store.checkout.details": "Your details",
   "store.checkout.name": "Full name",
   "store.checkout.saved-to-profile": "We save your name and e-mail to your profile for your next donations; you can change them in your account.",
-  "store.checkout.payments-soon": "Online payment is coming soon: we register your donation now with a reference number and send you the payment link once it is available.",
   "store.checkout.pay": "Pay now",
-  "store.checkout.register": "Confirm the donation",
   "store.checkout.other-donations": "Your cart contains other donations",
   "store.checkout.edit-cart": "Edit the cart",
   "store.checkout.name-required": "Enter your full name.",
@@ -608,6 +606,8 @@
   "store.home.trust-updates-text": "Follow the impact of your gift",
   "store.home.trust-label": "Why donate with us",
   "store.home.stale": "Couldn't refresh the data — what you see may not be the latest.",
+  "store.error.store-payments-disabled": "Online donations are not open yet; you can browse the projects now.",
+  "store.error.store-signin-disabled": "Donor sign-in is not open yet.",
   "store.error.payment-gateway-unavailable": "The payment gateway can’t be reached right now. Your donation is saved; try paying again shortly.",
   "store.error.payment-not-payable": "This donation is no longer awaiting payment, or its payment time has passed.",
   "store.error.payment-webhook-invalid": "The payment notification could not be verified.",
@@ -737,5 +737,12 @@
   "store.admin.refund-succeeded": "Done",
   "store.admin.refund-failed": "Not done",
   "store.admin.refund-source-gateway": "From the gateway’s dashboard",
-  "store.admin.refund-source-store": "From the store"
+  "store.admin.refund-source-store": "From the store",
+  "store.showcase.note": "Online donations open soon",
+  "store.showcase.banner-more": "Explore our projects and their options now; donations through the store open soon.",
+  "store.showcase.open-amount": "Open amount",
+  "store.showcase.open-from": "from {$START_TAG_TA_MONEY}{$CLOSE_TAG_TA_MONEY}",
+  "store.home.banner-cta-showcase": "About the project",
+  "store.project.options-heading": "Donation options",
+  "store.admin.showcase-badge": "Showcase mode — payments off"
 }

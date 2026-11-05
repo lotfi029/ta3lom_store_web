@@ -10,6 +10,7 @@ import {
 import { RouterLink } from '@angular/router';
 import type { Category, ProjectCard } from '../../../core/api/api.types';
 import { I18nService } from '../../../core/i18n/i18n';
+import { SHOWCASE } from '../../../core/showcase/showcase';
 import { Icon } from '../../../shared/ui/icon/icon';
 import { Image } from '../../../shared/ui/image/image';
 
@@ -46,8 +47,11 @@ export function bannerSlides(featured: readonly ProjectCard[]): ProjectCard[] {
           }
           <div class="row">
             <a class="cta" [routerLink]="['/p', s.slug]"
-              ><span i18n="@@store.home.banner-cta">تبرع الآن</span
-              ><span class="visually-hidden">: {{ title(s) }}</span></a
+              >@if (showcase) {
+                <span i18n="@@store.home.banner-cta-showcase">تعرّف على المشروع</span>
+              } @else {
+                <span i18n="@@store.home.banner-cta">تبرع الآن</span>
+              }<span class="visually-hidden">: {{ title(s) }}</span></a
             >
             @if (slides().length > 1) {
               <div class="ctrl">
@@ -256,6 +260,8 @@ export function bannerSlides(featured: readonly ProjectCard[]): ProjectCard[] {
 })
 export class HomeBanner {
   private readonly i18n = inject(I18nService);
+  /** Showcase mode (SW-2): the slide's link says "about the project", not "donate now". */
+  protected readonly showcase = inject(SHOWCASE);
   readonly featured = input.required<readonly ProjectCard[]>();
   readonly categories = input<readonly Category[]>([]);
 

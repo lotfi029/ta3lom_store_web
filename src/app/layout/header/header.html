@@ -51,7 +51,9 @@
           >
         </button>
       }
-      @if (auth.isSignedIn()) {
+      @if (showcase) {
+        <!-- Showcase mode (SW-2): no sign-in, account or cart entry. -->
+      } @else if (auth.isSignedIn()) {
         <!-- F6.2: the menu (and the problem texts it shows) is a lazy chunk; pages are prerendered signed out. -->
         @defer (on immediate) {
           <ta-account-menu />
@@ -65,6 +67,7 @@
           ></a
         >
       }
+      @if (!showcase) {
       <a
         class="cartbtn"
         routerLink="/cart"
@@ -85,6 +88,7 @@
           }
         </span>
       </a>
+      }
       <ta-theme-toggle class="htheme" />
       <button
         #burger
@@ -119,6 +123,9 @@
         <ta-icon name="gift" [size]="18" /><span i18n="@@store.quick.title">تبرع سريع</span>
       </button>
     }
+    @if (showcase) {
+      <!-- Showcase mode (SW-2): no cart, sign-in or account entry. -->
+    } @else {
     <a class="ml" routerLink="/cart" (click)="mobileOpen.set(false)" i18n="@@store.layout.nav-cart"
       >السلة</a
     >
@@ -138,6 +145,7 @@
         i18n="@@store.layout.sign-in"
         >دخول</a
       >
+    }
     }
     <a class="ml" [href]="mainSite" i18n="@@store.layout.main-site">الموقع الرئيسي</a>
     <div class="mtheme">

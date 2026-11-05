@@ -13,6 +13,7 @@
     "prebuild": "DEPLOY_ENV=local node scripts/routes.mjs",
     "build": "export DEPLOY_ENV=local && ng build --configuration production,local && npm run postbuild:checks",
     "build:ci": "export DEPLOY_ENV=ci && node scripts/routes.mjs && ng build --configuration production,ci && npm run postbuild:checks",
+    "build:ci-showcase": "export DEPLOY_ENV=ci-showcase && node scripts/routes.mjs && ng build --configuration production,ci-showcase && npm run postbuild:checks",
     "build:fullstack": "export DEPLOY_ENV=fullstack && node scripts/routes.mjs && ng build --configuration production,fullstack && npm run postbuild:checks",
     "build:staging": "export DEPLOY_ENV=staging && node scripts/routes.mjs && ng build --configuration production,staging && npm run postbuild:checks",
     "build:prod": "export DEPLOY_ENV=production && node scripts/routes.mjs && ng build --configuration production && npm run postbuild:checks",
@@ -36,6 +37,7 @@
     "api:openapi": "node scripts/api-openapi.mjs && npm run types:gen",
     "stub-capture": "node scripts/stub-capture.mjs",
     "screenshots:home-c": "playwright test --config scripts/playwright.screenshots.config.ts screenshots-home-c",
+    "screenshots:showcase": "playwright test --config scripts/playwright.screenshots.config.ts screenshots-showcase",
     "audit:prod": "node scripts/check-audit.mjs"
   },
   "dependencies": {

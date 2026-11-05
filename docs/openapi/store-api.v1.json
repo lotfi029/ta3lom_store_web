@@ -1372,6 +1372,9 @@
           "cartMaxTotal": {
             "type": "string"
           },
+          "customerSignIn": {
+            "type": "boolean"
+          },
           "maxLineAmount": {
             "type": "string"
           },
@@ -1385,6 +1388,9 @@
           },
           "minGiftAmount": {
             "type": "string"
+          },
+          "paymentsEnabled": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -1393,7 +1399,9 @@
           "cartMaxLines",
           "cartMaxTotal",
           "maxQuantity",
-          "amountPresets"
+          "amountPresets",
+          "paymentsEnabled",
+          "customerSignIn"
         ],
         "type": "object"
       },
@@ -3797,7 +3805,7 @@
   "info": {
     "title": "Ta3lom.Store.Api | v1",
     "version": "1.0.0",
-    "x-api-commit": "c7578b11ce590bf792a36ff7a4ea6dd5f93f9d9c"
+    "x-api-commit": "0eb4059eb56ebeb635998cd520913f56ccc86ae2"
   },
   "openapi": "3.1.1",
   "paths": {
@@ -5382,6 +5390,16 @@
               }
             },
             "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            },
+            "description": "Conflict"
           }
         },
         "tags": [
@@ -7301,6 +7319,16 @@
             },
             "description": "Bad Request"
           },
+          "409": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
           "429": {
             "content": {
               "application/problem+json": {
@@ -7359,6 +7387,16 @@
               }
             },
             "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            },
+            "description": "Conflict"
           },
           "429": {
             "content": {
@@ -7516,6 +7554,16 @@
               }
             },
             "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            },
+            "description": "Conflict"
           },
           "422": {
             "content": {

@@ -20,6 +20,7 @@ import { fromHalalas, toHalalas } from '../../../core/money/money';
 import { Icon } from '../../../shared/ui/icon/icon';
 import { Money } from '../../../shared/ui/money/money';
 import { SeoService, siteName } from '../../../core/seo/seo.service';
+import { SHOWCASE } from '../../../core/showcase/showcase';
 import { Image } from '../../../shared/ui/image/image';
 import { Markdown } from '../../../shared/ui/markdown/markdown';
 import { ResourceState } from '../../../shared/ui/resource-state/resource-state';
@@ -45,6 +46,8 @@ import { projectJsonLd } from './project-seo';
 })
 export class ProjectPage {
   protected readonly data = inject(ProjectData);
+  /** Showcase mode (SW-2): options read only, no sticky donate bar, no DonateAction in the JSON-LD. */
+  protected readonly showcase = inject(SHOWCASE);
   protected readonly i18n = inject(I18nService);
   private readonly seo = inject(SeoService);
   private readonly router = inject(Router);
@@ -201,6 +204,7 @@ export class ProjectPage {
           home: siteName(),
           association: $localize`:@@store.layout.association:جمعية التعلم الإلكتروني`,
         },
+        this.showcase,
       ),
     });
   }
