@@ -22,6 +22,8 @@ ARG CONFIG=staging
 ARG PRERENDER_API_URL=
 ARG VERSION=dev
 ARG GIT_SHA=unknown
+# First deploy of an environment only (deploy/README.md "First deploy"): "1" lets routes.mjs build an empty catalogue.
+ARG ALLOW_EMPTY_CATALOGUE=
 RUN case "$CONFIG" in staging|production|ci|fullstack) ;; *) echo "CONFIG must be staging, production, ci or fullstack" >&2; exit 1 ;; esac \
  && if [ -z "$PRERENDER_API_URL" ]; then unset PRERENDER_API_URL; fi \
  && SCRIPT="build:$CONFIG" && if [ "$CONFIG" = production ]; then SCRIPT=build:prod; fi \

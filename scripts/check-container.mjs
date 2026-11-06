@@ -16,6 +16,7 @@
  *     case, `_`, `-`); HTML and index.csr.html `no-cache`; version.json no-store
  *   - /.well-known/apple-developer-merchantid-domain-association: 200, text/plain, no-cache (Apple Pay on Moyasar)
  *   - gzip/zstd compression on HTML; /version.json carries the commit; robots.txt per environment
+ * With --allow-empty-catalogue (first deploy of an environment, ALLOW_EMPTY_CATALOGUE) the home page may link no project.
  * With --keep the main container is left running (LHCI runs against it next, H-2); stop it with `docker rm -f`.
  */
 import { execFileSync } from 'node:child_process';
@@ -29,8 +30,9 @@ const opt = (name, def) => {
 const ENV = opt('env', 'ci');
 const PORT = Number(opt('port', '8099'));
 const KEEP = args.includes('--keep');
+const EMPTY_OK = args.includes('--allow-empty-catalogue');
 if (!image) {
-  console.error('usage: node scripts/check-container.mjs <image> [--env ci|staging|production] [--port 8099] [--keep]');
+  console.error('usage: node scripts/check-container.mjs <image> [--env ci|staging|production] [--port 8099] [--keep] [--allow-empty-catalogue]');
   process.exit(2);
 }
 
@@ -117,7 +119,7 @@ try {
   expect([200, 301, 302, 308].includes(r.status), `/ar answered ${r.status}`);
   expect(r.headers.get('cache-control') === 'no-cache', `/ar Cache-Control is ${r.headers.get('cache-control')}, expected no-cache`);
   const slug = /href="\/ar\/p\/([a-z0-9-]+)"/.exec(html)?.[1];
-  expect(!!slug, '/ar/ links no prerendered project page');
+  expect(!!slug || EMPTY_OK, '/ar/ links no prerendered project page');
   if (slug) {
     r = await get(PORT, `/ar/p/${slug}`);
     expect(r.status === 200, `/ar/p/${slug} answered ${r.status}`);

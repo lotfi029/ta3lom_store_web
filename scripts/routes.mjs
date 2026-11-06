@@ -9,6 +9,9 @@
  * C-1: build-time data comes from PRERENDER_API_URL (CI: the stub), separate from the runtime API URL compiled into the
  * app (environment.apiUrl). Falls back to STORE_API_URL, then the local API.
  * If the API is unreachable the build fails — a silent partial prerender is worse than no build.
+ * An empty catalogue fails too, except on the FIRST deploy of an environment: ALLOW_EMPTY_CATALOGUE=1 (the repository
+ * variable ALLOW_EMPTY_CATALOGUE=true in the deploy workflow) builds the home page only, so the admin can go live and
+ * the first projects can be added. Delete the variable once a project is published.
  */
 import { rmSync, writeFileSync } from 'node:fs';
 import { deployEnv } from './lib/envs.mjs';
@@ -53,8 +56,12 @@ try {
   process.exit(1);
 }
 if (slugs.length === 0) {
-  console.error('routes.mjs: the catalogue has no published project — refusing to build an empty store.');
-  process.exit(1);
+  if (process.env.ALLOW_EMPTY_CATALOGUE !== '1') {
+    console.error('routes.mjs: the catalogue has no published project — refusing to build an empty store.');
+    console.error('First deploy of an environment? Set ALLOW_EMPTY_CATALOGUE=1 (deploy workflow: repository variable ALLOW_EMPTY_CATALOGUE=true).');
+    process.exit(1);
+  }
+  console.warn('routes.mjs: WARNING — empty catalogue, building the home page only (first deploy, ALLOW_EMPTY_CATALOGUE=1). Delete the switch once a project is published.');
 }
 
 const routes = [...STATIC_ROUTES, ...slugs.map((s) => `/p/${s}`)];
