@@ -17,6 +17,9 @@ name: Deploy
 #                                                                     commit succeeded (fresh prerender + sitemap)
 #   workflow_dispatch (environment, tag)                            → rollback: redeploy an earlier image tag, checked
 #                                                                     against the environment and the image label (D-2)
+# First deploy of an environment (empty catalogue, the admin is in this image): repository variable
+# ALLOW_EMPTY_CATALOGUE=true lets the staging and production builds publish the home page with no project
+# (deploy/README.md "First deploy"). Delete the variable once a project is published — the guard is back.
 # Staging is SKIPPED with a warning (never a failure on main) when the staging API is unreachable (owner H-1) or the
 # SSH secrets are missing; the would-be commands are printed instead (dry run).
 on:
@@ -48,6 +51,8 @@ permissions:
 
 env:
   IMAGE: ghcr.io/lotfi029/ta3lom-store-web
+  # "1" only while the repository variable ALLOW_EMPTY_CATALOGUE is "true" (first deploy); empty otherwise.
+  ALLOW_EMPTY_CATALOGUE: ${{ vars.ALLOW_EMPTY_CATALOGUE == 'true' && '1' || '' }}
 
 jobs:
   # Decides what (if anything) this run deploys, and from which commit. A deploy never starts unless CI succeeded on
@@ -207,9 +212,12 @@ jobs:
             PRERENDER_API_URL=${{ env.PRERENDER_API_URL }}
             VERSION=${{ steps.meta.outputs.version }}
             GIT_SHA=${{ env.SHA }}
+            ALLOW_EMPTY_CATALOGUE=${{ env.ALLOW_EMPTY_CATALOGUE }}
       - name: check-container on the real staging image before it is pushed (D-1)
         if: steps.probe.outputs.api == 'up'
-        run: node scripts/check-container.mjs "$IMAGE:staging-$SHA" --env staging --port 8099
+        run: |
+          [ -z "$ALLOW_EMPTY_CATALOGUE" ] || echo "::warning::ALLOW_EMPTY_CATALOGUE is on (first deploy): an empty catalogue is accepted. Delete the repository variable once a project is published."
+          node scripts/check-container.mjs "$IMAGE:staging-$SHA" --env staging --port 8099 ${ALLOW_EMPTY_CATALOGUE:+--allow-empty-catalogue}
       - name: Push the staging image
         if: steps.probe.outputs.api == 'up'
         run: |
@@ -290,8 +298,11 @@ jobs:
             PRERENDER_API_URL=${{ env.PRERENDER_API_URL }}
             VERSION=${{ steps.meta.outputs.version }}
             GIT_SHA=${{ env.SHA }}
+            ALLOW_EMPTY_CATALOGUE=${{ env.ALLOW_EMPTY_CATALOGUE }}
       - name: check-container on the real production image before it is pushed (D-1)
-        run: node scripts/check-container.mjs "$IMAGE:$VERSION" --env production --port 8099
+        run: |
+          [ -z "$ALLOW_EMPTY_CATALOGUE" ] || echo "::warning::ALLOW_EMPTY_CATALOGUE is on (first deploy): an empty catalogue is accepted. Delete the repository variable once a project is published."
+          node scripts/check-container.mjs "$IMAGE:$VERSION" --env production --port 8099 ${ALLOW_EMPTY_CATALOGUE:+--allow-empty-catalogue}
       - name: Push the production image (:X.Y.Z and :latest — strict semver only, L-5)
         run: |
           docker tag "$IMAGE:$VERSION" "$IMAGE:latest"

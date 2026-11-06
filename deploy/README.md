@@ -175,6 +175,19 @@ its environment, and only then pushed. A failed CI run deploys nothing.
   builds, checks and pushes `:X.Y.Z` and `:latest` (one build at a time); `production` waits for the reviewer, then runs
   the same two commands in `/srv/store-web` with `-p store-web`.
 
+**First deploy of an environment (empty catalogue).** Every build refuses to publish a store with no published project
+(`routes.mjs`), but a new environment's database is empty and the admin that adds projects is in this image. For the
+first deploy only:
+
+1. GitHub → Settings → Secrets and variables → Actions → **Variables** → repository variable
+   `ALLOW_EMPTY_CATALOGUE` = `true`.
+2. Deploy as usual (re-run the main deploy for staging, push the tag for production). The build publishes the home page
+   only (with the «قريبًا» banner in showcase), `check-container` accepts a home page without project links, and the
+   run shows a warning.
+3. Create the staff account (API runbook `create-admin`), sign in at `/admin`, add and publish the categories and
+   projects. Publishing triggers a staging rebuild (`catalog-changed`); for production push a new tag.
+4. **Delete the variable** as soon as each environment has a published project — every later build has the guard back.
+
 **Edge aliases (review 04 H-1).** The compose service is called `web`, never `store-web`: Compose gives every service
 its own name as a DNS alias on each network, so a staging service named `store-web` also answered to the production
 alias on the shared `edge` network. Only `EDGE_ALIAS` names an environment there. CI runs both projects side by side
