@@ -115,7 +115,7 @@
     (retry)="data.projects.reload()"
   >
     @if (items().length === 0) {
-      <p class="muted empty" i18n="@@store.admin.no-results">لا نتائج.</p>
+      <p class="muted none" i18n="@@store.admin.no-results">لا نتائج.</p>
     } @else if (viewport.phone()) {
       <ul class="pcards" aria-label="المشاريع" i18n-aria-label="@@store.admin.nav-projects">
         @for (p of items(); track p.id) {
