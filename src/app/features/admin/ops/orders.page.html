@@ -104,7 +104,7 @@
       (retry)="data.orders.reload()"
     >
       @if (items().length === 0) {
-        <p class="muted empty" i18n="@@store.admin.no-results">لا نتائج.</p>
+        <p class="muted none" i18n="@@store.admin.no-results">لا نتائج.</p>
       } @else if (viewport.phone()) {
         <ul class="ocards" aria-label="التبرعات" i18n-aria-label="@@store.admin.nav-donations">
           @for (o of items(); track o.reference) {

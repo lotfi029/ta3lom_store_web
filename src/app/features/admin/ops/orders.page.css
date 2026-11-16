@@ -128,7 +128,7 @@ tr.picked td {
   background: var(--c-admin-row-selected);
 }
 
-.empty {
+.none {
   padding: 16px;
 }
 
