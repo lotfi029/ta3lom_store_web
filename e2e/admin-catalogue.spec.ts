@@ -246,6 +246,7 @@ for (const locale of ['ar', 'en'] as const) {
     test('editor: save bar names the dirty section, publish waits for it, Ctrl+S saves, 422 updates the requirements (W-A3)', async ({
       page,
     }) => {
+      test.setTimeout(120_000); // two staff sign-ins and four axe passes
       const c = await staff('admin');
       const tok = `${Date.now().toString(36)}${locale}`;
       const { body: cats } = await c.call('GET', '/v1/admin/categories');
