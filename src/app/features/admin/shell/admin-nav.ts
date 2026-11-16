@@ -190,6 +190,3 @@ export function visibleNav(
     }))
     .filter((s) => s.items.length > 0);
 }
-
-/** Every top-level screen as one list (the dashboard's quick links, the command palette). */
-export const ADMIN_NAV: readonly AdminNavItem[] = ADMIN_SECTIONS.flatMap((s) => s.items);

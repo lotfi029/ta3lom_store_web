@@ -1,106 +1,258 @@
-.sub {
-  font-size: 1.05rem;
-  margin-block: 0 10px;
+.eyebrow {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--c-muted-2);
+}
+
+.ahead h1 {
+  margin: 2px 0;
+}
+
+.act {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.act .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mode-badge {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: var(--c-badge-warn-bg);
+  color: var(--c-badge-warn-text);
 }
 
 .stats {
   list-style: none;
-  margin: 0 0 18px;
+  margin: 0 0 16px;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border: 1px solid var(--c-border);
+  border-radius: 14px;
+  background: var(--c-surface);
+  overflow: hidden;
 }
 
-.stats .panel {
-  margin: 0;
+.stats li {
   display: grid;
-  gap: 6px;
+  gap: 2px;
+  padding-block: 14px;
+  padding-inline: 16px;
 }
 
-.stats span {
-  color: var(--c-muted-2);
+.stats li + li {
+  border-inline-start: 1px solid var(--c-border);
+}
+
+.stats .l {
   font-size: 0.85rem;
+  color: var(--c-muted);
 }
 
-.stats b {
-  font-size: 1.35rem;
+.stats .v {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--c-text);
+  text-decoration: none;
+  font-variant-numeric: tabular-nums;
+  justify-self: start;
 }
 
-.stats a {
-  color: var(--c-link);
+.stats a.v:hover {
+  text-decoration: underline;
+}
+
+.stats small {
+  font-size: 0.78rem;
 }
 
 .cols {
-  margin-block-end: 18px;
-  display: grid;
-  gap: 14px;
-  grid-template-columns: minmax(0, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 16px;
 }
 
-@media (width >= 1100px) {
-  .cols {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-  }
+.cols .main {
+  flex: 999 1 480px;
+  min-inline-size: 0;
+  display: grid;
+  gap: 16px;
+}
+
+.cols .side {
+  flex: 1 1 280px;
+  min-inline-size: 0;
+  display: grid;
+  gap: 16px;
 }
 
 .cols .panel {
   margin: 0;
 }
 
-.list {
-  list-style: none;
-  margin: 0 0 8px;
-  padding: 0;
-  display: grid;
-  gap: 6px;
+.panel h2 {
+  margin: 0;
+  font-size: 1.02rem;
 }
 
-.list li {
+.shead {
   display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
   justify-content: space-between;
-  gap: 10px;
-  font-size: 0.9rem;
+  gap: 8px;
+  margin-block-end: 12px;
 }
 
-.cols a {
-  color: var(--c-link);
-}
-
-.tiles {
+.bars,
+.ready,
+.tasks,
+.recent {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 12px;
-  margin-block-start: 6px;
 }
 
-.tiles a {
+.bars li {
+  display: grid;
+  gap: 6px;
+  padding-block: 10px;
+}
+
+.bars li + li {
+  border-block-start: 1px solid var(--c-border);
+}
+
+.bt {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 12px;
+  font-size: 0.92rem;
+}
+
+.track {
+  display: block;
+  block-size: 8px;
+  border-radius: 4px;
+  background: var(--c-surface-2);
+  overflow: hidden;
+}
+
+.track.big {
+  margin-block-end: 12px;
+}
+
+.fill {
+  display: block;
+  block-size: 100%;
+  border-radius: 4px;
+  background: var(--c-brand);
+}
+
+.fill.dark {
+  background: var(--c-inverse);
+}
+
+.ready li {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin: 0;
+  min-block-size: 44px;
+}
+
+.ready li.done > span:not(.tick, .visually-hidden) {
+  color: var(--c-muted);
+  text-decoration: line-through;
+}
+
+.tick {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  inline-size: 24px;
+  block-size: 24px;
+  border: 2px dashed var(--c-border-2);
+  border-radius: 50%;
+}
+
+.done .tick {
+  border: 0;
+  background: var(--c-inverse);
+  color: var(--c-on-inverse);
+}
+
+.tasks li + li,
+.recent li + li {
+  border-block-start: 1px solid var(--c-border);
+}
+
+.tasks a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-block-size: 52px;
   color: var(--c-text);
   text-decoration: none;
-  font-weight: 500;
+  font-size: 0.92rem;
 }
 
-.tiles ta-icon {
-  color: var(--c-accent-strong);
+.tasks a:hover span:not(.ti) {
+  text-decoration: underline;
 }
 
-.overview {
-  padding-block: 0;
+.ti {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  inline-size: 34px;
+  block-size: 34px;
+  border-radius: 8px;
 }
 
-.list small {
-  margin-inline-start: 6px;
+.ti.sched {
+  background: var(--c-badge-sched-bg);
+  color: var(--c-badge-sched-text);
+}
+
+.ti.warn {
+  background: var(--c-badge-warn-bg);
+  color: var(--c-badge-warn-text);
+}
+
+.ti.draft {
+  background: var(--c-badge-draft-bg);
+  color: var(--c-badge-draft-text);
+}
+
+.ti.err {
+  background: var(--c-badge-err-bg);
+  color: var(--c-badge-err-text);
+}
+
+.chev {
+  margin-inline-start: auto;
+  color: var(--c-muted);
+}
+
+.recent li {
+  display: grid;
+  gap: 2px;
+  padding-block: 8px;
+  font-size: 0.88rem;
 }
 
 .paid {
-  margin: 0 0 12px;
+  margin: 0;
   display: grid;
   gap: 6px;
 }
@@ -108,41 +260,39 @@
 .paid div {
   display: flex;
   justify-content: space-between;
-  gap: 10px;
-  font-size: 0.9rem;
-}
-
-.paid dt {
-  color: var(--c-text-2);
+  gap: 8px;
 }
 
 .paid dd {
   margin: 0;
-  text-align: end;
 }
 
-.cols h3 {
+.list {
+  margin: 0;
+  padding-inline-start: 20px;
+}
+
+.list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+h3 {
   font-size: 0.95rem;
-  margin-block: 12px 8px;
+  margin-block: 14px 6px;
 }
 
-/* Review 04 W-3: open orphan payments need finance's attention. */
-.count.alert {
-  color: var(--c-danger);
-  font-weight: 700;
-}
+@media (width <= 1100px) {
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 
-/* SW-6: showcase mode (payments off on the API). */
-.mode-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-block: 6px 0;
-  padding-block: 4px;
-  padding-inline: 10px;
-  border-radius: 999px;
-  background: var(--c-gold-tint);
-  color: var(--c-text);
-  font-size: 0.85rem;
-  font-weight: 600;
+  .stats li:nth-child(3) {
+    border-inline-start: 0;
+  }
+
+  .stats li:nth-child(n + 3) {
+    border-block-start: 1px solid var(--c-border);
+  }
 }

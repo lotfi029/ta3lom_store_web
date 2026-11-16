@@ -78,6 +78,13 @@ export class CatalogAdminData {
     archived: this.countOf('archived'),
   } as const;
 
+  /** Drafts in the whole catalogue (dashboard tasks and readiness, W-A5): `pageSize=1`, the paged total. */
+  readonly draftTotal = httpResource<AdminProjectPage>(() =>
+    this.on()
+      ? { url: `${this.api}/admin/projects`, params: { status: 'draft', page: 1, pageSize: 1 } }
+      : undefined,
+  );
+
   readonly categories = httpResource<AdminCategory[]>(() =>
     this.on() ? `${this.api}/admin/categories` : undefined,
   );

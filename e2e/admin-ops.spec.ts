@@ -14,8 +14,20 @@ for (const locale of ['ar', 'en'] as const) {
       const mobile = freshMobile();
       const ref = await donate(mobile, locale);
       await staffSignIn(page, locale, 'finance');
-      await expect(page.locator('h1')).toHaveText(t('لوحة إدارة المتجر', 'Store admin'));
-      await expect(page.locator('.stats')).toBeVisible();
+      // W-A5: the dashboard greets the staff member; the metrics strip and today's tasks come from the API only.
+      await expect(page.locator('h1')).toHaveCount(1);
+      await expect(page.locator('h1')).toContainText(t('أهلًا', 'Welcome'));
+      await expect(page.locator('.stats li')).toHaveCount(4);
+      await expect(
+        page
+          .getByRole('region', { name: t('مهام اليوم', 'Today’s tasks') })
+          .getByRole('link')
+          .first(),
+      ).toHaveAttribute('href', /status=pending_payment/);
+      // Finance: no audit block (staff:admin only)
+      await expect(
+        page.getByRole('region', { name: t('آخر النشاط', 'Recent activity') }),
+      ).toHaveCount(0);
       await expectNoA11yViolations(page, `/${locale}/admin dashboard`);
 
       await page.goto(`/${locale}/admin/orders`);
