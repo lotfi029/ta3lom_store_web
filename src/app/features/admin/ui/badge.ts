@@ -46,9 +46,10 @@ export function badgeKind(status: string | null | undefined): BadgeKind {
 @Component({
   selector: 'ta-admin-badge',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: '<span class="b" [class]="kind()"><ng-content /></span>',
+  // `adm-badge`, not `b`: the storefront's global `.b` is its button class (48px tall).
+  template: '<span class="adm-badge" [class]="kind()"><ng-content /></span>',
   styles: `
-    .b {
+    .adm-badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -60,7 +61,7 @@ export function badgeKind(status: string | null | undefined): BadgeKind {
       border-radius: 999px;
       white-space: nowrap;
     }
-    .b::before {
+    .adm-badge::before {
       content: '';
       inline-size: 6px;
       block-size: 6px;
