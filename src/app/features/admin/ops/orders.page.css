@@ -24,13 +24,13 @@
   color: var(--c-badge-warn-text);
 }
 
-.split {
+.osplit {
   display: flex;
   align-items: flex-start;
   gap: 16px;
 }
 
-.split > .idx {
+.osplit > .idx {
   flex: 1 1 auto;
   min-inline-size: 0;
 }
@@ -132,17 +132,17 @@ tr.picked td {
   padding: 16px;
 }
 
-.cards {
+.ocards {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.cards li + li {
+.ocards li + li {
   border-block-start: 1px solid var(--c-border);
 }
 
-.cards a {
+.ocards a {
   display: flex;
   justify-content: space-between;
   gap: 12px;
@@ -151,13 +151,13 @@ tr.picked td {
   text-decoration: none;
 }
 
-.cards .body,
-.cards .end {
+.ocards .body,
+.ocards .end {
   display: grid;
   gap: 4px;
 }
 
-.cards .end {
+.ocards .end {
   justify-items: end;
 }
 

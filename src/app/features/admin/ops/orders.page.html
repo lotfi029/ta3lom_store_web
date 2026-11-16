@@ -39,7 +39,7 @@
   </p>
 }
 
-<div class="split" [class.with-panel]="!!selected()">
+<div class="osplit" [class.with-panel]="!!selected()">
   <section class="panel idx" aria-labelledby="ao-list-h">
     <h2 id="ao-list-h" class="visually-hidden" i18n="@@store.admin.orders-list">قائمة التبرعات</h2>
     <div class="tools">
@@ -106,7 +106,7 @@
       @if (items().length === 0) {
         <p class="muted empty" i18n="@@store.admin.no-results">لا نتائج.</p>
       } @else if (viewport.phone()) {
-        <ul class="cards" aria-label="التبرعات" i18n-aria-label="@@store.admin.nav-donations">
+        <ul class="ocards" aria-label="التبرعات" i18n-aria-label="@@store.admin.nav-donations">
           @for (o of items(); track o.reference) {
             <li>
               <a [routerLink]="['/admin/orders', o.reference]">
