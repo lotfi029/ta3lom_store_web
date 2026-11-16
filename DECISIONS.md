@@ -339,6 +339,23 @@ payments)" (branch `claude/showcase-mode`). Unclear points were decided here and
 |---|---|---|---|---|
 | 2026-11-06 | Empty catalogue on a new environment | `routes.mjs` still refuses an empty store, unless `ALLOW_EMPTY_CATALOGUE=1` (Dockerfile build arg ← deploy workflow env ← repository variable `ALLOW_EMPTY_CATALOGUE=true`): then it builds the home page only, with a warning; `check-container --allow-empty-catalogue` accepts a home page without project links. The owner deletes the variable once a project is published (deploy/README.md "First deploy") | The first staging deploy failed: a new database has no project, and the admin that adds them is in the same image. A repository variable, not a checkbox on a manual run, because production deploys start from a tag push, which takes no inputs | REVIEW |
 
+## Admin redesign (W-A0 … W-A6)
+
+Source: `docs/admin-redesign/` (02 spec, 03 plan + §13 adaptations, mockups) and the owner's review of the execution
+plan (M1–M7, S1–S11). Staff admin only; the storefront look is unchanged.
+
+| Date | Session | Topic | Docs | Choice | Reason | REVIEW? |
+|---|---|---|---|---|---|---|
+| 2026-11-16 | W-A0 | Merge strategy | review M1 | Stacked branches `feat/w-a<N>-…`; each draft PR targets the previous phase branch (W-A0 → `main`). After a squash-merge: `git rebase --onto main <old phase tip> <next branch>`, then retarget the next PR to `main` | Squash-merging stacked branches otherwise replays the earlier phases in every diff | |
+| 2026-11-16 | W-A0 | Payments flag | 03 §13.1 | "Payments off" = `StoreConfig.paymentsEnabled() === false` (`GET /v1/catalog/config`), as the dashboard does since SW-6; `environment.paymentsEnabled` does not exist (SW-1 removed it) | One source of truth for the admin; the API decides | |
+| 2026-11-16 | W-A0 | Admin tokens | 02 §5 | `--c-admin-*` and `--c-badge-*` (light = spec values; dark tuned) in `tokens.css`; 16 pairs added to `scripts/contrast-check.mjs`, all ≥ 4.5:1 in both themes. The top-bar search placeholder uses `--c-on-dark-78` (8.01:1): `--c-on-dark-muted` was 4.01:1 on `--c-admin-topbar-2` | The existing lint gate checks them; no new test runner needed | |
+| 2026-11-16 | W-A0 | Badges | 03 §13.5 | Admin-only `<ta-admin-badge kind>` + `badgeKind()` (`features/admin/ui/badge.ts`): published/paid/active → ok; pending_payment → sched; payment_review/urgent → warn; cancelled/archived/blocked → err; draft/expired/refunded/anonymised → draft; badge `new` → new; unknown → draft. `shared/ui/status-pill` untouched | `status-pill` is shared with the donor account; `refunded` is a closed state (the spec has no colour for it) | |
+| 2026-11-16 | W-A0 | Icons | 03 A0.4 | Added home, inbox, globe, bell, upload, eye, refresh, calendar, more, grip to `icon.data.ts` (the others already existed). +0.3 kB gzip initial JS (the icon map is in the initial chunk): 137.1 / 150 kB | Names pass `check-no-commerce` | |
+| 2026-11-16 | W-A0 | Breakpoints | review M2 | `.adm-no-tab` (≤ 1100px), `.adm-no-ph` (≤ 640px), `.adm-only-ph` (> 640px hidden) in `admin-common.css`, which every admin page lists in `styleUrls`; admin/ui components carry their own rules; no `ViewEncapsulation.None` | Emulated encapsulation scopes a component's styles to its own template | |
+| 2026-11-16 | W-A0 | Screenshots | review M7 | `npm run screenshots:admin` (`e2e/screenshots/admin.config.ts`), excluded from `npm run e2e` (`testIgnore`); one sign-in per locale/theme context, JPEG q80; per phase only the touched screens | ~600 PNGs otherwise | |
+| 2026-11-16 | W-A0 | Mockups | — | Extracted from the owner's `.rar` with a WebAssembly unrar in the session's scratchpad (not a project dependency); only the HTML, `img/` and README are committed | No `unrar` in the container | |
+| 2026-11-16 | W-A0 | Baseline | review §4 | Before the redesign: initial JS 136.8 / 135.1 kB (ar/en); admin lazy chunks (any chunk with `features/admin` code) 26 files, 313.1 kB raw, 100.0 kB gzip | Measured from `ng build --stats-json` (ar) | |
+
 ## Storefront home: incremental hydration of the below-the-fold blocks (branch `fix/storefront-hydration-tbt`)
 
 | Date | Topic | Choice | Reason | REVIEW? |

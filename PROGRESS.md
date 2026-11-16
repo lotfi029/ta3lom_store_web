@@ -121,6 +121,12 @@ templates + `en.json`) with the association's licence number and confirm the tru
 | SW-7 @showcase e2e + axe, screenshots | done | e2e/showcase.spec.ts on `build:ci-showcase` |
 | SW-8 docs | done | — |
 
+## Admin redesign (docs/admin-redesign/)
+
+| Phase | Status | Commit | Screens | Tests |
+|---|---|---|---|---|
+| W-A0 Groundwork | done | (see PR) | none visible (tokens, icons, utilities, badge) | `ui/badge.spec.ts` (every wire value), contrast-check +16 pairs; storefront before set in `docs/screenshots/admin-redesign/storefront-before/` |
+
 ## Storefront TBT fix (branch `fix/storefront-hydration-tbt`)
 
 | Item | State | Evidence |

@@ -38,7 +38,8 @@
     "stub-capture": "node scripts/stub-capture.mjs",
     "screenshots:home-c": "playwright test --config scripts/playwright.screenshots.config.ts screenshots-home-c",
     "screenshots:showcase": "playwright test --config scripts/playwright.screenshots.config.ts screenshots-showcase",
-    "audit:prod": "node scripts/check-audit.mjs"
+    "audit:prod": "node scripts/check-audit.mjs",
+    "screenshots:admin": "playwright test --config e2e/screenshots/admin.config.ts"
   },
   "dependencies": {
     "@angular/aria": "^22.2.5",

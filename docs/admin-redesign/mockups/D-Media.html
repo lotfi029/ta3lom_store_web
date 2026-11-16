@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مكتبة الوسائط — سطح المكتب</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#137aa0}a:hover{color:#136578}
+
+*{box-sizing:border-box}
+.s-root{font-family:'Readex Pro','Segoe UI',tahoma,sans-serif;color:#232123;background:#f1f3f4;display:flex;flex-direction:column;position:relative}
+.s-top{background:#0f262e;display:flex;align-items:center;gap:12px;padding:8px 16px;position:sticky;top:0;z-index:5}
+.s-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.s-search{flex:0 1 560px;margin-inline:auto;display:flex;align-items:center;gap:10px;background:#1d3a45;border:1px solid #2a4953;border-radius:10px;padding:0 12px;min-height:40px;color:#9fb2b9;font-size:13px}
+.s-search input{border:0;background:transparent;font:inherit;flex:1;outline:none;color:#e7eef0;min-width:0}
+.s-kbd{font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid #365964;border-radius:5px;padding:1px 6px;color:#c4d1d5}
+.s-tbtn{width:40px;height:40px;border-radius:10px;border:0;background:#1d3a45;color:#e7eef0;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;flex:0 0 auto}
+.s-acts{display:flex;align-items:center;gap:8px;margin-inline-start:auto}
+.s-store{display:flex;align-items:center;gap:8px;padding:4px 4px 4px 10px;border-radius:10px;background:#1d3a45;color:#e7eef0;font-size:13px}
+.s-av{width:32px;height:32px;border-radius:8px;background:#c3af72;color:#0f262e;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:13px;flex:0 0 auto}
+.s-body{display:flex;flex:1;min-height:0}
+.s-side{flex:0 0 240px;padding:12px 10px;display:flex;flex-direction:column;gap:1px;background:#ebeef0;overflow-y:auto}
+.s-link{display:flex;align-items:center;gap:10px;min-height:38px;padding:0 10px;border-radius:9px;color:#303435;text-decoration:none;font-size:13px;font-weight:500}
+.s-link:hover{background:#e0e5e7}
+.s-link.on{background:#fff;color:#0f262e;font-weight:600;box-shadow:0 1px 2px rgb(15 38 46 / 10%)}
+.s-sub{display:flex;align-items:center;min-height:34px;padding-inline-start:40px;border-radius:9px;color:#5b6163;text-decoration:none;font-size:13px}
+.s-sub:hover{background:#e0e5e7}
+.s-sub.on{color:#0f262e;font-weight:600}
+.s-n{margin-inline-start:auto;font-size:11px;font-weight:600;color:#3a3d3e;background:#dde3e6;border-radius:999px;padding:1px 7px}
+.s-sec{font-size:11px;font-weight:600;color:#5b6163;margin:14px 10px 4px}
+.s-main{flex:1;min-width:0;padding:22px 28px 48px;overflow-y:auto}
+.s-wrap{max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.s-card{background:#fff;border-radius:12px;box-shadow:0 1px 0 rgb(15 38 46 / 6%),0 0 0 1px rgb(15 38 46 / 6%);padding:16px;min-width:0}
+.s-h1{margin:0;font-size:20px;font-weight:700}
+.s-h2{margin:0;font-size:14px;font-weight:600}
+.s-m{color:#5b6163;font-size:13px}
+.s-row{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start}
+.s-colmain{flex:999 1 520px;min-width:0;display:flex;flex-direction:column;gap:16px}
+.s-colside{flex:1 1 290px;min-width:0;display:flex;flex-direction:column;gap:16px}
+.s-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.s-btns{margin-inline-start:auto;display:flex;gap:8px;flex-wrap:wrap}
+.s-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:36px;padding:0 14px;border-radius:9px;border:0;font:inherit;font-weight:600;font-size:13px;cursor:pointer;background:#fff;color:#232123;box-shadow:0 0 0 1px #c9d2d5,0 1px 0 #c9d2d5;text-decoration:none;white-space:nowrap}
+.s-btn.pri{background:#0f262e;color:#fff;box-shadow:none}
+.s-btn.brand{background:#137aa0;color:#fff;box-shadow:none}
+.s-btn.gold{background:#c3af72;color:#0f262e;box-shadow:none}
+.s-btn.ico{padding:0;width:36px}
+.s-badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;border-radius:7px;padding:2px 8px;white-space:nowrap}
+.b-ok{background:#d9f2e3;color:#155c3b}.b-draft{background:#e9eef0;color:#3a3d3e}.b-sched{background:#dff0f7;color:#0e5770}.b-warn{background:#fbecc8;color:#6b4708}.b-err{background:#fbdcda;color:#8e2622}.b-new{background:#e4e9fb;color:#2b3f8f}
+.s-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.mono{font-family:'IBM Plex Mono',monospace}
+.s-chip{display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:0 10px;border-radius:9px;background:#fff;box-shadow:0 0 0 1px #c9d2d5;font-size:13px;font-weight:500;white-space:nowrap}
+.s-tabs{display:flex;gap:2px;align-items:center;padding:8px 10px;border-bottom:1px solid #eef1f2;overflow-x:auto}
+.s-tab{border:0;background:transparent;font:inherit;font-size:13px;padding:6px 12px;border-radius:8px;color:#3a3d3e;cursor:pointer;min-height:34px;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.s-tab.on{background:#eef1f2;color:#0f262e;font-weight:600}
+.s-ibtn{width:36px;height:36px;border-radius:9px;border:0;background:#fff;box-shadow:0 0 0 1px #c9d2d5;display:inline-flex;align-items:center;justify-content:center;color:#3a3d3e;cursor:pointer;flex:0 0 auto}
+.s-tbl{width:100%;border-collapse:collapse;font-size:13px}
+.s-tbl th{font-weight:600;color:#3a3d3e;text-align:start;padding:10px 12px;background:#f7f8f9;border-bottom:1px solid #eef1f2;white-space:nowrap}
+.s-tbl td{padding:10px 12px;border-bottom:1px solid #eef1f2;vertical-align:middle}
+.s-tbl tr:hover td{background:#fafbfb}
+.s-tbl tr.sel td{background:#f2f8fb}
+.s-cb{width:18px;height:18px;accent-color:#0f262e}
+.s-th{width:44px;height:44px;border-radius:8px;object-fit:cover;border:1px solid #eef1f2;display:block}
+.s-mrow{display:flex;gap:12px;align-items:center;padding:12px;border-bottom:1px solid #eef1f2;text-decoration:none;color:#232123}
+.s-mrow img{width:56px;height:56px;border-radius:10px;object-fit:cover;flex:0 0 auto}
+.s-bulk{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f7f8f9;border-bottom:1px solid #eef1f2;flex-wrap:wrap}
+.s-flag{display:inline-flex;gap:4px}
+.s-flag span{font-size:11px;font-weight:600;border-radius:5px;padding:1px 6px;background:#eef1f2;color:#3a3d3e}
+.s-flag span.miss{background:#fbecc8;color:#6b4708}
+.s-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.s-kpi{display:flex;flex-direction:column;gap:4px}
+.s-kpi b{font-size:20px}
+.g-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.g-metric{padding:14px 16px;display:flex;flex-direction:column;gap:6px;border-inline-start:1px solid #e9eff1;border-bottom:1px solid #e9eff1}
+.g-metric:first-child{border-inline-start:0}
+.g-metric.on{background:#f4f7f8}
+.g-val{font-size:22px;font-weight:700}
+.g-chg{font-size:12px;color:#1f7d52;font-weight:600}
+.g-todo{display:flex;align-items:center;gap:12px;padding:12px 4px;border-top:1px solid #eef1f2;font-size:13px;text-decoration:none;color:#232123}
+.g-step{display:flex;gap:12px;padding:12px;border-radius:10px}
+.g-step.on{background:#f4f7f8}
+.g-circ{width:22px;height:22px;border-radius:50%;border:2px dashed #9aa6aa;flex:0 0 auto}
+.g-circ.done{border:0;background:#0f262e;display:flex;align-items:center;justify-content:center}
+.i-save{background:#0b1a20;color:#e7eef0;display:flex;align-items:center;gap:12px;padding:8px 16px;border-bottom:1px solid #1d3a45}
+.i-lbl{font-size:13px;font-weight:500;color:#303435}
+.i-in{width:100%;border:1px solid #c9d2d5;border-radius:9px;padding:9px 12px;font:inherit;font-size:14px;color:#232123;background:#fff;min-height:40px}
+.i-field{display:flex;flex-direction:column;gap:6px}
+.i-rte{border:1px solid #c9d2d5;border-radius:9px;overflow:hidden}
+.i-rte-bar{display:flex;gap:2px;padding:6px;background:#f7f8f9;border-bottom:1px solid #eef1f2;flex-wrap:wrap}
+.i-rte-bar button{min-width:32px;height:32px;border:0;background:transparent;border-radius:6px;font:inherit;font-size:13px;color:#3a3d3e;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.i-media{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.i-media img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:10px;border:1px solid #eef1f2;display:block}
+.i-media .cover{grid-column:span 2;grid-row:span 2;aspect-ratio:auto;height:100%}
+.i-drop{aspect-ratio:1/1;border:1.5px dashed #9aa6aa;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#3a3d3e;font-size:12px;background:#fafbfb}
+.i-seo{border:1px solid #eef1f2;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:4px}
+.i-sel{display:flex;align-items:center;justify-content:space-between;border:1px solid #c9d2d5;border-radius:9px;padding:0 12px;min-height:40px;font-size:14px;background:#fff}
+.i-tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;border-radius:7px;padding:3px 8px;background:#eef1f2}
+.i-seg{display:flex;background:#eef1f2;border-radius:9px;padding:3px;max-width:240px}
+.i-seg button{flex:1;border:0;background:transparent;font:inherit;font-size:13px;padding:6px 10px;border-radius:7px;cursor:pointer;min-height:32px;color:#3a3d3e}
+.i-seg button.on{background:#fff;color:#0f262e;font-weight:600;box-shadow:0 1px 2px rgb(15 38 46 / 12%)}
+.m-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.m-item{display:flex;flex-direction:column;gap:6px;font-size:12px;color:#3a3d3e}
+.m-item img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;display:block;border:1px solid #eef1f2}
+.m-item.on img{outline:3px solid #1a96c1;outline-offset:2px}
+.bnav{display:none;position:sticky;bottom:0;z-index:5;background:#fff;border-top:1px solid #dce4e7;padding:6px 6px 10px;justify-content:space-around;align-items:center}
+.bnav a{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;color:#5b6163;text-decoration:none;min-width:60px;min-height:44px;justify-content:center}
+.bnav a.on{color:#137aa0;font-weight:600}
+.bnav .plus{width:48px;height:48px;border-radius:16px;background:#0f262e;color:#fff;min-width:48px;margin-top:-18px;box-shadow:0 8px 20px rgb(15 38 46 / 30%)}
+.only-ph{display:none}
+.title-ph{display:none;color:#fff;font-size:15px;font-weight:600}
+@media (max-width:1100px){
+.s-side{flex:0 0 72px;align-items:center;padding:12px 8px}
+.s-side .lbl,.s-side .s-n,.s-side .s-sub,.s-side .s-sec{display:none}
+.s-link{justify-content:center;padding:0;width:48px;min-height:44px}
+.s-store .lbl{display:none}
+.s-main{padding:20px 20px 40px}
+.no-tab{display:none}
+.s-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:640px){
+.s-side{display:none}
+.s-search{display:none}
+.no-ph{display:none}
+.only-ph{display:flex}
+.title-ph{display:block}
+.s-top .s-brand b{display:none}
+.bnav{display:flex}
+.s-main{padding:14px 12px 24px}
+.s-h1{font-size:18px}
+.g-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g-metric:nth-child(3){border-inline-start:0}
+.i-media{grid-template-columns:repeat(3,minmax(0,1fr))}
+.m-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.s-colside{flex-basis:100%}
+.s-colmain{flex-basis:100%}
+.i-save{padding:8px 12px}
+}
+.m-tab .s-side{flex:0 0 72px;align-items:center;padding:12px 8px}
+.m-tab .s-side .lbl,.m-tab .s-side .s-n,.m-tab .s-side .s-sub,.m-tab .s-side .s-sec{display:none}
+.m-tab .s-link{justify-content:center;padding:0;width:48px;min-height:44px}
+.m-tab .s-store .lbl{display:none}
+.m-tab .s-main{padding:20px 20px 40px}
+.m-tab .no-tab{display:none}
+.m-tab .s-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+.m-phone .s-side{flex:0 0 72px;align-items:center;padding:12px 8px}
+.m-phone .s-side .lbl,.m-phone .s-side .s-n,.m-phone .s-side .s-sub,.m-phone .s-side .s-sec{display:none}
+.m-phone .s-link{justify-content:center;padding:0;width:48px;min-height:44px}
+.m-phone .s-store .lbl{display:none}
+.m-phone .s-main{padding:20px 20px 40px}
+.m-phone .no-tab{display:none}
+.m-phone .s-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+.m-phone .s-side{display:none}
+.m-phone .s-search{display:none}
+.m-phone .no-ph{display:none}
+.m-phone .only-ph{display:flex}
+.m-phone .title-ph{display:block}
+.m-phone .s-top .s-brand b{display:none}
+.m-phone .bnav{display:flex}
+.m-phone .s-main{padding:14px 12px 24px}
+.m-phone .s-h1{font-size:18px}
+.m-phone .g-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+.m-phone .g-metric:nth-child(3){border-inline-start:0}
+.m-phone .i-media{grid-template-columns:repeat(3,minmax(0,1fr))}
+.m-phone .m-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.m-phone .s-colside{flex-basis:100%}
+.m-phone .s-colmain{flex-basis:100%}
+.m-phone .i-save{padding:8px 12px}
+.st-bar{display:flex;align-items:center;gap:10px}
+.st-bar .t{height:8px;border-radius:8px;background:#e9eff1;flex:1;overflow:hidden}
+.st-bar .t span{display:block;height:100%;border-radius:8px;background:#1a96c1}
+.opt-row{display:grid;grid-template-columns:28px minmax(0,1fr) 120px 60px 36px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #eef1f2}
+.notice{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:12px;font-size:13px;line-height:1.7}
+.req{font-size:12px;color:#5b6163;display:flex;align-items:center;gap:6px}
+.code-in{display:flex;gap:8px;direction:ltr;justify-content:center}
+.code-in span{width:44px;height:52px;border:1px solid #c9d2d5;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:600;background:#fff}
+
+</style>
+</head>
+<body>
+<div class="s-root" dir="rtl" style="min-height:100vh">
+<header class="s-top">
+<a class="s-tbtn only-ph" href="D-Menu.html" aria-label="القائمة"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></a>
+<a class="s-brand" href="D-Home.html"><img src="img/logo-light.svg" alt="جمعية التعلم الإلكتروني" style="width:34px;height:36px;object-fit:contain"><b style="color:#fff;font-size:14px;font-weight:600">متجر تعلّم</b></a>
+<span class="title-ph">الوسائط</span>
+<label class="s-search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input type="search" placeholder="ابحث برقم التبرع أو الجوال أو اسم المشروع" aria-label="بحث"><span class="s-kbd no-tab">Ctrl K</span></label>
+<div class="s-acts">
+<button class="s-tbtn only-ph" type="button" aria-label="بحث"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></button>
+<button class="s-tbtn" type="button" aria-label="الإشعارات"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0112 0v5l2 2H4z"/><path d="M10 20a2 2 0 004 0"/></svg></button>
+<div class="s-store no-ph"><span class="lbl">أ. ريم · مدير المتجر</span><span class="s-av">ر</span></div>
+</div>
+</header>
+<div class="s-body">
+<nav class="s-side" aria-label="القائمة الرئيسية"><a class="s-link" href="D-Home.html" aria-label="الرئيسية"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg><span class="lbl">الرئيسية</span></a><a class="s-link" href="D-Orders.html" aria-label="التبرعات"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13l3-8h12l3 8v6H3z"/><path d="M3 13h5l1 3h6l1-3h5"/></svg><span class="lbl">التبرعات</span><span class="s-n">7</span></a><a class="s-link" href="D-Projects.html" aria-label="المشاريع"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.5-7 10-7 10z"/></svg><span class="lbl">المشاريع</span></a><a class="s-link on" href="D-Media.html" aria-label="الوسائط"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg><span class="lbl">الوسائط</span></a><a class="s-link" href="#" aria-label="المتبرعون"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0113 0"/><path d="M16 4.5a3.5 3.5 0 010 7M18 14a6 6 0 013.5 6"/></svg><span class="lbl">المتبرعون</span></a><p class="s-sec">قنوات البيع</p><a class="s-link" href="#" aria-label="المتجر"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg><span class="lbl">store.ta3lom.sa</span></a><p class="s-sec">الإدارة</p><a class="s-link" href="#" aria-label="قوالب الرسائل"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg><span class="lbl">قوالب الرسائل</span></a><a class="s-link" href="#" aria-label="سجل التدقيق"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg><span class="lbl">سجل التدقيق</span></a><a class="s-link" href="D-Settings.html" aria-label="الإعدادات" style="margin-top:auto"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg><span class="lbl">الإعدادات والفريق</span></a></nav>
+<main class="s-main"><div class="s-wrap">
+<div class="s-head"><span style="color:#5b6163"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg></span><h1 class="s-h1">مكتبة الوسائط</h1><div class="s-btns"><button class="s-btn pri" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v4h16v-4"/></svg>رفع صورة</button></div></div>
+<div class="s-row">
+<section class="s-card s-colmain" style="gap:14px">
+<div class="s-tabs" style="border:0;padding:0"><button class="s-tab on" type="button">كل الصور</button><button class="s-tab" type="button" style="color:#6b4708">بلا نص بديل إنجليزي 4</button></div>
+<div class="m-grid"><a class="m-item on" href="#" style="text-decoration:none"><img src="img/cover-library.jpg" alt="غلاف-المكتبة.jpg"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">غلاف-المكتبة.jpg</span></a><a class="m-item" href="#" style="text-decoration:none"><img src="img/cover-program.jpg" alt="كفالة-طالب.jpg"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">كفالة-طالب.jpg</span></a><a class="m-item" href="#" style="text-decoration:none"><img src="img/cover-post.jpg" alt="تصنيف-التعليم.jpg"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">تصنيف-التعليم.jpg</span></a><a class="m-item" href="#" style="text-decoration:none"><img src="img/cover-video.jpg" alt="سقيا-المدارس.jpg"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">سقيا-المدارس.jpg</span></a><a class="m-item" href="#" style="text-decoration:none"><img src="img/cover-doc.jpg" alt="حقيبة-المعلم.jpg"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">حقيبة-المعلم.jpg</span></a><a class="m-item" href="#" style="text-decoration:none"><img src="img/cover-partner.jpg" alt="وقف-الأجهزة.jpg"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">وقف-الأجهزة.jpg</span></a><a class="m-item" href="#" style="text-decoration:none"><img src="img/hero-pattern.jpg" alt="بانر-المتجر.jpg"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">بانر-المتجر.jpg</span></a><a class="m-item" href="#" style="text-decoration:none"><img src="img/cover-program.jpg" alt="منح-الدبلوم.jpg"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">منح-الدبلوم.jpg</span></a></div>
+<div style="border:1.5px dashed #9aa6aa;border-radius:12px;padding:18px;display:flex;align-items:center;justify-content:center;gap:10px;color:#3a3d3e;font-size:13px;background:#fafbfb"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v4h16v-4"/></svg>اسحب الصور هنا — النص البديل العربي مطلوب عند الرفع</div>
+</section>
+<aside class="s-colside no-tab">
+<section class="s-card" style="display:flex;flex-direction:column;gap:12px">
+<img src="img/cover-library.jpg" alt="رفوف كتب" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px">
+<b style="font-size:14px">غلاف-المكتبة.jpg</b>
+<div style="display:flex;flex-wrap:wrap;gap:8px" class="s-m"><span class="mono">1600×1000</span>·<span class="mono">184 KB</span>·<span>رُفعت أمس</span></div>
+<div class="i-field"><label class="i-lbl" for="alt-ar">النص البديل (عربي)</label><input class="i-in" id="alt-ar" type="text" value="رفوف كتب في مكتبة مدرسية"></div>
+<div class="i-field"><label class="i-lbl" for="alt-en">Alt text (English)</label><input class="i-in" id="alt-en" type="text" dir="ltr" placeholder="Describe the image" style="border-color:#e2b44c"></div>
+<div style="display:flex;gap:8px"><button class="s-btn pri" type="button">حفظ</button><button class="s-btn" type="button">نسخ الرابط</button></div>
+</section>
+</aside>
+</div>
+</div></main>
+</div>
+<nav class="bnav" aria-label="التنقل السفلي"><a class="" href="D-Home.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>الرئيسية</a><a class="" href="D-Projects.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.5-7 10-7 10z"/></svg>المشاريع</a><a class="plus" href="D-Project.html" aria-label="مشروع جديد"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></a><a class="" href="D-Orders.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13l3-8h12l3 8v6H3z"/><path d="M3 13h5l1 3h6l1-3h5"/></svg>التبرعات</a><a class="" href="D-Menu.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>المزيد</a></nav>
+</div>
+</body>
+</html>
