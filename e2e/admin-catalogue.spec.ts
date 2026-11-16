@@ -107,7 +107,7 @@ for (const locale of ['ar', 'en'] as const) {
       await pv.getByRole('button', { name: t('إغلاق', 'Close') }).click();
       await page.getByRole('button', { name: t('نشر', 'Publish'), exact: true }).click();
       await expect(toast(page)).toContainText(t('نُشر', 'published'));
-      await expect(page.locator('ta-status-pill').first()).toContainText(t('منشور', 'Published'));
+      await expect(page.locator('ta-admin-badge').first()).toContainText(t('منشور', 'Published'));
 
       // Public: not prerendered (E-1) → client-rendered from the API.
       await page.goto(`/${locale}/p/e2e-prj-${id}`);
