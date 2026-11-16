@@ -378,6 +378,12 @@ plan (M1–M7, S1–S11). Staff admin only; the storefront look is unchanged.
 | 2026-11-16 | W-A3 | Open amount | mockup D-Project | «السماح بمبلغ مفتوح» and the minimum sit in the options card under a legend «المبلغ المفتوح (يُحفظ مع التفاصيل)»: they are project fields, saved by the details save | Honest about which save holds them | |
 | 2026-11-16 | W-A3 | Cover alt status | mockup | AR/EN alt ✓/⚠ from the picked asset, or the library page entry with the same id; nothing shown when the asset is not on the loaded page (the project response has no alt) | No extra request | |
 | 2026-11-16 | W-A3 | Phone options | 03 §5 | The options editor stays an inline editor on phones (its rows wrap); the "read-only rows + edit dialog" variant was not built | Same behaviour, less code; noted as a known issue | |
+| 2026-11-16 | W-A4 | Detail component | 03 §6, review | `ops/order-detail.ts` (`ta-order-detail`) holds everything `/admin/orders/:ref` did (lines, donor, payments, events, refunds, receipts; cancel, refund, review accept/refund, resend). `order.page.ts` is now the wrapper (back link + SEO); the side panel uses the same component with `panel` = true (`h2` reference, the list keeps the only `h1`). The W-2 pending-refund spec moved with it | One source of truth | |
+| 2026-11-16 | W-A4 | Side panel | 03 §6 | Wider than 1100px a row's reference opens the panel (`/admin/orders?ref=…`, deep-linkable; modifier clicks still open the page); ≤ 1100px it links to `/admin/orders/:ref`. The panel has «الصفحة الكاملة» and close | Mockup D-Orders | |
+| 2026-11-16 | W-A4 | Search | 03 §6 | One box `#ao-q`: `normalizeSaudiMobile()` → `mobile`, anything else → `reference` (upper-cased); dates `#ao-from`/`#ao-to` (Riyadh, inclusive, from ≤ to); the status select became views الكل · بانتظار الدفع · قيد المراجعة · مدفوع · ملغى · منتهي. Counts on pending and review only, from the dashboard (`pendingOrders`, `inReviewOrders`) | No extra list calls | |
+| 2026-11-16 | W-A4 | CSV | 03 §13.10, review M6 | «تصدير CSV» calls `GET /admin/reports/donations.csv?from&to` (the finance report) for the filter's dates (≤ 366 days, `validRange`); `staff:finance` only, with the `<ta-requires>` reason; no client-side CSV of personal data | PDPL | REVIEW |
+| 2026-11-16 | W-A4 | Refund when payments are off | 03 §13.1 | Refund is hidden while `StoreConfig.paymentsEnabled() === false`; review accept/refund and resend follow their existing rules | Nothing to refund in showcase mode | REVIEW |
+
 
 
 
