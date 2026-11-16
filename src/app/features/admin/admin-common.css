@@ -1,4 +1,11 @@
 /* Shared by the admin screens (styleUrls: ['../admin-common.css', …]). */
+
+/* Body-size links: the global `a` colour (--c-accent) is for large text only; the shell points --c-link at the
+   admin link colour (≥ 4.5:1 on every admin surface). */
+a {
+  color: var(--c-link);
+}
+
 .ahead {
   display: flex;
   flex-wrap: wrap;
