@@ -69,7 +69,7 @@ for (const locale of ['ar', 'en'] as const) {
       await expect(picker.locator('.err')).toBeVisible(); // Arabic alt text is required
       await picker.locator('#pe-mp-up-alt-ar').fill('صورة اختبار');
       await picker.getByRole('button', { name: t('رفع', 'Upload') }).click();
-      await expect(page.locator('.imgf img')).toBeVisible();
+      await expect(page.locator('.cover img')).toBeVisible();
       await page.getByRole('button', { name: t('إنشاء كمسودة', 'Create as draft') }).click();
       await expect(page).toHaveURL(new RegExp(`/${locale}/admin/projects/[0-9a-f-]{36}$`));
       await expect(page.locator('h1')).toHaveText(`مشروع ${id}`);
