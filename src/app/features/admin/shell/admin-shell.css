@@ -363,7 +363,7 @@ main:focus {
   }
 
   .sec,
-  .sub {
+  .sidenav .sub {
     display: none;
   }
 
