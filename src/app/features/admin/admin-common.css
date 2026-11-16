@@ -26,6 +26,11 @@ a {
   font-size: 0.9rem;
 }
 
+/* The storefront's global `section` padding (base.css) is for page bands; admin sections are blocks. */
+section:not(.panel) {
+  padding-block: 0;
+}
+
 .panel {
   background: var(--c-surface);
   border: 1px solid var(--c-border);
