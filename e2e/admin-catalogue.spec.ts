@@ -1,6 +1,6 @@
 import { expect, type Page, test } from '@playwright/test';
 import { expectNoA11yViolations, expectNoHorizontalScroll } from './support/a11y';
-import { staffSignIn } from './support/auth';
+import { staff, staffSignIn } from './support/auth';
 import { hideE2eCatalogue } from './support/cleanup';
 import { png } from './support/png';
 
@@ -135,9 +135,23 @@ for (const locale of ['ar', 'en'] as const) {
       await staffSignIn(page, locale, 'admin', '/admin/projects');
       await expect(page.locator('h1')).toHaveText(t('المشاريع', 'Projects'));
       await expectNoA11yViolations(page, `/${locale}/admin/projects`);
-      await page.locator('#pf-status').selectOption('published');
-      await page.getByRole('button', { name: t('تطبيق', 'Apply') }).click();
+      // W-A2: status views replace the status select; counts come from the API's paged totals.
+      await expect(
+        page.getByRole('listitem').filter({ hasText: t('منشورة', 'Published') }),
+      ).toContainText(/\d+/);
+      await page.getByRole('button', { name: t('منشور', 'Published'), exact: true }).click();
+      await expect(
+        page.getByRole('button', { name: t('منشور', 'Published'), exact: true }),
+      ).toHaveAttribute('aria-pressed', 'true');
       const first = page.locator('tbody tr').first();
+      await expect(first).toContainText(t('منشور', 'Published'));
+      const title = (await first.getByRole('link').textContent())!.trim();
+      await page.locator('#pf-q').fill(title);
+      await page.getByRole('button', { name: t('تطبيق', 'Apply') }).click();
+      await expect(
+        page.getByRole('list', { name: t('الفلاتر المفعّلة', 'Active filters') }),
+      ).toContainText(title);
+      await expect(page.locator('tbody tr').first().getByRole('link')).toHaveText(title);
       await expect(first).toContainText(t('منشور', 'Published'));
       await first.getByRole('link').click();
       await expect(page.locator('#pe-tar')).not.toHaveValue('');
@@ -158,12 +172,88 @@ for (const locale of ['ar', 'en'] as const) {
       await expectNoHorizontalScroll(page);
     });
 
+    test('bulk publish from the list: one call per project, partial failure lists the missing items (W-A2)', async ({
+      page,
+    }) => {
+      const c = await staff('admin');
+      const tok = `${Date.now().toString(36)}${locale}`;
+      const { body: list } = await c.call('GET', '/v1/admin/projects?status=published&pageSize=1');
+      const { body: donor } = await c.call('GET', `/v1/admin/projects/${list.items[0].id}`);
+      const make = async (suffix: string, cover: string | null) => {
+        const r = await c.call('POST', '/v1/admin/projects', {
+          categoryId: donor.categoryId,
+          slug: `e2e-prj-bulk-${tok}-${suffix}`,
+          titleAr: `مشروع جماعي ${tok} ${suffix}`,
+          titleEn: `Bulk project ${tok} ${suffix}`,
+          summaryAr: 'ملخص',
+          summaryEn: null,
+          bodyAr: 'قصة المشروع',
+          bodyEn: null,
+          coverAssetId: cover,
+          allowOpenAmount: true,
+          minAmount: null,
+          badge: null,
+          sort: 900,
+          seoTitleAr: null,
+          seoTitleEn: null,
+          seoDescAr: null,
+          seoDescEn: null,
+          version: null,
+        });
+        expect(r.status).toBe(201);
+      };
+      await make('a', donor.coverAssetId);
+      await make('b', null);
+
+      await staffSignIn(page, locale, 'admin', '/admin/projects');
+      await page.locator('#pf-q').fill(tok);
+      await page.getByRole('button', { name: t('تطبيق', 'Apply') }).click();
+      await expect(page.locator('tbody tr')).toHaveCount(2);
+      await page
+        .getByRole('checkbox', {
+          name: t('تحديد كل مشاريع الصفحة', 'Select every project on this page'),
+        })
+        .check();
+      const bar = page.getByRole('region', {
+        name: t('إجراءات على المحدد', 'Actions on the selection'),
+      });
+      await expect(bar).toContainText(t('تم تحديد 2', '2 selected'));
+      await bar.getByRole('button', { name: t('نشر', 'Publish') }).click();
+      const result = page.getByRole('dialog');
+      await expect(result.locator('h2')).toHaveText(t('نُشر 1 من 2', 'Published 1 of 2'));
+      await expect(result).toContainText(t('صورة الغلاف', 'A cover image'));
+      await expectNoA11yViolations(page, `/${locale}/admin/projects bulk result`);
+      await result.getByRole('button', { name: t('إغلاق', 'Close') }).click();
+      await expect(page.locator('tbody tr').filter({ hasText: `${tok} a` })).toContainText(
+        t('منشور', 'Published'),
+      );
+      await expect(
+        page.getByRole('region', { name: t('إجراءات على المحدد', 'Actions on the selection') }),
+      ).toHaveCount(0);
+
+      await page.setViewportSize({ width: 390, height: 844 });
+      await expect(page.locator('table')).toHaveCount(0);
+      await expect(
+        page.getByRole('list', { name: t('المشاريع', 'Projects') }).getByRole('listitem'),
+      ).toHaveCount(2);
+      await expectNoA11yViolations(page, `/${locale}/admin/projects (390 cards)`);
+    });
+
     test('a viewer reads the catalogue but cannot change it', async ({ page }) => {
       await staffSignIn(page, locale, 'viewer', '/admin/categories');
       await expect(
         page.getByRole('button', { name: t('إضافة تصنيف', 'Add a category') }),
       ).toBeDisabled();
       await expect(page.locator('ta-requires').first()).not.toBeEmpty();
+      await page.goto(`/${locale}/admin/projects`);
+      await page.locator('tbody input[type=checkbox]').first().check();
+      const bulk = page.getByRole('region', {
+        name: t('إجراءات على المحدد', 'Actions on the selection'),
+      });
+      await expect(bulk.getByRole('button', { name: t('نشر', 'Publish') })).toBeDisabled();
+      await expect(
+        bulk.getByRole('button', { name: t('نشر', 'Publish') }),
+      ).toHaveAccessibleDescription(/.+/);
       await page.goto(`/${locale}/admin/media`);
       await expect(page.locator('h1')).toHaveText(t('الوسائط', 'Media'));
       await expect(page.locator('#md-file')).toHaveCount(0);
