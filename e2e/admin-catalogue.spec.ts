@@ -175,6 +175,7 @@ for (const locale of ['ar', 'en'] as const) {
     test('bulk publish from the list: one call per project, partial failure lists the missing items (W-A2)', async ({
       page,
     }) => {
+      test.setTimeout(120_000); // two staff sign-ins (API + UI) may each wait for the next TOTP step
       const c = await staff('admin');
       const tok = `${Date.now().toString(36)}${locale}`;
       const { body: list } = await c.call('GET', '/v1/admin/projects?status=published&pageSize=1');
