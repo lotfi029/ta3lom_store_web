@@ -73,8 +73,8 @@ for (const locale of ['ar', 'en'] as const) {
       await page.getByRole('button', { name: t('إنشاء كمسودة', 'Create as draft') }).click();
       await expect(page).toHaveURL(new RegExp(`/${locale}/admin/projects/[0-9a-f-]{36}$`));
       await expect(page.locator('h1')).toHaveText(`مشروع ${id}`);
-      // Nothing to donate to yet → publish lists what is missing.
-      await expect(page.locator('.missing')).toContainText(
+      // Nothing to donate to yet → the requirements card flags what is missing (W-A3).
+      await expect(page.locator('.reqs li.warn')).toContainText(
         t('خيار تبرع نشط', 'An active donation option'),
       );
       await expectNoA11yViolations(page, `/${locale}/admin/projects/:id`);
@@ -97,7 +97,7 @@ for (const locale of ['ar', 'en'] as const) {
       await expect(rows.nth(0).locator('input').nth(0)).toHaveValue('نصف سهم');
       await page.getByRole('button', { name: t('حفظ الخيارات', 'Save options') }).click();
       await expect(toast(page)).toContainText(t('حُفظت', 'saved'));
-      await expect(page.locator('.missing')).toHaveCount(0);
+      await expect(page.locator('.reqs li.warn')).toHaveCount(0);
 
       // Preview, then publish
       await page.getByRole('button', { name: t('معاينة', 'Preview') }).click();
