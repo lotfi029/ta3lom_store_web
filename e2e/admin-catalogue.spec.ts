@@ -52,9 +52,12 @@ for (const locale of ['ar', 'en'] as const) {
       await page.locator('#pe-cat').selectOption({ label: `تصنيف ${id}` });
       await page.locator('#pe-slug').fill(`e2e-prj-${id}`);
       await page.locator('#pe-tar').fill(`مشروع ${id}`);
-      await page.locator('#pe-ten').fill(`Project ${id}`);
       await page.locator('#pe-sar').fill('ملخص قصير للمشروع.');
       await page.locator('#pe-bar').fill('## القصة\n\nنص **عريض** ورابط [هنا](https://ta3lom.sa).');
+      // W-A3: the English fields sit behind the عربي / English tabs.
+      await page.getByRole('tab', { name: 'English' }).click();
+      await page.locator('#pe-ten').fill(`Project ${id}`);
+      await page.getByRole('tab', { name: 'العربية' }).click();
       await page.getByRole('button', { name: t('اختيار صورة', 'Choose an image') }).click();
       const picker = page.getByRole('dialog');
       await picker.locator('#pe-mp-up-file').setInputFiles({
@@ -238,6 +241,58 @@ for (const locale of ['ar', 'en'] as const) {
         page.getByRole('list', { name: t('المشاريع', 'Projects'), exact: true }).getByRole('listitem'),
       ).toHaveCount(2);
       await expectNoA11yViolations(page, `/${locale}/admin/projects (390 cards)`);
+    });
+
+    test('editor: save bar names the dirty section, publish waits for it, Ctrl+S saves, 422 updates the requirements (W-A3)', async ({
+      page,
+    }) => {
+      const c = await staff('admin');
+      const tok = `${Date.now().toString(36)}${locale}`;
+      const { body: cats } = await c.call('GET', '/v1/admin/categories');
+      const r = await c.call('POST', '/v1/admin/projects', {
+        categoryId: cats.find((x: { isActive: boolean }) => x.isActive).id,
+        slug: `e2e-prj-ed-${tok}`,
+        titleAr: `مشروع محرر ${tok}`,
+        titleEn: null,
+        summaryAr: 'ملخص',
+        summaryEn: null,
+        bodyAr: 'قصة',
+        bodyEn: null,
+        coverAssetId: null,
+        allowOpenAmount: true,
+        minAmount: null,
+        badge: null,
+        sort: 900,
+        seoTitleAr: null,
+        seoTitleEn: null,
+        seoDescAr: null,
+        seoDescEn: null,
+        version: null,
+      });
+      expect(r.status).toBe(201);
+      await staffSignIn(page, locale, 'admin', `/admin/projects/${r.body.id}`);
+      const reqs = page.getByRole('region', { name: t('متطلبات النشر', 'Publish requirements') });
+      await expect(
+        reqs.getByRole('listitem').filter({ hasText: t('صورة الغلاف', 'A cover image') }),
+      ).toHaveClass(/warn/);
+
+      await page.locator('#pe-sar').fill('ملخص معدّل');
+      const bar = page.getByRole('region', { name: t('حفظ التغييرات', 'Save changes') });
+      await expect(bar).toContainText(t('«التفاصيل»', '“Details”'));
+      const publish = page.getByRole('button', { name: t('نشر', 'Publish'), exact: true });
+      await expect(publish).toBeDisabled();
+      await expectNoA11yViolations(page, `/${locale}/admin/projects/:id (dirty)`);
+      await page.keyboard.press('Control+s');
+      await expect(bar).toHaveCount(0);
+      await expect(publish).toBeEnabled();
+      await publish.click();
+      await expect(page.getByRole('alert')).toContainText(t('صورة الغلاف', 'A cover image'));
+
+      await page.setViewportSize({ width: 390, height: 844 });
+      await expect(page.locator('h1')).toHaveCount(1);
+      await expectNoA11yViolations(page, `/${locale}/admin/projects/:id (390)`);
+      await page.setViewportSize({ width: 320, height: 800 });
+      await expectNoHorizontalScroll(page);
     });
 
     test('a viewer reads the catalogue but cannot change it', async ({ page }) => {

@@ -26,9 +26,12 @@ import { ToastService } from '../../../core/ui/toast.service';
 import { Dialog } from '../../../shared/ui/dialog/dialog';
 import { Markdown } from '../../../shared/ui/markdown/markdown';
 import { Money } from '../../../shared/ui/money/money';
-import { StatusPill } from '../../../shared/ui/status-pill/status-pill';
+import { Icon } from '../../../shared/ui/icon/icon';
 import { projectStatus } from '../../../shared/ui/status-pill/status-labels';
+import { AdminBadge, badgeKind } from '../ui/badge';
 import { ConflictDialog } from '../ui/conflict-dialog';
+import { type EditLang, LangTabs } from '../ui/edit-layout/lang-tabs';
+import { SaveBar } from '../ui/edit-layout/save-bar';
 import { Requires } from '../ui/requires';
 import { CatalogAdminData } from './catalog-admin.data';
 import { sortError } from './categories.page';
@@ -43,6 +46,25 @@ import {
   projectInput,
   projectModel,
 } from './project-models';
+
+/** Every publish requirement the API can report (`missingForPublish`, 422 `missing[]`), in display order. */
+export const PUBLISH_REQUIREMENTS = [
+  'titleAr',
+  'summaryAr',
+  'bodyAr',
+  'cover',
+  'category',
+  'amount',
+] as const;
+
+/** The save bar's text: which sections have unsaved edits (03 §5). */
+export function saveBarMessage(details: boolean, options: boolean): string {
+  const d = $localize`:@@store.admin.section-details:التفاصيل`;
+  const o = $localize`:@@store.admin.options:خيارات التبرع`;
+  if (details && options)
+    return $localize`:@@store.admin.unsaved-two:تغييرات غير محفوظة في «${d}:a:» و«${o}:b:»`;
+  return $localize`:@@store.admin.unsaved-one:تغييرات غير محفوظة في «${details ? d : o}:section:»`;
+}
 
 const LEN = (n: number) => $localize`:@@store.admin.max-length:${n}:max: حرفًا على الأكثر.`;
 
@@ -60,7 +82,10 @@ const LEN = (n: number) => $localize`:@@store.admin.max-length:${n}:max: حرف�
     Dialog,
     Markdown,
     Money,
-    StatusPill,
+    Icon,
+    AdminBadge,
+    SaveBar,
+    LangTabs,
     Requires,
     MediaPicker,
     OptionsEditor,
@@ -69,6 +94,7 @@ const LEN = (n: number) => $localize`:@@store.admin.max-length:${n}:max: حرف�
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './project-editor.page.html',
   styleUrls: ['../admin-common.css', './project-editor.page.css'],
+  host: { '(document:keydown)': 'shortcut($event)' },
 })
 export class ProjectEditorPage implements HasUnsavedChanges {
   readonly id = input.required<string>();
@@ -89,6 +115,22 @@ export class ProjectEditorPage implements HasUnsavedChanges {
   protected readonly loadState = signal<'loading' | 'ready' | 'notFound' | 'error'>('loading');
   protected readonly categories = computed(() => valueOf(this.data.categories) ?? []);
   protected readonly status = computed(() => projectStatus(this.project()?.status ?? 'draft'));
+  protected readonly statusKind = computed(() => badgeKind(this.project()?.status ?? 'draft'));
+  protected readonly lang = signal<EditLang>('ar');
+  /** The cover's library entry (picked now, or found on the loaded media page) — for the AR/EN alt status. */
+  private readonly pickedCover = signal<MediaAsset | null>(null);
+  protected readonly coverAsset = computed(() => {
+    const id = this.model().coverAssetId;
+    if (!id) return null;
+    const picked = this.pickedCover();
+    if (picked?.id === id) return picked;
+    return valueOf(this.data.media)?.items.find((a) => a.id === id) ?? null;
+  });
+  protected readonly announce = signal('');
+  protected readonly coverAltText = computed(() => {
+    const a = this.coverAsset();
+    return a ? this.i18n.pick(a.altAr ?? '', a.altEn) : this.model().coverAlt;
+  });
 
   protected readonly model = signal<ProjectModel>(projectModel(null));
   private readonly initial = signal('');
@@ -141,6 +183,26 @@ export class ProjectEditorPage implements HasUnsavedChanges {
 
   /** Publish readiness as the API reports it, plus the open-amount/options state being edited. */
   protected readonly missingNow = computed(() => this.project()?.missingForPublish ?? []);
+  /** The requirements card: the API's list, updated by a 422 `missing[]` after a publish attempt. */
+  protected readonly requirements = computed(() => {
+    const miss = new Set([...this.missingNow(), ...this.missing()]);
+    return PUBLISH_REQUIREMENTS.map((key) => ({ key, ok: !miss.has(key) }));
+  });
+  protected readonly optionsDirty = computed(() => !!this.options()?.hasUnsavedChanges());
+  protected readonly anyDirty = computed(() => this.dirty() || this.optionsDirty());
+  protected readonly barMessage = computed(() => saveBarMessage(this.dirty(), this.optionsDirty()));
+  protected readonly seoTitle = computed(() => {
+    const m = this.model();
+    return this.lang() === 'en'
+      ? m.seoTitleEn.trim() || m.titleEn.trim() || m.titleAr
+      : m.seoTitleAr.trim() || m.titleAr;
+  });
+  protected readonly seoDesc = computed(() => {
+    const m = this.model();
+    return this.lang() === 'en'
+      ? m.seoDescEn.trim() || m.summaryEn.trim() || m.summaryAr
+      : m.seoDescAr.trim() || m.summaryAr;
+  });
   protected readonly noTarget = computed(() => {
     const p = this.project();
     return !!p && !hasDonationTarget(this.model().allowOpenAmount, optionRows(p.options));
@@ -194,6 +256,7 @@ export class ProjectEditorPage implements HasUnsavedChanges {
   protected refreshed(p: AdminProject): void {
     this.project.set(p);
     this.toast.show($localize`:@@store.account.saved:حُفظت التغييرات.`, 'success');
+    this.announce.set($localize`:@@store.admin.saved-short:تم الحفظ`);
   }
 
   protected retry(): void {
@@ -211,6 +274,7 @@ export class ProjectEditorPage implements HasUnsavedChanges {
   }
 
   protected picked(a: MediaAsset): void {
+    this.pickedCover.set(a);
     this.model.update((m) => ({
       ...m,
       coverAssetId: a.id,
@@ -249,6 +313,7 @@ export class ProjectEditorPage implements HasUnsavedChanges {
       );
       this.apply(saved);
       this.toast.show($localize`:@@store.account.saved:حُفظت التغييرات.`, 'success');
+      this.announce.set($localize`:@@store.admin.saved-short:تم الحفظ`);
     } catch (err) {
       this.fail(err);
     } finally {
@@ -294,6 +359,19 @@ export class ProjectEditorPage implements HasUnsavedChanges {
       this.toast.show(problemMessage(toProblem(err)), 'error');
     } finally {
       this.busy.set(null);
+    }
+  }
+
+  /** Ctrl/⌘ S (03 §5, review S8): saves the details, or the options when only they are unsaved; else the browser's. */
+  protected shortcut(e: KeyboardEvent): void {
+    if (!(e.ctrlKey || e.metaKey) || e.key.toLowerCase() !== 's' || this.loadState() !== 'ready')
+      return;
+    if (this.dirty() || this.isNew()) {
+      e.preventDefault();
+      void this.save(e);
+    } else if (this.optionsDirty()) {
+      e.preventDefault();
+      void this.options()?.saveNow();
     }
   }
 
