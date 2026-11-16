@@ -363,6 +363,9 @@ plan (M1–M7, S1–S11). Staff admin only; the storefront look is unchanged.
 | 2026-11-16 | W-A1 | Account menu | 03 §3 | The account chip opens «كلمة المرور والتحقق» (`/admin/password`) and sign out. No "sign out everywhere": there is no staff endpoint (03 §13.3, API backlog) | — | REVIEW |
 | 2026-11-16 | W-A1 | Phone | 02 §3 | ≤ 640px: top bar = More link, logo, the route's `data.title` (a span; the page keeps its own `h1`), search, bell; bottom tab bar Home · Projects · + · Donations · More. "+" is a link to `/admin/projects/new` with `staff:catalogue`, otherwise a disabled button described by `<ta-requires>`. `/admin/menu` (one visually hidden `h1`, noindex) holds the account card, payments notice, every section, language, theme, password and sign out; wider than 640px it redirects to `/admin` | Mockup P-Menu | |
 | 2026-11-16 | W-A1 | Rail | 02 §3 | ≤ 1100px the 240px side nav becomes a 72px rail: section labels and sub-items hidden, each link keeps its text as the accessible name, shown as a tooltip on hover/focus | Names stay in the accessibility tree | |
+| 2026-11-16 | W-A1 | Admin link colour | contrast | `--c-link` is 4.5:1 on white only; on the admin's grey page axe flagged the breadcrumb/back links. The shell re-points `--c-link` to `--c-admin-link` (light: `--c-accent-strong`, 5.70–6.64:1 on every admin surface; dark: `#6fcbeb`); 4 pairs added to the contrast check | Found by the admin e2e axe runs | |
+| 2026-11-16 | W-A1 | Storefront unchanged | review S5 | `/ar/` and `/ar/p/<slug>` at 1440 and 390 (same seed, full page): 0 % pixel difference before/after; the global stylesheet only gains the `--c-admin-*`/`--c-badge-*` custom properties, no `adm-` class | Admin CSS is component-scoped in lazy chunks | |
+
 
 
 ## Storefront home: incremental hydration of the below-the-fold blocks (branch `fix/storefront-hydration-tbt`)
