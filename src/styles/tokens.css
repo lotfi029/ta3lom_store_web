@@ -147,6 +147,7 @@
   --c-admin-topbar: var(--c-surface-dark);
   --c-admin-topbar-2: #1d3a45;
   --c-admin-row-selected: #f2f8fb;
+
   /* Links on the admin's grey page: --c-link is 4.5:1 on white only, so the admin shell re-points --c-link to this */
   --c-admin-link: var(--c-accent-strong);
   --c-badge-ok-bg: #d9f2e3;
