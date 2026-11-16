@@ -5,6 +5,9 @@
   min-block-size: 100vh;
   background: var(--c-admin-bg);
   color: var(--c-text);
+
+  /* Every admin link is drawn on the grey page or a card: the darker link colour keeps 4.5:1 on both. */
+  --c-link: var(--c-admin-link);
 }
 
 /* ── Top bar ─────────────────────────────────────────────────────────────── */

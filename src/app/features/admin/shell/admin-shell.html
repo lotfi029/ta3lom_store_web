@@ -140,7 +140,7 @@
               [class.on]="activeKey() === item.key"
               routerLinkActive
               [routerLinkActiveOptions]="{ exact: item.path === '/admin' }"
-              [ariaCurrentWhenActive]="item.children?.length ? false : 'page'"
+              [ariaCurrentWhenActive]="item.children?.length ? undefined : 'page'"
             >
               <ta-icon [name]="item.icon" [size]="20" />
               <span class="lbl">{{ item.label() }}</span>
