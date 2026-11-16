@@ -214,11 +214,11 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/settings/setting-kinds.ts</context>
-          <context context-type="linenumber">158</context>
+          <context context-type="linenumber">159</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/templates/templates.page.ts</context>
-          <context context-type="linenumber">152</context>
+          <context context-type="linenumber">153</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/login/otp-sign-in.ts</context>
@@ -1044,15 +1044,15 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">82,84</context>
+          <context context-type="linenumber">114,116</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">101,102</context>
+          <context context-type="linenumber">133,134</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orders.page.html</context>
-          <context context-type="linenumber">88,89</context>
+          <context context-type="linenumber">90,91</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/cart/cart.page.html</context>
@@ -1102,7 +1102,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">122,124</context>
+          <context context-type="linenumber">154,156</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/staff/staff.page.html</context>
@@ -1181,7 +1181,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orders.page.html</context>
-          <context context-type="linenumber">84,85</context>
+          <context context-type="linenumber">86,87</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/order/order.page.html</context>
@@ -1226,7 +1226,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">189,190</context>
+          <context context-type="linenumber">223,224</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/order/order.page.html</context>
@@ -1453,7 +1453,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/templates/templates.page.ts</context>
-          <context context-type="linenumber">136</context>
+          <context context-type="linenumber">137</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.account.signed-out-all" datatype="html">
@@ -1482,7 +1482,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/admin-shell.html</context>
-          <context context-type="linenumber">192,194</context>
+          <context context-type="linenumber">206,208</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.more" datatype="html">
@@ -1497,11 +1497,11 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/menu/menu.page.ts</context>
-          <context context-type="linenumber">40</context>
+          <context context-type="linenumber">38</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/admin-shell.html</context>
-          <context context-type="linenumber">217,220</context>
+          <context context-type="linenumber">227,230</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.nav-projects" datatype="html">
@@ -1532,7 +1532,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/admin-shell.html</context>
-          <context context-type="linenumber">195,198</context>
+          <context context-type="linenumber">209,212</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.route-project" datatype="html">
@@ -1592,7 +1592,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orders.page.html</context>
-          <context context-type="linenumber">81,83</context>
+          <context context-type="linenumber">82,84</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orders.page.ts</context>
@@ -1604,7 +1604,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/admin-shell.html</context>
-          <context context-type="linenumber">210,213</context>
+          <context context-type="linenumber">224,226</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.route-order" datatype="html">
@@ -1702,7 +1702,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/templates/templates.page.ts</context>
-          <context context-type="linenumber">84</context>
+          <context context-type="linenumber">85</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.nav-reports" datatype="html">
@@ -1713,11 +1713,11 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/reports/reports.page.ts</context>
-          <context context-type="linenumber">49,50</context>
+          <context context-type="linenumber">57,58</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/reports/reports.page.ts</context>
-          <context context-type="linenumber">102</context>
+          <context context-type="linenumber">136</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/admin-nav.ts</context>
@@ -1732,15 +1732,15 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
-          <context context-type="linenumber">31,32</context>
+          <context context-type="linenumber">32,33</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
-          <context context-type="linenumber">56,58</context>
+          <context context-type="linenumber">78,79</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
-          <context context-type="linenumber">153</context>
+          <context context-type="linenumber">222</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/admin-nav.ts</context>
@@ -1859,7 +1859,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/dashboard.page.html</context>
-          <context context-type="linenumber">109,111</context>
+          <context context-type="linenumber">123,125</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/donor.page.html</context>
@@ -1915,7 +1915,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orders.page.html</context>
-          <context context-type="linenumber">122</context>
+          <context context-type="linenumber">124</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.account.prev" datatype="html">
@@ -1938,7 +1938,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orders.page.html</context>
-          <context context-type="linenumber">130,132</context>
+          <context context-type="linenumber">132,134</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.account.next" datatype="html">
@@ -1961,7 +1961,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orders.page.html</context>
-          <context context-type="linenumber">142,144</context>
+          <context context-type="linenumber">144,146</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.categories-lede" datatype="html">
@@ -2506,15 +2506,15 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/admin-shell.html</context>
-          <context context-type="linenumber">200,203</context>
+          <context context-type="linenumber">214,217</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/admin-shell.html</context>
-          <context context-type="linenumber">205,207</context>
+          <context context-type="linenumber">219,221</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/command-palette.ts</context>
-          <context context-type="linenumber">209</context>
+          <context context-type="linenumber">219</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.published-at" datatype="html">
@@ -3017,7 +3017,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orders.page.html</context>
-          <context context-type="linenumber">89,92</context>
+          <context context-type="linenumber">91,94</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/staff/staff.page.html</context>
@@ -3229,72 +3229,72 @@
         <source><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>الدفع الإلكتروني غير مفعّل بعد.<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/> المتجر في وضع العرض: لا تُنشأ تبرعات جديدة حتى ربط بوابة الدفع.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/menu/menu.page.html</context>
-          <context context-type="linenumber">13,15</context>
+          <context context-type="linenumber">13,16</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.sections" datatype="html">
         <source>أقسام الإدارة</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/menu/menu.page.html</context>
-          <context context-type="linenumber">17</context>
+          <context context-type="linenumber">18</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/dashboard.page.html</context>
-          <context context-type="linenumber">127,129</context>
+          <context context-type="linenumber">143,145</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/admin-shell.html</context>
-          <context context-type="linenumber">124</context>
+          <context context-type="linenumber">134,135</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.nav-section-main" datatype="html">
         <source>المتجر</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/menu/menu.page.html</context>
-          <context context-type="linenumber">23,26</context>
+          <context context-type="linenumber">24,27</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.nav-section-channel" datatype="html">
         <source>قنوات البيع</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/menu/menu.page.html</context>
-          <context context-type="linenumber">54,57</context>
+          <context context-type="linenumber">55,58</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/admin-shell.html</context>
-          <context context-type="linenumber">170,171</context>
+          <context context-type="linenumber">182,183</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.opens-new-tab" datatype="html">
         <source>(يفتح في نافذة جديدة)</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/menu/menu.page.html</context>
-          <context context-type="linenumber">60,61</context>
+          <context context-type="linenumber">62,64</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/admin-shell.html</context>
-          <context context-type="linenumber">176,179</context>
+          <context context-type="linenumber">189,192</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.account" datatype="html">
         <source>الحساب</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/menu/menu.page.html</context>
-          <context context-type="linenumber">66,68</context>
+          <context context-type="linenumber">69,71</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.language" datatype="html">
         <source>اللغة</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/menu/menu.page.html</context>
-          <context context-type="linenumber">69,71</context>
+          <context context-type="linenumber">72,74</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.dark-mode" datatype="html">
         <source>الوضع الداكن</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/menu/menu.page.html</context>
-          <context context-type="linenumber">73,75</context>
+          <context context-type="linenumber">76,78</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/theme-toggle/theme-toggle.ts</context>
@@ -3305,22 +3305,22 @@
         <source>كلمة المرور والتحقق</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/menu/menu.page.html</context>
-          <context context-type="linenumber">79,80</context>
+          <context context-type="linenumber">82,83</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/admin-shell.html</context>
-          <context context-type="linenumber">108,110</context>
+          <context context-type="linenumber">115,117</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/command-palette.ts</context>
-          <context context-type="linenumber">215</context>
+          <context context-type="linenumber">225</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.layout.sign-out" datatype="html">
         <source>تسجيل الخروج</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/menu/menu.page.html</context>
-          <context context-type="linenumber">86,90</context>
+          <context context-type="linenumber">89,93</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/password/admin-password.page.html</context>
@@ -3328,7 +3328,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/admin-shell.html</context>
-          <context context-type="linenumber">114,116</context>
+          <context context-type="linenumber">121,123</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/account-menu/account-menu.ts</context>
@@ -3427,49 +3427,49 @@
         <source>اليوم</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/dashboard.page.html</context>
-          <context context-type="linenumber">81,82</context>
+          <context context-type="linenumber">81,83</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.paid-week" datatype="html">
         <source>هذا الأسبوع</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/dashboard.page.html</context>
-          <context context-type="linenumber">85,86</context>
+          <context context-type="linenumber">88,90</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.paid-month" datatype="html">
         <source>هذا الشهر</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/dashboard.page.html</context>
-          <context context-type="linenumber">89,90</context>
+          <context context-type="linenumber">95,97</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.in-review" datatype="html">
         <source>قيد مراجعة الدفع</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/dashboard.page.html</context>
-          <context context-type="linenumber">93,95</context>
+          <context context-type="linenumber">102,104</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.open-orphans" datatype="html">
         <source>دفعات بلا طلب</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/dashboard.page.html</context>
-          <context context-type="linenumber">99,101</context>
+          <context context-type="linenumber">110,112</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.top-paid-projects" datatype="html">
         <source>المشاريع الأعلى في المبالغ المدفوعة</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/dashboard.page.html</context>
-          <context context-type="linenumber">107,108</context>
+          <context context-type="linenumber">121,122</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.paid-count" datatype="html">
         <source>(<x id="INTERPOLATION" equiv-text="{{ int(t.paidOrders) }}"/> تبرع)</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/dashboard.page.html</context>
-          <context context-type="linenumber">116,117</context>
+          <context context-type="linenumber">131,132</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.back-to-donors" datatype="html">
@@ -3523,15 +3523,15 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">132,133</context>
+          <context context-type="linenumber">164,165</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">193,195</context>
+          <context context-type="linenumber">227,229</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orders.page.html</context>
-          <context context-type="linenumber">85,86</context>
+          <context context-type="linenumber">87,88</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.profile" datatype="html">
@@ -3553,7 +3553,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">116,118</context>
+          <context context-type="linenumber">148,150</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orders.page.html</context>
@@ -3568,7 +3568,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">128,129</context>
+          <context context-type="linenumber">160,161</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.marketing" datatype="html">
@@ -3646,15 +3646,15 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">318,321</context>
+          <context context-type="linenumber">397,399</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">344,346</context>
+          <context context-type="linenumber">424,426</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
-          <context context-type="linenumber">124,126</context>
+          <context context-type="linenumber">181,182</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.donor" datatype="html">
@@ -3665,11 +3665,11 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">107,109</context>
+          <context context-type="linenumber">139,141</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orders.page.html</context>
-          <context context-type="linenumber">86,87</context>
+          <context context-type="linenumber">88,89</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.donor-blocked-toast" datatype="html">
@@ -3708,7 +3708,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">110,112</context>
+          <context context-type="linenumber">142,144</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/staff/staff.page.html</context>
@@ -3741,120 +3741,120 @@
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.refund" datatype="html">
-        <source>استرداد</source>
+        <source> استرداد </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">30,32</context>
+          <context context-type="linenumber">37,38</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.review-accept" datatype="html">
-        <source>قبول الدفعة</source>
+        <source> قبول الدفعة </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">35,37</context>
+          <context context-type="linenumber">50,52</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.review-refund" datatype="html">
-        <source>استرداد الدفعة قيد المراجعة</source>
+        <source> استرداد الدفعة قيد المراجعة </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">38,40</context>
+          <context context-type="linenumber">61,63</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.resend-receipt" datatype="html">
-        <source>إعادة إرسال الإيصال</source>
+        <source> إعادة إرسال الإيصال </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">42,44</context>
+          <context context-type="linenumber">73,75</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.refund-pending-note" datatype="html">
         <source> استرداد بانتظار تأكيد بوابة الدفع؛ لا يمكن بدء استرداد آخر حتى يكتمل. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">46,49</context>
+          <context context-type="linenumber">78,81</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.cancel-order" datatype="html">
         <source> إلغاء الطلب </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">63,65</context>
+          <context context-type="linenumber">95,97</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">341,343</context>
+          <context context-type="linenumber">421,423</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.col-lines" datatype="html">
         <source>التبرعات</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">74,75</context>
+          <context context-type="linenumber">106,107</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orders.page.html</context>
-          <context context-type="linenumber">87,88</context>
+          <context context-type="linenumber">89,90</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.col-target" datatype="html">
         <source>التبرع</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">79,80</context>
+          <context context-type="linenumber">111,112</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.col-qty" datatype="html">
         <source>الكمية</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">80,81</context>
+          <context context-type="linenumber">112,113</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.col-unit" datatype="html">
         <source>المبلغ للوحدة</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">81,82</context>
+          <context context-type="linenumber">113,114</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.payment-due" datatype="html">
         <source>مهلة الدفع</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">136,137</context>
+          <context context-type="linenumber">168,169</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.cancelled-at" datatype="html">
         <source>أُلغي في</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">141,143</context>
+          <context context-type="linenumber">173,175</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.payments" datatype="html">
         <source>الدفع</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">155,157</context>
+          <context context-type="linenumber">187,189</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.paid-at" datatype="html">
         <source>دُفع في</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">159,160</context>
+          <context context-type="linenumber">191,192</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.order.refunded-amount" datatype="html">
         <source>المبلغ المسترد</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">164,165</context>
+          <context context-type="linenumber">196,197</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">192,193</context>
+          <context context-type="linenumber">226,227</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/store/order/order.page.html</context>
@@ -3865,176 +3865,176 @@
         <source>قابل للاسترداد</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">169,170</context>
+          <context context-type="linenumber">201,202</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.review-reason" datatype="html">
         <source>سبب المراجعة</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">175,176</context>
+          <context context-type="linenumber">207,208</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.no-payments" datatype="html">
         <source>لا توجد محاولات دفع بعد.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">181,183</context>
+          <context context-type="linenumber">213,215</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.payments-caption" datatype="html">
-        <source>محاولات الدفع</source>
+        <source> محاولات الدفع </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">185,187</context>
+          <context context-type="linenumber">218,220</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.method" datatype="html">
         <source>الوسيلة</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">190,191</context>
+          <context context-type="linenumber">224,225</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.captured" datatype="html">
         <source>المدفوع</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">191,192</context>
+          <context context-type="linenumber">225,226</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.events" datatype="html">
         <source>إشعارات بوابة الدفع</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">217,218</context>
+          <context context-type="linenumber">255,256</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.refunds" datatype="html">
         <source>عمليات الاسترداد</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">228,229</context>
+          <context context-type="linenumber">266,267</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.receipts" datatype="html">
         <source>الإيصالات</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">241,242</context>
+          <context context-type="linenumber">281,282</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.voided-by" datatype="html">
         <source>ألغاه</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">248</context>
+          <context context-type="linenumber">288,289</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.refund-q" datatype="html">
         <source>استرداد مبلغ من هذا التبرع</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">263,264</context>
+          <context context-type="linenumber">309,310</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.refund-lede" datatype="html">
         <source> يُعاد المبلغ إلى وسيلة الدفع نفسها ويُبلَّغ المتبرع. استرداد كامل المبلغ يُصدر إيصال إلغاء. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">265,267</context>
+          <context context-type="linenumber">311,314</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.refund-amount" datatype="html">
         <source>المبلغ (ر.س)</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">268,269</context>
+          <context context-type="linenumber">315,317</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.refund-reason" datatype="html">
         <source>السبب</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">273,274</context>
+          <context context-type="linenumber">327,329</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">291,292</context>
+          <context context-type="linenumber">360,362</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.refund-type-ref" datatype="html">
         <source>اكتب الرقم المرجعي للتأكيد</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">277,278</context>
+          <context context-type="linenumber">337,340</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.review-accept-q" datatype="html">
         <source>قبول الدفعة قيد المراجعة؟</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">282,283</context>
+          <context context-type="linenumber">349,350</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.review-accept-lede" datatype="html">
         <source> يُعدّ التبرع مدفوعًا بالكامل، ويُصدر إيصال التبرع ويُرسل إلى المتبرع. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">284,287</context>
+          <context context-type="linenumber">351,354</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.review-refund-q" datatype="html">
         <source>استرداد الدفعة قيد المراجعة؟</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">288,289</context>
+          <context context-type="linenumber">355,356</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.review-refund-lede" datatype="html">
-        <source>يُعاد كامل المبلغ المدفوع في هذه الدفعة إلى المتبرع.</source>
+        <source> يُعاد كامل المبلغ المدفوع في هذه الدفعة إلى المتبرع. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">289,291</context>
+          <context context-type="linenumber">357,359</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.resend-q" datatype="html">
         <source>إعادة إرسال الإيصال إلى المتبرع؟</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">296,297</context>
+          <context context-type="linenumber">370,371</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.resend-lede" datatype="html">
         <source>تُرسل رسالة نصية وبريد إلكتروني مع ملف الإيصال.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">297,300</context>
+          <context context-type="linenumber">371,374</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.refund-pending" datatype="html">
         <source> لم تؤكد بوابة الدفع الاسترداد بعد. لن يُرسل مرة ثانية: «تحقق مجددًا» يسأل البوابة عن نتيجته، وتؤكده المتابعة التلقائية خلال دقائق إن أغلقت هذه النافذة. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">302,306</context>
+          <context context-type="linenumber">376,380</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.check-again" datatype="html">
         <source>تحقق مجددًا</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">313,315</context>
+          <context context-type="linenumber">391,393</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.confirm" datatype="html">
         <source>تأكيد</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">315,317</context>
+          <context context-type="linenumber">393,395</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
-          <context context-type="linenumber">123,124</context>
+          <context context-type="linenumber">178,180</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/staff/staff.page.html</context>
@@ -4045,60 +4045,60 @@
         <source>إلغاء هذا الطلب؟</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">325,326</context>
+          <context context-type="linenumber">405,406</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.cancel-order-lede" datatype="html">
         <source> يُلغى الطلب ويُبلَّغ المتبرع. لا يمكن التراجع عن الإلغاء. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.html</context>
-          <context context-type="linenumber">327,330</context>
+          <context context-type="linenumber">407,410</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.refund-done" datatype="html">
         <source>تم الاسترداد.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.ts</context>
-          <context context-type="linenumber">176</context>
+          <context context-type="linenumber">202</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.ts</context>
-          <context context-type="linenumber">186</context>
+          <context context-type="linenumber">220</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.review-accepted" datatype="html">
         <source>قُبلت الدفعة وأُصدر الإيصال.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.ts</context>
-          <context context-type="linenumber">181</context>
+          <context context-type="linenumber">208</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.receipt-resent" datatype="html">
         <source>أُعيد إرسال الإيصال.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.ts</context>
-          <context context-type="linenumber">191</context>
+          <context context-type="linenumber">225</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.refund-pending-toast" datatype="html">
         <source>الاسترداد بانتظار تأكيد بوابة الدفع.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.ts</context>
-          <context context-type="linenumber">212</context>
+          <context context-type="linenumber">247</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.method-card" datatype="html">
         <source>بطاقة ائتمانية</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.ts</context>
-          <context context-type="linenumber">225</context>
+          <context context-type="linenumber">262</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.order-cancelled" datatype="html">
         <source>أُلغي الطلب.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/order.page.ts</context>
-          <context context-type="linenumber">247</context>
+          <context context-type="linenumber">284</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.orders-lede" datatype="html">
@@ -4130,105 +4130,105 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/settings/setting-kinds.ts</context>
-          <context context-type="linenumber">188</context>
+          <context context-type="linenumber">189</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.orphans-lede" datatype="html">
         <source> دفعات حصّلتها بوابة الدفع ولا يقابلها طلب في المتجر. عالجها من لوحة البوابة ثم سجّل ما فعلته. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
-          <context context-type="linenumber">33,36</context>
+          <context context-type="linenumber">34,37</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.orphans-filter" datatype="html">
         <source>عرض</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
-          <context context-type="linenumber">40</context>
+          <context context-type="linenumber">46,48</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.orphans-open" datatype="html">
-        <source>بانتظار المعالجة</source>
+        <source> بانتظار المعالجة </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
-          <context context-type="linenumber">41,42</context>
+          <context context-type="linenumber">54,56</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.orphans-resolved" datatype="html">
-        <source>تمت معالجتها</source>
+        <source> تمت معالجتها </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
-          <context context-type="linenumber">43,45</context>
+          <context context-type="linenumber">63,66</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.orphans-none" datatype="html">
         <source>لا توجد دفعات هنا.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
-          <context context-type="linenumber">52,54</context>
+          <context context-type="linenumber">73,75</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.orphans-received" datatype="html">
         <source>وصلت</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
-          <context context-type="linenumber">59,60</context>
+          <context context-type="linenumber">82,83</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.orphans-payment" datatype="html">
         <source>رقم الدفعة في البوابة</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
-          <context context-type="linenumber">60,61</context>
+          <context context-type="linenumber">83,84</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.amount" datatype="html">
         <source>المبلغ</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
-          <context context-type="linenumber">61,62</context>
+          <context context-type="linenumber">84,85</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.orphans-note" datatype="html">
         <source>المعالجة</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
-          <context context-type="linenumber">63,65</context>
+          <context context-type="linenumber">86,88</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.actions" datatype="html">
         <source>إجراءات</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
-          <context context-type="linenumber">65,67</context>
+          <context context-type="linenumber">89,90</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.orphans-resolve" datatype="html">
-        <source>تسجيل المعالجة</source>
+        <source> تسجيل المعالجة </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
-          <context context-type="linenumber">95,97</context>
+          <context context-type="linenumber">130,131</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.orphans-resolve-q" datatype="html">
         <source>ماذا فعلت بهذه الدفعة؟</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
-          <context context-type="linenumber">110,112</context>
+          <context context-type="linenumber">151,153</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.orphans-note-label" datatype="html">
         <source>الملاحظة (مثلًا: استُردت من لوحة البوابة)</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
-          <context context-type="linenumber">115,116</context>
+          <context context-type="linenumber">157,160</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.orphans-resolved-toast" datatype="html">
         <source>سُجّلت المعالجة.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/ops/orphans.page.ts</context>
-          <context context-type="linenumber">182</context>
+          <context context-type="linenumber">251</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.password-title" datatype="html">
@@ -4316,42 +4316,42 @@
         <source> ملف التبرعات المدفوعة والمستردة لفترة بتوقيت الرياض (حتى سنة واحدة)، بأرقام جوال مخفية. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/reports/reports.page.ts</context>
-          <context context-type="linenumber">51,54</context>
+          <context context-type="linenumber">59,62</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.report-donations" datatype="html">
         <source>تقرير التبرعات (CSV)</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/reports/reports.page.ts</context>
-          <context context-type="linenumber">57,59</context>
+          <context context-type="linenumber">65,67</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.report-from" datatype="html">
         <source>من تاريخ</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/reports/reports.page.ts</context>
-          <context context-type="linenumber">60,61</context>
+          <context context-type="linenumber">68,70</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.report-to" datatype="html">
         <source>إلى تاريخ</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/reports/reports.page.ts</context>
-          <context context-type="linenumber">64,65</context>
+          <context context-type="linenumber">78,79</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.report-range-invalid" datatype="html">
-        <source>اختر فترة صحيحة لا تزيد على 366 يومًا.</source>
+        <source> اختر فترة صحيحة لا تزيد على 366 يومًا. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/reports/reports.page.ts</context>
-          <context context-type="linenumber">69,72</context>
+          <context context-type="linenumber">84,87</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.report-download" datatype="html">
-        <source>تنزيل الملف</source>
+        <source> تنزيل الملف </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/reports/reports.page.ts</context>
-          <context context-type="linenumber">76,80</context>
+          <context context-type="linenumber">98,101</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.set-min-gift" datatype="html">
@@ -4484,35 +4484,35 @@
         <source>انسخ معرّف الصورة من مكتبة الوسائط، أو اتركه فارغًا.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/settings/setting-kinds.ts</context>
-          <context context-type="linenumber">120</context>
+          <context context-type="linenumber">121</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.text-too-long" datatype="html">
         <source>النص أطول من المسموح.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/settings/setting-kinds.ts</context>
-          <context context-type="linenumber">149</context>
+          <context context-type="linenumber">150</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.money-invalid-range" datatype="html">
         <source>أدخل مبلغًا أكبر من صفر حتى 100000.00</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/settings/setting-kinds.ts</context>
-          <context context-type="linenumber">166</context>
+          <context context-type="linenumber">167</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.presets-invalid" datatype="html">
         <source>أدخل من 1 إلى 6 مبالغ صحيحة مفصولة بفواصل.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/settings/setting-kinds.ts</context>
-          <context context-type="linenumber">178</context>
+          <context context-type="linenumber">179</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.integer-invalid" datatype="html">
         <source>أدخل عددًا صحيحًا.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/settings/setting-kinds.ts</context>
-          <context context-type="linenumber">184</context>
+          <context context-type="linenumber">185</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.settings-lede" datatype="html">
@@ -4582,14 +4582,22 @@
         <source>متجر تعلّم</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/admin-shell.html</context>
-          <context context-type="linenumber">15,18</context>
+          <context context-type="linenumber">14,15</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/shell/admin-shell.html</context>
+          <context context-type="linenumber">20,23</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.search-placeholder" datatype="html">
         <source>ابحث برقم التبرع أو الجوال أو اسم المشروع</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/admin-shell.html</context>
-          <context context-type="linenumber">29,31</context>
+          <context context-type="linenumber">29,30</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/shell/admin-shell.html</context>
+          <context context-type="linenumber">36,38</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/command-palette.ts</context>
@@ -4600,39 +4608,39 @@
         <source>التنبيهات</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/admin-shell.html</context>
-          <context context-type="linenumber">46,48</context>
+          <context context-type="linenumber">53,55</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/admin-shell.html</context>
-          <context context-type="linenumber">53,55</context>
+          <context context-type="linenumber">60,62</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.bell-pending-today" datatype="html">
         <source><x id="INTERPOLATION" equiv-text="{{ counts.pendingToday() }}"/> تبرعات بانتظار الدفع اليوم</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/admin-shell.html</context>
-          <context context-type="linenumber">60,61</context>
+          <context context-type="linenumber">67,68</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.bell-review" datatype="html">
         <source><x id="INTERPOLATION" equiv-text="{{ counts.inReview() }}"/> قيد المراجعة</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/admin-shell.html</context>
-          <context context-type="linenumber">69,70</context>
+          <context context-type="linenumber">76,77</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.bell-orphans" datatype="html">
         <source><x id="INTERPOLATION" equiv-text="{{ counts.orphans() }}"/> دفعات بلا طلب</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/admin-shell.html</context>
-          <context context-type="linenumber">78,79</context>
+          <context context-type="linenumber">85,86</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.tabbar" datatype="html">
         <source>التنقل السريع</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/admin-shell.html</context>
-          <context context-type="linenumber">185</context>
+          <context context-type="linenumber">199</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.palette-title" datatype="html">
@@ -4653,42 +4661,42 @@
         <source>لا نتائج.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/command-palette.ts</context>
-          <context context-type="linenumber">83,86</context>
+          <context context-type="linenumber">85,88</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.palette-searching" datatype="html">
         <source>جارٍ البحث في المشاريع…</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/command-palette.ts</context>
-          <context context-type="linenumber">88,91</context>
+          <context context-type="linenumber">91,94</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.palette-open-order" datatype="html">
         <source>فتح التبرع <x id="ref" equiv-text="t.reference"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/command-palette.ts</context>
-          <context context-type="linenumber">236</context>
+          <context context-type="linenumber">246</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.palette-search-reference" datatype="html">
         <source>البحث في التبرعات عن <x id="ref" equiv-text="t.reference"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/command-palette.ts</context>
-          <context context-type="linenumber">245</context>
+          <context context-type="linenumber">255</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.palette-search-mobile" datatype="html">
         <source>تبرعات الجوال <x id="mobile" equiv-text="t.mobile"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/command-palette.ts</context>
-          <context context-type="linenumber">255</context>
+          <context context-type="linenumber">265</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.palette-project" datatype="html">
         <source>مشروع</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/shell/command-palette.ts</context>
-          <context context-type="linenumber">267</context>
+          <context context-type="linenumber">277</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.staff-lede" datatype="html">
@@ -4927,14 +4935,14 @@
         <source>رسالة نصية</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/templates/templates.page.ts</context>
-          <context context-type="linenumber">104</context>
+          <context context-type="linenumber">105</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.channel-email" datatype="html">
         <source>بريد إلكتروني</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/templates/templates.page.ts</context>
-          <context context-type="linenumber">105</context>
+          <context context-type="linenumber">106</context>
         </context-group>
       </trans-unit>
       <trans-unit id="store.admin.conflict-title" datatype="html">

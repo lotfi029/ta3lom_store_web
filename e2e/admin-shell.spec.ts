@@ -27,7 +27,7 @@ for (const locale of ['ar', 'en'] as const) {
       await expectNoA11yViolations(page, `/${locale}/admin rail`);
       await page.setViewportSize({ width: 1440, height: 900 });
 
-      const palette = page.getByRole('combobox');
+      const palette = page.locator('#cp-q');
       await page.keyboard.press('Control+k');
       await expect(palette).toBeFocused();
       await expectNoA11yViolations(page, `/${locale}/admin palette`);

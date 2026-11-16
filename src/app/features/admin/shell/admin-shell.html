@@ -8,7 +8,12 @@
   >
     <ta-icon name="menu" [size]="22" />
   </a>
-  <a class="brand" routerLink="/admin">
+  <a
+    class="brand"
+    routerLink="/admin"
+    aria-label="متجر تعلّم"
+    i18n-aria-label="@@store.admin.brand-name"
+  >
     <svg class="mark" viewBox="380 320 1250 1060" aria-hidden="true" focusable="false">
       <use href="logo.svg#logo-src" />
     </svg>
@@ -21,6 +26,8 @@
     type="button"
     class="search"
     aria-haspopup="dialog"
+    aria-label="ابحث برقم التبرع أو الجوال أو اسم المشروع"
+    i18n-aria-label="@@store.admin.search-placeholder"
     aria-keyshortcuts="Control+K Meta+K"
     (click)="paletteOpen.set(true)"
   >
