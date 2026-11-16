@@ -110,7 +110,8 @@
       <div class="ogrid">
         <section class="panel" aria-labelledby="ao-lines-h">
           <h2 id="ao-lines-h" i18n="@@store.admin.col-lines">التبرعات</h2>
-          <div class="tbl-wrap">
+          <!-- Focusable: in the narrow side panel (W-A4) the table scrolls sideways; keyboard users need to reach it. -->
+          <div class="tbl-wrap" tabindex="0" role="region" aria-labelledby="ao-lines-h">
             <table class="atbl">
               <thead>
                 <tr>
@@ -218,7 +219,7 @@
         @if ((x.payments ?? []).length === 0) {
           <p class="muted" i18n="@@store.admin.no-payments">لا توجد محاولات دفع بعد.</p>
         } @else {
-          <div class="tbl-wrap">
+          <div class="tbl-wrap" tabindex="0" role="region" aria-labelledby="ao-pay-h">
             <table class="atbl">
               <caption class="visually-hidden" i18n="@@store.admin.payments-caption">
                 محاولات الدفع
