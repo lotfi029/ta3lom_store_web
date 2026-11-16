@@ -28,13 +28,14 @@ export class AdminMenuPage {
   protected readonly auth = inject(StaffAuth);
   protected readonly counts = inject(AdminShellData);
   private readonly router = inject(Router);
+  private readonly seo = inject(SeoService);
 
   protected readonly sections = computed(() => visibleNav((p) => this.auth.can(p), ADMIN_SECTIONS));
   protected readonly roles = computed(() => this.auth.roles().map(roleLabel).join('، '));
   protected readonly initial = computed(() => (this.auth.staff()?.name ?? '').trim().charAt(0));
 
   constructor() {
-    inject(SeoService).set({
+    this.seo.set({
       title: $localize`:@@store.admin.more:المزيد`,
       description: '',
       path: '/admin/menu',
