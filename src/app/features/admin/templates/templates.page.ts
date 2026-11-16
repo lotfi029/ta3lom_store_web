@@ -54,7 +54,8 @@ export class TemplatesPage {
 
   protected readonly canEdit = computed(() => this.auth.can('staff:templates'));
   /** The values the API renders a test with (Scriban `{{ name }}`), contract 15 §2.8. */
-  protected readonly variables = 'code, name, reference, amount, receipt_number, link, subject, body';
+  protected readonly variables =
+    'code, name, reference, amount, receipt_number, link, subject, body';
   protected readonly list = computed(() =>
     (valueOf(this.data.templates) ?? []).filter((t) =>
       (TEMPLATE_KEYS as readonly string[]).includes(t.key),

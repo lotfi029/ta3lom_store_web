@@ -79,28 +79,42 @@
         <dl class="paid">
           <div>
             <dt i18n="@@store.admin.paid-today">اليوم</dt>
-            <dd><ta-money [value]="x.paidToday?.amount ?? '0.00'" /> <small class="muted">({{ int(x.paidToday?.count ?? 0) }})</small></dd>
+            <dd>
+              <ta-money [value]="x.paidToday?.amount ?? '0.00'" />
+              <small class="muted">({{ int(x.paidToday?.count ?? 0) }})</small>
+            </dd>
           </div>
           <div>
             <dt i18n="@@store.admin.paid-week">هذا الأسبوع</dt>
-            <dd><ta-money [value]="x.paidThisWeek?.amount ?? '0.00'" /> <small class="muted">({{ int(x.paidThisWeek?.count ?? 0) }})</small></dd>
+            <dd>
+              <ta-money [value]="x.paidThisWeek?.amount ?? '0.00'" />
+              <small class="muted">({{ int(x.paidThisWeek?.count ?? 0) }})</small>
+            </dd>
           </div>
           <div>
             <dt i18n="@@store.admin.paid-month">هذا الشهر</dt>
-            <dd><ta-money [value]="x.paidThisMonth?.amount ?? '0.00'" /> <small class="muted">({{ int(x.paidThisMonth?.count ?? 0) }})</small></dd>
+            <dd>
+              <ta-money [value]="x.paidThisMonth?.amount ?? '0.00'" />
+              <small class="muted">({{ int(x.paidThisMonth?.count ?? 0) }})</small>
+            </dd>
           </div>
           <div>
             <dt i18n="@@store.admin.in-review">قيد مراجعة الدفع</dt>
             <dd>
-              <a routerLink="/admin/orders" [queryParams]="{ status: 'payment_review' }">{{ int(x.inReviewOrders ?? 0) }}</a>
+              <a routerLink="/admin/orders" [queryParams]="{ status: 'payment_review' }">{{
+                int(x.inReviewOrders ?? 0)
+              }}</a>
             </dd>
           </div>
           <div>
             <dt i18n="@@store.admin.open-orphans">دفعات بلا طلب</dt>
             <dd>
-              <a routerLink="/admin/payments/orphans" class="count" [class.alert]="int(x.openOrphanPayments ?? 0) > 0">{{
-                int(x.openOrphanPayments ?? 0)
-              }}</a>
+              <a
+                routerLink="/admin/payments/orphans"
+                class="count"
+                [class.alert]="int(x.openOrphanPayments ?? 0) > 0"
+                >{{ int(x.openOrphanPayments ?? 0) }}</a
+              >
             </dd>
           </div>
         </dl>
@@ -113,7 +127,9 @@
               <li>
                 <span
                   ><a [routerLink]="['/admin/projects', t.projectId]">{{ t.titleAr }}</a>
-                  <small class="muted" i18n="@@store.admin.paid-count">({{ int(t.paidOrders) }} تبرع)</small></span
+                  <small class="muted" i18n="@@store.admin.paid-count"
+                    >({{ int(t.paidOrders) }} تبرع)</small
+                  ></span
                 ><ta-money [value]="t.paidAmount" />
               </li>
             }

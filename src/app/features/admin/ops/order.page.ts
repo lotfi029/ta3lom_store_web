@@ -57,7 +57,12 @@ export function refundAmount(text: string, refundable: string): string | null {
 }
 
 /** The refund dialog is ready: a valid amount, a reason, and the reference typed back (any case, outer spaces ignored). */
-export function refundReady(amount: string | null, reason: string, typed: string, reference: string): boolean {
+export function refundReady(
+  amount: string | null,
+  reason: string,
+  typed: string,
+  reference: string,
+): boolean {
   return !!amount && reason.trim().length > 0 && typed.trim().toUpperCase() === reference;
 }
 
@@ -97,11 +102,19 @@ export class AdminOrderPage {
     () => this.o()?.status === 'pending_payment' && this.auth.can('staff:orders'),
   );
   protected readonly canFinance = computed(() => this.auth.can('staff:finance'));
-  protected readonly inReview = computed(() => (this.o()?.payments ?? []).some((p) => p.status === 'review'));
+  protected readonly inReview = computed(() =>
+    (this.o()?.payments ?? []).some((p) => p.status === 'review'),
+  );
   /** Review 04 A-6/W-2: a refund still waiting for the gateway blocks every new one (the API answers 409 too). */
-  protected readonly pendingRefund = computed(() => (this.o()?.refunds ?? []).some((r) => r.status === 'requested'));
-  protected readonly canRefund = computed(() => this.o()?.status === 'paid' && toHalalas(this.o()?.refundable ?? '0') > 0);
-  protected readonly hasReceipt = computed(() => (this.o()?.receipts ?? []).some((r) => r.series === 'DR'));
+  protected readonly pendingRefund = computed(() =>
+    (this.o()?.refunds ?? []).some((r) => r.status === 'requested'),
+  );
+  protected readonly canRefund = computed(
+    () => this.o()?.status === 'paid' && toHalalas(this.o()?.refundable ?? '0') > 0,
+  );
+  protected readonly hasReceipt = computed(() =>
+    (this.o()?.receipts ?? []).some((r) => r.series === 'DR'),
+  );
 
   /** One finance dialog at a time: 'refund' | 'accept' | 'review-refund' | 'resend'. */
   protected readonly dialog = signal<'refund' | 'accept' | 'review-refund' | 'resend' | null>(null);
@@ -115,9 +128,16 @@ export class AdminOrderPage {
   private financeKey: string | null = null;
 
   /** The refund amount as a valid decimal string within (0, refundable], else null. */
-  protected readonly refundValue = computed(() => refundAmount(this.refundAmount(), this.o()?.refundable ?? '0'));
+  protected readonly refundValue = computed(() =>
+    refundAmount(this.refundAmount(), this.o()?.refundable ?? '0'),
+  );
   protected readonly refundReady = computed(() =>
-    refundReady(this.refundValue(), this.refundReason(), this.typedRef(), this.o()?.reference ?? '-'),
+    refundReady(
+      this.refundValue(),
+      this.refundReason(),
+      this.typedRef(),
+      this.o()?.reference ?? '-',
+    ),
   );
 
   protected readonly confirmOpen = signal(false);
@@ -171,17 +191,31 @@ export class AdminOrderPage {
       const key = (this.financeKey ??= crypto.randomUUID());
       switch (kind) {
         case 'refund': {
-          const r = await this.data.refund(o.reference, this.refundValue()!, this.refundReason().trim(), version, key);
+          const r = await this.data.refund(
+            o.reference,
+            this.refundValue()!,
+            this.refundReason().trim(),
+            version,
+            key,
+          );
           if (this.stillPending(r)) return;
           this.toast.show($localize`:@@store.admin.refund-done:تم الاسترداد.`, 'success');
           break;
         }
         case 'accept':
           await this.data.acceptReview(o.reference, version);
-          this.toast.show($localize`:@@store.admin.review-accepted:قُبلت الدفعة وأُصدر الإيصال.`, 'success');
+          this.toast.show(
+            $localize`:@@store.admin.review-accepted:قُبلت الدفعة وأُصدر الإيصال.`,
+            'success',
+          );
           break;
         case 'review-refund': {
-          const r = await this.data.refundReview(o.reference, version, this.refundReason().trim() || 'payment review', key);
+          const r = await this.data.refundReview(
+            o.reference,
+            version,
+            this.refundReason().trim() || 'payment review',
+            key,
+          );
           if (this.stillPending(r)) return;
           this.toast.show($localize`:@@store.admin.refund-done:تم الاسترداد.`, 'success');
           break;
@@ -209,7 +243,10 @@ export class AdminOrderPage {
   private stillPending(r: { refund?: string | null }): boolean {
     if (r.refund !== 'pending') return false;
     this.financePending.set(true);
-    this.toast.show($localize`:@@store.admin.refund-pending-toast:الاسترداد بانتظار تأكيد بوابة الدفع.`, 'info');
+    this.toast.show(
+      $localize`:@@store.admin.refund-pending-toast:الاسترداد بانتظار تأكيد بوابة الدفع.`,
+      'info',
+    );
     return true;
   }
 

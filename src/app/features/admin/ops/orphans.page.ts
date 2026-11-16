@@ -14,7 +14,8 @@ import { Requires } from '../ui/requires';
 import { OpsData } from './ops.data';
 
 /** A resolution note the API accepts: 1–500 characters after trimming. */
-export const validNote = (note: string): boolean => note.trim().length > 0 && note.trim().length <= 500;
+export const validNote = (note: string): boolean =>
+  note.trim().length > 0 && note.trim().length <= 500;
 
 /**
  * `/admin/payments/orphans` (review 04 A-3, W-3; `staff:finance`): payments the gateway captured for which the store has
@@ -30,106 +31,174 @@ export const validNote = (note: string): boolean => note.trim().length > 0 && no
       <div>
         <h1 i18n="@@store.admin.nav-orphans">دفعات بلا طلب</h1>
         <p i18n="@@store.admin.orphans-lede">
-          دفعات حصّلتها بوابة الدفع ولا يقابلها طلب في المتجر. عالجها من لوحة البوابة ثم سجّل ما فعلته.
+          دفعات حصّلتها بوابة الدفع ولا يقابلها طلب في المتجر. عالجها من لوحة البوابة ثم سجّل ما
+          فعلته.
         </p>
       </div>
       <ta-requires policy="staff:finance" />
     </div>
     <div class="panel">
-      <div class="tabs" role="group" i18n-aria-label="@@store.admin.orphans-filter" aria-label="عرض">
-        <button type="button" class="btn" [attr.aria-pressed]="!data.orphansResolved()" (click)="data.orphansResolved.set(false)"
-          i18n="@@store.admin.orphans-open">بانتظار المعالجة</button>
-        <button type="button" class="btn" [attr.aria-pressed]="data.orphansResolved()" (click)="data.orphansResolved.set(true)"
-          i18n="@@store.admin.orphans-resolved">تمت معالجتها</button>
+      <div
+        class="tabs"
+        role="group"
+        i18n-aria-label="@@store.admin.orphans-filter"
+        aria-label="عرض"
+      >
+        <button
+          type="button"
+          class="btn"
+          [attr.aria-pressed]="!data.orphansResolved()"
+          (click)="data.orphansResolved.set(false)"
+          i18n="@@store.admin.orphans-open"
+        >
+          بانتظار المعالجة
+        </button>
+        <button
+          type="button"
+          class="btn"
+          [attr.aria-pressed]="data.orphansResolved()"
+          (click)="data.orphansResolved.set(true)"
+          i18n="@@store.admin.orphans-resolved"
+        >
+          تمت معالجتها
+        </button>
       </div>
       <ta-resource-state
         [loading]="data.orphans.isLoading() && !rows()"
         [error]="!!data.orphans.error() && !rows()"
         (retry)="data.orphans.reload()"
       >
-      @if (rows(); as list) {
-        @if (list.length === 0) {
-          <p class="muted" i18n="@@store.admin.orphans-none">لا توجد دفعات هنا.</p>
-        } @else {
-          <div class="tbl-wrap">
-            <table class="atbl">
-              <caption class="visually-hidden" i18n="@@store.admin.nav-orphans">دفعات بلا طلب</caption>
-              <thead>
-                <tr>
-                  <th scope="col" i18n="@@store.admin.orphans-received">وصلت</th>
-                  <th scope="col" i18n="@@store.admin.orphans-payment">رقم الدفعة في البوابة</th>
-                  <th scope="col" i18n="@@store.admin.amount">المبلغ</th>
-                  @if (data.orphansResolved()) {
-                    <th scope="col" i18n="@@store.admin.orphans-note">المعالجة</th>
-                  } @else {
-                    <th scope="col"><span class="visually-hidden" i18n="@@store.admin.actions">إجراءات</span></th>
-                  }
-                </tr>
-              </thead>
-              <tbody>
-                @for (o of list; track o.id) {
+        @if (rows(); as list) {
+          @if (list.length === 0) {
+            <p class="muted" i18n="@@store.admin.orphans-none">لا توجد دفعات هنا.</p>
+          } @else {
+            <div class="tbl-wrap">
+              <table class="atbl">
+                <caption class="visually-hidden" i18n="@@store.admin.nav-orphans">
+                  دفعات بلا طلب
+                </caption>
+                <thead>
                   <tr>
-                    <td>{{ i18n.formatDateTime(o.receivedAt) }}</td>
-                    <td>
-                      <bdi dir="ltr" class="mono">{{ o.providerPaymentId ?? '—' }}</bdi>
-                      @if (o.providerInvoiceId) {
-                        <br /><small class="muted"><bdi dir="ltr" class="mono">{{ o.providerInvoiceId }}</bdi></small>
-                      }
-                    </td>
-                    <td>
-                      @if (o.currency === 'SAR') {
-                        <ta-money [value]="o.amount" />
-                      } @else {
-                        <bdi dir="ltr">{{ o.amount }} {{ o.currency ?? '?' }}</bdi>
-                      }
-                    </td>
+                    <th scope="col" i18n="@@store.admin.orphans-received">وصلت</th>
+                    <th scope="col" i18n="@@store.admin.orphans-payment">رقم الدفعة في البوابة</th>
+                    <th scope="col" i18n="@@store.admin.amount">المبلغ</th>
                     @if (data.orphansResolved()) {
-                      <td>
-                        {{ o.resolutionNote }}<br />
-                        <small class="muted"><bdi dir="ltr">{{ o.resolvedBy }}</bdi> ·
-                          {{ o.resolvedAt ? i18n.formatDateTime(o.resolvedAt) : '' }}</small>
-                      </td>
+                      <th scope="col" i18n="@@store.admin.orphans-note">المعالجة</th>
                     } @else {
-                      <td>
-                        <button type="button" class="btn" [disabled]="!canFinance()" (click)="open(o)"
-                          i18n="@@store.admin.orphans-resolve">تسجيل المعالجة</button>
-                      </td>
+                      <th scope="col">
+                        <span class="visually-hidden" i18n="@@store.admin.actions">إجراءات</span>
+                      </th>
                     }
                   </tr>
-                }
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  @for (o of list; track o.id) {
+                    <tr>
+                      <td>{{ i18n.formatDateTime(o.receivedAt) }}</td>
+                      <td>
+                        <bdi dir="ltr" class="mono">{{ o.providerPaymentId ?? '—' }}</bdi>
+                        @if (o.providerInvoiceId) {
+                          <br /><small class="muted"
+                            ><bdi dir="ltr" class="mono">{{ o.providerInvoiceId }}</bdi></small
+                          >
+                        }
+                      </td>
+                      <td>
+                        @if (o.currency === 'SAR') {
+                          <ta-money [value]="o.amount" />
+                        } @else {
+                          <bdi dir="ltr">{{ o.amount }} {{ o.currency ?? '?' }}</bdi>
+                        }
+                      </td>
+                      @if (data.orphansResolved()) {
+                        <td>
+                          {{ o.resolutionNote }}<br />
+                          <small class="muted"
+                            ><bdi dir="ltr">{{ o.resolvedBy }}</bdi> ·
+                            {{ o.resolvedAt ? i18n.formatDateTime(o.resolvedAt) : '' }}</small
+                          >
+                        </td>
+                      } @else {
+                        <td>
+                          <button
+                            type="button"
+                            class="btn"
+                            [disabled]="!canFinance()"
+                            (click)="open(o)"
+                            i18n="@@store.admin.orphans-resolve"
+                          >
+                            تسجيل المعالجة
+                          </button>
+                        </td>
+                      }
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
         }
-      }
       </ta-resource-state>
     </div>
 
-    <ta-dialog [open]="!!selected()" (openChange)="$event || close()" labelledBy="orph-h" [lightDismiss]="false">
+    <ta-dialog
+      [open]="!!selected()"
+      (openChange)="$event || close()"
+      labelledBy="orph-h"
+      [lightDismiss]="false"
+    >
       <form class="dlg" (submit)="$event.preventDefault(); resolve()">
         <h2 id="orph-h" i18n="@@store.admin.orphans-resolve-q">ماذا فعلت بهذه الدفعة؟</h2>
         <p>
           <bdi dir="ltr" class="mono">{{ selected()?.providerPaymentId }}</bdi>
         </p>
         <div class="field">
-          <label for="orph-note" i18n="@@store.admin.orphans-note-label">الملاحظة (مثلًا: استُردت من لوحة البوابة)</label>
-          <textarea id="orph-note" rows="3" maxlength="500" [value]="note()" (input)="note.set(text($event))"></textarea>
+          <label for="orph-note" i18n="@@store.admin.orphans-note-label"
+            >الملاحظة (مثلًا: استُردت من لوحة البوابة)</label
+          >
+          <textarea
+            id="orph-note"
+            rows="3"
+            maxlength="500"
+            [value]="note()"
+            (input)="note.set(text($event))"
+          ></textarea>
         </div>
         @if (error(); as e) {
           <p class="err" role="alert">{{ e }}</p>
         }
         <div class="acts">
-          <button type="submit" class="btn primary" [disabled]="busy() || !noteOk()" [attr.aria-busy]="busy()"
-            i18n="@@store.admin.confirm">تأكيد</button>
-          <button type="button" class="btn" (click)="close()" i18n="@@store.admin.keep">رجوع</button>
+          <button
+            type="submit"
+            class="btn primary"
+            [disabled]="busy() || !noteOk()"
+            [attr.aria-busy]="busy()"
+            i18n="@@store.admin.confirm"
+          >
+            تأكيد
+          </button>
+          <button type="button" class="btn" (click)="close()" i18n="@@store.admin.keep">
+            رجوع
+          </button>
         </div>
       </form>
     </ta-dialog>
   `,
   styles: `
-    .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-block-end: 12px; }
-    .tabs .btn[aria-pressed='true'] { border-color: var(--c-accent-strong); color: var(--c-accent-strong); }
-    textarea { inline-size: 100%; font: inherit; }
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-block-end: 12px;
+    }
+    .tabs .btn[aria-pressed='true'] {
+      border-color: var(--c-accent-strong);
+      color: var(--c-accent-strong);
+    }
+    textarea {
+      inline-size: 100%;
+      font: inherit;
+    }
   `,
   styleUrls: ['../admin-common.css'],
 })
