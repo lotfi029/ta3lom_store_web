@@ -234,7 +234,7 @@ for (const locale of ['ar', 'en'] as const) {
       await page.setViewportSize({ width: 390, height: 844 });
       await expect(page.locator('table')).toHaveCount(0);
       await expect(
-        page.getByRole('list', { name: t('المشاريع', 'Projects') }).getByRole('listitem'),
+        page.getByRole('list', { name: t('المشاريع', 'Projects'), exact: true }).getByRole('listitem'),
       ).toHaveCount(2);
       await expectNoA11yViolations(page, `/${locale}/admin/projects (390 cards)`);
     });
