@@ -117,7 +117,7 @@
     @if (items().length === 0) {
       <p class="muted empty" i18n="@@store.admin.no-results">لا نتائج.</p>
     } @else if (viewport.phone()) {
-      <ul class="cards" aria-label="المشاريع" i18n-aria-label="@@store.admin.nav-projects">
+      <ul class="pcards" aria-label="المشاريع" i18n-aria-label="@@store.admin.nav-projects">
         @for (p of items(); track p.id) {
           <li>
             <a [routerLink]="['/admin/projects', p.id]">

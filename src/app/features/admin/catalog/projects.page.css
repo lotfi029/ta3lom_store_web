@@ -103,17 +103,17 @@ tr.picked td {
   padding: 16px;
 }
 
-.cards {
+.pcards {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.cards li + li {
+.pcards li + li {
   border-block-start: 1px solid var(--c-border);
 }
 
-.cards a {
+.pcards a {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -122,14 +122,14 @@ tr.picked td {
   text-decoration: none;
 }
 
-.cards .body {
+.pcards .body {
   display: grid;
   justify-items: start;
   gap: 4px;
   min-inline-size: 0;
 }
 
-.cards .chev {
+.pcards .chev {
   margin-inline-start: auto;
   color: var(--c-muted);
 }
