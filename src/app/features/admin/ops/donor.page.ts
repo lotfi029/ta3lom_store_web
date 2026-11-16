@@ -34,7 +34,7 @@ import { OpsData } from './ops.data';
   imports: [RouterLink, Dialog, Money, ResourceState, StatusPill, Requires],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './donor.page.html',
-  styleUrls: ['../admin-common.css', './order.page.css'],
+  styleUrls: ['../admin-common.css', './order-detail.css'],
 })
 export class DonorPage {
   readonly id = input.required<string>();

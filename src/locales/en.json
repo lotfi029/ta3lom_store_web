@@ -820,5 +820,14 @@
   "store.admin.version": "Version",
   "store.admin.unsaved-two": "Unsaved changes in “{$a}” and “{$b}”",
   "store.admin.unsaved-one": "Unsaved changes in “{$section}”",
-  "store.admin.saved-short": "Saved"
+  "store.admin.saved-short": "Saved",
+  "store.admin.back-to-donations": "Back to donations",
+  "store.admin.export-csv": "Export CSV",
+  "store.admin.export-csv-hint": "Donations report for the chosen dates (from … to), up to 366 days.",
+  "store.admin.orders-list": "Donation list",
+  "store.admin.orders-search": "Donation reference or mobile",
+  "store.admin.col-lines-count": "Lines",
+  "store.admin.order-panel": "Donation details",
+  "store.admin.order-full-page": "Full page",
+  "store.admin.close-panel": "Close the details"
 }

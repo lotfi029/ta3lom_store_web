@@ -1,6 +1,6 @@
 import type { AdminOrderLine } from '../../../core/api/api.types';
 import { problemMessage } from '../../../core/api/problem-message';
-import { lineTitle, refundAmount, refundReady } from './order.page';
+import { lineTitle, refundAmount, refundReady } from './order-detail';
 import { daySpan, REPORT_MAX_DAYS, riyadhDate, validRange } from '../reports/reports.page';
 import { orderParams, upperRef } from './ops.data';
 import { rangeOk } from './orders.page';
@@ -127,5 +127,15 @@ describe('admin operations', () => {
     expect(validNote('  ')).toBe(false);
     expect(validNote('refunded on the dashboard')).toBe(true);
     expect(validNote('x'.repeat(501))).toBe(false);
+  });
+});
+
+describe('donations search box (W-A4)', () => {
+  it('sends a Saudi mobile as `mobile` and anything else as an upper-case `reference`', async () => {
+    const { searchFields } = await import('./orders.page');
+    expect(searchFields('0551234567')).toEqual({ reference: '', mobile: '0551234567' });
+    expect(searchFields('+966 55 123 4567')).toEqual({ reference: '', mobile: '0551234567' });
+    expect(searchFields(' t3-26-000001 ')).toEqual({ reference: 'T3-26-000001', mobile: '' });
+    expect(searchFields('')).toEqual({ reference: '', mobile: '' });
   });
 });

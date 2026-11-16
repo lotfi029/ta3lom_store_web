@@ -85,7 +85,7 @@ for (const locale of ['ar', 'en'] as const) {
       await expect(dlg).toBeVisible();
       await dlg.getByRole('button', { name: t('تأكيد', 'Confirm') }).click();
       await expect(page.locator('ta-toast')).toContainText(t('قُبلت الدفعة', 'Payment accepted'));
-      await expect(page.locator('ta-status-pill').first()).toContainText(t('مدفوع', 'Paid'));
+      await expect(page.locator('ta-admin-badge').first()).toContainText(t('مدفوع', 'Paid'));
       await expect(page.locator('.panel.pay')).toContainText(/DR-\d{4}-\d{6}/);
       expect((await status(o))['status']).toBe('paid');
     });
@@ -124,7 +124,7 @@ for (const locale of ['ar', 'en'] as const) {
       expect((await status(o))['status']).toBe('paid');
       expect((await status(o))['refundedAmount']).toBe('20.00');
       await refund('30');
-      await expect(page.locator('ta-status-pill').first()).toContainText(t('مسترد', 'Refunded'));
+      await expect(page.locator('ta-admin-badge').first()).toContainText(t('مسترد', 'Refunded'));
       await expect(page.locator('.panel.pay')).toContainText(/DRC-\d{4}-\d{6}/);
 
       await page.goto(orderUrl(locale, o));

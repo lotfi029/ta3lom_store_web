@@ -1,9 +1,10 @@
-<p class="back">
-  <a routerLink="/admin/orders" i18n="@@store.admin.back-to-orders">العودة إلى الطلبات</a>
-</p>
 @if (notFound()) {
   <div class="ahead">
-    <h1 i18n="@@store.error.order-not-found">لم نجد هذا التبرع.</h1>
+    @if (panel()) {
+      <h2 i18n="@@store.error.order-not-found">لم نجد هذا التبرع.</h2>
+    } @else {
+      <h1 i18n="@@store.error.order-not-found">لم نجد هذا التبرع.</h1>
+    }
   </div>
 } @else {
   <ta-resource-state
@@ -14,14 +15,19 @@
     @if (o(); as x) {
       <div class="ahead">
         <div>
-          <h1>
-            <span i18n="@@store.admin.order-title">الطلب</span>
-            <bdi dir="ltr" class="mono">{{ x.reference }}</bdi>
-          </h1>
+          @if (panel()) {
+            <h2 class="oref">
+              <span class="visually-hidden" i18n="@@store.admin.route-order">التبرع</span>
+              <bdi dir="ltr" class="mono">{{ x.reference }}</bdi>
+            </h2>
+          } @else {
+            <h1>
+              <span i18n="@@store.admin.route-order">التبرع</span>
+              <bdi dir="ltr" class="mono">{{ x.reference }}</bdi>
+            </h1>
+          }
           <p>
-            <ta-status-pill [tone]="label(x.status).tone">{{
-              label(x.status).label
-            }}</ta-status-pill>
+            <ta-admin-badge [kind]="kind(x.status)">{{ label(x.status).label }}</ta-admin-badge>
           </p>
         </div>
         <div class="act fin">

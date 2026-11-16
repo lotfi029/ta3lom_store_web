@@ -1,0 +1,172 @@
+.act {
+  display: grid;
+  justify-items: end;
+  gap: 4px;
+  max-inline-size: 320px;
+}
+
+.act .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.act small {
+  font-size: 0.78rem;
+  text-align: end;
+}
+
+.notice.warn {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: var(--c-badge-warn-bg);
+  color: var(--c-badge-warn-text);
+}
+
+.split {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.split > .idx {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+.idx {
+  padding: 0;
+  overflow: hidden;
+  margin: 0;
+}
+
+.side {
+  flex: 0 0 360px;
+  position: sticky;
+  inset-block-start: 72px;
+  max-block-size: calc(100vh - 90px);
+  overflow-y: auto;
+  margin: 0;
+}
+
+.side-acts {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-block-end: 8px;
+}
+
+.tools {
+  padding-block: 8px;
+  padding-inline: 12px;
+  border-block-end: 1px solid var(--c-border);
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px 12px;
+  padding-block: 10px;
+  padding-inline: 12px;
+  border-block-end: 1px solid var(--c-border);
+  margin: 0;
+}
+
+.filters .field {
+  margin: 0;
+}
+
+.q {
+  flex: 1 1 220px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-block-size: 44px;
+  padding-inline: 10px;
+  border: 1px solid var(--c-border);
+  border-radius: 10px;
+  background: var(--c-surface);
+  color: var(--c-muted);
+}
+
+.q input {
+  flex: 1;
+  min-inline-size: 0;
+  min-block-size: 40px;
+  border: 0;
+  background: none;
+  color: var(--c-text);
+  font: inherit;
+}
+
+.q:focus-within {
+  outline: 2px solid var(--c-focus);
+  outline-offset: 1px;
+}
+
+.q input:focus {
+  outline: none;
+}
+
+#ao-range-err {
+  flex-basis: 100%;
+  margin: 0;
+}
+
+#ao-range-err:empty {
+  display: none;
+}
+
+.tbl-wrap {
+  border: 0;
+  border-radius: 0;
+}
+
+tr.picked td {
+  background: var(--c-admin-row-selected);
+}
+
+.empty {
+  padding: 16px;
+}
+
+.cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cards li + li {
+  border-block-start: 1px solid var(--c-border);
+}
+
+.cards a {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  color: var(--c-text);
+  text-decoration: none;
+}
+
+.cards .body,
+.cards .end {
+  display: grid;
+  gap: 4px;
+}
+
+.cards .end {
+  justify-items: end;
+}
+
+.apager {
+  padding-block: 12px;
+}
+
+@media (width <= 640px) {
+  .filters .field {
+    flex: 1 1 40%;
+  }
+}

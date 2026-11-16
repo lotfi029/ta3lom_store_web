@@ -25,21 +25,36 @@ for (const locale of ['ar', 'en'] as const) {
       await expect(page.locator('#ao-range-err')).not.toBeEmpty();
       await page.locator('#ao-from').fill('');
       await page.locator('#ao-to').fill('');
-      await page.locator('#ao-ref').fill(ref.toLowerCase());
+      await page.locator('#ao-q').fill(ref.toLowerCase());
       await page.getByRole('button', { name: t('تطبيق', 'Apply') }).click();
       await expect(page.locator('tbody tr')).toHaveCount(1);
       await expectNoA11yViolations(page, `/${locale}/admin/orders`);
+      // W-A4: on a wide screen the row opens the side panel (?ref=), deep-linkable; the full page is one click away.
+      await page.setViewportSize({ width: 1440, height: 900 });
       await page.locator('tbody tr a').click();
+      await expect(page).toHaveURL(new RegExp(`/${locale}/admin/orders\\?.*ref=${ref}`));
+      const panel = page.getByRole('complementary', {
+        name: t('تفاصيل التبرع', 'Donation details'),
+      });
+      await expect(panel.locator('h2.oref')).toContainText(ref);
+      await expect(
+        panel.locator('section[aria-labelledby=ao-lines-h] table.atbl tbody tr'),
+      ).toHaveCount(1);
+      await expect(page.locator('h1')).toHaveCount(1);
+      await expectNoA11yViolations(page, `/${locale}/admin/orders?ref (panel)`);
+      await panel.getByRole('link', { name: t('الصفحة الكاملة', 'Full page') }).click();
       await expect(page).toHaveURL(new RegExp(`/${locale}/admin/orders/${ref}$`));
       await expect(page.locator('h1')).toContainText(ref);
-      await expect(page.locator('section[aria-labelledby=ao-lines-h] table.atbl tbody tr')).toHaveCount(1);
+      await expect(
+        page.locator('section[aria-labelledby=ao-lines-h] table.atbl tbody tr'),
+      ).toHaveCount(1);
       await expectNoA11yViolations(page, `/${locale}/admin/orders/:ref`);
 
       await page.getByRole('button', { name: t('إلغاء الطلب', 'Cancel order') }).click();
       const dlg = page.getByRole('dialog');
       await dlg.getByRole('button', { name: t('إلغاء الطلب', 'Cancel order') }).click();
       await expect(page.locator('ta-toast')).toContainText(t('أُلغي الطلب', 'Order cancelled'));
-      await expect(page.locator('ta-status-pill').first()).toContainText(t('ملغى', 'Cancelled'));
+      await expect(page.locator('ta-admin-badge').first()).toContainText(t('ملغى', 'Cancelled'));
       await expect(
         page.getByRole('button', { name: t('إلغاء الطلب', 'Cancel order') }),
       ).toHaveCount(0);
