@@ -1,121 +1,211 @@
 <div class="ahead">
   <div>
     <h1 i18n="@@store.admin.nav-projects">المشاريع</h1>
-    <p i18n="@@store.admin.projects-lede">مشاريع التبرع: المسودات والمنشور والمؤرشف.</p>
+    <p class="adm-no-ph" i18n="@@store.admin.projects-lede">
+      مشاريع التبرع: المسودات والمنشور والمؤرشف.
+    </p>
   </div>
   <div class="act">
+    <a class="btn adm-no-ph" routerLink="/admin/categories" i18n="@@store.admin.nav-categories"
+      >التصنيفات</a
+    >
     @if (canEdit()) {
-      <a class="btn primary" routerLink="/admin/projects/new" i18n="@@store.admin.new-project"
-        >مشروع جديد</a
-      >
+      <a class="btn primary" routerLink="/admin/projects/new">
+        <ta-icon name="plus" [size]="18" />
+        <span i18n="@@store.admin.new-project">مشروع جديد</span>
+      </a>
     } @else {
-      <button
-        type="button"
-        class="btn primary"
-        disabled
-        aria-describedby="pr-why"
-        i18n="@@store.admin.new-project"
-      >
-        مشروع جديد
+      <button type="button" class="btn primary" disabled aria-describedby="pr-why">
+        <ta-icon name="plus" [size]="18" />
+        <span i18n="@@store.admin.new-project">مشروع جديد</span>
       </button>
     }
     <ta-requires id="pr-why" policy="staff:catalogue" />
   </div>
 </div>
 
-<form class="filters panel" (submit)="apply($event)" novalidate>
-  <div class="field">
-    <label for="pf-q" i18n="@@store.admin.search">بحث</label>
-    <input id="pf-q" type="search" maxlength="100" [value]="draft().q" (input)="set('q', $event)" />
-  </div>
-  <div class="field">
-    <label for="pf-status" i18n="@@store.account.col-status">الحالة</label>
-    <select id="pf-status" (change)="set('status', $event)">
-      <option value="" [selected]="draft().status === ''" i18n="@@store.admin.all">الكل</option>
-      <option
-        value="draft"
-        [selected]="draft().status === 'draft'"
-        i18n="@@store.admin.status-draft"
-      >
-        مسودة
-      </option>
-      <option
-        value="published"
-        [selected]="draft().status === 'published'"
-        i18n="@@store.admin.status-published"
-      >
-        منشور
-      </option>
-      <option
-        value="archived"
-        [selected]="draft().status === 'archived'"
-        i18n="@@store.admin.status-archived"
-      >
-        مؤرشف
-      </option>
-    </select>
-  </div>
-  <div class="field">
-    <label for="pf-cat" i18n="@@store.admin.category">التصنيف</label>
-    <select id="pf-cat" (change)="set('category', $event)">
-      <option value="" [selected]="draft().category === ''" i18n="@@store.admin.all">الكل</option>
-      @for (c of categories(); track c.id) {
-        <option [value]="c.id" [selected]="draft().category === c.id">
-          {{ i18n.pick(c.nameAr, c.nameEn) }}
-        </option>
-      }
-    </select>
-  </div>
-  <button type="submit" class="btn primary" i18n="@@store.admin.apply">تطبيق</button>
-</form>
+<ta-summary-cards
+  [cards]="cards()"
+  label="أعداد المشاريع"
+  i18n-label="@@store.admin.project-counts"
+/>
 
-<ta-resource-state
-  [loading]="data.projects.isLoading() && !page()"
-  [error]="!!data.projects.error() && !page()"
-  (retry)="data.projects.reload()"
->
-  @if (items().length === 0) {
-    <p class="muted" i18n="@@store.admin.no-results">لا نتائج.</p>
-  } @else {
-    <div class="panel tbl-wrap">
-      <table class="atbl">
-        <caption class="visually-hidden" i18n="@@store.admin.nav-projects">
-          المشاريع
-        </caption>
-        <thead>
-          <tr>
-            <th scope="col" i18n="@@store.admin.col-title">العنوان</th>
-            <th scope="col" i18n="@@store.admin.category">التصنيف</th>
-            <th scope="col" i18n="@@store.account.col-status">الحالة</th>
-            <th scope="col" i18n="@@store.admin.col-options">الخيارات</th>
-            <th scope="col" i18n="@@store.admin.col-updated">آخر تعديل</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (p of items(); track p.id) {
-            <tr>
-              <td>
-                <a [routerLink]="['/admin/projects', p.id]">{{ p.titleAr }}</a>
-                <small class="muted slug" dir="ltr">{{ p.slug }}</small>
-              </td>
-              <td>{{ p.categoryNameAr }}</td>
-              <td>
-                <ta-status-pill [tone]="status(p.status).tone">{{
-                  status(p.status).label
-                }}</ta-status-pill>
-              </td>
-              <td>
-                <bdi>{{ toInt(p.activeOptionCount) }}</bdi>
-                @if (p.allowOpenAmount) {
-                  <small class="muted slug" i18n="@@store.admin.open-amount">+ مبلغ مفتوح</small>
-                }
-              </td>
-              <td>{{ i18n.formatDate(p.updatedAt) }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
+<section class="panel idx" aria-labelledby="pr-list-h">
+  <h2 id="pr-list-h" class="visually-hidden" i18n="@@store.admin.projects-list">قائمة المشاريع</h2>
+  <div class="tools">
+    <ta-view-tabs
+      [tabs]="tabs"
+      [active]="data.filter().status"
+      label="الحالة"
+      i18n-label="@@store.account.col-status"
+      (selected)="setStatus($event)"
+    />
+    <form class="find" role="search" (submit)="search($event)">
+      <label class="visually-hidden" for="pf-q" i18n="@@store.admin.search">بحث</label>
+      <input
+        id="pf-q"
+        type="search"
+        maxlength="100"
+        placeholder="بحث"
+        i18n-placeholder="@@store.admin.search"
+        [value]="q()"
+        (input)="q.set($any($event.target).value)"
+      />
+      <button type="submit" class="btn sm" i18n="@@store.admin.apply">تطبيق</button>
+    </form>
+    <div class="cat">
+      <label for="pf-cat" i18n="@@store.admin.category">التصنيف</label>
+      <select id="pf-cat" (change)="setCategory($event)">
+        <option value="" [selected]="data.filter().category === ''" i18n="@@store.admin.all">
+          الكل
+        </option>
+        @for (c of categories(); track c.id) {
+          <option [value]="c.id" [selected]="data.filter().category === c.id">
+            {{ i18n.pick(c.nameAr, c.nameEn) }}
+          </option>
+        }
+      </select>
     </div>
+  </div>
+  <div class="pills">
+    <ta-filter-pills
+      [pills]="pills()"
+      label="الفلاتر المفعّلة"
+      i18n-label="@@store.admin.active-filters"
+      (removed)="removePill($event)"
+    />
+  </div>
+
+  @if (selection.count() > 0) {
+    <ta-bulk-bar
+      [count]="selection.count()"
+      label="إجراءات على المحدد"
+      i18n-label="@@store.admin.bulk-actions"
+    >
+      <button
+        type="button"
+        class="btn sm"
+        [disabled]="!canEdit() || !!running()"
+        aria-describedby="pr-bulk-why"
+        (click)="bulk('publish')"
+        i18n="@@store.admin.publish"
+      >
+        نشر
+      </button>
+      <button
+        type="button"
+        class="btn sm danger"
+        [disabled]="!canEdit() || !!running()"
+        aria-describedby="pr-bulk-why"
+        (click)="bulk('archive')"
+        i18n="@@store.admin.bulk-archive"
+      >
+        أرشفة
+      </button>
+      <ta-requires id="pr-bulk-why" policy="staff:catalogue" />
+      @if (running()) {
+        <span class="muted" i18n="@@store.admin.bulk-running">جارٍ التنفيذ…</span>
+      }
+    </ta-bulk-bar>
+  }
+
+  <ta-resource-state
+    [loading]="data.projects.isLoading() && !page()"
+    [error]="!!data.projects.error() && !page()"
+    (retry)="data.projects.reload()"
+  >
+    @if (items().length === 0) {
+      <p class="muted none" i18n="@@store.admin.no-results">لا نتائج.</p>
+    } @else if (viewport.phone()) {
+      <ul class="pcards" aria-label="المشاريع" i18n-aria-label="@@store.admin.nav-projects">
+        @for (p of items(); track p.id) {
+          <li>
+            <a [routerLink]="['/admin/projects', p.id]">
+              <span class="ini" aria-hidden="true">{{ p.titleAr.charAt(0) }}</span>
+              <span class="body">
+                <b>{{ p.titleAr }}</b>
+                <ta-admin-badge [kind]="kind(p.status)">{{
+                  status(p.status).label
+                }}</ta-admin-badge>
+                <small class="muted">
+                  {{ p.categoryNameAr }} ·
+                  <ng-container i18n="@@store.admin.option-count"
+                    >{{ toInt(p.activeOptionCount) }} خيارات</ng-container
+                  >
+                  @if (p.allowOpenAmount) {
+                    · <ng-container i18n="@@store.admin.open-amount-short">مبلغ مفتوح</ng-container>
+                  }
+                </small>
+              </span>
+              <ta-icon class="chev" name="chevron" [size]="16" />
+            </a>
+          </li>
+        }
+      </ul>
+    } @else {
+      <div class="tbl-wrap">
+        <table class="atbl">
+          <caption class="visually-hidden" i18n="@@store.admin.nav-projects">
+            المشاريع
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col" class="sel">
+                <input
+                  type="checkbox"
+                  aria-label="تحديد كل مشاريع الصفحة"
+                  i18n-aria-label="@@store.admin.select-page"
+                  [checked]="selection.state(ids()) === 'all'"
+                  [indeterminate]="selection.state(ids()) === 'some'"
+                  (change)="selection.toggleAll(ids())"
+                />
+              </th>
+              <th scope="col" i18n="@@store.admin.col-project">المشروع</th>
+              <th scope="col" i18n="@@store.account.col-status">الحالة</th>
+              <th scope="col" class="adm-no-tab" i18n="@@store.admin.category">التصنيف</th>
+              <th scope="col" i18n="@@store.admin.col-options">الخيارات</th>
+              <th scope="col" i18n="@@store.admin.col-updated">آخر تعديل</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (p of items(); track p.id) {
+              <tr [class.picked]="selection.has(p.id)">
+                <td class="sel">
+                  <input
+                    type="checkbox"
+                    [attr.aria-label]="rowLabel(p.titleAr)"
+                    [checked]="selection.has(p.id)"
+                    (change)="selection.toggle(p.id)"
+                  />
+                </td>
+                <td>
+                  <span class="tcell">
+                    <span class="ini" aria-hidden="true">{{ p.titleAr.charAt(0) }}</span>
+                    <span>
+                      <a [routerLink]="['/admin/projects', p.id]">{{ p.titleAr }}</a>
+                      <small class="muted slug" dir="ltr">{{ p.slug }}</small>
+                    </span>
+                  </span>
+                </td>
+                <td>
+                  <ta-admin-badge [kind]="kind(p.status)">{{
+                    status(p.status).label
+                  }}</ta-admin-badge>
+                </td>
+                <td class="adm-no-tab">{{ p.categoryNameAr }}</td>
+                <td>
+                  <bdi>{{ toInt(p.activeOptionCount) }}</bdi>
+                  @if (p.allowOpenAmount) {
+                    <small class="muted slug" i18n="@@store.admin.open-amount">+ مبلغ مفتوح</small>
+                  }
+                </td>
+                <td>{{ i18n.formatDate(p.updatedAt) }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
     @if (pages() > 1) {
       <nav class="apager" aria-label="الصفحات" i18n-aria-label="@@store.ui.pagination">
         <button
@@ -141,5 +231,30 @@
         </button>
       </nav>
     }
+  </ta-resource-state>
+</section>
+
+<ta-dialog [(open)]="resultOpen" labelledBy="pr-res-h">
+  @if (result(); as r) {
+    <div class="dlg">
+      <h2 id="pr-res-h">{{ resultTitle(r, r.ok + r.failures.length) }}</h2>
+      @if (r.failures.length) {
+        <ul class="fails">
+          @for (f of r.failures; track f) {
+            <li>{{ f }}</li>
+          }
+        </ul>
+      }
+      <div class="acts">
+        <button
+          type="button"
+          class="btn primary"
+          (click)="resultOpen.set(false)"
+          i18n="@@store.ui.close"
+        >
+          إغلاق
+        </button>
+      </div>
+    </div>
   }
-</ta-resource-state>
+</ta-dialog>

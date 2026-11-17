@@ -51,6 +51,33 @@ export class CatalogAdminData {
     return { url: `${this.api}/admin/projects`, params };
   });
 
+  /**
+   * Status counts for the projects index (03 §4): one `pageSize=1` request per status, reading the paged `total`.
+   * Keyed on category + search only, so paging never refetches them (review S10).
+   */
+  private readonly countBase = computed(
+    () => {
+      const f = this.filter();
+      const params: Record<string, string | number> = { page: 1, pageSize: 1 };
+      if (f.category) params['category'] = f.category;
+      if (f.q.trim()) params['q'] = f.q.trim();
+      return params;
+    },
+    { equal: (a, b) => JSON.stringify(a) === JSON.stringify(b) },
+  );
+  private countOf(status: ProjectStatus) {
+    return httpResource<AdminProjectPage>(() =>
+      this.on()
+        ? { url: `${this.api}/admin/projects`, params: { ...this.countBase(), status } }
+        : undefined,
+    );
+  }
+  readonly counts = {
+    published: this.countOf('published'),
+    draft: this.countOf('draft'),
+    archived: this.countOf('archived'),
+  } as const;
+
   readonly categories = httpResource<AdminCategory[]>(() =>
     this.on() ? `${this.api}/admin/categories` : undefined,
   );
@@ -118,12 +145,19 @@ export class CatalogAdminData {
     return p;
   }
 
-  async transition(id: string, to: 'publish' | 'archive'): Promise<AdminProject> {
+  /** `reload = false` lets the bulk runner reload the list once at the end (03 §13.9). */
+  async transition(id: string, to: 'publish' | 'archive', reload = true): Promise<AdminProject> {
     const p = await firstValueFrom(
       this.http.post<AdminProject>(`${this.api}/admin/projects/${id}/${to}`, null),
     );
-    this.projects.reload();
+    if (reload) this.reloadProjects();
     return p;
+  }
+
+  /** The list and its status counts. */
+  reloadProjects(): void {
+    this.projects.reload();
+    for (const c of Object.values(this.counts)) c.reload();
   }
 
   preview(id: string): Promise<ProjectDetail> {

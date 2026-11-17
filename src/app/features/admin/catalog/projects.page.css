@@ -1,0 +1,161 @@
+.ahead h1 {
+  margin: 0;
+}
+
+.act .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.idx {
+  padding: 0;
+  overflow: hidden;
+}
+
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  padding-block: 10px;
+  padding-inline: 12px;
+  border-block-end: 1px solid var(--c-border);
+}
+
+.tools ta-view-tabs {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+.find {
+  display: flex;
+  gap: 6px;
+}
+
+.find input,
+.cat select {
+  min-block-size: 40px;
+  padding-inline: 10px;
+  border: 1px solid var(--c-border);
+  border-radius: 10px;
+  background: var(--c-surface);
+  color: var(--c-text);
+  font: inherit;
+}
+
+.cat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+}
+
+.pills {
+  padding-inline: 12px;
+}
+
+.pills:has(ul) {
+  padding-block: 8px;
+  border-block-end: 1px solid var(--c-border);
+}
+
+.tbl-wrap {
+  border: 0;
+  border-radius: 0;
+}
+
+.sel {
+  inline-size: 44px;
+}
+
+.sel input {
+  inline-size: 20px;
+  block-size: 20px;
+  margin: 0;
+  accent-color: var(--c-brand-deep);
+  cursor: pointer;
+}
+
+tr.picked td {
+  background: var(--c-admin-row-selected);
+}
+
+.tcell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ini {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  inline-size: 40px;
+  block-size: 40px;
+  border-radius: 10px;
+  background: var(--c-tint);
+  color: var(--c-accent-strong);
+  font-weight: 700;
+}
+
+.none {
+  padding: 16px;
+}
+
+.pcards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.pcards li + li {
+  border-block-start: 1px solid var(--c-border);
+}
+
+.pcards a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  color: var(--c-text);
+  text-decoration: none;
+}
+
+.pcards .body {
+  display: grid;
+  justify-items: start;
+  gap: 4px;
+  min-inline-size: 0;
+}
+
+.pcards .chev {
+  margin-inline-start: auto;
+  color: var(--c-muted);
+}
+
+.apager {
+  padding-block: 12px;
+}
+
+.fails {
+  margin-block: 8px 16px;
+  padding-inline-start: 20px;
+  color: var(--c-danger);
+}
+
+@media (width <= 640px) {
+  .tools {
+    gap: 8px;
+  }
+
+  .find,
+  .cat {
+    flex: 1 1 100%;
+  }
+
+  .find input,
+  .cat select {
+    flex: 1;
+  }
+}
