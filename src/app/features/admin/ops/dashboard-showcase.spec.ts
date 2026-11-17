@@ -22,7 +22,12 @@ describe('admin dashboard — showcase badge', () => {
         { provide: STORE_API_URL, useValue: API },
         {
           provide: StaffAuth,
-          useValue: { roles: () => ['admin'], can: () => true, isSignedIn: () => false },
+          useValue: {
+            roles: () => ['admin'],
+            can: () => true,
+            isSignedIn: () => false,
+            staff: () => ({ name: 'Admin' }),
+          },
         },
       ],
     });

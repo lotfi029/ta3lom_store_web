@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+  untracked,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { type ProjectStatus, toInt } from '../../../core/api/api.types';
 import { problemMessage } from '../../../core/api/problem-message';
@@ -63,6 +72,8 @@ export function bulkFailure(r: BulkResult, title: string): string {
   styleUrls: ['../admin-common.css', './projects.page.css'],
 })
 export class ProjectsPage {
+  /** `?status=` from the dashboard's tasks (W-A5). */
+  readonly status = input<string | undefined>();
   protected readonly data = inject(CatalogAdminData);
   protected readonly auth = inject(StaffAuth);
   protected readonly i18n = inject(I18nService);
@@ -79,7 +90,7 @@ export class ProjectsPage {
   protected readonly q = signal(this.data.filter().q);
   protected readonly canEdit = computed(() => this.auth.can('staff:catalogue'));
   protected readonly selection = new PageSelection();
-  protected readonly status = projectStatus;
+  protected readonly statusLabel = projectStatus;
   protected readonly kind = badgeKind;
   protected readonly toInt = toInt;
 
@@ -146,6 +157,13 @@ export class ProjectsPage {
     });
     this.data.reloadProjects();
     this.data.categories.reload();
+    effect(() => {
+      const s = this.status();
+      if (s === 'draft' || s === 'published' || s === 'archived')
+        untracked(() => {
+          if (this.data.filter().status !== s) this.update({ status: s });
+        });
+    });
   }
 
   private update(patch: Partial<ProjectFilter>): void {

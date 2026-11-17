@@ -130,6 +130,8 @@ templates + `en.json`) with the association's licence number and confirm the tru
 | W-A2 Projects index | done | (see PR) | projects | `ui/index-page/index-page.spec.ts` (selection, bulk 2-at-a-time + 422 labels); e2e status views, search pills, bulk publish partial failure, viewer bulk disabled, 390 card list |
 | W-A3 Project editor | done | (see PR) | project | `project-editor.spec.ts` (save-bar text, requirements); existing `catalog.spec.ts`, `options-editor.spec.ts` unchanged and green; e2e create/publish via the new layout (EN tab), save bar + publish disabled while dirty + Ctrl+S + 422 requirements, 390 |
 | W-A4 Donations | done | (see PR) | orders, order | `ops.spec.ts` (search routing), `order-detail.spec.ts` (ported W-2 pending refunds); e2e search → side panel `?ref=` → full page → cancel; payments e2e on the shared detail |
+| W-A5 Dashboard | done | (see PR) | dashboard | `ops.spec.ts` (bar widths in halalas, readiness checks), `dashboard-showcase.spec.ts` (ported); e2e metrics + tasks, finance without the audit block |
+
 
 
 

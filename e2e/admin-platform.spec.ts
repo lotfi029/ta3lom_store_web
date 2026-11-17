@@ -109,7 +109,7 @@ for (const locale of ['ar', 'en'] as const) {
       await other.locator('#ap-confirm').fill(next);
       await other.locator('#ap-confirm').press('Enter');
       await expect(other).toHaveURL(new RegExp(`/${locale}/admin$`));
-      await expect(other.locator('h1')).toHaveText(t('لوحة إدارة المتجر', 'Store admin'));
+      await expect(other.locator('h1')).toContainText(t('أهلًا', 'Welcome')); // W-A5 dashboard greeting
       await ctx.close();
 
       await page.reload();

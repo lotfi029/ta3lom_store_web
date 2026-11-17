@@ -59,6 +59,13 @@ export class PlatformData {
     entityId: '',
     page: 1,
   });
+  /** The dashboard's «آخر النشاط» (W-A5): the three newest entries, admins only. */
+  readonly recentAudit = httpResource<AuditPage>(() =>
+    this.isAdmin()
+      ? { url: `${this.api}/admin/audit`, params: { page: 1, pageSize: 3 } }
+      : undefined,
+  );
+
   readonly audit = httpResource<AuditPage>(() => {
     if (!this.isAdmin()) return undefined;
     const f = this.auditFilter();

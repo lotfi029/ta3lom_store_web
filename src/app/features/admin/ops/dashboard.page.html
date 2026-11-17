@@ -1,16 +1,43 @@
 <div class="ahead">
   <div>
-    <h1 i18n="@@store.admin.home-title">لوحة إدارة المتجر</h1>
-    @if (paymentsOff()) {
-      <p class="mode-badge" role="status">
-        <ta-icon name="clock" [size]="16" /><span i18n="@@store.admin.showcase-badge"
-          >وضع العرض — الدفع متوقف</span
-        >
-      </p>
+    <p class="today">{{ today }}</p>
+    <h1>
+      <ng-container i18n="@@store.admin.greeting">أهلًا، {{ name() }}</ng-container>
+    </h1>
+    <p class="muted"><span i18n="@@store.admin.your-roles">أدوارك:</span> {{ roles() }}</p>
+  </div>
+  <div class="act">
+    <a class="btn adm-no-ph" href="./" target="_blank" rel="noopener">
+      <ta-icon name="eye" [size]="18" />
+      <span i18n="@@store.admin.view-store">عرض المتجر</span>
+      <span class="visually-hidden" i18n="@@store.admin.opens-new-tab">(يفتح في نافذة جديدة)</span>
+    </a>
+    @if (canCreate()) {
+      <a class="btn primary" routerLink="/admin/projects/new">
+        <ta-icon name="plus" [size]="18" />
+        <span i18n="@@store.admin.new-project">مشروع جديد</span>
+      </a>
+    } @else {
+      <button type="button" class="btn primary" disabled aria-describedby="db-new-why">
+        <ta-icon name="plus" [size]="18" />
+        <span i18n="@@store.admin.new-project">مشروع جديد</span>
+      </button>
+      <ta-requires id="db-new-why" policy="staff:catalogue" />
     }
-    <p><span i18n="@@store.admin.your-roles">أدوارك:</span> {{ roles() }}</p>
   </div>
 </div>
+
+@if (paymentsOff()) {
+  <p class="mode-badge notice" role="status">
+    <ta-icon name="alert" [size]="18" />
+    <span
+      ><b i18n="@@store.admin.showcase-badge">وضع العرض — الدفع متوقف</b>.
+      <ng-container i18n="@@store.admin.showcase-lede"
+        >الدفع الإلكتروني غير مفعّل بعد؛ لا تُنشأ تبرعات جديدة حتى ربط بوابة الدفع.</ng-container
+      ></span
+    >
+  </p>
+}
 
 <ta-resource-state
   [loading]="data.dashboard.isLoading() && !d()"
@@ -18,135 +45,246 @@
   (retry)="data.dashboard.reload()"
 >
   @if (d(); as x) {
-    <section class="overview" aria-labelledby="db-stats-h">
-      <h2 id="db-stats-h" class="sub" i18n="@@store.admin.overview">نظرة عامة</h2>
+    <section aria-labelledby="db-stats-h">
+      <h2 id="db-stats-h" class="visually-hidden" i18n="@@store.admin.overview">نظرة عامة</h2>
       <ul class="stats">
-        <li class="panel">
-          <span i18n="@@store.admin.pending-today">تبرعات بانتظار الدفع اليوم</span>
-          <b
-            ><a routerLink="/admin/orders" [queryParams]="{ status: 'pending_payment' }">{{
-              int(x.pendingOrdersToday)
-            }}</a></b
+        <li>
+          <span class="l" i18n="@@store.admin.pending-today">تبرعات بانتظار الدفع اليوم</span>
+          <a class="v" routerLink="/admin/orders" [queryParams]="{ status: 'pending_payment' }">{{
+            int(x.pendingOrdersToday)
+          }}</a>
+          <small class="muted" i18n="@@store.admin.status-pending-short">بانتظار الدفع</small>
+        </li>
+        <li>
+          <span class="l" i18n="@@store.admin.pending-week">بانتظار الدفع هذا الأسبوع</span>
+          <b class="v">{{ int(x.pendingOrdersThisWeek) }}</b>
+          <small class="muted" i18n="@@store.admin.status-pending-short">بانتظار الدفع</small>
+        </li>
+        <li>
+          <span class="l" i18n="@@store.admin.published-projects">مشاريع منشورة</span>
+          <a class="v" routerLink="/admin/projects" [queryParams]="{ status: 'published' }">{{
+            int(x.publishedProjects)
+          }}</a>
+          <small class="muted" i18n="@@store.admin.in-categories"
+            >في {{ int(x.activeCategories) }} تصنيفات</small
           >
         </li>
-        <li class="panel">
-          <span i18n="@@store.admin.pending-week">بانتظار الدفع هذا الأسبوع</span>
-          <b>{{ int(x.pendingOrdersThisWeek) }}</b>
-        </li>
-        <li class="panel">
-          <span i18n="@@store.admin.published-projects">مشاريع منشورة</span>
-          <b
-            ><a routerLink="/admin/projects">{{ int(x.publishedProjects) }}</a></b
-          >
-        </li>
-        <li class="panel">
-          <span i18n="@@store.admin.active-categories">تصنيفات نشطة</span>
-          <b
-            ><a routerLink="/admin/categories">{{ int(x.activeCategories) }}</a></b
-          >
-        </li>
-        <li class="panel">
-          <span i18n="@@store.admin.active-donors">متبرعون نشطون</span>
-          <b
-            ><a routerLink="/admin/donors">{{ int(x.activeDonors) }}</a></b
-          >
+        <li>
+          <span class="l" i18n="@@store.admin.active-donors">متبرعون نشطون</span>
+          <a class="v" routerLink="/admin/donors">{{ int(x.activeDonors) }}</a>
+          <small class="muted" i18n="@@store.admin.active-accounts">حسابات فعّالة</small>
         </li>
       </ul>
     </section>
 
     <div class="cols">
-      <section class="panel" aria-labelledby="db-top-h">
-        <h2 id="db-top-h" i18n="@@store.admin.top-projects">المشاريع الأعلى في المبالغ المنتظرة</h2>
-        @if (x.topProjectsByPendingAmount.length === 0) {
-          <p class="muted" i18n="@@store.admin.no-results">لا نتائج.</p>
-        } @else {
-          <ol class="list">
-            @for (t of x.topProjectsByPendingAmount; track t.projectId) {
-              <li>
-                <span
-                  ><a [routerLink]="['/admin/projects', t.projectId]">{{ t.titleAr }}</a>
-                  <small class="muted" i18n="@@store.admin.pending-count"
-                    >({{ int(t.pendingOrders) }} طلب)</small
-                  ></span
-                ><ta-money [value]="t.pendingAmount" />
-              </li>
-            }
-          </ol>
-        }
-      </section>
-      <section class="panel" aria-labelledby="db-pay-h">
-        <h2 id="db-pay-h" i18n="@@store.admin.paid-title">التبرعات المدفوعة</h2>
-        <dl class="paid">
-          <div>
-            <dt i18n="@@store.admin.paid-today">اليوم</dt>
-            <dd>
-              <ta-money [value]="x.paidToday?.amount ?? '0.00'" />
-              <small class="muted">({{ int(x.paidToday?.count ?? 0) }})</small>
-            </dd>
+      <div class="main">
+        <section class="panel" aria-labelledby="db-top-h">
+          <div class="shead">
+            <h2 id="db-top-h" i18n="@@store.admin.top-projects-pending">
+              أعلى المشاريع بالمبالغ المعلّقة
+            </h2>
+            <a routerLink="/admin/projects" i18n="@@store.admin.nav-projects-all">كل المشاريع</a>
           </div>
-          <div>
-            <dt i18n="@@store.admin.paid-week">هذا الأسبوع</dt>
-            <dd>
-              <ta-money [value]="x.paidThisWeek?.amount ?? '0.00'" />
-              <small class="muted">({{ int(x.paidThisWeek?.count ?? 0) }})</small>
-            </dd>
-          </div>
-          <div>
-            <dt i18n="@@store.admin.paid-month">هذا الشهر</dt>
-            <dd>
-              <ta-money [value]="x.paidThisMonth?.amount ?? '0.00'" />
-              <small class="muted">({{ int(x.paidThisMonth?.count ?? 0) }})</small>
-            </dd>
-          </div>
-          <div>
-            <dt i18n="@@store.admin.in-review">قيد مراجعة الدفع</dt>
-            <dd>
-              <a routerLink="/admin/orders" [queryParams]="{ status: 'payment_review' }">{{
-                int(x.inReviewOrders ?? 0)
-              }}</a>
-            </dd>
-          </div>
-          <div>
-            <dt i18n="@@store.admin.open-orphans">دفعات بلا طلب</dt>
-            <dd>
-              <a
-                routerLink="/admin/payments/orphans"
-                class="count"
-                [class.alert]="int(x.openOrphanPayments ?? 0) > 0"
-                >{{ int(x.openOrphanPayments ?? 0) }}</a
+          @if (x.topProjectsByPendingAmount.length === 0) {
+            <p class="muted" i18n="@@store.admin.no-pending-projects">لا تبرعات بانتظار الدفع.</p>
+          } @else {
+            <ol class="bars">
+              @for (t of x.topProjectsByPendingAmount; track t.projectId; let i = $index) {
+                <li>
+                  <div class="bt">
+                    <a [routerLink]="['/admin/projects', t.projectId]">{{ t.titleAr }}</a>
+                    <span class="muted"
+                      ><ta-money [value]="t.pendingAmount" /> ·
+                      <ng-container i18n="@@store.admin.donation-count"
+                        >{{ int(t.pendingOrders) }} تبرع</ng-container
+                      ></span
+                    >
+                  </div>
+                  <span class="track" aria-hidden="true"
+                    ><span class="fill" [style.inline-size.%]="bars()[i]"></span
+                  ></span>
+                </li>
+              }
+            </ol>
+          }
+        </section>
+
+        @if (ready().length) {
+          <section class="panel" aria-labelledby="db-ready-h">
+            <div class="shead">
+              <h2 id="db-ready-h" i18n="@@store.admin.readiness">جاهزية المتجر</h2>
+              <span class="muted" i18n="@@store.admin.readiness-progress"
+                >{{ readyDone() }} من {{ ready().length }}</span
               >
-            </dd>
-          </div>
-        </dl>
-        <h3 i18n="@@store.admin.top-paid-projects">المشاريع الأعلى في المبالغ المدفوعة</h3>
-        @if ((x.topProjectsByPaidAmount ?? []).length === 0) {
-          <p class="muted" i18n="@@store.admin.no-results">لا نتائج.</p>
-        } @else {
-          <ol class="list">
-            @for (t of x.topProjectsByPaidAmount; track t.projectId) {
+            </div>
+            <span class="track big" aria-hidden="true"
+              ><span
+                class="fill dark"
+                [style.inline-size.%]="(readyDone() * 100) / ready().length"
+              ></span
+            ></span>
+            <ul class="ready">
+              @for (r of ready(); track r.key) {
+                <li [class.done]="r.done">
+                  <span class="tick" aria-hidden="true">
+                    @if (r.done) {
+                      <ta-icon name="check" [size]="14" />
+                    }
+                  </span>
+                  @if (r.link && !r.done) {
+                    <a [routerLink]="r.link" [queryParams]="r.queryParams ?? {}">{{ r.label }}</a>
+                  } @else {
+                    <span>{{ r.label }}</span>
+                  }
+                  <span class="visually-hidden">
+                    @if (r.done) {
+                      <ng-container i18n="@@store.admin.requirement-met">(مكتمل)</ng-container>
+                    } @else {
+                      <ng-container i18n="@@store.admin.requirement-missing">(ناقص)</ng-container>
+                    }
+                  </span>
+                </li>
+              }
+            </ul>
+          </section>
+        }
+
+        @if (x.paidToday) {
+          <section class="panel" aria-labelledby="db-pay-h">
+            <h2 id="db-pay-h" i18n="@@store.admin.paid-title">التبرعات المدفوعة</h2>
+            <dl class="paid">
+              <div>
+                <dt i18n="@@store.admin.paid-today">اليوم</dt>
+                <dd>
+                  <ta-money [value]="x.paidToday.amount" />
+                  <small class="muted">({{ int(x.paidToday.count) }})</small>
+                </dd>
+              </div>
+              @if (x.paidThisWeek; as w) {
+                <div>
+                  <dt i18n="@@store.admin.paid-week">هذا الأسبوع</dt>
+                  <dd>
+                    <ta-money [value]="w.amount" />
+                    <small class="muted">({{ int(w.count) }})</small>
+                  </dd>
+                </div>
+              }
+              @if (x.paidThisMonth; as m) {
+                <div>
+                  <dt i18n="@@store.admin.paid-month">هذا الشهر</dt>
+                  <dd>
+                    <ta-money [value]="m.amount" />
+                    <small class="muted">({{ int(m.count) }})</small>
+                  </dd>
+                </div>
+              }
+            </dl>
+            @if ((x.topProjectsByPaidAmount ?? []).length) {
+              <h3 i18n="@@store.admin.top-paid-projects">المشاريع الأعلى في المبالغ المدفوعة</h3>
+              <ol class="list">
+                @for (t of x.topProjectsByPaidAmount; track t.projectId) {
+                  <li>
+                    <span
+                      ><a [routerLink]="['/admin/projects', t.projectId]">{{ t.titleAr }}</a>
+                      <small class="muted" i18n="@@store.admin.paid-count"
+                        >({{ int(t.paidOrders) }} تبرع)</small
+                      ></span
+                    ><ta-money [value]="t.paidAmount" />
+                  </li>
+                }
+              </ol>
+            }
+          </section>
+        }
+      </div>
+
+      <div class="side">
+        <section class="panel" aria-labelledby="db-tasks-h">
+          <h2 id="db-tasks-h" i18n="@@store.admin.today-tasks">مهام اليوم</h2>
+          <ul class="tasks">
+            <li>
+              <a routerLink="/admin/orders" [queryParams]="{ status: 'pending_payment' }">
+                <span class="ti sched" aria-hidden="true"
+                  ><ta-icon name="inbox" [size]="18"
+                /></span>
+                <span i18n="@@store.admin.task-pending"
+                  >{{ int(x.pendingOrdersToday) }} تبرعات بانتظار الدفع اليوم</span
+                >
+                <ta-icon class="chev" name="chevron" [size]="16" />
+              </a>
+            </li>
+            @if (x.inReviewOrders !== null && x.inReviewOrders !== undefined) {
               <li>
-                <span
-                  ><a [routerLink]="['/admin/projects', t.projectId]">{{ t.titleAr }}</a>
-                  <small class="muted" i18n="@@store.admin.paid-count"
-                    >({{ int(t.paidOrders) }} تبرع)</small
-                  ></span
-                ><ta-money [value]="t.paidAmount" />
+                <a routerLink="/admin/orders" [queryParams]="{ status: 'payment_review' }">
+                  <span class="ti warn" aria-hidden="true"
+                    ><ta-icon name="alert" [size]="18"
+                  /></span>
+                  <span i18n="@@store.admin.task-review"
+                    >{{ int(x.inReviewOrders) }} تبرعات قيد المراجعة</span
+                  >
+                  <ta-icon class="chev" name="chevron" [size]="16" />
+                </a>
               </li>
             }
-          </ol>
+            @if (draftCount() !== null) {
+              <li>
+                <a routerLink="/admin/projects" [queryParams]="{ status: 'draft' }">
+                  <span class="ti draft" aria-hidden="true"
+                    ><ta-icon name="heart" [size]="18"
+                  /></span>
+                  <span i18n="@@store.admin.task-drafts">{{ draftCount() }} مشاريع مسودة</span>
+                  <ta-icon class="chev" name="chevron" [size]="16" />
+                </a>
+              </li>
+            }
+            @if (
+              auth.can('staff:finance') &&
+              x.openOrphanPayments !== null &&
+              x.openOrphanPayments !== undefined
+            ) {
+              <li>
+                <a routerLink="/admin/payments/orphans">
+                  <span class="ti err" aria-hidden="true"
+                    ><ta-icon name="coins" [size]="18"
+                  /></span>
+                  <span i18n="@@store.admin.task-orphans"
+                    >{{ int(x.openOrphanPayments) }} دفعات بلا طلب</span
+                  >
+                  <ta-icon class="chev" name="chevron" [size]="16" />
+                </a>
+              </li>
+            }
+          </ul>
+        </section>
+
+        @if (isAdmin()) {
+          <section class="panel" aria-labelledby="db-recent-h">
+            <div class="shead">
+              <h2 id="db-recent-h" i18n="@@store.admin.recent-activity">آخر النشاط</h2>
+              <a routerLink="/admin/audit" i18n="@@store.admin.nav-audit">سجل التدقيق</a>
+            </div>
+            @if (recent().length === 0) {
+              <p class="muted" i18n="@@store.admin.no-results">لا نتائج.</p>
+            } @else {
+              <ul class="recent">
+                @for (a of recent(); track a.id) {
+                  <li>
+                    <span class="muted">{{ i18n.formatDateTime(a.at) }}</span>
+                    <span
+                      ><bdi dir="ltr" class="mono">{{ a.action }}</bdi> ·
+                      <bdi dir="ltr">{{ a.entity }}</bdi></span
+                    >
+                    <small class="muted"
+                      ><bdi dir="ltr">{{ a.actor }}</bdi></small
+                    >
+                  </li>
+                }
+              </ul>
+            }
+          </section>
         }
-      </section>
+      </div>
     </div>
   }
 </ta-resource-state>
-
-<h2 class="sub" i18n="@@store.admin.sections">أقسام الإدارة</h2>
-<ul class="tiles">
-  @for (item of links(); track item.path) {
-    <li>
-      <a class="panel" [routerLink]="item.path"
-        ><ta-icon [name]="item.icon" [size]="20" /><span>{{ item.label() }}</span></a
-      >
-    </li>
-  }
-</ul>

@@ -139,3 +139,41 @@ describe('donations search box (W-A4)', () => {
     expect(searchFields('')).toEqual({ reference: '', mobile: '' });
   });
 });
+
+describe('dashboard (W-A5)', () => {
+  it('sizes the pending-amount bars against the largest amount, in halalas', async () => {
+    const { barWidths } = await import('./dashboard.page');
+    expect(
+      barWidths([
+        { pendingAmount: '12400.00' },
+        { pendingAmount: '6200.00' },
+        { pendingAmount: '0.01' },
+      ]),
+    ).toEqual([100, 50, 2]);
+    expect(barWidths([{ pendingAmount: '0.00' }])).toEqual([0]);
+    expect(barWidths([])).toEqual([]);
+  });
+
+  it('lists only the readiness checks the API can answer', async () => {
+    const { readiness } = await import('./dashboard.page');
+    const all = readiness({
+      activeCategories: 3,
+      drafts: 2,
+      paymentsEnabled: false,
+      staffCount: 4,
+    });
+    expect(all.map((r) => [r.key, r.done])).toEqual([
+      ['categories', true],
+      ['drafts', false],
+      ['payments', false],
+      ['team', true],
+    ]);
+    const some = readiness({
+      activeCategories: 0,
+      drafts: null,
+      paymentsEnabled: null,
+      staffCount: null,
+    });
+    expect(some.map((r) => r.key)).toEqual(['categories']);
+  });
+});

@@ -125,7 +125,7 @@
               <span class="body">
                 <b>{{ p.titleAr }}</b>
                 <ta-admin-badge [kind]="kind(p.status)">{{
-                  status(p.status).label
+                  statusLabel(p.status).label
                 }}</ta-admin-badge>
                 <small class="muted">
                   {{ p.categoryNameAr }} ·
@@ -189,7 +189,7 @@
                 </td>
                 <td>
                   <ta-admin-badge [kind]="kind(p.status)">{{
-                    status(p.status).label
+                    statusLabel(p.status).label
                   }}</ta-admin-badge>
                 </td>
                 <td class="adm-no-tab">{{ p.categoryNameAr }}</td>
