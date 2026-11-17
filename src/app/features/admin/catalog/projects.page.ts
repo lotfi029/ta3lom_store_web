@@ -83,7 +83,10 @@ export class ProjectsPage {
   protected readonly kind = badgeKind;
   protected readonly toInt = toInt;
 
-  private count(r: { hasValue(): boolean; value(): { total: number | string } | undefined }): number | null {
+  private count(r: {
+    hasValue(): boolean;
+    value(): { total: number | string } | undefined;
+  }): number | null {
     const v = valueOf(r);
     return v ? toInt(v.total) : null;
   }

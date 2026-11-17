@@ -128,6 +128,8 @@ templates + `en.json`) with the association's licence number and confirm the tru
 | W-A0 Groundwork | done | (see PR) | none visible (tokens, icons, utilities, badge) | `ui/badge.spec.ts` (every wire value), contrast-check +16 pairs; storefront before set in `docs/screenshots/admin-redesign/storefront-before/` |
 | W-A1 Shell | done | (see PR) | shell (dashboard frame), menu | `shell/admin-nav.spec.ts` (role filtering, routes kept, active section, title, 30 s throttle), `palette-target.spec.ts`; e2e `admin-shell.spec.ts` (rail names, Ctrl+K reference/mobile/text, 390 tab bar + More page, viewer + disabled); storefront before/after identical |
 | W-A2 Projects index | done | (see PR) | projects | `ui/index-page/index-page.spec.ts` (selection, bulk 2-at-a-time + 422 labels); e2e status views, search pills, bulk publish partial failure, viewer bulk disabled, 390 card list |
+| W-A3 Project editor | done | (see PR) | project | `project-editor.spec.ts` (save-bar text, requirements); existing `catalog.spec.ts`, `options-editor.spec.ts` unchanged and green; e2e create/publish via the new layout (EN tab), save bar + publish disabled while dirty + Ctrl+S + 422 requirements, 390 |
+
 
 
 

@@ -1,10 +1,85 @@
-.crumb {
-  margin: 0 0 4px;
-  font-size: 0.85rem;
+/* Project editor (docs/admin-redesign/02 §2, mockups D/T/P-Project): main sections + a side column. */
+.ehead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin-block-end: 16px;
 }
 
-.crumb a {
-  color: var(--c-link);
+.ehead h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.ehead .rowacts {
+  margin-inline-start: auto;
+}
+
+.ehead .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.back {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 44px;
+  block-size: 44px;
+  border: 1px solid var(--c-border);
+  border-radius: 10px;
+  background: var(--c-surface);
+  color: var(--c-text);
+}
+
+/* The chevron points along the reading direction; "back" points against it. */
+.flip {
+  transform: scaleX(-1);
+}
+
+.edit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.emain {
+  flex: 999 1 520px;
+  min-inline-size: 0;
+  display: grid;
+  gap: 16px;
+}
+
+.eside {
+  flex: 1 1 290px;
+  min-inline-size: 0;
+  display: grid;
+  gap: 16px;
+}
+
+.emain .panel,
+.eside .panel {
+  margin: 0;
+}
+
+.panel h2 {
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+.shead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  margin-block-end: 14px;
+}
+
+.eside .panel h2 {
+  margin-block-end: 12px;
 }
 
 fieldset {
@@ -13,11 +88,16 @@ fieldset {
   padding: 0;
   display: grid;
   gap: 14px;
+  min-inline-size: 0;
 }
 
-h3 {
-  font-size: 1rem;
-  margin-block: 8px 0;
+.tp {
+  display: grid;
+  gap: 14px;
+}
+
+.tp[hidden] {
+  display: none;
 }
 
 .small {
@@ -25,31 +105,140 @@ h3 {
   margin: 0;
 }
 
-.missing {
-  margin-block: 0 12px;
+.cover {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 16px;
 }
 
-.imgf {
+.cover img {
+  inline-size: min(240px, 100%);
+  block-size: auto;
+  aspect-ratio: 3 / 2;
+  border-radius: 10px;
+  object-fit: cover;
+  background: var(--c-surface-2);
+}
+
+.alts {
   display: grid;
   gap: 8px;
   justify-items: start;
 }
 
-.imgf img {
-  border-radius: 8px;
-  object-fit: cover;
-  background: var(--c-surface-2);
+.alts p,
+.reqs li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 0.88rem;
 }
 
-.lbl {
+.ok ta-icon {
+  color: var(--c-success-text);
+}
+
+.warn {
+  color: var(--c-badge-warn-text);
+}
+
+.reqs {
+  list-style: none;
   margin: 0;
-  font-weight: 500;
-  font-size: 0.9rem;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.open {
+  margin-block-start: 16px;
+  padding-block-start: 16px;
+  border-block-start: 1px solid var(--c-border);
+}
+
+.open legend {
+  float: inline-start;
+  inline-size: 100%;
+  margin-block-end: 8px;
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.min {
+  max-inline-size: 280px;
+}
+
+.serp {
+  margin-block-end: 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--c-border);
+  border-radius: 10px;
+  background: var(--c-surface);
+}
+
+.serp p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.serp .url {
+  font-family: var(--fm, monospace);
+  font-size: 0.78rem;
+  color: var(--c-muted);
+}
+
+.serp .t {
+  color: var(--c-link);
+  font-size: 1.02rem;
+}
+
+.serp .d {
+  font-size: 0.85rem;
+  color: var(--c-text-2);
+}
+
+.st {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-block: 0 12px;
+}
+
+.info {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 12px;
+  margin: 0;
+  font-size: 0.88rem;
+}
+
+.info dt {
+  color: var(--c-muted);
+}
+
+.info dd {
+  margin: 0;
+  text-align: end;
 }
 
 .err p,
 .err ul {
   margin: 0;
+}
+
+.btn.on-dark {
+  background: var(--c-admin-topbar-2);
+  border-color: var(--c-border-on-dark-strong);
+  color: var(--c-on-dark);
+}
+
+.btn.gold {
+  background: var(--c-gold);
+  border-color: var(--c-gold);
+  color: var(--c-on-gold);
 }
 
 .wide {
@@ -72,4 +261,17 @@ h3 {
 
 .notice {
   margin: 0;
+}
+
+@media (width <= 640px) {
+  .ehead h1 {
+    font-size: 1.2rem;
+    flex: 1 1 0;
+    min-inline-size: 0;
+  }
+
+  .ehead .rowacts {
+    margin-inline-start: 0;
+    inline-size: 100%;
+  }
 }

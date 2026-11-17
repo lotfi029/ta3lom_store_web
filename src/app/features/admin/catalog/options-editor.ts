@@ -156,6 +156,11 @@ export class OptionsEditor {
     this.reset(this.project());
   }
 
+  /** Ctrl/⌘ S on the editor page (W-A3) when only the options have unsaved edits. */
+  saveNow(): Promise<void> {
+    return this.save(new Event('submit'));
+  }
+
   protected async save(e: Event): Promise<void> {
     e.preventDefault();
     this.tried.set(true);
