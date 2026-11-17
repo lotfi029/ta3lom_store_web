@@ -1,4 +1,12 @@
 {
   "$comment": "Production-dependency advisories accepted for a short time (owner M-9). Each entry: id (GHSA-…), package, reason, added and expires (YYYY-MM-DD, at most 30 days after added). scripts/check-audit.mjs fails on an expired entry, on an entry longer than 30 days, and on any high/critical advisory not listed here.",
-  "entries": []
+  "entries": [
+    {
+      "id": "GHSA-fc5q-39xc-vjpf",
+      "package": "picomatch",
+      "reason": "ReDoS in extglob parsing. Reached only through @angular/localize -> tinyglobby -> picomatch, which globs local files at build time (localize CLI); never shipped to the browser and never fed user input. Every picomatch version is affected and no fixed release exists yet. Re-check on expiry: upgrade if picomatch/Angular ship a fix.",
+      "added": "2026-11-17",
+      "expires": "2026-12-17"
+    }
+  ]
 }
