@@ -70,6 +70,23 @@ const PAIRS = [
   ['--chart-on', '--chart-green', TEXT, 'org chart, green box'],
   ['--chart-on', '--chart-brand', TEXT, 'org chart, blue box'],
   ['--chart-line', '--c-bg', LARGE, 'org chart connectors'],
+  // Staff admin (docs/admin-redesign/02 §5)
+  ['--c-text', '--c-admin-bg', TEXT, 'admin: text on the page'],
+  ['--c-muted-2', '--c-admin-bg', TEXT, 'admin: muted text on the page'],
+  ['--c-text', '--c-admin-side', TEXT, 'admin: side nav text'],
+  ['--c-muted-2', '--c-admin-side', TEXT, 'admin: side nav section labels'],
+  ['--c-text', '--c-admin-side-hover', TEXT, 'admin: hovered side nav item'],
+  ['--c-text', '--c-admin-row-selected', TEXT, 'admin: selected table row'],
+  ['--c-link', '--c-admin-row-selected', TEXT, 'admin: link in a selected row'],
+  ['--c-on-dark', '--c-admin-topbar', TEXT, 'admin: top bar text'],
+  ['--c-on-dark', '--c-admin-topbar-2', TEXT, 'admin: top bar search field'],
+  ['--c-on-dark-78', '--c-admin-topbar-2', TEXT, 'admin: top bar search placeholder and icons'],
+  ['--c-badge-ok-text', '--c-badge-ok-bg', TEXT, 'admin badge: paid / published'],
+  ['--c-badge-sched-text', '--c-badge-sched-bg', TEXT, 'admin badge: pending payment'],
+  ['--c-badge-warn-text', '--c-badge-warn-bg', TEXT, 'admin badge: review / missing'],
+  ['--c-badge-err-text', '--c-badge-err-bg', TEXT, 'admin badge: cancelled / archived / blocked'],
+  ['--c-badge-draft-text', '--c-badge-draft-bg', TEXT, 'admin badge: draft / expired'],
+  ['--c-badge-new-text', '--c-badge-new-bg', TEXT, 'admin badge: new / roles'],
 ];
 
 const css = readFileSync(new URL('../src/styles/tokens.css', import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');

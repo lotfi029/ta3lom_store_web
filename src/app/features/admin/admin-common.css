@@ -243,3 +243,26 @@ form.panel:not(.filters) {
   display: grid;
   gap: 14px;
 }
+
+/*
+ * Admin breakpoints (docs/admin-redesign/02 §3) — adm-rail 1100 · adm-phone 640. Emulated encapsulation: these
+ * apply only inside components that list this file in styleUrls (every admin page does); admin/ui components
+ * define their own rules.
+ */
+@media (width <= 1100px) {
+  .adm-no-tab {
+    display: none;
+  }
+}
+
+@media (width <= 640px) {
+  .adm-no-ph {
+    display: none;
+  }
+}
+
+@media (width > 640px) {
+  .adm-only-ph {
+    display: none;
+  }
+}

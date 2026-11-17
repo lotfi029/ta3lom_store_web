@@ -11,6 +11,8 @@ const BASE = process.env.E2E_ORIGIN;
  */
 export default defineConfig({
   testDir: 'e2e',
+  // Screenshot sets have their own config (npm run screenshots:admin); never part of the e2e run.
+  testIgnore: ['screenshots/**'],
   fullyParallel: false,
   workers: 1,
   forbidOnly: !!process.env.CI,

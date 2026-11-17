@@ -139,6 +139,27 @@
      otherwise run together. */
   --c-dark-surface-edge: transparent;
 
+  /* Staff admin (docs/admin-redesign/02 §5) — used only under features/admin. The top bar stays dark in both
+     themes (--c-on-dark on it); the badge pairs are text-on-tint, checked by scripts/contrast-check.mjs. */
+  --c-admin-bg: #f1f3f4;
+  --c-admin-side: #ebeef0;
+  --c-admin-side-hover: #e0e5e7;
+  --c-admin-topbar: var(--c-surface-dark);
+  --c-admin-topbar-2: #1d3a45;
+  --c-admin-row-selected: #f2f8fb;
+  --c-badge-ok-bg: #d9f2e3;
+  --c-badge-ok-text: #155c3b;
+  --c-badge-sched-bg: #dff0f7;
+  --c-badge-sched-text: #0e5770;
+  --c-badge-warn-bg: #fbecc8;
+  --c-badge-warn-text: #6b4708;
+  --c-badge-err-bg: #fbdcda;
+  --c-badge-err-text: #8e2622;
+  --c-badge-draft-bg: #e9eef0;
+  --c-badge-draft-text: #3a3d3e;
+  --c-badge-new-bg: #e4e9fb;
+  --c-badge-new-text: #2b3f8f;
+
   /* Overlays on imagery (thumbnails, video tiles) and modal scrims — theme-independent */
   --c-media-shade-22: rgb(0 0 0 / 22%);
   --c-media-shade-25: rgb(0 0 0 / 25%);
@@ -218,6 +239,7 @@
    * px value in each component's @media rule.
    * sm 600 · sm-md 700 · md 760 · md-lg 800 · lg 820 · xl 900 · xl-2 960 ·
    * xxl 1000 · nav 1280
+   * Staff admin only (features/admin/admin-common.css): adm-phone 640 · adm-rail 1100
    */
 }
 
@@ -271,6 +293,25 @@
   --c-border-on-dark: rgb(255 255 255 / 16%);
   --c-border-on-dark-soft: rgb(255 255 255 / 14%);
   --c-dark-surface-edge: rgb(255 255 255 / 14%);
+
+  /* Staff admin — the page and side nav follow the dark surfaces; the top bar keeps its dark fill */
+  --c-admin-bg: #0b1a20;
+  --c-admin-side: #10242c;
+  --c-admin-side-hover: #16303a;
+  --c-admin-topbar-2: #1d3a45;
+  --c-admin-row-selected: #12303b;
+  --c-badge-ok-bg: #173327;
+  --c-badge-ok-text: #7fe0ad;
+  --c-badge-sched-bg: #12303b;
+  --c-badge-sched-text: #8ad7f0;
+  --c-badge-warn-bg: #33290f;
+  --c-badge-warn-text: #f2c46e;
+  --c-badge-err-bg: #3a1a19;
+  --c-badge-err-text: #ff9d95;
+  --c-badge-draft-bg: #1d3a45;
+  --c-badge-draft-text: #c4d1d5;
+  --c-badge-new-bg: #1f2a4d;
+  --c-badge-new-text: #b4c1f7;
   --c-header-glass: rgb(11 26 32 / 90%);
   --c-header-shadow: rgb(0 0 0 / 35%);
   --chart-line: #4a6a75;

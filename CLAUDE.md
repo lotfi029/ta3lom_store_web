@@ -7,6 +7,8 @@ API at `https://store-api.ta3lom.sa/v1` (repo `lotfi029/ta3lom_store_api`, R5-Co
 
 Bilingual Arabic/English, **Arabic-first, right-to-left**. Same conventions, tokens, fonts and look as `ta3lom-web`
 (copied, not shared). R5 plan and contract: [docs/r5/](docs/r5/) (home = Option C, [docs/r5/home-option-c-spec.md](docs/r5/home-option-c-spec.md)); go-live: [docs/production-checklist.md](docs/production-checklist.md); report: [docs/W-report-r5.md](docs/W-report-r5.md) (r4 plan: [docs/store-web-plan.md](docs/store-web-plan.md)).
+**Admin redesign:** [docs/admin-redesign/](docs/admin-redesign/) (spec, plan, mockups) is the approved staff admin look; the
+storefront look is unchanged.
 
 ## Stack
 
