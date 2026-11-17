@@ -120,3 +120,9 @@ templates + `en.json`) with the association's licence number and confirm the tru
 | SW-6 admin badge, OpenAPI/types | done | dashboard-showcase.spec.ts (red 2/2) |
 | SW-7 @showcase e2e + axe, screenshots | done | e2e/showcase.spec.ts on `build:ci-showcase` |
 | SW-8 docs | done | — |
+
+## Storefront TBT fix (branch `fix/storefront-hydration-tbt`)
+
+| Item | State | Evidence |
+|---|---|---|
+| Home grid + inline quick donate hydrate on viewport / interaction / focus / listing change | done | e2e/home-c.spec.ts (phone: tab → grid follows, preset → checkout), e2e/listing.spec.ts, local Lighthouse A/B (DECISIONS) |

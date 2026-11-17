@@ -123,6 +123,27 @@ export class HomePage {
   protected readonly countText = computed(() => projectCount(this.data.total(), this.i18n.locale));
   protected readonly announce = signal('');
 
+  /**
+   * The project grid hydrates on viewport/interaction, not with the page (CI Lighthouse: hydrating the whole prerendered
+   * home at once was one ~340 ms long task — TBT over its 250 ms cap on main). A dehydrated block would not follow
+   * state, so it hydrates at once when the listing it shows changes (category, sort, search, page or a fresher answer),
+   * and as soon as anything in the listing section is pressed or focused: a field typed into before hydration would be
+   * reset by it, and focus/pointerdown always come before the first key.
+   */
+  private readonly gridKey = computed(() =>
+    JSON.stringify([this.query(), this.data.pages(), this.data.items().map((p) => p.id)]),
+  );
+  /** The listing first shown (set once by an effect, after inputs and data have settled). */
+  private readonly firstGridKey = signal<string | null>(null);
+  private readonly gridChanged = computed(() => {
+    const first = this.firstGridKey();
+    return first !== null && this.gridKey() !== first;
+  });
+  protected readonly gridTouched = signal(false);
+  protected readonly hydrateGrid = computed(() => this.gridChanged() || this.gridTouched());
+  /** The inline quick donate (same reason): hydrated once pressed or focused. */
+  protected readonly quickTouched = signal(false);
+
   private readonly fbar = viewChild<ElementRef<HTMLElement>>('fbar');
   private lastKey: string | null = null;
   /** 'focus': scroll to the bar, focus the heading, announce. 'announce': announce only (sort select, F-2). */
@@ -136,6 +157,11 @@ export class HomePage {
   constructor() {
     inject(DestroyRef).onDestroy(() => clearTimeout(this.announceTimer)); // L-13
     refreshAfterHydration(this.data.home, this.data.listing, this.data.categories);
+    effect(() => {
+      const key = this.gridKey();
+      if (this.data.items().length > 0 && untracked(this.firstGridKey) === null)
+        untracked(() => this.firstGridKey.set(key));
+    });
     effect(() => {
       const q = this.query();
       untracked(() => this.data.query.set(q));
