@@ -251,7 +251,7 @@ for (const locale of ['ar', 'en'] as const) {
       await expect(page.locator('a.cartbtn .ctot')).toBeVisible();
     });
 
-    test('phone: the grid and the inline quick donate hydrate late (TBT) but follow state and input at once', async ({
+    test('phone: the grid hydrates late (TBT) but follows state at once; the inline quick donate takes the first click', async ({
       page,
     }) => {
       const cats = await apiGet<Cat[]>('/catalog/categories');
@@ -262,7 +262,7 @@ for (const locale of ['ar', 'en'] as const) {
       await page.setViewportSize({ width: 390, height: 844 });
       await page.goto(`/${locale}/`, { waitUntil: 'networkidle' });
       await expect(titles(page)).toHaveCount(20);
-      // The grid is below the fold and not hydrated yet: a tab click must still replace it.
+      // The grid is not hydrated yet (on interaction only): a tab click must still replace it.
       await page
         .locator('ta-category-tabs nav a')
         .filter({ hasText: pick(cat.nameAr, cat.nameEn, locale) })
@@ -271,7 +271,7 @@ for (const locale of ['ar', 'en'] as const) {
       await expect(titles(page)).toHaveCount(inCat.items.length);
       await expect(titles(page).first()).toHaveText(titleOf(inCat.items[0]!, locale));
 
-      // The inline quick donate (also below the fold here): the first click is not lost.
+      // The inline quick donate (below the fold here, hydrated with the page): the first click is not lost.
       await page.goto(`/${locale}/`, { waitUntil: 'networkidle' });
       const card = page.locator('aside.qcard');
       await card.locator('.preset').first().click();

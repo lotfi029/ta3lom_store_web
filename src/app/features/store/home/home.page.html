@@ -11,22 +11,10 @@
         <ta-home-banner [featured]="data.featured()" [categories]="data.categoryList()" />
       }
       @if (showQuick()) {
-        <aside
-          class="qcard"
-          aria-labelledby="qc-h"
-          (focusin)="quickTouched.set(true)"
-          (pointerdown)="quickTouched.set(true)"
-        >
+        <aside class="qcard" aria-labelledby="qc-h">
           <h2 id="qc-h" class="qc-h" i18n="@@store.home.quick-title">تبرع سريع للصندوق العام</h2>
-          <!-- Below the banner on phones: hydrated when seen, touched or focused — before a key can be typed (CI TBT). -->
-          @defer (
-            on immediate;
-            hydrate on viewport;
-            hydrate on interaction;
-            hydrate when quickTouched()
-          ) {
-            <ta-quick-donate-form [list]="data.giftCategories()" variant="inline" idPrefix="qi" />
-          }
+          <!-- Hydrated with the page: a click on a preset of a deferred form was not replayed (Angular event replay). -->
+          <ta-quick-donate-form [list]="data.giftCategories()" variant="inline" idPrefix="qi" />
         </aside>
       }
     </section>
@@ -41,8 +29,7 @@
     id="projects"
     class="list"
     aria-labelledby="list-h"
-    (focusin)="gridTouched.set(true)"
-    (pointerdown)="gridTouched.set(true)"
+    (focusin)="fieldFocused($event, gridTouched)"
   >
     <div class="fbar" #fbar>
       <div class="fhead">
@@ -118,12 +105,7 @@
         (retry)="data.listing.reload()"
       >
         @if (data.items().length > 0) {
-          @defer (
-            on immediate;
-            hydrate on viewport;
-            hydrate on interaction;
-            hydrate when hydrateGrid()
-          ) {
+          @defer (on immediate; hydrate on interaction; hydrate when hydrateGrid()) {
             <ul class="grid">
               @for (p of data.items(); track p.id) {
                 <li>
