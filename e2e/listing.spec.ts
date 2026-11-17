@@ -105,6 +105,10 @@ for (const locale of ['ar', 'en'] as const) {
         }),
       });
       const field = card.locator('input[inputmode=decimal]');
+      // The grid hydrates when seen or touched (TBT): bring the card into view and wait until Angular has hydrated it
+      // (event-replay `jsaction` attributes gone) — a person cannot type in the same frame the field scrolls in.
+      await field.scrollIntoViewIfNeeded();
+      await expect(card.locator('[jsaction]')).toHaveCount(0);
       await field.fill('٥');
       await field.blur();
       await expect(field).toHaveValue('5');

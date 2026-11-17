@@ -11,9 +11,22 @@
         <ta-home-banner [featured]="data.featured()" [categories]="data.categoryList()" />
       }
       @if (showQuick()) {
-        <aside class="qcard" aria-labelledby="qc-h">
+        <aside
+          class="qcard"
+          aria-labelledby="qc-h"
+          (focusin)="quickTouched.set(true)"
+          (pointerdown)="quickTouched.set(true)"
+        >
           <h2 id="qc-h" class="qc-h" i18n="@@store.home.quick-title">تبرع سريع للصندوق العام</h2>
-          <ta-quick-donate-form [list]="data.giftCategories()" variant="inline" idPrefix="qi" />
+          <!-- Below the banner on phones: hydrated when seen, touched or focused — before a key can be typed (CI TBT). -->
+          @defer (
+            on immediate;
+            hydrate on viewport;
+            hydrate on interaction;
+            hydrate when quickTouched()
+          ) {
+            <ta-quick-donate-form [list]="data.giftCategories()" variant="inline" idPrefix="qi" />
+          }
         </aside>
       }
     </section>
@@ -24,7 +37,13 @@
     <ta-showcase-note class="sc-banner" variant="banner" />
   }
 
-  <section id="projects" class="list" aria-labelledby="list-h">
+  <section
+    id="projects"
+    class="list"
+    aria-labelledby="list-h"
+    (focusin)="gridTouched.set(true)"
+    (pointerdown)="gridTouched.set(true)"
+  >
     <div class="fbar" #fbar>
       <div class="fhead">
         <h2 id="list-h" class="count" tabindex="-1">
@@ -99,13 +118,21 @@
         (retry)="data.listing.reload()"
       >
         @if (data.items().length > 0) {
-          <ul class="grid">
-            @for (p of data.items(); track p.id) {
-              <li>
-                <ta-project-card [project]="p" [categoryName]="cardCategory(p.categorySlug)" />
-              </li>
-            }
-          </ul>
+          @defer (
+            on immediate;
+            hydrate on viewport;
+            hydrate on interaction;
+            hydrate when hydrateGrid()
+          ) {
+            <ul class="grid">
+              @for (p of data.items(); track p.id) {
+                <li>
+                  <ta-project-card [project]="p" [categoryName]="cardCategory(p.categorySlug)" />
+                </li>
+              }
+            </ul>
+          }
+          <!-- The pager hydrates with the page: keyboard activation of a not-yet-hydrated link could be lost. -->
           @if (data.pages() > 1) {
             <nav
               class="pager"

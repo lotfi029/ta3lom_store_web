@@ -115,7 +115,9 @@ for (const locale of ['ar', 'en'] as const) {
       await expect(titles(page)).toHaveCount(20);
     });
 
-    test('sort: الاسم / Name follows the API order for sort=title; the select keeps focus (F-2)', async ({ page }) => {
+    test('sort: الاسم / Name follows the API order for sort=title; the select keeps focus (F-2)', async ({
+      page,
+    }) => {
       const byTitle = await apiGet<Paged>('/catalog/projects?page=1&pageSize=20&sort=title');
       await page.goto(`/${locale}/`, { waitUntil: 'networkidle' });
       await page.locator('#sort').focus(); // a keyboard user is on the select
@@ -145,7 +147,9 @@ for (const locale of ['ar', 'en'] as const) {
       await expect(page.locator('#list-h')).toBeFocused();
       const minY = await page.evaluate(() => (window as unknown as { minY: number }).minY);
       expect(minY).toBeGreaterThan(0); // no jump to 0,0 on a query-only change
-      const barTop = await page.evaluate(() => document.querySelector('#list-h')!.getBoundingClientRect().top);
+      const barTop = await page.evaluate(
+        () => document.querySelector('#list-h')!.getBoundingClientRect().top,
+      );
       expect(barTop).toBeGreaterThanOrEqual(-2);
       expect(barTop).toBeLessThan(400);
 
@@ -245,6 +249,36 @@ for (const locale of ['ar', 'en'] as const) {
       await expect(page).toHaveURL(new RegExp(`/${locale}/checkout$`));
       await expect(page.locator('a.cartbtn')).toHaveAttribute('data-lines', '1');
       await expect(page.locator('a.cartbtn .ctot')).toBeVisible();
+    });
+
+    test('phone: the grid and the inline quick donate hydrate late (TBT) but follow state and input at once', async ({
+      page,
+    }) => {
+      const cats = await apiGet<Cat[]>('/catalog/categories');
+      const cat = cats.find((c) => Number(c.projectCount) > 1)!;
+      const inCat = await apiGet<Paged>(
+        `/catalog/projects?page=1&pageSize=20&category=${cat.slug}`,
+      );
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.goto(`/${locale}/`, { waitUntil: 'networkidle' });
+      await expect(titles(page)).toHaveCount(20);
+      // The grid is below the fold and not hydrated yet: a tab click must still replace it.
+      await page
+        .locator('ta-category-tabs nav a')
+        .filter({ hasText: pick(cat.nameAr, cat.nameEn, locale) })
+        .click();
+      await expect(page).toHaveURL(new RegExp(`category=${cat.slug}`));
+      await expect(titles(page)).toHaveCount(inCat.items.length);
+      await expect(titles(page).first()).toHaveText(titleOf(inCat.items[0]!, locale));
+
+      // The inline quick donate (also below the fold here): the first click is not lost.
+      await page.goto(`/${locale}/`, { waitUntil: 'networkidle' });
+      const card = page.locator('aside.qcard');
+      await card.locator('.preset').first().click();
+      await card
+        .getByRole('button', { name: locale === 'ar' ? 'تبرع الآن' : 'Donate now' })
+        .click();
+      await expect(page).toHaveURL(new RegExp(`/${locale}/checkout$`));
     });
 
     test('keyboard: tab links, pagination and the banner controls are reachable; 320 px has no page scroll', async ({
