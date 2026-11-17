@@ -39,7 +39,7 @@ for (const locale of ['ar', 'en'] as const) {
       await palette.fill('0551234567');
       await palette.press('Enter');
       await expect(page).toHaveURL(new RegExp(`/${locale}/admin/orders\\?mobile=0551234567$`));
-      await expect(page.locator('#ao-mobile')).toHaveValue('0551234567');
+      await expect(page.locator('#ao-q')).toHaveValue('0551234567');
 
       const { items } = (await (await fetch(`${API}/catalog/projects?pageSize=1`)).json()) as {
         items: { titleAr: string }[];

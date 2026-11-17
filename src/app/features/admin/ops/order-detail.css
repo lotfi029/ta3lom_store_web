@@ -96,3 +96,8 @@
   flex-basis: 100%;
   margin: 0;
 }
+
+.tbl-wrap:focus-visible {
+  outline: 2px solid var(--c-focus);
+  outline-offset: 2px;
+}

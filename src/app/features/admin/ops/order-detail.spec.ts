@@ -1,8 +1,9 @@
 import { LOCALE_ID, provideZonelessChangeDetection, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { StoreConfig } from '../../../core/api/store-config';
 import { StaffAuth } from '../../../core/auth/staff-auth';
-import { AdminOrderPage } from './order.page';
+import { OrderDetail } from './order-detail';
 import { OpsData } from './ops.data';
 
 const tick = () => new Promise((r) => setTimeout(r));
@@ -33,7 +34,7 @@ const ORDER = (refunds: object[]) => ({
 });
 
 /** Review 04 W-2: pending refunds in the admin order page. */
-describe('AdminOrderPage — pending refunds (W-2)', () => {
+describe('OrderDetail — pending refunds (W-2)', () => {
   function mount(refunds: object[], refund: (key: string) => Promise<object>) {
     const order = signal<object | undefined>(ORDER(refunds));
     TestBed.configureTestingModule({
@@ -42,6 +43,7 @@ describe('AdminOrderPage — pending refunds (W-2)', () => {
         provideRouter([]),
         { provide: LOCALE_ID, useValue: 'ar' },
         { provide: StaffAuth, useValue: { can: () => true, isSignedIn: signal(true) } },
+        { provide: StoreConfig, useValue: { paymentsEnabled: signal(true) } },
         {
           provide: OpsData,
           useValue: {
@@ -58,7 +60,7 @@ describe('AdminOrderPage — pending refunds (W-2)', () => {
         },
       ],
     });
-    const fixture = TestBed.createComponent(AdminOrderPage);
+    const fixture = TestBed.createComponent(OrderDetail);
     fixture.componentRef.setInput('ref', 'T3-26-000042');
     fixture.detectChanges();
     return { fixture, el: fixture.nativeElement as HTMLElement };
