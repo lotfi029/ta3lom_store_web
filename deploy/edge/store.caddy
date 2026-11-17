@@ -8,12 +8,14 @@
 # (staging names). The edge sets X-Forwarded-For/Proto; the API trusts them only from the edge subnet
 # (Store__ForwardedHeaders__KnownNetworks__0 = EDGE_SUBNET).
 
+# "?" = only when the container did not send it: the API and the staging web send these headers themselves, and a
+# duplicated X-Robots-Tag reads as "noindex, nofollow, noindex, nofollow" (smoke-deploy refuses it).
 (store_hsts) {
-	header Strict-Transport-Security "max-age=31536000; includeSubDomains"
+	header ?Strict-Transport-Security "max-age=31536000; includeSubDomains"
 }
 
 (store_noindex) {
-	header X-Robots-Tag "noindex, nofollow"
+	header ?X-Robots-Tag "noindex, nofollow"
 }
 
 # The API: 21 MB bodies (20 MB media uploads + multipart overhead); the payment webhook is never cached or buffered so
