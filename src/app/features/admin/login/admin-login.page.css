@@ -1,47 +1,98 @@
+/* Staff sign-in (docs/admin-redesign mockup D-Login): a dark brand band, a centred card, steps 1 and 2. */
 :host {
+  position: relative;
   display: block;
   min-block-size: 100vh;
-  background: var(--c-surface-2);
+  background: var(--c-admin-bg);
+}
+
+.band {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: 0;
+  block-size: 300px;
+  background: linear-gradient(135deg, var(--c-surface-dark), var(--c-brand-deep));
 }
 
 .lwrap {
+  position: relative;
   display: grid;
   justify-items: center;
-  padding-block: 24px 60px;
+  gap: 24px;
+  padding-block: 16px 40px;
   padding-inline: 16px;
+}
+
+.ltop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  inline-size: min(960px, 100%);
+  color: var(--c-on-dark);
+
+  --logo-ink: var(--c-on-dark);
+  --logo-ink-2: var(--c-on-dark);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-weight: 600;
+  color: var(--c-on-brand);
+}
+
+.mark {
+  inline-size: 40px;
+  block-size: 34px;
 }
 
 .ltools {
   display: flex;
+  align-items: center;
   gap: 8px;
-  justify-self: end;
-  margin-block-end: 24px;
 }
 
 .lcard {
   inline-size: min(440px, 100%);
+  display: grid;
+  justify-items: stretch;
   background: var(--c-surface);
   border: 1px solid var(--c-border);
-  border-radius: var(--rc);
+  border-radius: 18px;
   padding: 28px;
+  box-shadow: var(--shadow-md);
 }
 
 .lcard:focus {
   outline: none;
 }
 
-.brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
+.lic {
+  justify-self: center;
+  display: inline-grid;
+  place-items: center;
+  inline-size: 52px;
+  block-size: 52px;
+  border-radius: 14px;
+  background: var(--c-tint);
   color: var(--c-accent-strong);
-  font-weight: 600;
+}
+
+.step {
+  margin-block: 10px 0;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--c-muted);
 }
 
 h1 {
+  margin-block: 4px 18px;
+  text-align: center;
   font-size: 1.4rem;
-  margin-block: 10px 18px;
 }
 
 .lform {
@@ -49,10 +100,72 @@ h1 {
   gap: 14px;
 }
 
-.lform p {
+.lform .field {
   margin: 0;
-  color: var(--c-text-2);
-  font-size: 0.92rem;
+}
+
+.lform input {
+  min-block-size: 46px;
+}
+
+.code {
+  font-family: var(--fm);
+  font-size: 1.4rem;
+  letter-spacing: 0.6em;
+  text-align: center;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: 48px;
+  padding-inline: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--c-border);
+  background: var(--c-surface);
+  color: var(--c-text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn.primary {
+  background: var(--c-inverse);
+  border-color: var(--c-inverse);
+  color: var(--c-on-inverse);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+}
+
+.lform .note {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--c-tint);
+  color: var(--c-accent-strong);
+  font-size: 0.85rem;
+}
+
+.form-error {
+  margin-block: 0 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--c-badge-err-bg);
+  color: var(--c-badge-err-text);
+  font-size: 0.9rem;
 }
 
 .totp-setup {
@@ -60,27 +173,34 @@ h1 {
   gap: 8px;
 }
 
+.totp-setup p {
+  margin: 0;
+}
+
 .lbl {
   font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.secret {
+  font-family: var(--fm);
+  font-size: 1.05rem;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--c-surface-2);
+  overflow-wrap: anywhere;
 }
 
 .secret.small {
-  font-size: 0.75rem;
+  font-size: 0.78rem;
 }
 
-.code {
-  font-family: var(--fm);
-  letter-spacing: 0.3em;
-  font-size: 1.2rem;
+.lfoot {
+  font-size: 0.85rem;
 }
 
-.row {
-  display: flex;
-  gap: 10px;
-}
-
-.form-error {
-  color: var(--c-danger);
+.lfoot a {
+  color: var(--c-admin-link);
 }
 
 .lede {
@@ -92,4 +212,10 @@ h1 {
 .form-error p,
 .form-error ul {
   margin: 0;
+}
+
+.lform p {
+  margin: 0;
+  color: var(--c-text-2);
+  font-size: 0.92rem;
 }

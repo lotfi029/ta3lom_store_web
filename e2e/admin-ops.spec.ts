@@ -93,13 +93,13 @@ for (const locale of ['ar', 'en'] as const) {
         .getByRole('dialog')
         .getByRole('button', { name: t('إيقاف الحساب', 'Block account') })
         .click();
-      await expect(page.locator('ta-status-pill').first()).toContainText(t('موقوف', 'Blocked'));
+      await expect(page.locator('ta-admin-badge').first()).toContainText(t('موقوف', 'Blocked'));
       await page.getByRole('button', { name: t('إعادة التفعيل', 'Unblock') }).click();
       await page
         .getByRole('dialog')
         .getByRole('button', { name: t('إعادة التفعيل', 'Unblock') })
         .click();
-      await expect(page.locator('ta-status-pill').first()).toContainText(t('نشط', 'Active'));
+      await expect(page.locator('ta-admin-badge').first()).toContainText(t('نشط', 'Active'));
 
       const ctx = await browser.newContext();
       const viewer = await ctx.newPage();

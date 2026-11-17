@@ -12,7 +12,8 @@ import { SeoService } from '../../../core/seo/seo.service';
 import { ToastService } from '../../../core/ui/toast.service';
 import { Dialog } from '../../../shared/ui/dialog/dialog';
 import { ResourceState } from '../../../shared/ui/resource-state/resource-state';
-import { StatusPill } from '../../../shared/ui/status-pill/status-pill';
+import { RouterLink } from '@angular/router';
+import { AdminBadge } from '../ui/badge';
 import { ConflictDialog } from '../ui/conflict-dialog';
 import { PlatformData } from '../platform.data';
 
@@ -31,10 +32,10 @@ type Confirm = { kind: 'password' | 'totp' | 'unlock'; user: StaffUser } | null;
  */
 @Component({
   selector: 'ta-admin-staff',
-  imports: [FormField, Dialog, ResourceState, StatusPill, ConflictDialog],
+  imports: [FormField, RouterLink, Dialog, ResourceState, AdminBadge, ConflictDialog],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './staff.page.html',
-  styleUrls: ['../admin-common.css'],
+  styleUrls: ['../admin-common.css', './staff.page.css'],
 })
 export class StaffPage {
   protected readonly data = inject(PlatformData);

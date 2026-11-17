@@ -46,7 +46,9 @@ for (const locale of ['ar', 'en'] as const) {
       await page.goto(`/${locale}/`, { waitUntil: 'networkidle' });
       const brand = await page.locator('.hdr .brand').boundingBox();
       const cart = await page.locator('.hdr .cartbtn').boundingBox();
-      expect(Math.abs(brand!.y + brand!.height / 2 - (cart!.y + cart!.height / 2))).toBeLessThan(12);
+      expect(Math.abs(brand!.y + brand!.height / 2 - (cart!.y + cart!.height / 2))).toBeLessThan(
+        12,
+      );
       await expect(page.locator('.acts .theme-toggle')).toBeHidden();
       await page.locator('.burger').click();
       const before = await page.locator('html').getAttribute('data-theme');

@@ -1,5 +1,8 @@
 <div class="ahead">
   <div>
+    <p class="crumb">
+      <a routerLink="/admin/settings" i18n="@@store.admin.nav-settings-team">الإعدادات والفريق</a>
+    </p>
     <h1 i18n="@@store.admin.nav-staff">فريق العمل</h1>
     <p i18n="@@store.admin.staff-lede">حسابات فريق المتجر وأدوارهم. كل دور يفتح ما يلزمه فقط.</p>
   </div>
@@ -23,6 +26,7 @@
           <th scope="col" i18n="@@store.admin.col-name">الاسم</th>
           <th scope="col" i18n="@@store.checkout.email">البريد الإلكتروني</th>
           <th scope="col" i18n="@@store.admin.col-roles">الأدوار</th>
+          <th scope="col" i18n="@@store.admin.col-2fa">التحقق الثنائي</th>
           <th scope="col" i18n="@@store.account.col-status">الحالة</th>
           <th scope="col" i18n="@@store.admin.col-last-login">آخر دخول</th>
           <th scope="col">
@@ -37,24 +41,34 @@
             <td>
               <bdi dir="ltr">{{ u.email }}</bdi>
             </td>
-            <td>{{ roles(u) }}</td>
             <td>
-              @if (!u.isActive) {
-                <ta-status-pill tone="neutral"
-                  ><span i18n="@@store.admin.inactive">موقوف</span></ta-status-pill
-                >
-              } @else if (locked(u)) {
-                <ta-status-pill tone="danger"
-                  ><span i18n="@@store.admin.locked">مقفل</span></ta-status-pill
-                >
+              <span class="badges">
+                @for (r of u.roles; track r) {
+                  <ta-admin-badge kind="new">{{ roleLabel(r) }}</ta-admin-badge>
+                }
+              </span>
+            </td>
+            <td>
+              @if (u.totpEnrolled) {
+                <span i18n="@@store.admin.totp-on">مفعّل</span>
               } @else {
-                <ta-status-pill tone="success"
-                  ><span i18n="@@store.admin.active">نشط</span></ta-status-pill
+                <ta-admin-badge kind="warn"
+                  ><span i18n="@@store.admin.totp-pending">بانتظار الإعداد</span></ta-admin-badge
                 >
               }
-              @if (!u.totpEnrolled) {
-                <ta-status-pill tone="warning"
-                  ><span i18n="@@store.admin.no-totp">بلا تحقق بخطوتين</span></ta-status-pill
+            </td>
+            <td>
+              @if (!u.isActive) {
+                <ta-admin-badge kind="draft"
+                  ><span i18n="@@store.admin.inactive">موقوف</span></ta-admin-badge
+                >
+              } @else if (locked(u)) {
+                <ta-admin-badge kind="err"
+                  ><span i18n="@@store.admin.locked">مقفل</span></ta-admin-badge
+                >
+              } @else {
+                <ta-admin-badge kind="ok"
+                  ><span i18n="@@store.admin.active">نشط</span></ta-admin-badge
                 >
               }
             </td>
@@ -85,6 +99,37 @@
     </table>
   </div>
 </ta-resource-state>
+
+<section class="panel" aria-labelledby="st-roles-h">
+  <h2 id="st-roles-h" i18n="@@store.admin.roles-title">الأدوار</h2>
+  <ul class="roles-ex">
+    <li>
+      <b i18n="@@store.admin.role-admin">مدير النظام</b>
+      <p class="muted" i18n="@@store.admin.role-admin-text">
+        كل الصلاحيات: الفريق والإعدادات وسجل التدقيق والقوالب، والكتالوج والمتبرعون، والتبرعات
+        والمالية.
+      </p>
+    </li>
+    <li>
+      <b i18n="@@store.admin.role-store-manager">مدير المتجر</b>
+      <p class="muted" i18n="@@store.admin.role-manager-text">
+        المشاريع والتصنيفات والوسائط، والمتبرعون (إيقاف وتفعيل)، وقوالب الرسائل.
+      </p>
+    </li>
+    <li>
+      <b i18n="@@store.admin.role-finance">المالية</b>
+      <p class="muted" i18n="@@store.admin.role-finance-text">
+        التبرعات: الإلغاء والاسترداد والمراجعة والإيصالات، والتقارير والدفعات بلا طلب.
+      </p>
+    </li>
+    <li>
+      <b i18n="@@store.admin.role-viewer">اطّلاع فقط</b>
+      <p class="muted" i18n="@@store.admin.role-viewer-text">
+        قراءة فقط — الإجراءات تظهر معطّلة مع السبب.
+      </p>
+    </li>
+  </ul>
+</section>
 
 <ta-dialog [(open)]="editOpen" labelledBy="st-dlg-h" [lightDismiss]="false">
   <form class="dlg" (submit)="save($event)" novalidate>

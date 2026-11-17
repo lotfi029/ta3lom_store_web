@@ -1,17 +1,73 @@
+.act {
+  display: grid;
+  justify-items: end;
+}
+
+.msplit {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.mlib {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  margin: 0;
+  display: grid;
+  gap: 14px;
+}
+
+.side {
+  flex: 0 0 320px;
+  position: sticky;
+  inset-block-start: 72px;
+  margin: 0;
+}
+
 .mgrid {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
   gap: 14px;
 }
 
-.mgrid .panel {
-  margin: 0;
+.mtile {
   display: grid;
-  gap: 8px;
-  align-content: start;
+  gap: 6px;
+  inline-size: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--c-text);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.mtile img {
+  border: 3px solid transparent;
+}
+
+.mtile.on img {
+  border-color: var(--c-focus);
+}
+
+.cap {
+  font-size: 0.8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.flag {
+  justify-self: start;
+  padding-inline: 6px;
+  border-radius: 6px;
+  background: var(--c-badge-warn-bg);
+  color: var(--c-badge-warn-text);
+  font-size: 0.72rem;
 }
 
 img {
@@ -20,16 +76,44 @@ img {
   block-size: auto;
   aspect-ratio: 3 / 2;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 10px;
   background: var(--c-surface-2);
 }
 
-.alt {
+.dhead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-block-end: 10px;
+}
+
+.dhead h2 {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  margin-block: 8px;
+  font-size: 0.82rem;
 }
 
 .altf {
   display: grid;
   gap: 8px;
+}
+
+.alts {
+  margin-block: 0 10px;
+}
+
+.alts dd {
+  margin: 0 0 8px;
+}
+
+@media (width <= 640px) {
+  .mgrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }

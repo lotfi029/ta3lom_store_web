@@ -6,7 +6,7 @@ import { I18nService } from '../../../core/i18n/i18n';
 import { SeoService } from '../../../core/seo/seo.service';
 import { ResourceState } from '../../../shared/ui/resource-state/resource-state';
 import { customerStatus } from '../../../shared/ui/status-pill/status-labels';
-import { StatusPill } from '../../../shared/ui/status-pill/status-pill';
+import { AdminBadge, badgeKind } from '../ui/badge';
 import { type DonorFilter, OpsData, PAGE_SIZE } from './ops.data';
 
 export const DONOR_STATUSES: readonly CustomerStatus[] = ['active', 'blocked', 'anonymised'];
@@ -17,7 +17,7 @@ export const DONOR_STATUSES: readonly CustomerStatus[] = ['active', 'blocked', '
  */
 @Component({
   selector: 'ta-admin-donors',
-  imports: [RouterLink, ResourceState, StatusPill],
+  imports: [RouterLink, ResourceState, AdminBadge],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './donors.page.html',
   styleUrls: ['../admin-common.css'],
@@ -35,6 +35,7 @@ export class DonorsPage {
   protected readonly draft = signal<Omit<DonorFilter, 'page'>>({ ...this.data.donorFilter() });
   protected readonly statuses = DONOR_STATUSES;
   protected readonly label = customerStatus;
+  protected readonly kind = badgeKind;
   protected readonly int = toInt;
 
   constructor() {

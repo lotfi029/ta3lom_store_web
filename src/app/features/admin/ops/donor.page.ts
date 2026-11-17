@@ -21,7 +21,7 @@ import { Dialog } from '../../../shared/ui/dialog/dialog';
 import { Money } from '../../../shared/ui/money/money';
 import { ResourceState } from '../../../shared/ui/resource-state/resource-state';
 import { customerStatus, orderStatus } from '../../../shared/ui/status-pill/status-labels';
-import { StatusPill } from '../../../shared/ui/status-pill/status-pill';
+import { AdminBadge, badgeKind } from '../ui/badge';
 import { Requires } from '../ui/requires';
 import { OpsData } from './ops.data';
 
@@ -31,7 +31,7 @@ import { OpsData } from './ops.data';
  */
 @Component({
   selector: 'ta-admin-donor',
-  imports: [RouterLink, Dialog, Money, ResourceState, StatusPill, Requires],
+  imports: [RouterLink, Dialog, Money, ResourceState, AdminBadge, Requires],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './donor.page.html',
   styleUrls: ['../admin-common.css', './order-detail.css'],
@@ -48,6 +48,7 @@ export class DonorPage {
   protected readonly c = computed(() => valueOf(this.data.donor));
   protected readonly notFound = computed(() => toProblem(this.data.donor.error()).status === 404);
   protected readonly label = customerStatus;
+  protected readonly kind = badgeKind;
   protected readonly orderLabel = orderStatus;
   protected readonly int = toInt;
   protected readonly canBlock = computed(() => this.auth.can('staff:customers'));

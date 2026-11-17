@@ -1,0 +1,49 @@
+.shcards {
+  list-style: none;
+  padding: 6px;
+  max-inline-size: 640px;
+}
+
+.shcards li + li {
+  border-block-start: 1px solid var(--c-border);
+}
+
+.shcards a,
+.off {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-block-size: 64px;
+  padding-inline: 12px;
+  border-radius: 10px;
+  color: var(--c-text);
+  text-decoration: none;
+}
+
+.shcards a:hover {
+  background: var(--c-admin-row-selected);
+}
+
+.off {
+  opacity: 0.75;
+}
+
+.ic {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  inline-size: 40px;
+  block-size: 40px;
+  border-radius: 10px;
+  background: var(--c-surface-2);
+}
+
+.tx {
+  display: grid;
+  gap: 2px;
+}
+
+.chev {
+  margin-inline-start: auto;
+  color: var(--c-muted);
+}

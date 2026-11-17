@@ -21,7 +21,9 @@ async function dev(method: 'GET' | 'POST', path: string, body?: object): Promise
 }
 
 async function status(o: PlacedOrder): Promise<Record<string, unknown>> {
-  const r = await fetch(`${API}/orders/${o.reference}/status?t=${encodeURIComponent(o.statusToken)}`);
+  const r = await fetch(
+    `${API}/orders/${o.reference}/status?t=${encodeURIComponent(o.statusToken)}`,
+  );
   expect(r.status).toBe(200);
   return (await r.json()) as Record<string, unknown>;
 }
@@ -42,11 +44,15 @@ for (const locale of ['ar', 'en'] as const) {
   test.describe(`payments /${locale}`, () => {
     test.skip(onStub, 'needs the real API (fake gateway, jobs, clock)');
 
-    test('pay → paid with a DR receipt (the return URL proves nothing: the page asks the API)', async ({ page }) => {
+    test('pay → paid with a DR receipt (the return URL proves nothing: the page asks the API)', async ({
+      page,
+    }) => {
       const o = await placeOrder(freshMobile(), locale);
       await toGateway(page, o);
       await payOnHostedPage(page, 'pay');
-      await expect(page.locator('.osec .card h2')).toContainText(t('وصل تبرعك', 'your donation arrived'));
+      await expect(page.locator('.osec .card h2')).toContainText(
+        t('وصل تبرعك', 'your donation arrived'),
+      );
       await expect(page.locator('.kv')).toContainText(/DR-\d{4}-\d{6}/);
       const download = page.waitForEvent('download');
       await page.locator('.receipt button').first().click();
@@ -59,11 +65,15 @@ for (const locale of ['ar', 'en'] as const) {
       const o = await placeOrder(freshMobile(), locale);
       await toGateway(page, o);
       await payOnHostedPage(page, 'fail');
-      await expect(page.locator('.osec .card h2')).toContainText(t('لم يكتمل الدفع', 'didn’t go through'));
+      await expect(page.locator('.osec .card h2')).toContainText(
+        t('لم يكتمل الدفع', 'didn’t go through'),
+      );
       await expectNoA11yViolations(page, `/${locale}/orders retry`);
       await page.locator('button.pay-again').click();
       await payOnHostedPage(page, 'pay');
-      await expect(page.locator('.osec .card h2')).toContainText(t('وصل تبرعك', 'your donation arrived'));
+      await expect(page.locator('.osec .card h2')).toContainText(
+        t('وصل تبرعك', 'your donation arrived'),
+      );
       const s = await status(o);
       expect(s['status']).toBe('paid');
       expect(s['canRetryPayment']).toBe(false);
@@ -73,14 +83,18 @@ for (const locale of ['ar', 'en'] as const) {
       const o = await placeOrder(freshMobile(), locale);
       await toGateway(page, o);
       await payOnHostedPage(page, 'wrong');
-      await expect(page.locator('.osec .card h2')).toContainText(t('نراجع دفعتك', 'reviewing your payment'));
+      await expect(page.locator('.osec .card h2')).toContainText(
+        t('نراجع دفعتك', 'reviewing your payment'),
+      );
       expect((await status(o))['status']).toBe('payment_review');
 
       await staffSignIn(page, locale, 'finance');
       await page.goto(`/${locale}/admin/orders/${o.reference}`);
       await expect(page.locator('.panel.pay')).toBeVisible();
       await expectNoA11yViolations(page, `/${locale}/admin/orders/:ref review`);
-      await page.getByRole('button', { name: t('قبول الدفعة', 'Accept payment'), exact: true }).click();
+      await page
+        .getByRole('button', { name: t('قبول الدفعة', 'Accept payment'), exact: true })
+        .click();
       const dlg = page.getByRole('dialog');
       await expect(dlg).toBeVisible();
       await dlg.getByRole('button', { name: t('تأكيد', 'Confirm') }).click();
@@ -90,11 +104,15 @@ for (const locale of ['ar', 'en'] as const) {
       expect((await status(o))['status']).toBe('paid');
     });
 
-    test('partial refund, then the rest → refunded with a DRC cancellation receipt', async ({ page }) => {
+    test('partial refund, then the rest → refunded with a DRC cancellation receipt', async ({
+      page,
+    }) => {
       const o = await placeOrder(freshMobile(), locale, '50');
       await toGateway(page, o);
       await payOnHostedPage(page, 'pay');
-      await expect(page.locator('.osec .card h2')).toContainText(t('وصل تبرعك', 'your donation arrived'));
+      await expect(page.locator('.osec .card h2')).toContainText(
+        t('وصل تبرعك', 'your donation arrived'),
+      );
 
       await staffSignIn(page, locale, 'finance');
       await page.goto(`/${locale}/admin/orders/${o.reference}`);
@@ -117,8 +135,13 @@ for (const locale of ['ar', 'en'] as const) {
       await page.getByRole('dialog').locator('#ao-amount').fill('50.01');
       await page.getByRole('dialog').locator('#ao-reason').fill('e2e');
       await page.getByRole('dialog').locator('#ao-typed').fill(o.reference);
-      await expect(page.getByRole('dialog').getByRole('button', { name: t('تأكيد', 'Confirm') })).toBeDisabled();
-      await page.getByRole('dialog').getByRole('button', { name: t('رجوع', 'Back') }).click();
+      await expect(
+        page.getByRole('dialog').getByRole('button', { name: t('تأكيد', 'Confirm') }),
+      ).toBeDisabled();
+      await page
+        .getByRole('dialog')
+        .getByRole('button', { name: t('رجوع', 'Back') })
+        .click();
 
       await refund('20');
       expect((await status(o))['status']).toBe('paid');
@@ -128,24 +151,32 @@ for (const locale of ['ar', 'en'] as const) {
       await expect(page.locator('.panel.pay')).toContainText(/DRC-\d{4}-\d{6}/);
 
       await page.goto(orderUrl(locale, o));
-      await expect(page.locator('.osec .card h2')).toContainText(t('تم استرداد تبرعك', 'was refunded'));
+      await expect(page.locator('.osec .card h2')).toContainText(
+        t('تم استرداد تبرعك', 'was refunded'),
+      );
       const download = page.waitForEvent('download');
       await page.locator('.receipt button').nth(1).click();
       expect((await download).suggestedFilename()).toMatch(/^DRC-\d{4}-\d{6}\.pdf$/);
       await expectNoA11yViolations(page, `/${locale}/orders refunded`);
     });
 
-    test('unpaid past the payment window → the expiry job closes it (dev clock)', async ({ page }) => {
+    test('unpaid past the payment window → the expiry job closes it (dev clock)', async ({
+      page,
+    }) => {
       const o = await placeOrder(freshMobile(), locale);
       try {
         expect((await dev('POST', '/clock', { advanceMinutes: 24 * 60 + 1 })).status).toBe(200);
         expect((await dev('POST', '/jobs/ExpireUnpaidOrdersJob')).status).toBe(202);
-        await expect.poll(async () => (await status(o))['status'], { timeout: 15_000 }).toBe('expired');
+        await expect
+          .poll(async () => (await status(o))['status'], { timeout: 15_000 })
+          .toBe('expired');
       } finally {
         await dev('POST', '/clock', { reset: true });
       }
       await page.goto(orderUrl(locale, o));
-      await expect(page.locator('.osec .card h2')).toContainText(t('انتهت مهلة الدفع', 'payment time has passed'));
+      await expect(page.locator('.osec .card h2')).toContainText(
+        t('انتهت مهلة الدفع', 'payment time has passed'),
+      );
       await expect(page.locator('button.pay-again')).toHaveCount(0);
     });
 
@@ -168,7 +199,9 @@ for (const locale of ['ar', 'en'] as const) {
       await page.locator('#co-email').fill(`quick-${Date.now()}@example.com`);
       await page.locator('button.pay-btn').click();
       await payOnHostedPage(page, 'pay');
-      await expect(page.locator('.osec .card h2')).toContainText(t('وصل تبرعك', 'your donation arrived'));
+      await expect(page.locator('.osec .card h2')).toContainText(
+        t('وصل تبرعك', 'your donation arrived'),
+      );
     });
   });
 }
