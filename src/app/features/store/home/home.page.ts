@@ -12,6 +12,7 @@ import {
   signal,
   untracked,
   viewChild,
+  type WritableSignal,
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import type { Category, CatalogSort } from '../../../core/api/api.types';
@@ -124,11 +125,12 @@ export class HomePage {
   protected readonly announce = signal('');
 
   /**
-   * The project grid hydrates on viewport/interaction, not with the page (CI Lighthouse: hydrating the whole prerendered
+   * The project grid hydrates on interaction, not with the page (CI Lighthouse: hydrating the whole prerendered
    * home at once was one ~340 ms long task — TBT over its 250 ms cap on main). A dehydrated block would not follow
    * state, so it hydrates at once when the listing it shows changes (category, sort, search, page or a fresher answer),
-   * and as soon as anything in the listing section is pressed or focused: a field typed into before hydration would be
-   * reset by it, and focus/pointerdown always come before the first key.
+   * and as soon as a field in the listing section gets focus (`fieldFocused`). No `hydrate on viewport`: a viewport-started
+   * hydration racing a click on a card (chip, stepper) dropped the click's replay (about half of early clicks lost at
+   * 4× CPU); `hydrate on interaction` replays the click that triggers it.
    */
   private readonly gridKey = computed(() =>
     JSON.stringify([this.query(), this.data.pages(), this.data.items().map((p) => p.id)]),
@@ -141,8 +143,15 @@ export class HomePage {
   });
   protected readonly gridTouched = signal(false);
   protected readonly hydrateGrid = computed(() => this.gridChanged() || this.gridTouched());
-  /** The inline quick donate (same reason): hydrated once pressed or focused. */
-  protected readonly quickTouched = signal(false);
+  /**
+   * Hydrate a deferred block as soon as a text field in it gets focus, before the first key (a key typed into a
+   * dehydrated field is reset by hydration). Only fields: a `hydrate when` started by the press or focus of a button,
+   * chip or preset races `hydrate on interaction` and drops the replay of that click.
+   */
+  protected fieldFocused(e: FocusEvent, touched: WritableSignal<boolean>): void {
+    if (e.target instanceof Element && e.target.matches('input, textarea, select'))
+      touched.set(true);
+  }
 
   private readonly fbar = viewChild<ElementRef<HTMLElement>>('fbar');
   private lastKey: string | null = null;
