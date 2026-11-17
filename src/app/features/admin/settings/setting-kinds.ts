@@ -117,7 +117,8 @@ export const SETTINGS: readonly SettingDef[] = [
     kind: 'text',
     max: 36,
     label: () => $localize`:@@store.admin.set-receipt-signature:صورة التوقيع والختم (معرّف الوسيط)`,
-    hint: () => $localize`:@@store.admin.set-receipt-signature-hint:انسخ معرّف الصورة من مكتبة الوسائط، أو اتركه فارغًا.`,
+    hint: () =>
+      $localize`:@@store.admin.set-receipt-signature-hint:انسخ معرّف الصورة من مكتبة الوسائط، أو اتركه فارغًا.`,
   },
 ];
 

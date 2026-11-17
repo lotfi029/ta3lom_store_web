@@ -38,7 +38,7 @@ for (const locale of ['ar', 'en'] as const) {
       const nav = page.locator('#admin-nav');
       for (const [ar, en] of [
         ['المشاريع', 'Projects'],
-        ['الطلبات', 'Orders'],
+        ['التبرعات', 'Donations'],
         ['المتبرعون', 'Donors'],
       ])
         await expect(nav.getByRole('link', { name: t(ar, en) })).toBeVisible();

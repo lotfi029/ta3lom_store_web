@@ -17,7 +17,15 @@ const ORDER = (refunds: object[]) => ({
   lines: [],
   payments: [],
   events: [],
-  receipts: [{ number: 'DR-2026-000001', series: 'DR', amount: '50.00', issuedAt: '2026-11-04T10:00:00Z', voidedBy: null }],
+  receipts: [
+    {
+      number: 'DR-2026-000001',
+      series: 'DR',
+      amount: '50.00',
+      issuedAt: '2026-11-04T10:00:00Z',
+      voidedBy: null,
+    },
+  ],
   refunds,
   reviewReason: null,
   createdAt: '2026-11-04T09:00:00Z',
@@ -57,13 +65,33 @@ describe('AdminOrderPage — pending refunds (W-2)', () => {
   }
 
   const refundButton = (el: HTMLElement) =>
-    [...el.querySelectorAll<HTMLButtonElement>('.act.fin button')].find((b) => b.textContent?.trim() === 'استرداد')!;
+    [...el.querySelectorAll<HTMLButtonElement>('.act.fin button')].find(
+      (b) => b.textContent?.trim() === 'استرداد',
+    )!;
 
   it('a requested refund disables new refunds and is listed with its status and source', () => {
     const { el } = mount(
       [
-        { id: 'r1', amount: '10.00', status: 'requested', reason: 'x', requestedBy: 'f@x', requestedAt: '2026-11-04T10:00:00Z', completedAt: null, source: 'store' },
-        { id: 'r2', amount: '5.00', status: 'succeeded', reason: 'y', requestedBy: 'moyasar', requestedAt: '2026-11-04T09:30:00Z', completedAt: null, source: 'gateway' },
+        {
+          id: 'r1',
+          amount: '10.00',
+          status: 'requested',
+          reason: 'x',
+          requestedBy: 'f@x',
+          requestedAt: '2026-11-04T10:00:00Z',
+          completedAt: null,
+          source: 'store',
+        },
+        {
+          id: 'r2',
+          amount: '5.00',
+          status: 'succeeded',
+          reason: 'y',
+          requestedBy: 'moyasar',
+          requestedAt: '2026-11-04T09:30:00Z',
+          completedAt: null,
+          source: 'gateway',
+        },
       ],
       () => Promise.reject(new Error('not called')),
     );
@@ -97,7 +125,9 @@ describe('AdminOrderPage — pending refunds (W-2)', () => {
     submit().click();
     await tick();
     fixture.detectChanges();
-    expect(document.querySelector('form.dlg .pending')?.textContent).toContain('لم تؤكد بوابة الدفع');
+    expect(document.querySelector('form.dlg .pending')?.textContent).toContain(
+      'لم تؤكد بوابة الدفع',
+    );
     expect(submit().textContent).toContain('تحقق مجددًا');
 
     answer = { reference: 'T3-26-000042', status: 'paid', refund: 'succeeded' };
@@ -105,7 +135,7 @@ describe('AdminOrderPage — pending refunds (W-2)', () => {
     await tick();
     fixture.detectChanges();
     expect(keys.length).toBe(2);
-    expect(keys[1]).toBe(keys[0]);                          // never a second refund
+    expect(keys[1]).toBe(keys[0]); // never a second refund
     expect(document.querySelector('form.dlg .pending')).toBeNull();
   });
 });

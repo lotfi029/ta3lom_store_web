@@ -5,7 +5,11 @@ import { daySpan, REPORT_MAX_DAYS, riyadhDate, validRange } from '../reports/rep
 import { orderParams, upperRef } from './ops.data';
 import { rangeOk } from './orders.page';
 import { validNote } from './orphans.page';
-import { refundSource, refundStatus, reviewReason } from '../../../shared/ui/status-pill/status-labels';
+import {
+  refundSource,
+  refundStatus,
+  reviewReason,
+} from '../../../shared/ui/status-pill/status-labels';
 
 const line = (o: Partial<AdminOrderLine>): AdminOrderLine => ({
   lineNo: 1,
@@ -100,10 +104,22 @@ describe('admin operations', () => {
     expect(refundStatus('requested').tone).toBe('warning');
     expect(refundSource('gateway')).toContain('بوابة');
     expect(refundSource('store')).toContain('المتجر');
-    expect(problemMessage({ status: 409, code: 'payment.review_partial', extra: { captured: '31.00', total: '32.00' } })).toContain('31');
-    expect(problemMessage({ status: 422, code: 'checkout.below_minimum', extra: { minimum: '1.00' } })).toContain('1');
+    expect(
+      problemMessage({
+        status: 409,
+        code: 'payment.review_partial',
+        extra: { captured: '31.00', total: '32.00' },
+      }),
+    ).toContain('31');
+    expect(
+      problemMessage({ status: 422, code: 'checkout.below_minimum', extra: { minimum: '1.00' } }),
+    ).toContain('1');
     const fallback = problemMessage({ status: 409, code: 'nope' });
-    for (const code of ['payment.refund_pending', 'payment.orphan_not_found', 'payment.orphan_resolved'])
+    for (const code of [
+      'payment.refund_pending',
+      'payment.orphan_not_found',
+      'payment.orphan_resolved',
+    ])
       expect(problemMessage({ status: 409, code }), code).not.toBe(fallback);
   });
 
@@ -113,4 +129,3 @@ describe('admin operations', () => {
     expect(validNote('x'.repeat(501))).toBe(false);
   });
 });
-

@@ -56,9 +56,11 @@ async function firstProjectId(): Promise<string> {
   return projectId;
 }
 
-async function shot(page: Page, file: string) {
+async function shot(page: Page, file: string, forceFull = false) {
   await page.waitForTimeout(500);
-  await page.screenshot({ path: join(OUT, file), fullPage: true, type: 'jpeg', quality: 80 });
+  // Phones: the viewport as a person sees it (the bottom tab bar is fixed; a full-page capture would float it mid-page).
+  const phone = (page.viewportSize()?.width ?? 1440) <= 640;
+  await page.screenshot({ path: join(OUT, file), fullPage: forceFull || !phone, type: 'jpeg', quality: 80 });
 }
 
 async function setTheme(ctx: BrowserContext, theme: 'light' | 'dark') {
@@ -89,9 +91,9 @@ test('storefront before/after', async ({ browser }) => {
     await setTheme(ctx, 'light');
     const page = await ctx.newPage();
     await page.goto('/ar/', { waitUntil: 'networkidle' });
-    await shot(page, `storefront/ar-${w}-home.jpg`);
+    await shot(page, `storefront/ar-${w}-home.jpg`, true);
     await page.goto(`/ar/p/${slug}`, { waitUntil: 'networkidle' });
-    await shot(page, `storefront/ar-${w}-project.jpg`);
+    await shot(page, `storefront/ar-${w}-project.jpg`, true);
     await ctx.close();
   }
 });

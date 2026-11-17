@@ -147,6 +147,9 @@
   --c-admin-topbar: var(--c-surface-dark);
   --c-admin-topbar-2: #1d3a45;
   --c-admin-row-selected: #f2f8fb;
+
+  /* Links on the admin's grey page: --c-link is 4.5:1 on white only, so the admin shell re-points --c-link to this */
+  --c-admin-link: var(--c-accent-strong);
   --c-badge-ok-bg: #d9f2e3;
   --c-badge-ok-text: #155c3b;
   --c-badge-sched-bg: #dff0f7;
@@ -300,6 +303,7 @@
   --c-admin-side-hover: #16303a;
   --c-admin-topbar-2: #1d3a45;
   --c-admin-row-selected: #12303b;
+  --c-admin-link: #6fcbeb;
   --c-badge-ok-bg: #173327;
   --c-badge-ok-text: #7fe0ad;
   --c-badge-sched-bg: #12303b;

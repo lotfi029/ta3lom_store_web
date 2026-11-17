@@ -43,8 +43,11 @@ export const rangeOk = (from: string, to: string): boolean => !from || !to || fr
   styleUrls: ['../admin-common.css'],
 })
 export class AdminOrdersPage {
-  /** `?status=` from the dashboard link. */
+  /** `?status=` from the dashboard and the side nav; no status = all (the nav's «كل التبرعات»). */
   readonly status = input<string | undefined>();
+  /** `?mobile=` / `?reference=` from the command palette (W-A1). */
+  readonly mobile = input<string | undefined>();
+  readonly reference = input<string | undefined>();
 
   protected readonly data = inject(OpsData);
   protected readonly i18n = inject(I18nService);
@@ -63,17 +66,30 @@ export class AdminOrdersPage {
 
   constructor() {
     this.seo.set({
-      title: $localize`:@@store.admin.nav-orders:الطلبات`,
+      title: $localize`:@@store.admin.nav-donations:التبرعات`,
       description: '',
       path: '/admin/orders',
       noindex: true,
     });
     effect(() => {
       const s = this.status();
+      const mobile = this.mobile();
+      const reference = this.reference();
       untracked(() => {
-        if (isStatus(s)) {
-          this.draft.update((d) => ({ ...d, status: s }));
-          this.data.orderFilter.set({ ...this.draft(), page: 1 });
+        const next = {
+          ...this.draft(),
+          status: isStatus(s) ? s : ('' as const),
+          ...(mobile !== undefined ? { mobile, reference: '' } : {}),
+          ...(reference !== undefined ? { reference, mobile: '' } : {}),
+        };
+        const f = this.data.orderFilter();
+        if (
+          next.status !== f.status ||
+          next.mobile !== f.mobile ||
+          next.reference !== f.reference
+        ) {
+          this.draft.set(next);
+          this.data.orderFilter.set({ ...next, page: 1 });
         } else this.data.orders.reload();
       });
     });

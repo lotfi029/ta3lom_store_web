@@ -1,0 +1,92 @@
+<h1 class="visually-hidden" i18n="@@store.admin.more">المزيد</h1>
+<section class="acct panel" aria-labelledby="mn-name">
+  <span class="av" aria-hidden="true">{{ initial() }}</span>
+  <div>
+    <p id="mn-name" class="nm">{{ auth.staff()?.name }}</p>
+    <p class="muted">{{ roles() }}</p>
+  </div>
+</section>
+@if (counts.paymentsOff()) {
+  <p class="notice" role="note">
+    <ta-icon name="alert" [size]="18" />
+    <span i18n="@@store.admin.payments-off-notice"
+      ><b>الدفع الإلكتروني غير مفعّل بعد.</b> المتجر في وضع العرض: لا تُنشأ تبرعات جديدة حتى ربط
+      بوابة الدفع.</span
+    >
+  </p>
+}
+<nav aria-label="أقسام الإدارة" i18n-aria-label="@@store.admin.sections">
+  @for (s of sections(); track s.key) {
+    <h2 class="sec">
+      @if (s.label) {
+        {{ s.label() }}
+      } @else {
+        <ng-container i18n="@@store.admin.nav-section-main">المتجر</ng-container>
+      }
+    </h2>
+    <ul class="list panel">
+      @for (item of s.items; track item.key) {
+        <li>
+          <a [routerLink]="item.path">
+            <ta-icon [name]="item.icon" [size]="20" />
+            <span>{{ item.label() }}</span>
+            @if (counts.badge(item.badge); as n) {
+              <span class="count">{{ n }}</span>
+            }
+            <ta-icon class="chev" name="chevron" [size]="16" />
+          </a>
+        </li>
+        @for (c of item.children ?? []; track c.key) {
+          @if (c.path !== item.path || c.queryParams) {
+            <li class="child">
+              <a [routerLink]="c.path" [queryParams]="c.queryParams ?? {}">
+                <span>{{ c.label() }}</span>
+                @if (counts.badge(c.badge); as n) {
+                  <span class="count">{{ n }}</span>
+                }
+                <ta-icon class="chev" name="chevron" [size]="16" />
+              </a>
+            </li>
+          }
+        }
+      }
+    </ul>
+  }
+  <h2 class="sec" i18n="@@store.admin.nav-section-channel">قنوات البيع</h2>
+  <ul class="list panel">
+    <li>
+      <a href="./" target="_blank" rel="noopener">
+        <ta-icon name="globe" [size]="20" />
+        <span dir="ltr">store.ta3lom.sa</span>
+        <span class="visually-hidden" i18n="@@store.admin.opens-new-tab"
+          >(يفتح في نافذة جديدة)</span
+        >
+        <ta-icon class="chev" name="external" [size]="16" />
+      </a>
+    </li>
+  </ul>
+</nav>
+<h2 class="sec" i18n="@@store.admin.account">الحساب</h2>
+<ul class="list panel">
+  <li class="row">
+    <span i18n="@@store.admin.language">اللغة</span>
+    <ta-lang-switch />
+  </li>
+  <li class="row">
+    <span i18n="@@store.layout.dark-mode">الوضع الداكن</span>
+    <ta-theme-toggle />
+  </li>
+  <li>
+    <a routerLink="/admin/password">
+      <ta-icon name="lock" [size]="20" />
+      <span i18n="@@store.admin.account-security">كلمة المرور والتحقق</span>
+      <ta-icon class="chev" name="chevron" [size]="16" />
+    </a>
+  </li>
+  <li>
+    <button type="button" class="out" (click)="signOut()">
+      <ta-icon name="logout" [size]="20" />
+      <span i18n="@@store.layout.sign-out">تسجيل الخروج</span>
+    </button>
+  </li>
+</ul>

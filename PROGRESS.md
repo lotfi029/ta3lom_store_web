@@ -126,6 +126,8 @@ templates + `en.json`) with the association's licence number and confirm the tru
 | Phase | Status | Commit | Screens | Tests |
 |---|---|---|---|---|
 | W-A0 Groundwork | done | (see PR) | none visible (tokens, icons, utilities, badge) | `ui/badge.spec.ts` (every wire value), contrast-check +16 pairs; storefront before set in `docs/screenshots/admin-redesign/storefront-before/` |
+| W-A1 Shell | done | (see PR) | shell (dashboard frame), menu | `shell/admin-nav.spec.ts` (role filtering, routes kept, active section, title, 30 s throttle), `palette-target.spec.ts`; e2e `admin-shell.spec.ts` (rail names, Ctrl+K reference/mobile/text, 390 tab bar + More page, viewer + disabled); storefront before/after identical |
+
 
 ## Storefront TBT fix (branch `fix/storefront-hydration-tbt`)
 

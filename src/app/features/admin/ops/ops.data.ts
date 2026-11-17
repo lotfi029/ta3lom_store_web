@@ -87,7 +87,9 @@ export class OpsData {
 
   /** Review 04 A-3/W-3: orphan payments, open (`resolved = false`) or resolved — finance only. */
   readonly orphansResolved = signal(false);
-  private readonly finance = computed(() => this.auth.isSignedIn() && this.auth.can('staff:finance'));
+  private readonly finance = computed(
+    () => this.auth.isSignedIn() && this.auth.can('staff:finance'),
+  );
   readonly orphans = httpResource<OrphanPayment[]>(() =>
     this.finance()
       ? { url: `${this.api}/admin/payments/orphans`, params: { resolved: this.orphansResolved() } }
@@ -96,7 +98,10 @@ export class OpsData {
 
   async resolveOrphan(id: string, note: string): Promise<OrphanPayment> {
     const r = await firstValueFrom(
-      this.http.post<OrphanPayment>(`${this.api}/admin/payments/orphans/${encodeURIComponent(id)}/resolve`, { note }),
+      this.http.post<OrphanPayment>(
+        `${this.api}/admin/payments/orphans/${encodeURIComponent(id)}/resolve`,
+        { note },
+      ),
     );
     this.orphans.reload();
     this.dashboard.reload();
@@ -139,16 +144,38 @@ export class OpsData {
   // ── R5-Payments (plan §4, §6 F5): finance actions. Each Idempotency-Key is created by the dialog and kept by it
   // until a definite answer; the order's `version` (as read) guards against concurrent changes (409).
 
-  async refund(reference: string, amount: string, reason: string, version: number, key: string): Promise<AdminPaymentAction> {
-    return this.financeAction(`${this.orderPath(reference)}/refunds`, { amount, reason, version }, key);
+  async refund(
+    reference: string,
+    amount: string,
+    reason: string,
+    version: number,
+    key: string,
+  ): Promise<AdminPaymentAction> {
+    return this.financeAction(
+      `${this.orderPath(reference)}/refunds`,
+      { amount, reason, version },
+      key,
+    );
   }
 
   async acceptReview(reference: string, version: number): Promise<AdminPaymentAction> {
-    return this.financeAction(`${this.orderPath(reference)}/review/accept`, { version, reason: null });
+    return this.financeAction(`${this.orderPath(reference)}/review/accept`, {
+      version,
+      reason: null,
+    });
   }
 
-  async refundReview(reference: string, version: number, reason: string, key: string): Promise<AdminPaymentAction> {
-    return this.financeAction(`${this.orderPath(reference)}/review/refund`, { version, reason }, key);
+  async refundReview(
+    reference: string,
+    version: number,
+    reason: string,
+    key: string,
+  ): Promise<AdminPaymentAction> {
+    return this.financeAction(
+      `${this.orderPath(reference)}/review/refund`,
+      { version, reason },
+      key,
+    );
   }
 
   async resendReceipt(reference: string, key: string): Promise<AdminPaymentAction> {
@@ -164,7 +191,9 @@ export class OpsData {
         observe: 'response',
       }),
     );
-    const name = /filename="?([^";]+)"?/.exec(res.headers.get('Content-Disposition') ?? '')?.[1] ?? `donations-${from}-${to}.csv`;
+    const name =
+      /filename="?([^";]+)"?/.exec(res.headers.get('Content-Disposition') ?? '')?.[1] ??
+      `donations-${from}-${to}.csv`;
     return { blob: res.body!, fileName: name };
   }
 
@@ -172,9 +201,17 @@ export class OpsData {
     return `${this.api}/admin/orders/${encodeURIComponent(upperRef(reference))}`;
   }
 
-  private async financeAction(url: string, body: object, key?: string): Promise<AdminPaymentAction> {
+  private async financeAction(
+    url: string,
+    body: object,
+    key?: string,
+  ): Promise<AdminPaymentAction> {
     const r = await firstValueFrom(
-      this.http.post<AdminPaymentAction>(url, body, key ? { headers: { 'Idempotency-Key': key } } : {}),
+      this.http.post<AdminPaymentAction>(
+        url,
+        body,
+        key ? { headers: { 'Idempotency-Key': key } } : {},
+      ),
     );
     this.order.reload();
     this.orders.reload();

@@ -145,13 +145,13 @@ for (const locale of ['ar', 'en'] as const) {
       page.once('dialog', (d) => void d.dismiss());
       await page
         .locator('#admin-nav')
-        .getByRole('link', { name: t('المشاريع', 'Projects') })
+        .getByRole('link', { name: t('المشاريع', 'Projects'), exact: true })
         .click();
       await expect(page.locator('#pe-sar')).toHaveValue('تعديل لم يُحفظ');
       page.once('dialog', (d) => void d.accept());
       await page
         .locator('#admin-nav')
-        .getByRole('link', { name: t('المشاريع', 'Projects') })
+        .getByRole('link', { name: t('المشاريع', 'Projects'), exact: true })
         .click();
       await expect(page).toHaveURL(new RegExp(`/${locale}/admin/projects$`));
       await page.setViewportSize({ width: 320, height: 800 });

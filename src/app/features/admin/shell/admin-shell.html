@@ -1,64 +1,230 @@
 <ta-skip-link targetId="admin-main" />
 <header class="abar">
-  <a class="brand" routerLink="/admin">
-    <ta-icon name="heart" [size]="22" />
-    <span i18n="@@store.admin.brand">إدارة المتجر</span>
+  <a
+    class="ibtn adm-ph-only"
+    routerLink="/admin/menu"
+    aria-label="القائمة"
+    i18n-aria-label="@@store.admin.menu"
+  >
+    <ta-icon name="menu" [size]="22" />
   </a>
+  <a
+    class="brand"
+    routerLink="/admin"
+    aria-label="متجر تعلّم"
+    i18n-aria-label="@@store.admin.brand-name"
+  >
+    <svg class="mark" viewBox="380 320 1250 1060" aria-hidden="true" focusable="false">
+      <use href="logo.svg#logo-src" />
+    </svg>
+    <span class="brand-name" i18n="@@store.admin.brand-name">متجر تعلّم</span>
+  </a>
+  @if (title()) {
+    <span class="ptitle">{{ title() }}</span>
+  }
   <button
     type="button"
-    class="menu-btn"
-    (click)="menuOpen.set(!menuOpen())"
-    [attr.aria-expanded]="menuOpen()"
-    aria-controls="admin-nav"
+    class="search"
+    aria-haspopup="dialog"
+    aria-label="ابحث برقم التبرع أو الجوال أو اسم المشروع"
+    i18n-aria-label="@@store.admin.search-placeholder"
+    aria-keyshortcuts="Control+K Meta+K"
+    (click)="paletteOpen.set(true)"
   >
-    <ta-icon name="menu" [size]="20" /><span class="visually-hidden" i18n="@@store.admin.menu"
-      >القائمة</span
+    <ta-icon name="search" [size]="18" />
+    <span class="hint" i18n="@@store.admin.search-placeholder"
+      >ابحث برقم التبرع أو الجوال أو اسم المشروع</span
     >
+    <kbd aria-hidden="true">Ctrl K</kbd>
   </button>
-  <div class="who">
-    <b>{{ auth.staff()?.name }}</b>
-    <small>{{ roles() }}</small>
-  </div>
   <div class="tools">
-    <ta-lang-switch />
-    <ta-theme-toggle />
-    <a class="out" routerLink="/admin/password">
-      <ta-icon name="lock" [size]="18" /><span
-        class="visually-hidden"
-        i18n="@@store.admin.password-title"
-        >تغيير كلمة المرور</span
+    <span class="adm-wide"><ta-lang-switch variant="text" /></span>
+    <span class="adm-wide"><ta-theme-toggle [onDark]="true" /></span>
+    <div class="bell pop">
+      <button
+        id="adm-bell"
+        type="button"
+        class="ibtn"
+        aria-controls="adm-bell-panel"
+        [attr.aria-expanded]="bellOpen()"
+        (click)="toggle('bell')"
       >
-    </a>
-    <button type="button" class="out" (click)="signOut()">
-      <ta-icon name="logout" [size]="18" /><span i18n="@@store.layout.sign-out">تسجيل الخروج</span>
-    </button>
+        <ta-icon name="bell" [size]="20" />
+        <span class="visually-hidden" i18n="@@store.admin.notifications">التنبيهات</span>
+        @if (counts.alerts()) {
+          <span class="dot">{{ counts.alerts() }}</span>
+        }
+      </button>
+      @if (bellOpen()) {
+        <div id="adm-bell-panel" class="panel-pop" role="region" aria-labelledby="adm-bell">
+          <p class="pop-h" i18n="@@store.admin.notifications">التنبيهات</p>
+          <ul>
+            @if (counts.pendingToday() !== null) {
+              <li>
+                <a routerLink="/admin/orders" [queryParams]="{ status: 'pending_payment' }">
+                  <ta-icon name="inbox" [size]="18" />
+                  <span i18n="@@store.admin.bell-pending-today"
+                    >{{ counts.pendingToday() }} تبرعات بانتظار الدفع اليوم</span
+                  >
+                </a>
+              </li>
+            }
+            @if (counts.inReview() !== null) {
+              <li>
+                <a routerLink="/admin/orders" [queryParams]="{ status: 'payment_review' }">
+                  <ta-icon name="alert" [size]="18" />
+                  <span i18n="@@store.admin.bell-review">{{ counts.inReview() }} قيد المراجعة</span>
+                </a>
+              </li>
+            }
+            @if (counts.orphans() !== null && auth.can('staff:finance')) {
+              <li>
+                <a routerLink="/admin/payments/orphans">
+                  <ta-icon name="coins" [size]="18" />
+                  <span i18n="@@store.admin.bell-orphans"
+                    >{{ counts.orphans() }} دفعات بلا طلب</span
+                  >
+                </a>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+    </div>
+    <div class="account pop adm-wide">
+      <button
+        id="adm-account"
+        type="button"
+        class="chip"
+        aria-controls="adm-account-panel"
+        [attr.aria-expanded]="accountOpen()"
+        (click)="toggle('account')"
+      >
+        <span class="av" aria-hidden="true">{{ initial() }}</span>
+        <span class="who">
+          <b>{{ auth.staff()?.name }}</b>
+          <small>{{ roles() }}</small>
+        </span>
+      </button>
+      @if (accountOpen()) {
+        <div id="adm-account-panel" class="panel-pop" role="region" aria-labelledby="adm-account">
+          <ul>
+            <li>
+              <a routerLink="/admin/password">
+                <ta-icon name="lock" [size]="18" />
+                <span i18n="@@store.admin.account-security">كلمة المرور والتحقق</span>
+              </a>
+            </li>
+            <li>
+              <button type="button" (click)="signOut()">
+                <ta-icon name="logout" [size]="18" />
+                <span i18n="@@store.layout.sign-out">تسجيل الخروج</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      }
+    </div>
   </div>
 </header>
 <div class="abody">
   <nav
     id="admin-nav"
-    class="aside"
-    [class.open]="menuOpen()"
+    class="sidenav"
     aria-label="أقسام الإدارة"
     i18n-aria-label="@@store.admin.sections"
   >
-    <ul>
-      @for (item of nav(); track item.path) {
-        <li>
-          <a
-            [routerLink]="item.path"
-            routerLinkActive="on"
-            [routerLinkActiveOptions]="{ exact: item.path === '/admin' }"
-            ariaCurrentWhenActive="page"
-            (click)="menuOpen.set(false)"
-          >
-            <ta-icon [name]="item.icon" [size]="18" /><span>{{ item.label() }}</span>
-          </a>
-        </li>
+    @for (s of sections(); track s.key) {
+      @if (s.label) {
+        <p class="sec" [id]="'adm-sec-' + s.key">{{ s.label() }}</p>
       }
+      <ul [attr.aria-labelledby]="s.label ? 'adm-sec-' + s.key : null">
+        @for (item of s.items; track item.key) {
+          <li>
+            <a
+              class="item"
+              [routerLink]="item.path"
+              [class.on]="activeKey() === item.key"
+              routerLinkActive
+              [routerLinkActiveOptions]="{ exact: item.path === '/admin' }"
+              [ariaCurrentWhenActive]="item.children?.length ? undefined : 'page'"
+            >
+              <ta-icon [name]="item.icon" [size]="20" />
+              <span class="lbl">{{ item.label() }}</span>
+              @if (counts.badge(item.badge); as n) {
+                <span class="count">{{ n }}</span>
+              }
+            </a>
+            @if (item.children?.length && activeKey() === item.key) {
+              <ul class="sub">
+                @for (c of item.children; track c.key) {
+                  <li>
+                    <a
+                      [routerLink]="c.path"
+                      [queryParams]="c.queryParams ?? {}"
+                      routerLinkActive="on"
+                      [routerLinkActiveOptions]="exactChild"
+                      ariaCurrentWhenActive="page"
+                    >
+                      <span>{{ c.label() }}</span>
+                      @if (counts.badge(c.badge); as n) {
+                        <span class="count">{{ n }}</span>
+                      }
+                    </a>
+                  </li>
+                }
+              </ul>
+            }
+          </li>
+        }
+      </ul>
+    }
+    <p class="sec" id="adm-sec-channel" i18n="@@store.admin.nav-section-channel">قنوات البيع</p>
+    <ul aria-labelledby="adm-sec-channel">
+      <li>
+        <a class="item" href="./" target="_blank" rel="noopener">
+          <ta-icon name="globe" [size]="20" />
+          <span class="lbl" dir="ltr">store.ta3lom.sa</span>
+          <span class="visually-hidden" i18n="@@store.admin.opens-new-tab"
+            >(يفتح في نافذة جديدة)</span
+          >
+        </a>
+      </li>
     </ul>
   </nav>
   <main id="admin-main" tabindex="-1">
     <router-outlet />
   </main>
 </div>
+<nav class="tabbar" aria-label="التنقل السريع" i18n-aria-label="@@store.admin.tabbar">
+  <a
+    routerLink="/admin"
+    routerLinkActive="on"
+    [routerLinkActiveOptions]="{ exact: true }"
+    ariaCurrentWhenActive="page"
+  >
+    <ta-icon name="home" [size]="22" /><span i18n="@@store.admin.nav-home">الرئيسية</span>
+  </a>
+  <a routerLink="/admin/projects" [class.on]="activeKey() === 'projects'">
+    <ta-icon name="heart" [size]="22" /><span i18n="@@store.admin.nav-projects">المشاريع</span>
+  </a>
+  @if (canCreate()) {
+    <a class="plus" routerLink="/admin/projects/new">
+      <ta-icon name="plus" [size]="26" />
+      <span class="visually-hidden" i18n="@@store.admin.new-project">مشروع جديد</span>
+    </a>
+  } @else {
+    <button type="button" class="plus" disabled aria-describedby="adm-plus-why">
+      <ta-icon name="plus" [size]="26" />
+      <span class="visually-hidden" i18n="@@store.admin.new-project">مشروع جديد</span>
+    </button>
+    <ta-requires id="adm-plus-why" class="visually-hidden" policy="staff:catalogue" />
+  }
+  <a routerLink="/admin/orders" [class.on]="activeKey() === 'orders'">
+    <ta-icon name="inbox" [size]="22" /><span i18n="@@store.admin.nav-donations">التبرعات</span>
+  </a>
+  <a routerLink="/admin/menu" routerLinkActive="on" ariaCurrentWhenActive="page">
+    <ta-icon name="menu" [size]="22" /><span i18n="@@store.admin.more">المزيد</span>
+  </a>
+</nav>
+<ta-command-palette [(open)]="paletteOpen" />
