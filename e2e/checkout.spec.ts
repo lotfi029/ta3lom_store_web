@@ -107,7 +107,9 @@ for (const locale of ['ar', 'en'] as const) {
 
     // Review 04 S-6: the gateway was down at checkout — the order exists with NO payment attempt. The order page offers
     // "pay again" (not an endless "checking"), and paying from there settles it.
-    test('no attempt at checkout (gateway down) → the order page offers "pay again" → paid', async ({ page }) => {
+    test('no attempt at checkout (gateway down) → the order page offers "pay again" → paid', async ({
+      page,
+    }) => {
       test.skip(!onStub, 'the stub decides the gateway outage (POST /__case)');
       await threeLines(page, locale);
       const mobile = freshMobile();
@@ -125,7 +127,9 @@ for (const locale of ['ar', 'en'] as const) {
       await expectNoA11yViolations(page, `/${locale}/orders no attempt`);
       await page.locator('button.pay-again').click();
       await payOnHostedPage(page, 'pay');
-      await expect(page.locator('.osec .card h2')).toContainText(locale === 'ar' ? 'وصل تبرعك' : 'your donation arrived');
+      await expect(page.locator('.osec .card h2')).toContainText(
+        locale === 'ar' ? 'وصل تبرعك' : 'your donation arrived',
+      );
     });
 
     test('cart page: three kinds, edit an amount, remove, clear', async ({ page }) => {

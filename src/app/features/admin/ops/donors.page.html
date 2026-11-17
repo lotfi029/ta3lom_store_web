@@ -60,9 +60,7 @@
                 <bdi>{{ int(c.orderCount) }}</bdi>
               </td>
               <td>
-                <ta-status-pill [tone]="label(c.status).tone">{{
-                  label(c.status).label
-                }}</ta-status-pill>
+                <ta-admin-badge [kind]="kind(c.status)">{{ label(c.status).label }}</ta-admin-badge>
               </td>
               <td>{{ i18n.formatDate(c.createdAt) }}</td>
             </tr>

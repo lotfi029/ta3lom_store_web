@@ -387,15 +387,13 @@ plan (M1–M7, S1–S11). Staff admin only; the storefront look is unchanged.
 | 2026-11-16 | W-A5 | Readiness | 03 §7 | Only checks the API answers: active categories > 0, drafts = 0 (`GET /admin/projects?status=draft&pageSize=1`), payments on (`StoreConfig`), team > 1 member (`GET /admin/staff`, admins only); a check without data is left out | — | |
 | 2026-11-16 | W-A5 | Tasks and activity | 03 §7 | Tasks link to pending (`?status=pending_payment`), review, drafts (`/admin/projects?status=draft`: the projects page now reads `?status=`) and orphan payments (finance). «آخر النشاط» = `GET /admin/audit?pageSize=3` for `staff:admin` only (action · entity · actor as sent) | — | |
 | 2026-11-16 | W-A5 | Section tiles | — | The «أقسام الإدارة» tiles were removed: the side nav (and the phone More page) list the same screens; `ADMIN_NAV` (flat list) was dropped with them | Mockup D-Home has none | |
-
-
-
-
-
-
+| 2026-11-16 | W-A6 | Settings index | 03 §8 | `/admin/settings` = index cards (الفريق والصلاحيات, إعدادات المتجر, قوالب الرسائل, سجل التدقيق, كلمة المرور والتحقق); typed settings moved to `/admin/settings/store` (`staff:admin`). A card the role cannot open stays, disabled, with `<ta-requires>`. Nav: «الإعدادات والفريق» with sub-items نظرة عامة · فريق العمل · إعدادات المتجر | No route removed; `/admin/staff` unchanged | |
+| 2026-11-16 | W-A6 | Staff | 03 §8 | Role badges, a 2FA column (`totpEnrolled`: مفعّل / بانتظار الإعداد), status badges, and a roles explainer whose text follows `POLICY_ROLES`; actions unchanged | — | |
+| 2026-11-16 | W-A6 | Media | 03 §8, §13.12 | Grid of tile buttons; the selected image in a side panel (> 1100px) or a dialog (no backdrop dismiss: it holds alt edits): preview, W×H, size, MIME, date, alt AR (required)/EN, copy URL (`navigator.clipboard`). «بلا نص بديل إنجليزي (هذه الصفحة)» filters the loaded page only. Upload opens from «رفع صورة» (same component, same checks) | API has no alt filter | |
+| 2026-11-16 | W-A6 | Login and password | 03 §8, review S7 | Brand band, centred card, «الخطوة 1 من 2 / 2 من 2», info note; ids `#al-email`, `#al-password`, `#al-code`, errors, lockout, return URL and the TOTP setup step unchanged. The code stays ONE input (wide letter spacing) instead of six boxes: one field is simpler for paste, autofill (`one-time-code`) and screen readers, and the e2e helper | Restyle only | REVIEW |
+| 2026-11-16 | W-A6 | Restyle only | 03 §8 | Categories, donors, templates, audit, reports and orphans keep their layouts and pick up the shell and `admin-common.css` (14px panels, table header band, row hover; small buttons 44px on touch screens); donors use admin badges | Behaviour unchanged | |
 
 ## Storefront home: incremental hydration of the below-the-fold blocks (branch `fix/storefront-hydration-tbt`)
-
 | Date | Topic | Choice | Reason | REVIEW? |
 |---|---|---|---|---|
 | 2026-11-17 | Lighthouse TBT on `/ar/`, `/en/` | The project grid and the inline quick donate are `@defer (on immediate; hydrate on viewport; hydrate on interaction; hydrate when …)`: still prerendered and painted identically, hydrated when seen, clicked, focused/pressed in their section, or (grid) when the listing it shows changes (category, sort, search, page, fresher answer). The pager stays outside the block (Enter on a dehydrated link could be lost). No change to money, API or data code | CI Lighthouse failed on `main` itself (TBT 358–366 ms > 250, performance 0.86): hydrating the whole home at once was one ~330 ms long task. Local A/B, 7 runs: TBT median ar 232 → 162, en 193 → 112 ms; longest task ~270 → ~145 ms; CLS 0; pixel-identical at 1440/390. A key typed in the same frame the field scrolls in (programmatic only) can be lost; scroll-then-tap and keyboard walks keep every key (probe 6/6), and `e2e/listing.spec.ts` now waits for the card to be hydrated before typing, as its comment already required | — |

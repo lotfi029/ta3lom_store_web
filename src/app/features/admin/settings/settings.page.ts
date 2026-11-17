@@ -13,6 +13,7 @@ import { toProblem } from '../../../core/api/problem';
 import { StaffAuth } from '../../../core/auth/staff-auth';
 import { valueOf } from '../../../core/http/resource-value';
 import { I18nService } from '../../../core/i18n/i18n';
+import { RouterLink } from '@angular/router';
 import { SeoService } from '../../../core/seo/seo.service';
 import { ToastService } from '../../../core/ui/toast.service';
 import { ResourceState } from '../../../shared/ui/resource-state/resource-state';
@@ -26,7 +27,7 @@ import { SETTINGS, type SettingDef, fromInput, toInput } from './setting-kinds';
  */
 @Component({
   selector: 'ta-admin-settings',
-  imports: [ResourceState, Requires],
+  imports: [RouterLink, ResourceState, Requires],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './settings.page.html',
   styleUrls: ['../admin-common.css', './settings.page.css'],
@@ -55,9 +56,9 @@ export class SettingsPage {
 
   constructor() {
     this.seo.set({
-      title: $localize`:@@store.admin.nav-settings:الإعدادات`,
+      title: $localize`:@@store.admin.settings-store:إعدادات المتجر`,
       description: '',
-      path: '/admin/settings',
+      path: '/admin/settings/store',
       noindex: true,
     });
     effect(() => {

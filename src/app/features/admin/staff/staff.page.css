@@ -1,0 +1,25 @@
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.roles-ex {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.roles-ex li {
+  padding: 14px;
+  border: 1px solid var(--c-border);
+  border-radius: 12px;
+}
+
+.roles-ex p {
+  margin-block: 6px 0;
+  font-size: 0.88rem;
+}

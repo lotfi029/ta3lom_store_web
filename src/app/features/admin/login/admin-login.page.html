@@ -1,11 +1,27 @@
+<div class="band" aria-hidden="true"></div>
 <div class="lwrap">
-  <div class="ltools">
-    <ta-lang-switch />
-    <ta-theme-toggle />
-  </div>
-  <main id="main" class="lcard" tabindex="-1">
+  <header class="ltop">
     <p class="brand">
-      <ta-icon name="lock" [size]="22" /><span i18n="@@store.admin.brand">إدارة المتجر</span>
+      <svg class="mark" viewBox="380 320 1250 1060" aria-hidden="true" focusable="false">
+        <use href="logo.svg#logo-src" />
+      </svg>
+      <span i18n="@@store.admin.login-brand">متجر تعلّم — لوحة الفريق</span>
+    </p>
+    <div class="ltools">
+      <ta-lang-switch variant="text" />
+      <ta-theme-toggle [onDark]="true" />
+    </div>
+  </header>
+  <main id="main" class="lcard" tabindex="-1">
+    <span class="lic" aria-hidden="true">
+      <ta-icon [name]="step() === 'password' ? 'lock' : 'shield'" [size]="24" />
+    </span>
+    <p class="step">
+      @if (step() === 'password') {
+        <ng-container i18n="@@store.admin.step-1">الخطوة 1 من 2</ng-container>
+      } @else {
+        <ng-container i18n="@@store.admin.step-2">الخطوة 2 من 2</ng-container>
+      }
     </p>
     <h1 i18n="@@store.admin.login-title">دخول فريق المتجر</h1>
     @if (error(); as e) {
@@ -62,6 +78,13 @@
         >
           متابعة
         </button>
+        <p class="note">
+          <ta-icon name="info" [size]="16" />
+          <span i18n="@@store.admin.login-note"
+            >الحسابات يضيفها مدير النظام. أول دخول يطلب إعداد التحقق الثنائي وتغيير كلمة
+            المرور.</span
+          >
+        </p>
       </form>
     } @else {
       <form (submit)="submitCode($event)" novalidate class="lform">
@@ -120,4 +143,7 @@
       </form>
     }
   </main>
+  <footer class="lfoot">
+    <a href="./" i18n="@@store.admin.login-store-link">المتجر</a>
+  </footer>
 </div>

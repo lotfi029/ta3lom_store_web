@@ -1,0 +1,32 @@
+<div class="ahead">
+  <div>
+    <h1 i18n="@@store.admin.nav-settings-team">الإعدادات والفريق</h1>
+  </div>
+</div>
+<ul class="shcards panel">
+  @for (c of cards(); track c.key) {
+    <li>
+      @if (allowed(c)) {
+        <a [routerLink]="c.path">
+          <span class="ic" aria-hidden="true"><ta-icon [name]="c.icon" [size]="20" /></span>
+          <span class="tx">
+            <b>{{ c.title }}</b>
+            <small class="muted">{{ c.text }}</small>
+          </span>
+          <ta-icon class="chev" name="chevron" [size]="16" />
+        </a>
+      } @else {
+        <div class="off" [attr.aria-describedby]="'sh-why-' + c.key">
+          <span class="ic" aria-hidden="true"><ta-icon [name]="c.icon" [size]="20" /></span>
+          <span class="tx">
+            <b>{{ c.title }}</b>
+            <small class="muted">{{ c.text }}</small>
+            @if (c.policy) {
+              <ta-requires [id]="'sh-why-' + c.key" [policy]="c.policy" />
+            }
+          </span>
+        </div>
+      }
+    </li>
+  }
+</ul>

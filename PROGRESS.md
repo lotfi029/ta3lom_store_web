@@ -131,14 +131,9 @@ templates + `en.json`) with the association's licence number and confirm the tru
 | W-A3 Project editor | done | (see PR) | project | `project-editor.spec.ts` (save-bar text, requirements); existing `catalog.spec.ts`, `options-editor.spec.ts` unchanged and green; e2e create/publish via the new layout (EN tab), save bar + publish disabled while dirty + Ctrl+S + 422 requirements, 390 |
 | W-A4 Donations | done | (see PR) | orders, order | `ops.spec.ts` (search routing), `order-detail.spec.ts` (ported W-2 pending refunds); e2e search → side panel `?ref=` → full page → cancel; payments e2e on the shared detail |
 | W-A5 Dashboard | done | (see PR) | dashboard | `ops.spec.ts` (bar widths in halalas, readiness checks), `dashboard-showcase.spec.ts` (ported); e2e metrics + tasks, finance without the audit block |
-
-
-
-
-
+| W-A6 Media, settings, login, rest | done | (see PR) | media, settings, settings-store, staff, login, donors, categories, templates, audit, reports, orphans | e2e settings index → store settings, team 2FA column, donors badges; full set of screenshots |
 
 ## Storefront TBT fix (branch `fix/storefront-hydration-tbt`)
-
 | Item | State | Evidence |
 |---|---|---|
 | Home grid + inline quick donate hydrate on viewport / interaction / focus / listing change | done | e2e/home-c.spec.ts (phone: tab → grid follows, preset → checkout), e2e/listing.spec.ts, local Lighthouse A/B (DECISIONS) |

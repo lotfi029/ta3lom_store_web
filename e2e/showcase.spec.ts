@@ -6,11 +6,20 @@ import { apiGet, resetStub } from './support/api';
  * SW-7 — showcase mode on the stub (`npm run build:ci-showcase`, CI step "@showcase"): what donors see, ar/en, with axe
  * in light and dark. Skipped on a live build (`E2E_SHOWCASE` unset), as the live specs are not run on this one.
  */
-test.skip(!process.env['E2E_SHOWCASE'], 'needs a showcase build: npm run build:ci-showcase, E2E_SHOWCASE=1');
+test.skip(
+  !process.env['E2E_SHOWCASE'],
+  'needs a showcase build: npm run build:ci-showcase, E2E_SHOWCASE=1',
+);
 test.beforeEach(resetStub);
 
 const NOTE = { ar: 'التبرع الإلكتروني قريبًا', en: 'Online donations open soon' } as const;
-const PAGES = ['ta-cart-page', 'ta-checkout-page', 'ta-order-page', 'ta-login-page', 'ta-account-shell'];
+const PAGES = [
+  'ta-cart-page',
+  'ta-checkout-page',
+  'ta-order-page',
+  'ta-login-page',
+  'ta-account-shell',
+];
 
 interface Detail {
   slug: string;
@@ -38,8 +47,12 @@ for (const locale of ['ar', 'en'] as const) {
       await expect(page.locator('ta-showcase-note.sc-banner')).toContainText(NOTE[locale]);
       await expect(page.locator('ta-donate-box').first()).toContainText(NOTE[locale]);
       await expect(page.locator('ta-donate-box button, ta-donate-box input')).toHaveCount(0);
-      await expect(page.locator('a.cartbtn, a.signin, button.quick, .side-quick, .qcard')).toHaveCount(0);
-      await expect(page.locator('footer a[href$="/cart"], footer a[href$="/account/donations"]')).toHaveCount(0);
+      await expect(
+        page.locator('a.cartbtn, a.signin, button.quick, .side-quick, .qcard'),
+      ).toHaveCount(0);
+      await expect(
+        page.locator('footer a[href$="/cart"], footer a[href$="/account/donations"]'),
+      ).toHaveCount(0);
       await expectNoA11yViolations(page, `showcase /${locale}/`);
     });
 
@@ -50,7 +63,9 @@ for (const locale of ['ar', 'en'] as const) {
       await page.goto(`/${locale}/p/${p.slug}`);
       await expect(page.locator('h1')).toHaveCount(1);
       const box = page.locator('.buybox');
-      await expect(box).toContainText(locale === 'en' && p.options[0].labelEn ? p.options[0].labelEn : p.options[0].labelAr);
+      await expect(box).toContainText(
+        locale === 'en' && p.options[0].labelEn ? p.options[0].labelEn : p.options[0].labelAr,
+      );
       await expect(box.locator('[role=note]')).toContainText(NOTE[locale]);
       await expect(box.locator('button, input')).toHaveCount(0);
       const ld = await page.locator('script[type="application/ld+json"]').allTextContents();
@@ -69,13 +84,16 @@ for (const locale of ['ar', 'en'] as const) {
           const w = window as unknown as { __seen?: string[] };
           w.__seen = [];
           new MutationObserver(() => {
-            for (const s of selectors) if (document.querySelector(s) && !w.__seen!.includes(s)) w.__seen!.push(s);
+            for (const s of selectors)
+              if (document.querySelector(s) && !w.__seen!.includes(s)) w.__seen!.push(s);
           }).observe(document, { childList: true, subtree: true });
         }, PAGES);
         await page.goto(`/${locale}/${path}`);
         await expect(page).toHaveURL(new RegExp(`/${locale}/?$`));
         await expect(page.locator('ta-showcase-note.sc-banner')).toBeVisible();
-        expect(await page.evaluate(() => (window as unknown as { __seen: string[] }).__seen)).toEqual([]);
+        expect(
+          await page.evaluate(() => (window as unknown as { __seen: string[] }).__seen),
+        ).toEqual([]);
       });
     }
 

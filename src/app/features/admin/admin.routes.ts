@@ -85,8 +85,16 @@ export const ADMIN_ROUTES: Routes = [
         loadComponent: () => import('./staff/staff.page').then((m) => m.StaffPage),
       },
       {
+        // W-A6: the settings index (team, store settings, templates, audit, password).
         path: 'settings',
-        data: { title: $localize`:@@store.admin.nav-settings:الإعدادات` },
+        data: { title: $localize`:@@store.admin.nav-settings-team:الإعدادات والفريق` },
+        canActivate: [staffPolicyGuard('staff:admin')],
+        loadComponent: () =>
+          import('./settings-home/settings-home.page').then((m) => m.SettingsHomePage),
+      },
+      {
+        path: 'settings/store',
+        data: { title: $localize`:@@store.admin.settings-store:إعدادات المتجر` },
         canActivate: [staffPolicyGuard('staff:admin')],
         loadComponent: () => import('./settings/settings.page').then((m) => m.SettingsPage),
       },

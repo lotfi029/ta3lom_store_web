@@ -16,9 +16,7 @@
         <div>
           <h1>{{ x.fullName || '—' }}</h1>
           <p>
-            <ta-status-pill [tone]="label(x.status).tone">{{
-              label(x.status).label
-            }}</ta-status-pill>
+            <ta-admin-badge [kind]="kind(x.status)">{{ label(x.status).label }}</ta-admin-badge>
           </p>
         </div>
         @if (x.status !== 'anonymised') {
@@ -68,9 +66,9 @@
                       <td>{{ i18n.formatDate(o.createdAt) }}</td>
                       <td><ta-money [value]="o.totalAmount" /></td>
                       <td>
-                        <ta-status-pill [tone]="orderLabel(o.status).tone">{{
+                        <ta-admin-badge [kind]="kind(o.status)">{{
                           orderLabel(o.status).label
-                        }}</ta-status-pill>
+                        }}</ta-admin-badge>
                       </td>
                     </tr>
                   }

@@ -26,6 +26,11 @@ a {
   font-size: 0.9rem;
 }
 
+.crumb {
+  margin: 0 0 4px;
+  font-size: 0.85rem;
+}
+
 /* The storefront's global `section` padding (base.css) is for page bands; admin sections are blocks. */
 section:not(.panel) {
   padding-block: 0;
@@ -34,7 +39,7 @@ section:not(.panel) {
 .panel {
   background: var(--c-surface);
   border: 1px solid var(--c-border);
-  border-radius: var(--rc);
+  border-radius: 14px;
   padding: 18px;
   margin-block-end: 18px;
 }
@@ -85,6 +90,13 @@ section:not(.panel) {
   font-size: 0.82rem;
 }
 
+/* Touch screens: every button keeps the 44px target (non-negotiable 7), small ones included. */
+@media (pointer: coarse) {
+  .btn.sm {
+    min-block-size: 44px;
+  }
+}
+
 .act {
   display: inline-grid;
   justify-items: start;
@@ -112,9 +124,10 @@ section:not(.panel) {
 
 .atbl th {
   text-align: start;
-  font-weight: 500;
-  font-size: 0.78rem;
-  color: var(--c-muted-2);
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--c-text-2);
+  background: var(--c-surface-2);
   padding-block: 8px;
   padding-inline: 10px;
   border-block-end: 1px solid var(--c-border);
@@ -122,10 +135,14 @@ section:not(.panel) {
 }
 
 .atbl td {
-  padding-block: 10px;
+  padding-block: 12px;
   padding-inline: 10px;
   border-block-end: 1px solid var(--c-border);
-  vertical-align: top;
+  vertical-align: middle;
+}
+
+.atbl tbody tr:hover td {
+  background: var(--c-admin-row-selected);
 }
 
 .filters {

@@ -17,7 +17,6 @@ describe('admin nav (W-A1)', () => {
       'orphans',
       'templates',
       'audit',
-      'staff',
       'settings',
     ]);
     expect(keys('store_manager')).toEqual([...read, 'templates']);
@@ -46,6 +45,7 @@ describe('admin nav (W-A1)', () => {
       '/admin/audit',
       '/admin/staff',
       '/admin/settings',
+      '/admin/settings/store',
     ])
       expect(paths).toContain(p);
   });
@@ -58,6 +58,8 @@ describe('admin nav (W-A1)', () => {
     expect(activeNavKey('/admin/projects/abc', items)).toBe('projects');
     expect(activeNavKey('/admin/categories', items)).toBe('projects');
     expect(activeNavKey('/admin/payments/orphans', items)).toBe('orphans');
+    expect(activeNavKey('/admin/staff', items)).toBe('settings');
+    expect(activeNavKey('/admin/settings/store', items)).toBe('settings');
     expect(activeNavKey('/admin/menu', items)).toBeNull();
   });
 

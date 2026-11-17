@@ -26,7 +26,15 @@ for (const locale of ['ar', 'en'] as const) {
       await page.locator('#al-password').press('Enter');
       await expect(page.locator('.form-error')).toBeVisible();
       await staffSignIn(page, locale, 'admin', '/admin/settings');
-      await expect(page.locator('h1')).toHaveText(t('الإعدادات', 'Settings'));
+      // W-A6: /admin/settings is the settings index; the typed settings moved to /admin/settings/store.
+      await expect(page.locator('h1')).toHaveText(t('الإعدادات والفريق', 'Settings and team'));
+      await expectNoA11yViolations(page, `/${locale}/admin/settings`);
+      await page
+        .locator('#admin-main')
+        .getByRole('link', { name: new RegExp(t('إعدادات المتجر', 'Store settings')) })
+        .click();
+      await expect(page).toHaveURL(new RegExp(`/${locale}/admin/settings/store$`));
+      await expect(page.locator('h1')).toHaveText(t('إعدادات المتجر', 'Store settings'));
     });
 
     test('the side nav follows the role: a viewer reads the catalogue and orders; no settings, team, templates or audit', async ({
@@ -79,7 +87,7 @@ for (const locale of ['ar', 'en'] as const) {
       const password = (await otp.textContent())!.trim();
       await page.getByRole('button', { name: t('تم', 'Done') }).click();
       const row = page.locator('tbody tr', { hasText: email });
-      await expect(row).toContainText(t('بلا تحقق بخطوتين', 'No two-step verification'));
+      await expect(row).toContainText(t('بانتظار الإعداد', 'Not set up yet'));
 
       const ctx = await browser.newContext(); // AxeBuilder needs a page from a context
       const other = await ctx.newPage();
@@ -113,7 +121,7 @@ for (const locale of ['ar', 'en'] as const) {
       await ctx.close();
 
       await page.reload();
-      await expect(row).not.toContainText(t('بلا تحقق بخطوتين', 'No two-step verification'));
+      await expect(row).not.toContainText(t('بانتظار الإعداد', 'Not set up yet'));
       await row
         .getByRole('button', { name: new RegExp(t('إعادة تعيين التحقق', 'Reset two-step')) })
         .click();
@@ -121,11 +129,11 @@ for (const locale of ['ar', 'en'] as const) {
         .getByRole('dialog')
         .getByRole('button', { name: t('تأكيد', 'Confirm') })
         .click();
-      await expect(row).toContainText(t('بلا تحقق بخطوتين', 'No two-step verification'));
+      await expect(row).toContainText(t('بانتظار الإعداد', 'Not set up yet'));
     });
 
     test('settings: admin saves a typed value; invalid input is refused', async ({ page }) => {
-      await staffSignIn(page, locale, 'admin', '/admin/settings');
+      await staffSignIn(page, locale, 'admin', '/admin/settings/store');
       const input = page.locator('#set-cart_max_lines');
       const before = await input.inputValue();
       const save = page.locator('li', { has: input }).getByRole('button');
