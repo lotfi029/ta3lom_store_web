@@ -403,3 +403,10 @@ plan (M1–M7, S1–S11). Staff admin only; the storefront look is unchanged.
 | Date | Topic | Choice | Reason | REVIEW? |
 |---|---|---|---|---|
 | 2026-11-17 | GHSA-fc5q-39xc-vjpf (picomatch ReDoS, high) | Allow-listed in `audit-allowlist.json` for 30 days (expires 2026-12-17) | Only path is `@angular/localize` → `tinyglobby` → `picomatch` (build-time file globbing, not in the browser bundle, no user input); the advisory covers every picomatch version and there is no fixed release, so `audit:prod` cannot pass otherwise. Upgrade and drop the entry once a fix ships | REVIEW |
+
+## Maintenance: CI Lighthouse gate after the Lighthouse 13 bump (branch `fix/ci-lighthouse-13-tbt`)
+| Date | Topic | Choice | Reason | REVIEW? |
+|---|---|---|---|---|
+| 2026-11-19 | CI Lighthouse 13 | `@lhci/cli` pinned to `0.15.1` (Lighthouse 12.6.1); Dependabot ignores `@lhci/cli >=0.16.0` | `main` went red on TBT (`/ar/` 307, `/en/` 309 ms > 250) right after #46 bumped `@lhci/cli` 0.15.1 → 0.16.1 (Lighthouse 12.6.1 → 13.6.0); same runner image (ubuntu-26.04 20261111) before and after, home LCP jumped 2.6 s → 0.9 s at the same time. Local A/B, same build, 5 runs each: TBT median `/ar/` 182 (LH12) vs 262 ms (LH13), `/en/` 168 vs 288 ms — a measuring change, not a code regression. The floors were calibrated on Lighthouse 12 (F6); moving to 13 means re-measuring them | REVIEW |
+| 2026-11-19 | Money display without Intl | `formatAmount` formats non-negative decimal strings by hand (`,` every three digits, two decimals unless whole); Intl stays for negative amounts only | The first `Intl.NumberFormat` (ICU locale data) cost ~35 ms at 4× CPU inside the home's hydration task. Output is identical to Intl in both locales (spec compares them); still no float. A/B 12 loads at 4× CPU: `/ar/` TBT median 317/342 → 250/293 ms, longest task 205/196 → 158/192 ms | — |
+

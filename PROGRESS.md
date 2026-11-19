@@ -137,3 +137,10 @@ templates + `en.json`) with the association's licence number and confirm the tru
 | Item | State | Evidence |
 |---|---|---|
 | Home grid + inline quick donate hydrate on viewport / interaction / focus / listing change | done | e2e/home-c.spec.ts (phone: tab → grid follows, preset → checkout), e2e/listing.spec.ts, local Lighthouse A/B (DECISIONS) |
+
+## CI Lighthouse fix (branch `fix/ci-lighthouse-13-tbt`)
+| Item | State | Evidence |
+|---|---|---|
+| `@lhci/cli` back to 0.15.1 (Lighthouse 12), Dependabot hold | done | DECISIONS (CI Lighthouse 13): LH12 vs LH13 A/B on one build |
+| Money display without the Intl start-up cost | done | `src/app/core/money/money.spec.ts` (identical to Intl), A/B long tasks |
+

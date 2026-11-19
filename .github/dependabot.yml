@@ -12,6 +12,11 @@ updates:
       # Angular major that supports it.
       - dependency-name: typescript
         versions: ['>=6.1.0']
+      # @lhci/cli 0.16 brings Lighthouse 13, which reports ~100 ms more TBT than Lighthouse 12 on the same build (local
+      # A/B on one build: /ar/ 182 → 262 ms, /en/ 168 → 288 ms); the LHCI floors (lighthouserc.json) were set on
+      # Lighthouse 12. Lift this together with re-measured floors (DECISIONS: CI Lighthouse 13).
+      - dependency-name: '@lhci/cli'
+        versions: ['>=0.16.0']
     groups:
       angular:
         patterns: ['@angular/*', '@angular-devkit/*', '@schematics/angular', 'angular-eslint', '@angular-eslint/*']

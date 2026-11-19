@@ -64,6 +64,27 @@ describe('money display', () => {
   it('formats a decimal string exactly (no binary rounding)', () => {
     expect(formatAmount('1234567.89', 'en')).toBe('1,234,567.89');
   });
+
+  it('matches Intl.NumberFormat for every non-negative shape (string formatter, no ICU load)', () => {
+    const intl = (v: string, l: 'ar' | 'en', d: 0 | 2) =>
+      new Intl.NumberFormat(l === 'ar' ? 'ar-SA-u-nu-latn' : 'en-SA', {
+        minimumFractionDigits: d,
+        maximumFractionDigits: d,
+      }).format(v as unknown as number);
+    const values = ['0', '0.00', '0.05', '1', '7.5', '007.50', '99.99', '100', '999.00', '1000', '1000.10'];
+    values.push('12345.67', '123456', '1234567.89', '9999999999.00', '12345678901234');
+    for (const l of ['ar', 'en'] as const)
+      for (const v of values) {
+        const whole = /^\d+(\.0{1,2})?$/.test(v);
+        expect(formatAmount(v, l)).toBe(intl(v, l, whole ? 0 : 2));
+      }
+  });
+
+  it('still formats negative amounts through Intl', () => {
+    expect(formatAmount('-12.50', 'en')).toBe('-12.50');
+    expect(formatAmount('-12.50', 'ar')).toMatch(/^\u200e?-12\.50$/);
+    expect(() => formatAmount('12,5', 'en')).toThrow();
+  });
 });
 
 describe('atLeastGatewayMinimum (review 04 W-5)', () => {
