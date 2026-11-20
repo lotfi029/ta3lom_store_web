@@ -214,6 +214,7 @@
 
   /* --c-focus (brand) on light glass over a dark backdrop drops to 2.1:1; the deeper brand holds ≥ 3:1 */
   --c-focus-on-glass: var(--brand-900);
+  --c-link-on-glass: var(--brand-900);
   --c-liquid-hi: rgb(255 255 255 / 30%);
   --glass-blur: 20px;
 
@@ -360,6 +361,7 @@
   --c-glass-shadow: rgb(0 0 0 / 45%);
   --c-liquid-hi: rgb(255 255 255 / 18%);
   --c-focus-on-glass: #6fcbeb;
+  --c-link-on-glass: #6fcbeb;
   --c-header-shadow: rgb(0 0 0 / 35%);
   --chart-line: #4a6a75;
 

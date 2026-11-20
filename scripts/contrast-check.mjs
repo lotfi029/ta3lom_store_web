@@ -97,6 +97,7 @@ const PAIRS = [
   // and a photo at its darkest (black) and lightest (white).
   ['--c-text', '--c-glass', TEXT, 'glass: text on the header / dock / bottom bar', { over: 'page' }],
   ['--c-text-2', '--c-glass', TEXT, 'glass: secondary text on the header / dock', { over: 'page' }],
+  ['--c-link-on-glass', '--c-glass-strong', TEXT, 'glass: header tagline (brand blue) on the glass header', { over: 'page' }],
   ['--c-text', '--c-glass-strong', TEXT, 'glass: text on toasts and menus', { over: 'page' }],
   ['--c-text-2', '--c-glass-strong', TEXT, 'glass: secondary text on toasts and menus', { over: 'page' }],
   ['--c-focus-on-glass', '--c-glass', LARGE, 'glass: focus ring on the header / bottom bar', { over: 'page' }],

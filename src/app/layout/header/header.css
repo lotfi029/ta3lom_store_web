@@ -73,10 +73,11 @@
 
 /* 2 — header */
 
-/* Option C: the sticky header is glass (--c-glass, contrast-check "glass: text on the header"). Solid without
-   backdrop-filter or with reduced transparency. Text here is --c-text / --c-text-2 only. */
+/* Option C: the sticky header is strong glass (--c-glass-strong, contrast-check "text on toasts and menus" and
+   "header tagline"): over the dark banner the 80 % glass is too thin for the brand-blue tagline. Solid without
+   backdrop-filter or with reduced transparency. */
 .hdr {
-  background: var(--c-glass);
+  background: var(--c-glass-strong);
   backdrop-filter: blur(var(--glass-blur)) saturate(180%);
   border-block-end: 1px solid var(--c-border);
   position: sticky;
@@ -164,7 +165,9 @@
 .sub {
   display: block;
   font-size: 0.8rem;
-  color: var(--c-link);
+
+  /* On the glass header: a darker brand blue (contrast-check "header tagline"). */
+  color: var(--c-link-on-glass);
   font-weight: 600;
 }
 
