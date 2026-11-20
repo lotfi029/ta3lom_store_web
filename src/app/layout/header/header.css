@@ -72,8 +72,12 @@
 }
 
 /* 2 — header */
+
+/* Option C: the sticky header is glass (--c-glass, contrast-check "glass: text on the header"). Solid without
+   backdrop-filter or with reduced transparency. Text here is --c-text / --c-text-2 only. */
 .hdr {
-  background: var(--c-surface);
+  background: var(--c-glass);
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
   border-block-end: 1px solid var(--c-border);
   position: sticky;
   inset-block-start: 0;
@@ -286,7 +290,7 @@
   justify-content: center;
   padding-inline: var(--space-4);
   border: 1px solid var(--c-border);
-  border-radius: var(--r);
+  border-radius: var(--rp);
   color: var(--c-text);
   background: var(--c-surface);
   text-decoration: none;
@@ -308,7 +312,7 @@
   min-inline-size: 44px;
   justify-content: center;
   padding-inline: var(--space-4);
-  border-radius: var(--r);
+  border-radius: var(--rp);
   background: var(--c-inverse);
   color: var(--c-on-inverse);
   text-decoration: none;
@@ -412,7 +416,7 @@
   gap: var(--space-1);
   background: none;
   border: 0;
-  border-radius: var(--r);
+  border-radius: var(--rp);
   padding: var(--space-2);
   cursor: pointer;
   min-height: 44px;
@@ -548,5 +552,18 @@
   .hsearch {
     grid-row: 2;
     grid-column: 1 / -1;
+  }
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .hdr {
+    background: var(--c-surface);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .hdr {
+    background: var(--c-surface);
+    backdrop-filter: none;
   }
 }

@@ -37,7 +37,7 @@ export function bannerSlides(featured: readonly ProjectCard[]): ProjectCard[] {
   template: `
     @if (slide(); as s) {
       <section class="banner" [attr.aria-label]="regionLabel">
-        <div class="txt">
+        <div class="txt glass-dark">
           @if (categoryName(s); as cat) {
             <span class="kicker">{{ cat }}</span>
           }
@@ -46,12 +46,13 @@ export function bannerSlides(featured: readonly ProjectCard[]): ProjectCard[] {
             <p class="sum">{{ sum }}</p>
           }
           <div class="row">
-            <a class="cta" [routerLink]="['/p', s.slug]"
-              >@if (showcase) {
+            <a class="cta" [routerLink]="['/p', s.slug]">
+              @if (showcase) {
                 <span i18n="@@store.home.banner-cta-showcase">تعرّف على المشروع</span>
               } @else {
                 <span i18n="@@store.home.banner-cta">تبرع الآن</span>
-              }<span class="visually-hidden">: {{ title(s) }}</span></a
+              }
+              <span class="visually-hidden">: {{ title(s) }}</span></a
             >
             @if (slides().length > 1) {
               <div class="ctrl">
@@ -113,8 +114,8 @@ export function bannerSlides(featured: readonly ProjectCard[]): ProjectCard[] {
       align-items: center;
       block-size: 100%;
       min-block-size: 260px;
-      padding: var(--space-7);
-      border-radius: var(--r-lg);
+      padding: var(--space-5);
+      border-radius: var(--r-xl);
       background: var(--c-surface-indigo);
       color: var(--c-on-brand);
     }
@@ -136,15 +137,21 @@ export function bannerSlides(featured: readonly ProjectCard[]): ProjectCard[] {
     }
     @media (width < 600px) {
       .banner {
+        padding: var(--space-3);
+      }
+      .txt {
         padding: var(--space-5);
       }
     }
+    /* Option C: the text sits on a dark glass plate over the indigo and its glow (contrast-check "dark glass"). */
     .txt {
       position: relative;
       display: flex;
       flex-direction: column;
       gap: var(--space-3);
       min-inline-size: 0;
+      padding: var(--space-6);
+      border-radius: var(--r-lg);
     }
     .kicker {
       font-size: 0.9rem;
@@ -268,7 +275,10 @@ export class HomeBanner {
   protected readonly slides = computed(() => bannerSlides(this.featured()));
   /** Resets to the first slide whenever the slide list changes, so a dot's aria-current always matches a slide (L-11). */
   protected readonly index = linkedSignal({
-    source: () => this.slides().map((s) => s.id).join('|'),
+    source: () =>
+      this.slides()
+        .map((s) => s.id)
+        .join('|'),
     computation: () => 0,
   });
   protected readonly slide = computed(() => this.slides()[this.index()] ?? null);

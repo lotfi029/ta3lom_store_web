@@ -185,7 +185,7 @@ export interface CheckoutNavState {
       justify-content: center;
       gap: 6px;
       min-block-size: 44px;
-      border-radius: var(--r);
+      border-radius: var(--rp);
       font: inherit;
       font-weight: 600;
       cursor: pointer;

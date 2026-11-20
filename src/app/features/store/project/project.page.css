@@ -11,7 +11,7 @@
 }
 
 .hero-media {
-  border-radius: 20px;
+  border-radius: var(--r-xl);
   overflow: hidden;
   background: var(--c-tint);
   aspect-ratio: 16 / 10;
@@ -52,7 +52,7 @@ h1 {
 .buybox {
   background: var(--c-surface);
   border: 1px solid var(--c-border);
-  border-radius: 20px;
+  border-radius: var(--r-xl);
   padding: 24px;
   box-shadow: 0 30px 70px var(--c-header-shadow);
   align-self: start;
@@ -105,17 +105,22 @@ h1 {
 
 @media (width < 1000px) {
   .dbar {
+    /* Option C: a floating glass pill (text --c-text / --c-text-2 on --c-glass-strong). */
     display: block;
     position: fixed;
-    inset-inline: 0;
-    inset-block-end: 0;
+    inset-inline: var(--space-3);
+    inset-block-end: calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
     z-index: 45;
-    background: var(--c-surface);
-    border-block-start: 1px solid var(--c-border);
-    box-shadow: 0 -10px 30px var(--c-header-shadow);
-    padding-block: var(--space-3) calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
-    padding-inline: var(--space-4);
-    transform: translateY(110%);
+    background: var(--c-glass-strong);
+    backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+    border: 1px solid var(--c-glass-edge);
+    border-radius: var(--rp);
+    box-shadow:
+      inset 0 1px 0 var(--c-glass-highlight),
+      0 16px 40px var(--c-glass-shadow);
+    padding-block: var(--space-2);
+    padding-inline: var(--space-5) var(--space-2);
+    transform: translateY(calc(100% + 40px));
     transition: transform var(--dur-2) var(--ease);
   }
 
@@ -182,4 +187,22 @@ h1 {
   .dbar {
     transition: none;
   }
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .dbar {
+    background: var(--c-surface);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .dbar {
+    background: var(--c-surface);
+    backdrop-filter: none;
+  }
+}
+
+.dbar-go:focus-visible {
+  outline: 3px solid var(--c-focus-on-glass);
+  outline-offset: 2px;
 }

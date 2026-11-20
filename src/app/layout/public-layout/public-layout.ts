@@ -89,7 +89,7 @@ import { SkipLink } from '../skip-link/skip-link';
       position: fixed;
       inset-inline-start: var(--space-4);
       /* Above the project page's sticky donate bar while it shows (--dbar-h, set by project.page.ts). */
-      inset-block-end: calc(var(--space-5) + var(--dbar-h, 0px));
+      inset-block-end: calc(var(--space-5) + max(var(--dbar-h, 0px), var(--bottom-bar-h, 0px)));
       z-index: 44;
       inline-size: 48px;
       block-size: 48px;

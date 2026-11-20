@@ -1322,3 +1322,20 @@ html[dir='rtl'] .marquee .track {
     backdrop-filter: none;
   }
 }
+
+/* Option C phone bottom bar (layout/header): room under the page so the last control is never behind it, and the
+   bar steps aside while the project page's own donate bar is showing. */
+@media (width < 600px) {
+  :root {
+    --bottom-bar-h: 76px;
+  }
+
+  ta-public-layout main {
+    padding-block-end: var(--bottom-bar-h);
+  }
+
+  body:has(.dbar.show) .bnav {
+    transform: translateY(calc(100% + 40px));
+    visibility: hidden;
+  }
+}
