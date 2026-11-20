@@ -105,6 +105,9 @@ const PAIRS = [
   ['--c-on-dark', '--c-glass-dark', TEXT, 'dark glass: admin KPI labels', { over: 'dark' }],
   ['--c-gold-on-dark', '--c-glass-dark', TEXT, 'dark glass: banner kicker', { over: 'dark' }],
   ['--c-on-glass-chip', '--c-glass-chip', TEXT, 'glass chip over a photo', { over: 'photo' }],
+  ['--c-on-dark', '--c-admin-glow', TEXT, 'admin band: top bar text over the glow', { over: 'admintop' }],
+  ['--c-on-dark', '--c-glass-dark', TEXT, 'admin band: KPI labels on their tiles', { over: 'adminbar' }],
+  ['--c-on-dark-78', '--c-admin-topbar-2', TEXT, 'admin band: search placeholder', {}],
 ];
 
 /** Backdrops a translucent background is composited over before measuring (see the glass pairs). */
@@ -112,6 +115,8 @@ const BACKDROPS = {
   page: ['--c-bg', '--c-surface', '--c-surface-2', '--c-surface-indigo', '--c-hero-glow-brand@--c-surface-indigo', '#000', '#fff'],
   dark: ['--c-surface-dark', '--c-surface-indigo', '--c-hero-glow-brand@--c-surface-indigo', '--c-admin-topbar-2'],
   photo: ['#000', '#fff', '--c-surface-indigo'],
+  admintop: ['--c-admin-topbar'],
+  adminbar: ['--c-admin-topbar', '--c-admin-glow@--c-admin-topbar'],
 };
 
 const css = readFileSync(new URL('../src/styles/tokens.css', import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');

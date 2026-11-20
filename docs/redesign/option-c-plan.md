@@ -32,3 +32,11 @@ indigo banner + glow, black and white photo) and keeps the worst ratio. Text on 
    floating glass donate dock, phone bottom bar (< 600 px), radii and pills on cart / checkout / order / account.
 3. **Admin:** glow top bar with glass search and account chip, dashboard greeting + KPIs on a dark band as glass tiles,
    pill active nav item, floating glass phone tab bar, radii and pills on panels, tabs and filters.
+
+## As built (deviations from the canvas)
+
+- Project tags stay under the hero image instead of over it.
+- On phones the header keeps its cart and menu buttons beside the new glass bottom bar (e2e and keyboard flows use them);
+  the bottom bar hides while the project donate bar shows, so only one floating bar is on screen.
+- The admin dark KPI band is on the dashboard only; the admin top bar gets a soft `--c-admin-glow`. Other admin pages keep
+  the approved 2026-11-16 structure with the new radii and pill controls.

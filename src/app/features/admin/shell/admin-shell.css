@@ -21,7 +21,11 @@
   min-block-size: 56px;
   padding-block: 6px;
   padding-inline: 16px;
-  background: var(--c-admin-topbar);
+
+  /* Option C: a soft brand glow on the dark bar (contrast-check "admin band") */
+  background:
+    radial-gradient(40rem 8rem at 85% 0%, var(--c-admin-glow), transparent 70%),
+    var(--c-admin-topbar);
   color: var(--c-on-dark);
   border-block-end: 1px solid var(--c-dark-surface-edge);
 }
@@ -64,7 +68,7 @@
   min-block-size: 40px;
   padding-inline: 12px;
   border: 1px solid var(--c-border-on-dark);
-  border-radius: 10px;
+  border-radius: var(--rp);
   background: var(--c-admin-topbar-2);
   color: var(--c-on-dark-78);
   font: inherit;
@@ -108,7 +112,7 @@ kbd {
   inline-size: 44px;
   block-size: 44px;
   border: 0;
-  border-radius: 10px;
+  border-radius: var(--rp);
   background: var(--c-admin-topbar-2);
   color: var(--c-on-dark);
   cursor: pointer;
@@ -149,7 +153,7 @@ kbd {
   min-block-size: 44px;
   padding-inline: 6px 12px;
   border: 0;
-  border-radius: 10px;
+  border-radius: var(--rp);
   background: var(--c-admin-topbar-2);
   color: var(--c-on-dark);
   font: inherit;
@@ -161,7 +165,7 @@ kbd {
   place-items: center;
   inline-size: 32px;
   block-size: 32px;
-  border-radius: 8px;
+  border-radius: var(--rp);
   background: var(--c-gold);
   color: var(--c-on-gold);
   font-weight: 700;
@@ -278,7 +282,7 @@ kbd {
   gap: 12px;
   min-block-size: 44px;
   padding-inline: 12px;
-  border-radius: 10px;
+  border-radius: var(--rp);
   color: var(--c-text);
   text-decoration: none;
   font-size: 0.93rem;
@@ -468,17 +472,17 @@ main:focus {
     padding-inline: 12px;
   }
 
+  /* Option C: a floating glass pill (.glass in base.css paints it; text --c-text-2 / filled active item) */
   .tabbar {
     position: fixed;
-    inset-inline: 0;
-    inset-block-end: 0;
+    inset-inline: 8px;
+    inset-block-end: calc(8px + env(safe-area-inset-bottom));
     z-index: 30;
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
-    align-items: end;
-    padding-block-end: env(safe-area-inset-bottom);
-    background: var(--c-surface);
-    border-block-start: 1px solid var(--c-border);
+    align-items: center;
+    padding: 4px;
+    border-radius: var(--rp);
   }
 
   .tabbar a,
@@ -486,18 +490,20 @@ main:focus {
     display: grid;
     justify-items: center;
     gap: 2px;
-    min-block-size: 56px;
+    min-block-size: 52px;
     padding-block: 6px;
     border: 0;
+    border-radius: var(--rp);
     background: none;
-    color: var(--c-muted);
+    color: var(--c-text-2);
     font: inherit;
     font-size: 0.72rem;
     text-decoration: none;
   }
 
   .tabbar .on {
-    color: var(--c-link);
+    background: var(--c-brand-strong);
+    color: var(--c-on-brand);
     font-weight: 600;
   }
 
@@ -507,9 +513,8 @@ main:focus {
     inline-size: 52px;
     block-size: 52px;
     min-block-size: 52px;
-    margin-block-start: -18px;
     padding: 0;
-    border-radius: 16px;
+    border-radius: var(--rp);
     background: var(--c-inverse);
     color: var(--c-on-inverse);
     box-shadow: var(--shadow-sm);

@@ -217,6 +217,10 @@
   --c-liquid-hi: rgb(255 255 255 / 30%);
   --glass-blur: 20px;
 
+  /* The admin's dark band (top bar, dashboard KPIs): a soft brand glow over --c-admin-topbar.
+     --c-on-dark on it ≥ 4.5:1 (contrast-check "admin band") */
+  --c-admin-glow: rgb(26 150 193 / 22%);
+
   /* Org chart (FE-5) — box fills, all with --chart-on text (bold 0.95rem, so the 4.5:1 body-text
      minimum applies). On white text: neutral 5.58:1 · sky 4.57:1 · green 5.11:1 · brand 6.64:1 */
   --chart-neutral: #5d6a70;

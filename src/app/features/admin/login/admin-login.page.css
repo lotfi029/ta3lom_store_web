@@ -62,7 +62,7 @@
   justify-items: stretch;
   background: var(--c-surface);
   border: 1px solid var(--c-border);
-  border-radius: 18px;
+  border-radius: var(--r-xl);
   padding: 28px;
   box-shadow: var(--shadow-md);
 }
@@ -121,7 +121,7 @@ h1 {
   justify-content: center;
   min-block-size: 48px;
   padding-inline: 16px;
-  border-radius: 12px;
+  border-radius: var(--rp);
   border: 1px solid var(--c-border);
   background: var(--c-surface);
   color: var(--c-text);
