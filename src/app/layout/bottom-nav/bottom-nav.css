@@ -1,0 +1,81 @@
+/* Option C phone bottom bar: a floating glass pill under 600 px; .glass (base.css) paints it. */
+:host {
+  display: contents;
+}
+
+.bnav {
+  display: none;
+}
+
+@media (width < 600px) {
+  .bnav {
+    position: fixed;
+    inset-inline: var(--space-3);
+    inset-block-end: calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
+    z-index: 46;
+    display: flex;
+    justify-content: space-around;
+    gap: var(--space-1);
+    padding: var(--space-1);
+    border-radius: var(--rp);
+    transition: transform var(--dur-2) var(--ease);
+  }
+}
+
+.bl {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-block-size: 52px;
+  min-inline-size: 48px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--rp);
+  background: none;
+  color: var(--c-text-2);
+  font: inherit;
+  font-size: 0.72rem;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.bl.on,
+.bl[aria-expanded='true'] {
+  background: var(--c-brand-strong);
+  color: var(--c-on-brand);
+}
+
+.bl:focus-visible {
+  outline: 3px solid var(--c-focus-on-glass);
+  outline-offset: -3px;
+}
+
+.bic {
+  position: relative;
+  display: inline-flex;
+}
+
+.bbadge {
+  position: absolute;
+  inset-block-start: -6px;
+  inset-inline-end: -10px;
+  min-inline-size: 18px;
+  padding-inline: 4px;
+  border-radius: var(--rp);
+  background: var(--c-gold);
+  color: var(--c-on-gold);
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bnav {
+    transition: none;
+  }
+}

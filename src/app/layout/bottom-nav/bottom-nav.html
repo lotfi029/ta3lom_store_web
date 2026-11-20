@@ -1,0 +1,54 @@
+<nav
+  class="bnav glass"
+  aria-label="التنقل السريع"
+  i18n-aria-label="@@store.layout.bottom-nav-label"
+>
+  <a
+    class="bl"
+    routerLink="/"
+    routerLinkActive="on"
+    [routerLinkActiveOptions]="{ exact: true }"
+    ariaCurrentWhenActive="page"
+  >
+    <ta-icon name="home" [size]="20" /><span i18n="@@store.layout.nav-home">الرئيسية</span>
+  </a>
+  @if (!showcase) {
+    <a
+      class="bl"
+      routerLink="/cart"
+      routerLinkActive="on"
+      ariaCurrentWhenActive="page"
+      [attr.aria-label]="cartLabel()"
+    >
+      <span class="bic"
+        ><ta-icon name="cart" [size]="20" />
+        @if (cart.count() > 0) {
+          <span class="bbadge" aria-hidden="true">{{ cart.count() }}</span>
+        }</span
+      ><span aria-hidden="true" i18n="@@store.layout.nav-cart">السلة</span>
+    </a>
+    @if (auth.isSignedIn()) {
+      <a
+        class="bl"
+        routerLink="/account/donations"
+        routerLinkActive="on"
+        ariaCurrentWhenActive="page"
+      >
+        <ta-icon name="user" [size]="20" /><span i18n="@@store.layout.account">حسابي</span>
+      </a>
+    } @else {
+      <a class="bl" routerLink="/login" routerLinkActive="on" ariaCurrentWhenActive="page">
+        <ta-icon name="user" [size]="20" /><span i18n="@@store.layout.sign-in">دخول</span>
+      </a>
+    }
+  }
+  <button
+    type="button"
+    class="bl"
+    [attr.aria-expanded]="menuOpen()"
+    aria-controls="mobile-nav"
+    (click)="menu.emit()"
+  >
+    <ta-icon name="menu" [size]="20" /><span i18n="@@store.layout.menu">القائمة</span>
+  </button>
+</nav>

@@ -72,8 +72,13 @@
 }
 
 /* 2 — header */
+
+/* Option C: the sticky header is strong glass (--c-glass-strong, contrast-check "text on toasts and menus" and
+   "header tagline"): over the dark banner the 80 % glass is too thin for the brand-blue tagline. Solid without
+   backdrop-filter or with reduced transparency. */
 .hdr {
-  background: var(--c-surface);
+  background: var(--c-glass-strong);
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
   border-block-end: 1px solid var(--c-border);
   position: sticky;
   inset-block-start: 0;
@@ -160,7 +165,9 @@
 .sub {
   display: block;
   font-size: 0.8rem;
-  color: var(--c-link);
+
+  /* On the glass header: a darker brand blue (contrast-check "header tagline"). */
+  color: var(--c-link-on-glass);
   font-weight: 600;
 }
 
@@ -286,7 +293,7 @@
   justify-content: center;
   padding-inline: var(--space-4);
   border: 1px solid var(--c-border);
-  border-radius: var(--r);
+  border-radius: var(--rp);
   color: var(--c-text);
   background: var(--c-surface);
   text-decoration: none;
@@ -308,7 +315,7 @@
   min-inline-size: 44px;
   justify-content: center;
   padding-inline: var(--space-4);
-  border-radius: var(--r);
+  border-radius: var(--rp);
   background: var(--c-inverse);
   color: var(--c-on-inverse);
   text-decoration: none;
@@ -412,7 +419,7 @@
   gap: var(--space-1);
   background: none;
   border: 0;
-  border-radius: var(--r);
+  border-radius: var(--rp);
   padding: var(--space-2);
   cursor: pointer;
   min-height: 44px;
@@ -548,5 +555,18 @@
   .hsearch {
     grid-row: 2;
     grid-column: 1 / -1;
+  }
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .hdr {
+    background: var(--c-surface);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .hdr {
+    background: var(--c-surface);
+    backdrop-filter: none;
   }
 }

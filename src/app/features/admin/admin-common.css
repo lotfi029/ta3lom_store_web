@@ -39,7 +39,7 @@ section:not(.panel) {
 .panel {
   background: var(--c-surface);
   border: 1px solid var(--c-border);
-  border-radius: 14px;
+  border-radius: var(--rc);
   padding: 18px;
   margin-block-end: 18px;
 }
@@ -56,7 +56,7 @@ section:not(.panel) {
   gap: 6px;
   min-block-size: 44px;
   padding-inline: 16px;
-  border-radius: 10px;
+  border-radius: var(--rp);
   border: 1px solid var(--c-border);
   background: var(--c-surface);
   color: var(--c-text);

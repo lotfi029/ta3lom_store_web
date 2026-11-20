@@ -57,6 +57,7 @@
   "store.layout.main-site": "Main site",
   "store.layout.sign-in": "Sign in",
   "store.layout.menu": "Menu",
+  "store.layout.bottom-nav-label": "Quick navigation",
   "store.layout.mobile-nav-label": "Mobile menu",
   "store.layout.logo-alt": "E-Learning Association logo",
   "store.layout.footer-store": "Store",

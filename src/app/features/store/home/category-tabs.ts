@@ -52,36 +52,38 @@ import { I18nService } from '../../../core/i18n/i18n';
     .track {
       display: flex;
       gap: var(--space-1);
+      padding-block: var(--space-2);
       overflow-x: auto;
       scrollbar-width: thin;
       overscroll-behavior-x: contain;
     }
+    /* Option C: liquid pills — the active tab is a tint pill (was a 3 px underline). */
     .tab {
       flex: none;
       display: inline-flex;
       align-items: center;
-      min-block-size: 48px;
+      min-block-size: 44px;
       padding-inline: var(--space-4);
+      border-radius: var(--rp);
       color: var(--c-text-2);
       text-decoration: none;
       font-size: 0.95rem;
       white-space: nowrap;
-      border-block-end: 3px solid transparent;
       transition:
         color var(--dur-1),
-        border-color var(--dur-1);
+        background-color var(--dur-1);
     }
     .tab:hover {
       color: var(--c-text);
-      border-block-end-color: var(--c-border-2);
+      background: var(--c-surface-2);
     }
     .tab[aria-current='page'] {
-      color: var(--c-text);
+      color: var(--c-accent-strong);
       font-weight: 600;
-      border-block-end-color: var(--c-accent);
+      background: var(--c-tint);
     }
     .tab:focus-visible {
-      outline-offset: -3px;
+      outline-offset: -2px;
     }
     @media (width < 600px) {
       .tabs {

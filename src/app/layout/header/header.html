@@ -68,26 +68,26 @@
         >
       }
       @if (!showcase) {
-      <a
-        class="cartbtn"
-        routerLink="/cart"
-        [class.bump]="bump()"
-        [attr.aria-label]="cartLabel()"
-        [attr.data-lines]="cart.count()"
-      >
-        <ta-icon name="cart" [size]="18" />
-        @if (cart.count() > 0) {
-          <span class="cbadge" aria-hidden="true">{{ cart.count() }}</span>
-        }
-        <span class="clbl" aria-hidden="true"
-          ><span class="ctxt" i18n="@@store.layout.nav-cart">السلة</span>
+        <a
+          class="cartbtn"
+          routerLink="/cart"
+          [class.bump]="bump()"
+          [attr.aria-label]="cartLabel()"
+          [attr.data-lines]="cart.count()"
+        >
+          <ta-icon name="cart" [size]="18" />
           @if (cart.count() > 0) {
-            <span class="ctot"
-              ><span class="sep"> · </span><ta-money [value]="cart.total()"
-            /></span>
+            <span class="cbadge" aria-hidden="true">{{ cart.count() }}</span>
           }
-        </span>
-      </a>
+          <span class="clbl" aria-hidden="true"
+            ><span class="ctxt" i18n="@@store.layout.nav-cart">السلة</span>
+            @if (cart.count() > 0) {
+              <span class="ctot"
+                ><span class="sep"> · </span><ta-money [value]="cart.total()"
+              /></span>
+            }
+          </span>
+        </a>
       }
       <ta-theme-toggle class="htheme" />
       <button
@@ -126,26 +126,30 @@
     @if (showcase) {
       <!-- Showcase mode (SW-2): no cart, sign-in or account entry. -->
     } @else {
-    <a class="ml" routerLink="/cart" (click)="mobileOpen.set(false)" i18n="@@store.layout.nav-cart"
-      >السلة</a
-    >
-    @if (auth.isSignedIn()) {
       <a
         class="ml"
-        routerLink="/account/donations"
+        routerLink="/cart"
         (click)="mobileOpen.set(false)"
-        i18n="@@store.layout.account"
-        >حسابي</a
+        i18n="@@store.layout.nav-cart"
+        >السلة</a
       >
-    } @else {
-      <a
-        class="ml"
-        routerLink="/login"
-        (click)="mobileOpen.set(false)"
-        i18n="@@store.layout.sign-in"
-        >دخول</a
-      >
-    }
+      @if (auth.isSignedIn()) {
+        <a
+          class="ml"
+          routerLink="/account/donations"
+          (click)="mobileOpen.set(false)"
+          i18n="@@store.layout.account"
+          >حسابي</a
+        >
+      } @else {
+        <a
+          class="ml"
+          routerLink="/login"
+          (click)="mobileOpen.set(false)"
+          i18n="@@store.layout.sign-in"
+          >دخول</a
+        >
+      }
     }
     <a class="ml" [href]="mainSite" i18n="@@store.layout.main-site">الموقع الرئيسي</a>
     <div class="mtheme">
@@ -154,3 +158,7 @@
     </div>
   </nav>
 </header>
+
+<!-- Option C: the phone bottom bar (< 600 px). Outside <header>, whose slide-away transform would pin a fixed child
+     to the header. -->
+<ta-bottom-nav [menuOpen]="mobileOpen()" [cartLabel]="cartLabel()" (menu)="openMenuFromBar()" />

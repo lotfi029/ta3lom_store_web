@@ -53,8 +53,8 @@
   flex-direction: column;
   gap: var(--space-3);
   padding: var(--space-6);
-  border-radius: var(--r-lg);
-  background: var(--c-surface);
+  border-radius: var(--r-xl);
+  background: var(--c-surface-2);
   border: 1px solid var(--c-border);
   min-inline-size: 0;
 }
@@ -146,7 +146,7 @@
   font: inherit;
   min-block-size: 44px;
   padding-inline: var(--space-3);
-  border-radius: var(--r);
+  border-radius: var(--rp);
   border: 1px solid var(--c-border);
   background: var(--c-surface);
   color: var(--c-text);
@@ -208,7 +208,7 @@
   min-inline-size: 46px;
   min-block-size: 46px;
   padding-inline: var(--space-3);
-  border-radius: var(--r);
+  border-radius: var(--rp);
   border: 1px solid var(--c-border);
   background: var(--c-surface);
   color: var(--c-text);
@@ -262,7 +262,7 @@
   align-items: center;
   min-block-size: 44px;
   padding-inline: var(--space-5);
-  border-radius: var(--r);
+  border-radius: var(--rp);
   background: var(--c-brand-strong);
   color: var(--c-on-brand);
   text-decoration: none;
@@ -287,7 +287,7 @@
 .retry {
   min-block-size: 44px;
   padding-inline: var(--space-4);
-  border-radius: var(--r);
+  border-radius: var(--rp);
   border: 1px solid currentcolor;
   background: none;
   color: inherit;

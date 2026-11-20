@@ -188,6 +188,40 @@
      white-on-transparent one disappears on a light card. */
   --c-logo-chip: #fff;
 
+  /*
+   * ── LIQUID GLASS (Option C "Liquid touch", docs/redesign/option-c-plan.md) ──────────────────────
+   * Glass is ONLY for chrome that floats over other content: the sticky store header, the admin top
+   * bar, the project donate dock, the phone bottom bars, toasts, chips over photos, the text plate on
+   * the campaign banner and the admin KPI tiles. Long-form reading stays on the solid surfaces above.
+   * A glass background is translucent, so scripts/contrast-check.mjs composites it over every backdrop
+   * it can float over (white page, grey panel, the indigo banner, a black photo) and keeps the WORST
+   * ratio. Text on --c-glass / --c-glass-strong is --c-text or --c-text-2 only (muted greys fail over
+   * the dark banner). base.css .glass falls back to the solid surface without backdrop-filter and
+   * under prefers-reduced-transparency.
+   * --c-text on --c-glass ≥ 8.6:1 · --c-text-2 ≥ 7.0:1 (worst backdrop: the indigo banner) ·
+   * white on --c-glass-dark ≥ 9.9:1 · --c-on-glass-chip on --c-glass-chip ≥ 9.4:1 (over black)
+   */
+  --c-glass: rgb(255 255 255 / 80%);
+  --c-glass-strong: rgb(255 255 255 / 90%);
+  --c-glass-edge: rgb(255 255 255 / 70%);
+  --c-glass-highlight: rgb(255 255 255 / 90%);
+  --c-glass-shadow: rgb(19 101 120 / 12%);
+  --c-glass-dark: rgb(15 38 46 / 55%);
+  --c-glass-dark-edge: rgb(255 255 255 / 16%);
+  --c-glass-dark-highlight: rgb(255 255 255 / 14%);
+  --c-glass-chip: rgb(255 255 255 / 80%);
+  --c-on-glass-chip: var(--ink);
+
+  /* --c-focus (brand) on light glass over a dark backdrop drops to 2.1:1; the deeper brand holds ≥ 3:1 */
+  --c-focus-on-glass: var(--brand-900);
+  --c-link-on-glass: var(--brand-900);
+  --c-liquid-hi: rgb(255 255 255 / 30%);
+  --glass-blur: 20px;
+
+  /* The admin's dark band (top bar, dashboard KPIs): a soft brand glow over --c-admin-topbar.
+     --c-on-dark on it ≥ 4.5:1 (contrast-check "admin band") */
+  --c-admin-glow: rgb(26 150 193 / 22%);
+
   /* Org chart (FE-5) — box fills, all with --chart-on text (bold 0.95rem, so the 4.5:1 body-text
      minimum applies). On white text: neutral 5.58:1 · sky 4.57:1 · green 5.11:1 · brand 6.64:1 */
   --chart-neutral: #5d6a70;
@@ -201,8 +235,9 @@
 
   /* Radius */
   --r: 12px;
-  --rc: 16px;
+  --rc: 20px; /* Option C: cards 16 → 20px */
   --r-lg: 20px;
+  --r-xl: 28px; /* Option C: large panels, the campaign banner, the buy box */
   --rp: 999px;
 
   /* Type */
@@ -317,6 +352,16 @@
   --c-badge-new-bg: #1f2a4d;
   --c-badge-new-text: #b4c1f7;
   --c-header-glass: rgb(11 26 32 / 90%);
+
+  /* Liquid glass, dark: --c-text on --c-glass ≥ 13.5:1 over every dark backdrop */
+  --c-glass: rgb(11 26 32 / 80%);
+  --c-glass-strong: rgb(11 26 32 / 90%);
+  --c-glass-edge: rgb(255 255 255 / 12%);
+  --c-glass-highlight: rgb(255 255 255 / 10%);
+  --c-glass-shadow: rgb(0 0 0 / 45%);
+  --c-liquid-hi: rgb(255 255 255 / 18%);
+  --c-focus-on-glass: #6fcbeb;
+  --c-link-on-glass: #6fcbeb;
   --c-header-shadow: rgb(0 0 0 / 35%);
   --chart-line: #4a6a75;
 

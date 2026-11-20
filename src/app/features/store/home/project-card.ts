@@ -26,17 +26,20 @@ import { ShareSheet } from '../share/share-sheet';
         } @else {
           <div class="cover ph" aria-hidden="true"></div>
         }
-        @if (project().badge === 'urgent') {
-          <span class="badge" i18n="@@store.card.badge-urgent">عاجل</span>
-        } @else if (project().badge === 'new') {
-          <span class="badge" i18n="@@store.card.badge-new">جديد</span>
-        }
+        <!-- Option C: the category and the badge float over the photo as glass chips. -->
+        <div class="chips">
+          @if (categoryName()) {
+            <span class="cat glass-chip">{{ categoryName() }}</span>
+          }
+          @if (project().badge === 'urgent') {
+            <span class="badge" i18n="@@store.card.badge-urgent">عاجل</span>
+          } @else if (project().badge === 'new') {
+            <span class="badge" i18n="@@store.card.badge-new">جديد</span>
+          }
+        </div>
         <div class="share"><ta-share-sheet [url]="url()" [title]="title()" [compact]="true" /></div>
       </div>
       <div class="body">
-        @if (categoryName()) {
-          <span class="cat">{{ categoryName() }}</span>
-        }
         @if (headingLevel() === 2) {
           <h2 class="t" [id]="'pc-' + project().id">
             <a [routerLink]="['/p', project().slug]">{{ title() }}</a>
@@ -66,6 +69,22 @@ import { ShareSheet } from '../share/share-sheet';
       display: flex;
       flex-direction: column;
       block-size: 100%;
+      transition:
+        transform var(--dur-2) var(--ease),
+        box-shadow var(--dur-2) var(--ease);
+    }
+    @media (hover: hover) {
+      .pcard:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-md);
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .pcard,
+      .pcard:hover {
+        transition: none;
+        transform: none;
+      }
     }
     .media {
       position: relative;
@@ -77,11 +96,18 @@ import { ShareSheet } from '../share/share-sheet';
       block-size: 100%;
       display: block;
     }
-    .badge {
+    .chips {
       position: absolute;
       inset-block-start: var(--space-3);
       inset-inline-start: var(--space-3);
-      padding-block: var(--space-1);
+      inset-inline-end: calc(var(--space-3) + 48px);
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-1);
+      align-items: flex-start;
+    }
+    .badge {
+      padding-block: 2px;
       padding-inline: var(--space-3);
       border-radius: var(--rp);
       background: var(--c-gold);
@@ -100,11 +126,6 @@ import { ShareSheet } from '../share/share-sheet';
       flex-direction: column;
       gap: var(--space-2);
       padding: var(--space-4);
-    }
-    .cat {
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--c-link);
     }
     .t {
       font-size: 1rem;

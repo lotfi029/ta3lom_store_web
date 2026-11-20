@@ -1,4 +1,6 @@
 # Store web progress
+Redesign (2026-11-20): Option C "Liquid touch" implemented on `claude/project-thread-fz4c31` (plan `docs/redesign/option-c-plan.md`): Phase 1 design system, Phase 2 storefront, Phase 3 admin; lint, typecheck, unit tests and build:ci green; e2e/a11y against the real API still to run.
+
 Next: owner go-live steps (PR descriptions, docs/production-checklist.md); payments are on since the final session
 
 Local run and deploy readiness (2026-10-30): `dev-env.sh` checks Node ≥ 24.15; `api-up.sh` starts PostgreSQL from the API's

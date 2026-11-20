@@ -30,15 +30,17 @@
 }
 
 .stats {
+  /* Option C: the KPIs sit on the admin's dark band as dark glass tiles (contrast-check "admin band") */
   list-style: none;
   margin: 0 0 16px;
-  padding: 0;
+  padding: 12px;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  border: 1px solid var(--c-border);
-  border-radius: 14px;
-  background: var(--c-surface);
-  overflow: hidden;
+  gap: 12px;
+  border-radius: var(--r-xl);
+  background:
+    radial-gradient(36rem 14rem at 85% 0%, var(--c-admin-glow), transparent 70%),
+    var(--c-admin-topbar);
 }
 
 .stats li {
@@ -46,21 +48,22 @@
   gap: 2px;
   padding-block: 14px;
   padding-inline: 16px;
+  border-radius: var(--rc);
+  background: var(--c-glass-dark);
+  border: 1px solid var(--c-glass-dark-edge);
+  box-shadow: inset 0 1px 0 var(--c-glass-dark-highlight);
 }
 
-.stats li + li {
-  border-inline-start: 1px solid var(--c-border);
-}
-
-.stats .l {
+.stats .l,
+.stats small.muted {
   font-size: 0.85rem;
-  color: var(--c-muted);
+  color: var(--c-on-dark);
 }
 
 .stats .v {
   font-size: 1.6rem;
   font-weight: 700;
-  color: var(--c-text);
+  color: var(--c-on-brand);
   text-decoration: none;
   font-variant-numeric: tabular-nums;
   justify-self: start;
@@ -68,6 +71,11 @@
 
 .stats a.v:hover {
   text-decoration: underline;
+}
+
+.stats a.v:focus-visible {
+  outline: 2px solid var(--c-on-brand);
+  outline-offset: 2px;
 }
 
 .stats small {
@@ -288,11 +296,4 @@ h3 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .stats li:nth-child(3) {
-    border-inline-start: 0;
-  }
-
-  .stats li:nth-child(n + 3) {
-    border-block-start: 1px solid var(--c-border);
-  }
 }

@@ -91,7 +91,34 @@ const PAIRS = [
   ['--c-badge-err-text', '--c-badge-err-bg', TEXT, 'admin badge: cancelled / archived / blocked'],
   ['--c-badge-draft-text', '--c-badge-draft-bg', TEXT, 'admin badge: draft / expired'],
   ['--c-badge-new-text', '--c-badge-new-bg', TEXT, 'admin badge: new / roles'],
+  // Liquid glass (Option C). A glass background is translucent: it is composited over every backdrop
+  // listed in `over` (tokens or literals) and the WORST ratio counts. LIGHT_BACKDROPS = what the store
+  // header, dock and bottom bar float over: the page, a grey panel, the indigo banner and its brand glow,
+  // and a photo at its darkest (black) and lightest (white).
+  ['--c-text', '--c-glass', TEXT, 'glass: text on the header / dock / bottom bar', { over: 'page' }],
+  ['--c-text-2', '--c-glass', TEXT, 'glass: secondary text on the header / dock', { over: 'page' }],
+  ['--c-link-on-glass', '--c-glass-strong', TEXT, 'glass: header tagline (brand blue) on the glass header', { over: 'page' }],
+  ['--c-text', '--c-glass-strong', TEXT, 'glass: text on toasts and menus', { over: 'page' }],
+  ['--c-text-2', '--c-glass-strong', TEXT, 'glass: secondary text on toasts and menus', { over: 'page' }],
+  ['--c-focus-on-glass', '--c-glass', LARGE, 'glass: focus ring on the header / bottom bar', { over: 'page' }],
+  ['--c-on-brand', '--c-glass-dark', TEXT, 'dark glass: banner title, admin KPI values', { over: 'dark' }],
+  ['--c-on-dark-78', '--c-glass-dark', TEXT, 'dark glass: banner summary', { over: 'dark' }],
+  ['--c-on-dark', '--c-glass-dark', TEXT, 'dark glass: admin KPI labels', { over: 'dark' }],
+  ['--c-gold-on-dark', '--c-glass-dark', TEXT, 'dark glass: banner kicker', { over: 'dark' }],
+  ['--c-on-glass-chip', '--c-glass-chip', TEXT, 'glass chip over a photo', { over: 'photo' }],
+  ['--c-on-dark', '--c-admin-glow', TEXT, 'admin band: top bar text over the glow', { over: 'admintop' }],
+  ['--c-on-dark', '--c-glass-dark', TEXT, 'admin band: KPI labels on their tiles', { over: 'adminbar' }],
+  ['--c-on-dark-78', '--c-admin-topbar-2', TEXT, 'admin band: search placeholder', {}],
 ];
+
+/** Backdrops a translucent background is composited over before measuring (see the glass pairs). */
+const BACKDROPS = {
+  page: ['--c-bg', '--c-surface', '--c-surface-2', '--c-surface-indigo', '--c-hero-glow-brand@--c-surface-indigo', '#000', '#fff'],
+  dark: ['--c-surface-dark', '--c-surface-indigo', '--c-hero-glow-brand@--c-surface-indigo', '--c-admin-topbar-2'],
+  photo: ['#000', '#fff', '--c-surface-indigo'],
+  admintop: ['--c-admin-topbar'],
+  adminbar: ['--c-admin-topbar', '--c-admin-glow@--c-admin-topbar'],
+};
 
 const css = readFileSync(new URL('../src/styles/tokens.css', import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
 
@@ -131,6 +158,13 @@ const over = (fg, bg) => ({ r: fg.r * fg.a + bg.r * (1 - fg.a), g: fg.g * fg.a +
 const channel = (c) => ((c /= 255) <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
 const luminance = ({ r, g, b }) => 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
 
+/** A backdrop: a token, a literal, or `--glow@--base` (a translucent token composited over a base). */
+function backdrop(vars, spec) {
+  const [top, base] = spec.split('@');
+  const colour = (x) => parse(x.startsWith('--') ? resolve(vars, `var(${x})`) : x);
+  return base ? over(colour(top), colour(base)) : colour(top);
+}
+
 export function ratio(fg, bg) {
   const [l1, l2] = [luminance(fg), luminance(bg)].sort((x, y) => y - x);
   return (l1 + 0.05) / (l2 + 0.05);
@@ -143,9 +177,10 @@ for (const [theme, vars] of [
   ['dark', dark],
 ]) {
   for (const [fgName, bgName, min, what, flags = {}] of PAIRS) {
-    const bg = parse(resolve(vars, `var(${bgName})`));
-    const fg = over(parse(resolve(vars, `var(${fgName})`)), bg);
-    const r = ratio(fg, bg);
+    const raw = parse(resolve(vars, `var(${bgName})`));
+    if (raw.a < 1 && !flags.over) throw new Error(`contrast-check: ${bgName} is translucent — give the pair an \`over\` backdrop set`);
+    const grounds = flags.over ? BACKDROPS[flags.over].map((b) => backdrop(vars, b)).map((g) => over(raw, g)) : [raw];
+    const r = Math.min(...grounds.map((bg) => ratio(over(parse(resolve(vars, `var(${fgName})`)), bg), bg)));
     const ok = r >= min;
     const known = !ok && theme === 'light' && flags.preexistingLight;
     if (!ok && !known) failures += 1;

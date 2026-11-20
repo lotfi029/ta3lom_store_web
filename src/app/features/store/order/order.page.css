@@ -6,7 +6,7 @@
   max-inline-size: 640px;
   background: var(--c-surface);
   border: 1px solid var(--c-border);
-  border-radius: 20px;
+  border-radius: var(--r-xl);
   padding: 28px;
 }
 

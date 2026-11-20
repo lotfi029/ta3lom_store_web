@@ -23,6 +23,7 @@ import { SHOWCASE } from '../../core/showcase/showcase';
 import { Icon } from '../../shared/ui/icon/icon';
 import { Money } from '../../shared/ui/money/money';
 import { AccountMenu } from '../account-menu/account-menu';
+import { BottomNav } from '../bottom-nav/bottom-nav';
 import { LangSwitch } from '../lang-switch/lang-switch';
 import { ThemeToggle } from '../theme-toggle/theme-toggle';
 
@@ -52,7 +53,7 @@ export function nextAway(
 
 @Component({
   selector: 'ta-header',
-  imports: [RouterLink, Icon, Money, AccountMenu, LangSwitch, ThemeToggle],
+  imports: [RouterLink, Icon, BottomNav, Money, AccountMenu, LangSwitch, ThemeToggle],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './header.html',
   styleUrl: './header.css',
@@ -122,6 +123,12 @@ export class Header {
     if (!this.mobileOpen()) return;
     this.mobileOpen.set(false);
     this.burger()?.nativeElement.focus();
+  }
+
+  /** The phone bottom bar's menu button: bring the header back into view and toggle today's drawer. */
+  protected openMenuFromBar(): void {
+    this.away.set(false);
+    this.mobileOpen.set(!this.mobileOpen());
   }
 
   protected search(event: Event, input: HTMLInputElement): void {
