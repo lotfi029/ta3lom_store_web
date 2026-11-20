@@ -33,7 +33,7 @@
   min-height: 44px;
   min-width: 44px;
   padding-inline: var(--space-4);
-  border-radius: var(--r);
+  border-radius: var(--rp);
   border: 1px solid var(--c-border);
   background: var(--c-surface);
   font: inherit;

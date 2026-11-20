@@ -18,7 +18,7 @@
   min-width: 44px;
   padding-block: 11px;
   padding-inline: var(--space-5);
-  border-radius: var(--r);
+  border-radius: var(--rp); /* Option C: liquid pill */
   border: 1px solid transparent;
   text-decoration: none;
   cursor: pointer;
@@ -95,6 +95,20 @@
 .v-primary:hover:not(:disabled, .is-loading)::after,
 .v-cta:hover:not(:disabled, .is-loading)::after {
   transform: translateX(calc(110% * var(--dir, 1)));
+}
+
+/* Option C liquid highlight: a soft light on the top half of the filled variants, under the label
+   (z-index -1, like the shine). Decorative; it does not move, so reduced motion keeps it. */
+.v-primary::before,
+.v-cta::before {
+  content: '';
+  position: absolute;
+  inset-block: 0 50%;
+  inset-inline: 0;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: var(--rp) var(--rp) 40% 40%;
+  background: linear-gradient(180deg, var(--c-liquid-hi), transparent);
 }
 
 /* White text on --brand is 3.4:1 — under the 4.5:1 AA minimum at this weight/size (600/0.95rem
