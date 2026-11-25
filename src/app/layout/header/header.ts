@@ -82,6 +82,17 @@ export class Header {
     ),
     { initialValue: this.router.url },
   );
+  /**
+   * Option D "Glass hero": on the home and project pages the header starts as dark glass that continues the hero
+   * under it (`.dark-scope` re-points its tokens to the checked dark pairs); once the page scrolls past the top of
+   * the hero it turns back into the light glass header. Decided from the URL, so the prerendered page has it.
+   */
+  protected readonly heroRoute = computed(() => {
+    const seg = this.router.parseUrl(this.url()).root.children['primary']?.segments ?? [];
+    return seg.length === 0 || (seg.length === 2 && seg[0].path === 'p');
+  });
+  protected readonly nearTop = signal(true);
+  protected readonly heroMode = computed(() => this.heroRoute() && this.nearTop());
   /** The search box shows the listing's current `?q=` on the home page. */
   protected readonly currentQ = computed(() => {
     const tree = this.router.parseUrl(this.url());
@@ -108,6 +119,7 @@ export class Header {
   protected onScroll(): void {
     const y = window.scrollY;
     this.scrolled.set(y > 8);
+    this.nearTop.set(y < 160);
     this.away.set(
       nextAway(this.away(), this.lastY, y, {
         narrow: window.matchMedia('(width < 900px)').matches,

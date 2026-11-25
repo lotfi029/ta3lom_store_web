@@ -135,9 +135,9 @@ import { ShareSheet } from '../share/share-sheet';
       gap: var(--space-2);
       padding: var(--space-4);
     }
-    /* The plate grows upward from the bottom of the photo, so a long title never leaves the image. */
-    /* The dense dark plate without backdrop-filter: one blur per card was the costliest paint on the page (CI TBT);
-       at 78 % the photo barely shows through anyway. Contrast: contrast-check "plate … over a photo". */
+    /* The plate grows upward from the bottom of the photo, so a long title never leaves the image. Phones: no backdrop-filter (one blur per card was the costliest paint on a
+       GPU-less phone, CI TBT); desktops with a pointer get the frosted blur of the mockup. Contrast: contrast-check
+       "plate … over a photo". */
     .plate {
       background: var(--c-glass-plate);
       border: 1px solid var(--c-glass-plate-edge);
@@ -152,6 +152,11 @@ import { ShareSheet } from '../share/share-sheet';
       padding-block: var(--space-2);
       padding-inline: var(--space-4);
       border-radius: var(--r-lg);
+    }
+    @media (width >= 1000px) and (hover: hover) {
+      .plate {
+        backdrop-filter: blur(var(--glass-blur)) saturate(170%);
+      }
     }
     .cat {
       font-size: 0.78rem;

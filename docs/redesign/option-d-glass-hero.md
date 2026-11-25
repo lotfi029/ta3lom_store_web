@@ -24,3 +24,15 @@ admin is unchanged.
 - Transparency: every new glass falls back to a solid surface without `backdrop-filter` or under
   `prefers-reduced-transparency`.
 - One `h1` per route (the banner title, or the hidden store title; the project title on its plate).
+
+## Closer to the mockup (2026-11-25, after the owner's review of v1.2.0)
+
+- **Header in the hero:** on the home and project pages the sticky header starts in the hero's colour, with the
+  dark theme's tokens (`.dark-scope`), and the hero fades up into it, so the hero begins under the logo as in the
+  mockup. Once the page scrolls (160 px) it turns back into the light glass header.
+- **Quick donate:** a dark glass panel (`.dark-scope` + `--c-glass-panel`), as in the mockup.
+- **Blobs:** desktops with a pointer (`width >= 1000px` and `hover: hover`) get the mockup's solid, blurred and
+  morphing blobs and the frosted card plates. Phones keep the cheaper look: gradient blobs with a dense core, and card
+  plates without `backdrop-filter`, because CI Lighthouse runs as a phone without a GPU.
+- **Project page on phones:** the cover runs edge to edge (6:7) with the title plate over it.
+

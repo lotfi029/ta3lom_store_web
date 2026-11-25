@@ -117,6 +117,15 @@ const PAIRS = [
   ['--c-danger', '--c-glass-panel', TEXT, 'hero: quick donate card error', { over: 'hero' }],
   ['--c-link', '--c-glass-panel', TEXT, 'hero: quick donate card links', { over: 'hero' }],
   ['--c-text-2', '--c-glass-strong', TEXT, 'hero: category tabs where the bar overlaps the hero', { over: 'hero' }],
+  // .dark-scope parts in the light theme use the dark theme's values: measured in the dark run only.
+  ['--c-text', '--c-hero-bg', TEXT, 'hero header: name and links (.dark-scope)', { only: 'dark' }],
+  ['--c-link-on-glass', '--c-hero-bg', TEXT, 'hero header: tagline (.dark-scope)', { only: 'dark' }],
+  ['--c-text', '--c-glass-dark', TEXT, 'hero header: search text (.dark-scope)', { over: 'hero', only: 'dark' }],
+  ['--c-text-2', '--c-glass-dark', TEXT, 'hero header: search placeholder (.dark-scope)', { over: 'hero', only: 'dark' }],
+  ['--c-focus-on-glass', '--c-hero-bg', LARGE, 'hero header: focus ring (.dark-scope)', { only: 'dark' }],
+  ['--c-text', '--c-glass-panel', TEXT, 'hero: dark quick donate panel text (.dark-scope)', { over: 'hero', only: 'dark' }],
+  ['--c-muted', '--c-glass-panel', TEXT, 'hero: dark quick donate panel hints (.dark-scope)', { over: 'hero', only: 'dark' }],
+  ['--c-danger', '--c-glass-panel', TEXT, 'hero: dark quick donate panel error (.dark-scope)', { over: 'hero', only: 'dark' }],
   ['--c-focus-on-glass', '--c-glass-strong', LARGE, 'hero: focus ring on the category bar', { over: 'hero' }],
   ['--c-on-dark-78', '--c-hero-bg', TEXT, 'hero: breadcrumb on the project hero', {}],
   ['--c-on-brand', '--c-glass-plate', TEXT, 'plate: card / project title over a photo', { over: 'photo' }],
@@ -195,6 +204,7 @@ for (const [theme, vars] of [
   ['dark', dark],
 ]) {
   for (const [fgName, bgName, min, what, flags = {}] of PAIRS) {
+    if (flags.only && flags.only !== theme) continue;
     const raw = parse(resolve(vars, `var(${bgName})`));
     if (raw.a < 1 && !flags.over) throw new Error(`contrast-check: ${bgName} is translucent — give the pair an \`over\` backdrop set`);
     const grounds = flags.over ? BACKDROPS[flags.over].map((b) => backdrop(vars, b)).map((g) => over(raw, g)) : [raw];
@@ -210,4 +220,4 @@ if (failures) {
   console.error(`contrast-check: ${failures} pair(s) under their WCAG minimum — fix the token in src/styles/tokens.css.`);
   process.exit(1);
 }
-console.log(`contrast-check: ${PAIRS.length * 2} pairs pass (light + dark).`);
+console.log(`contrast-check: ${PAIRS.length * 2 - PAIRS.filter((p) => p[4]?.only).length} pairs pass (light + dark).`);

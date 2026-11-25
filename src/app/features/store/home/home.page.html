@@ -13,7 +13,7 @@
           <ta-home-banner [featured]="data.featured()" [categories]="data.categoryList()" />
         }
         @if (showQuick()) {
-          <aside class="qcard glass-panel" aria-labelledby="qc-h">
+          <aside class="qcard glass-panel dark-scope" aria-labelledby="qc-h">
             <h2 id="qc-h" class="qc-h" i18n="@@store.home.quick-title">تبرع سريع للصندوق العام</h2>
             <!-- Hydrated with the page: a click on a preset of a deferred form was not replayed (Angular event replay). -->
             <ta-quick-donate-form [list]="data.giftCategories()" variant="inline" idPrefix="qi" />
