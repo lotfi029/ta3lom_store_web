@@ -9,9 +9,9 @@ import type { DonateProject } from '../donate/donate-draft';
 import { ShareSheet } from '../share/share-sheet';
 
 /**
- * The compact project card (Option C §4, D-W5): image 3:2 (lazy, alt from the API) with the badge at the top start
- * corner and an icon share button (spec C-1, REVIEW) at the top end; the category name; the title linking to
- * `/p/{slug}`; a 2-line summary; then the donate box (option chips + "تبرع مفتوح" → qty stepper or amount, تبرع /
+ * The compact project card (Option C §4, D-W5; Option D look): image 4:3 (lazy, alt from the API) with the badge at
+ * the top start corner and an icon share button (spec C-1, REVIEW) at the top end; the category name and the title
+ * linking to `/p/{slug}` on a glass plate over the photo; a 2-line summary; then the donate box (option chips + "تبرع مفتوح" → qty stepper or amount, تبرع /
  * اضافة). No progress bar. Options come with the card (`ProjectCard.options`, API-9) — no request per card.
  */
 @Component({
@@ -26,11 +26,8 @@ import { ShareSheet } from '../share/share-sheet';
         } @else {
           <div class="cover ph" aria-hidden="true"></div>
         }
-        <!-- Option C: the category and the badge float over the photo as glass chips. -->
+        <!-- Option D: the badge floats at the top; the category and title sit on a glass plate over the photo. -->
         <div class="chips">
-          @if (categoryName()) {
-            <span class="cat glass-chip">{{ categoryName() }}</span>
-          }
           @if (project().badge === 'urgent') {
             <span class="badge" i18n="@@store.card.badge-urgent">عاجل</span>
           } @else if (project().badge === 'new') {
@@ -38,17 +35,22 @@ import { ShareSheet } from '../share/share-sheet';
           }
         </div>
         <div class="share"><ta-share-sheet [url]="url()" [title]="title()" [compact]="true" /></div>
+        <div class="plate glass-plate">
+          @if (categoryName()) {
+            <span class="cat">{{ categoryName() }}</span>
+          }
+          @if (headingLevel() === 2) {
+            <h2 class="t" [id]="'pc-' + project().id">
+              <a [routerLink]="['/p', project().slug]">{{ title() }}</a>
+            </h2>
+          } @else {
+            <h3 class="t" [id]="'pc-' + project().id">
+              <a [routerLink]="['/p', project().slug]">{{ title() }}</a>
+            </h3>
+          }
+        </div>
       </div>
       <div class="body">
-        @if (headingLevel() === 2) {
-          <h2 class="t" [id]="'pc-' + project().id">
-            <a [routerLink]="['/p', project().slug]">{{ title() }}</a>
-          </h2>
-        } @else {
-          <h3 class="t" [id]="'pc-' + project().id">
-            <a [routerLink]="['/p', project().slug]">{{ title() }}</a>
-          </h3>
-        }
         @if (summary()) {
           <p class="sum">{{ summary() }}</p>
         }
@@ -88,8 +90,13 @@ import { ShareSheet } from '../share/share-sheet';
     }
     .media {
       position: relative;
-      aspect-ratio: 3 / 2;
+      aspect-ratio: 4 / 3;
       background: var(--c-tint);
+    }
+    .media ta-image,
+    .cover {
+      position: absolute;
+      inset: 0;
     }
     .cover {
       inline-size: 100%;
@@ -101,6 +108,7 @@ import { ShareSheet } from '../share/share-sheet';
       inset-block-start: var(--space-3);
       inset-inline-start: var(--space-3);
       inset-inline-end: calc(var(--space-3) + 48px);
+      z-index: 1;
       display: flex;
       flex-wrap: wrap;
       gap: var(--space-1);
@@ -127,6 +135,23 @@ import { ShareSheet } from '../share/share-sheet';
       gap: var(--space-2);
       padding: var(--space-4);
     }
+    /* The plate grows upward from the bottom of the photo, so a long title never leaves the image. */
+    .plate {
+      position: absolute;
+      inset-inline: var(--space-2);
+      inset-block-end: var(--space-2);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding-block: var(--space-2);
+      padding-inline: var(--space-4);
+      border-radius: var(--r-lg);
+    }
+    .cat {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--c-on-dark-78);
+    }
     .t {
       font-size: 1rem;
       line-height: 1.5;
@@ -134,12 +159,15 @@ import { ShareSheet } from '../share/share-sheet';
       margin: 0;
     }
     .t a {
-      color: inherit;
+      color: var(--c-on-brand);
       text-decoration: none;
     }
     .t a:hover {
-      color: var(--c-link);
       text-decoration: underline;
+    }
+    .t a:focus-visible {
+      outline: 2px solid var(--c-on-brand);
+      outline-offset: 2px;
     }
     .sum {
       margin: 0;

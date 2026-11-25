@@ -212,6 +212,20 @@
   --c-glass-chip: rgb(255 255 255 / 80%);
   --c-on-glass-chip: var(--ink);
 
+  /* Option D "Glass hero": the permanently dark, full-bleed hero on the home and project pages, with
+     three slowly drifting blurred blobs (brand, deep brand, gold) behind dark-glass panels. The same in
+     both themes. --c-glass-plate is the denser dark glass laid over a PHOTO (card titles, the project
+     title plate, the phone donate bar): white on it ≥ 4.5:1 even over a white photo. */
+  --c-hero-bg: var(--indigo);
+  --c-hero-blob-brand: rgb(26 150 193 / 85%);
+  --c-hero-blob-deep: rgb(19 122 160 / 70%);
+  --c-hero-blob-gold: rgb(165 142 54 / 55%);
+  --c-glass-plate: rgb(15 38 46 / 78%);
+  --c-glass-plate-edge: rgb(255 255 255 / 18%);
+
+  /* The quick-donate card floating on the hero: a frosted panel dense enough for the form's error red. */
+  --c-glass-panel: rgb(255 255 255 / 97%);
+
   /* --c-focus (brand) on light glass over a dark backdrop drops to 2.1:1; the deeper brand holds ≥ 3:1 */
   --c-focus-on-glass: var(--brand-900);
   --c-link-on-glass: var(--brand-900);
@@ -356,6 +370,7 @@
   /* Liquid glass, dark: --c-text on --c-glass ≥ 13.5:1 over every dark backdrop */
   --c-glass: rgb(11 26 32 / 80%);
   --c-glass-strong: rgb(11 26 32 / 90%);
+  --c-glass-panel: rgb(11 26 32 / 92%);
   --c-glass-edge: rgb(255 255 255 / 12%);
   --c-glass-highlight: rgb(255 255 255 / 10%);
   --c-glass-shadow: rgb(0 0 0 / 45%);

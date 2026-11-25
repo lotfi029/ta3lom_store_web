@@ -1,20 +1,77 @@
-.crumbs-row {
-  padding-block: 28px 0;
+/* Option D "Glass hero": breadcrumb, cover and the title plate on the dark hero; the solid sheet overlaps it. */
+.phero {
+  border-radius: 0;
+  padding-block: var(--space-6) calc(var(--space-8) + 32px);
 }
 
-.crumbs-row .crumbs {
-  margin: 0;
+.phero .crumbs {
+  color: var(--c-on-dark-78);
+  margin-block-end: var(--space-4);
 }
 
-.pp {
-  padding-block: 12px 56px;
+.phero .crumbs a {
+  color: var(--c-on-dark-78);
+}
+
+.phero .crumbs a:hover {
+  color: var(--c-on-brand);
+}
+
+.phero .crumbs :focus-visible {
+  outline-color: var(--c-on-brand);
+}
+
+/* The plate sits over the bottom of the cover (stacked in one grid cell); with no cover it stands alone. */
+.stage {
+  display: grid;
+}
+
+.stage > * {
+  grid-area: 1 / 1;
 }
 
 .hero-media {
-  border-radius: var(--r-xl);
+  border-radius: calc(var(--r-xl) + 4px);
   overflow: hidden;
-  background: var(--c-tint);
+  background: var(--c-dark-surface-edge);
   aspect-ratio: 16 / 10;
+  box-shadow: 0 24px 60px var(--c-media-shade-35);
+}
+
+.stage.has-media .plate {
+  align-self: end;
+  margin: var(--space-3);
+}
+
+.plate {
+  position: relative;
+  max-inline-size: 760px;
+  padding: var(--space-5) var(--space-6);
+  border-radius: var(--r-xl);
+}
+
+@media (width >= 1000px) {
+  .hero-media {
+    aspect-ratio: 21 / 9;
+  }
+
+  .stage.has-media .plate {
+    margin: var(--space-5);
+  }
+}
+
+@media (width < 600px) {
+  .hero-media {
+    aspect-ratio: 1;
+  }
+
+  .stage.has-media .plate {
+    margin: var(--space-2);
+  }
+
+  .plate {
+    padding: var(--space-4);
+  }
 }
 
 .tagrow {
@@ -22,7 +79,7 @@
   gap: 8px;
   flex-wrap: wrap;
   align-items: center;
-  margin-block: 22px 10px;
+  margin-block-end: var(--space-2);
 }
 
 .tag.grey {
@@ -35,18 +92,29 @@
 }
 
 h1 {
-  font-size: clamp(1.8rem, 3.6vw, 2.6rem);
+  font-size: clamp(1.6rem, 3.6vw, 2.6rem);
+  line-height: 1.35;
   margin: 0;
+  color: var(--c-on-brand);
 }
 
 .lede {
-  font-size: 1.08rem;
-  color: var(--c-text-2);
-  margin-block: 12px 0;
+  font-size: 1.05rem;
+  color: var(--c-on-dark-78);
+  margin-block: var(--space-2) 0;
+}
+
+.pp {
+  position: relative;
+  margin-block-start: -32px;
+  padding-block: var(--space-7) 56px;
+  background: var(--c-bg);
+  border-start-start-radius: calc(var(--r-xl) + 4px);
+  border-start-end-radius: calc(var(--r-xl) + 4px);
 }
 
 .prose {
-  margin-block-start: 24px;
+  margin-block-start: 0;
 }
 
 .buybox {
@@ -105,19 +173,20 @@ h1 {
 
 @media (width < 1000px) {
   .dbar {
-    /* Option C: a floating glass pill (text --c-text / --c-text-2 on --c-glass-strong). */
+    /* Option D: a floating dark glass pill (white text on --c-glass-plate) with the gold donate button. */
     display: block;
     position: fixed;
     inset-inline: var(--space-3);
     inset-block-end: calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
     z-index: 45;
-    background: var(--c-glass-strong);
-    backdrop-filter: blur(var(--glass-blur)) saturate(180%);
-    border: 1px solid var(--c-glass-edge);
+    background: var(--c-glass-plate);
+    backdrop-filter: blur(var(--glass-blur)) saturate(170%);
+    border: 1px solid var(--c-glass-plate-edge);
     border-radius: var(--rp);
     box-shadow:
-      inset 0 1px 0 var(--c-glass-highlight),
-      0 16px 40px var(--c-glass-shadow);
+      inset 0 1px 0 var(--c-glass-dark-highlight),
+      0 20px 50px var(--c-media-shade-35);
+    color: var(--c-on-brand);
     padding-block: var(--space-2);
     padding-inline: var(--space-5) var(--space-2);
     transform: translateY(calc(100% + 40px));
@@ -160,7 +229,7 @@ h1 {
   align-items: baseline;
   gap: 0.3em;
   font-size: 0.85rem;
-  color: var(--c-text-2);
+  color: var(--c-on-dark-78);
 }
 
 .dbar-go {
@@ -172,15 +241,15 @@ h1 {
   padding-inline: var(--space-6);
   border: 0;
   border-radius: var(--rp);
-  background: var(--c-brand-strong);
-  color: var(--c-on-brand);
+  background: var(--c-gold);
+  color: var(--c-on-gold);
   font: inherit;
   font-weight: 700;
   cursor: pointer;
 }
 
 .dbar-go:hover {
-  background: var(--c-brand-deep);
+  box-shadow: var(--shadow-gold);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -191,18 +260,18 @@ h1 {
 
 @supports not (backdrop-filter: blur(1px)) {
   .dbar {
-    background: var(--c-surface);
+    background: var(--c-surface-dark);
   }
 }
 
 @media (prefers-reduced-transparency: reduce) {
   .dbar {
-    background: var(--c-surface);
+    background: var(--c-surface-dark);
     backdrop-filter: none;
   }
 }
 
 .dbar-go:focus-visible {
-  outline: 3px solid var(--c-focus-on-glass);
+  outline: 3px solid var(--c-on-brand);
   outline-offset: 2px;
 }

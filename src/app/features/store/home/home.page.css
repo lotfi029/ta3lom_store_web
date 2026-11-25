@@ -18,6 +18,39 @@
   }
 }
 
+/* Option D "Glass hero": the hero's own wrap leaves room at the bottom for the category bar that overlaps it. */
+.hwrap {
+  padding-block: var(--space-8) calc(var(--space-8) + 32px);
+}
+
+.wrap.on-hero {
+  padding-block-start: 0;
+}
+
+.cats {
+  position: relative;
+  z-index: 2;
+  margin-block-end: var(--space-6);
+}
+
+.on-hero .cats {
+  margin-block-start: -32px;
+}
+
+.wrap:not(.on-hero) .cats {
+  margin-block-start: 0;
+}
+
+@media (width < 600px) {
+  .hwrap {
+    padding-block: var(--space-5) calc(var(--space-6) + 28px);
+  }
+
+  .on-hero .cats {
+    margin-block-start: -28px;
+  }
+}
+
 /* Bands inside the page wrap: no global <section> page padding (base.css). */
 .top,
 .list {
@@ -35,7 +68,6 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--space-5);
-  margin-block-end: var(--space-6);
 }
 
 @media (width >= 900px) {
@@ -53,10 +85,14 @@
   flex-direction: column;
   gap: var(--space-3);
   padding: var(--space-6);
-  border-radius: var(--r-xl);
-  background: var(--c-surface-2);
-  border: 1px solid var(--c-border);
+  border-radius: calc(var(--r-xl) + 2px);
   min-inline-size: 0;
+}
+
+.top.solo .qcard {
+  max-inline-size: 560px;
+  inline-size: 100%;
+  justify-self: center;
 }
 
 .qcard ta-quick-donate-form {

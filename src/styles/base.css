@@ -1323,6 +1323,131 @@ html[dir='rtl'] .marquee .track {
   }
 }
 
+/**
+ * Option D "Glass hero" (docs/redesign/option-d-glass-hero.md): the permanently dark, full-bleed band at the top
+ * of the home and project pages. Three blurred blobs drift behind it (transform only — no layout or paint per
+ * frame beyond the composited layer); they stop under prefers-reduced-motion. Content on it sits on
+ * .glass-plate (white text) or on the light .glass-panel.
+ */
+.lhero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--c-hero-bg);
+  color: var(--c-on-brand);
+  border-end-start-radius: calc(var(--r-xl) + 12px);
+  border-end-end-radius: calc(var(--r-xl) + 12px);
+}
+
+.lblob {
+  position: absolute;
+  z-index: -1;
+  border-radius: 42% 58% 63% 37% / 41% 44% 56% 59%;
+  filter: blur(40px);
+  pointer-events: none;
+  will-change: transform;
+  animation: lblob-drift 20s var(--ease) infinite alternate;
+}
+
+.lblob.b1 {
+  inline-size: min(620px, 90vw);
+  block-size: 520px;
+  inset-block-start: -160px;
+  inset-inline-start: -120px;
+  background: var(--c-hero-blob-brand);
+}
+
+.lblob.b2 {
+  inline-size: min(460px, 70vw);
+  block-size: 420px;
+  inset-block-end: -160px;
+  inset-inline-end: 8%;
+  background: var(--c-hero-blob-gold);
+  animation-delay: -7s;
+}
+
+.lblob.b3 {
+  inline-size: 380px;
+  block-size: 340px;
+  inset-block-start: 25%;
+  inset-inline-end: -80px;
+  background: var(--c-hero-blob-deep);
+  animation-delay: -13s;
+}
+
+@keyframes lblob-drift {
+  50% {
+    transform: translate(30px, -20px) rotate(20deg) scale(1.06);
+  }
+
+  100% {
+    transform: translate(-20px, 24px) rotate(-12deg) scale(0.96);
+  }
+}
+
+@media (width < 600px) {
+  .lhero {
+    border-end-start-radius: var(--r-xl);
+    border-end-end-radius: var(--r-xl);
+  }
+
+  .lblob.b3 {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lblob {
+    animation: none;
+  }
+}
+
+/* Dense dark glass over a photo or the hero: white text, the gold kicker, the 78 % summary. */
+.glass-plate {
+  background: var(--c-glass-plate);
+  backdrop-filter: blur(var(--glass-blur)) saturate(170%);
+  border: 1px solid var(--c-glass-plate-edge);
+  box-shadow: inset 0 1px 0 var(--c-glass-dark-highlight);
+  color: var(--c-on-brand);
+}
+
+.glass-plate :focus-visible {
+  outline-color: var(--c-on-brand);
+}
+
+/* The light frosted panel floating on the hero (quick donate): --c-text and the form colours on it. */
+.glass-panel {
+  background: var(--c-glass-panel);
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  border: 1px solid var(--c-glass-edge);
+  box-shadow:
+    inset 0 1px 0 var(--c-glass-highlight),
+    0 24px 60px var(--c-media-shade-35);
+  color: var(--c-text);
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .glass-plate {
+    background: var(--c-surface-dark);
+  }
+
+  .glass-panel {
+    background: var(--c-surface);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass-plate {
+    background: var(--c-surface-dark);
+    backdrop-filter: none;
+  }
+
+  .glass-panel {
+    background: var(--c-surface);
+    backdrop-filter: none;
+  }
+}
+
 /* Option C phone bottom bar (layout/header): room under the page so the last control is never behind it, and the
    bar steps aside while the project page's own donate bar is showing. */
 @media (width < 600px) {

@@ -420,3 +420,11 @@ plan (M1–M7, S1–S11). Staff admin only; the storefront look is unchanged.
 | 2026-11-20 | Implementation deviations | Project tags stay under the hero image (not over it); the header keeps its cart and menu buttons on phones beside the new glass bottom bar (e2e and keyboard users rely on them); the bottom bar hides while the project donate bar shows; the admin dark KPI band is on the dashboard only, with an `--c-admin-glow` (brand blue at 22 %) top-bar glow | Keeps the tested markup and landmarks; one floating bar at a time on phones; other admin pages keep the approved 2026-11-16 structure | — |
 | 2026-11-20 | Header glass strength | The sticky header uses `--c-glass-strong` (90 %), and the brand-blue tagline uses `--c-link-on-glass` (brand-900 light, `#6fcbeb` dark) | CI axe found the tagline at 3.0:1 on 80 % glass over the dark banner; contrast-check now has that pair | — |
 | 2026-11-20 | One PR, three commits | Phase 1 design system, Phase 2 storefront, Phase 3 admin are commits on one branch and one draft PR | The session may push only to its own branch; phases stay reviewable commit by commit | — |
+
+## Redesign: Option D "Glass hero" (public site, branch `claude/project-thread-fz4c31`, notes `docs/redesign/option-d-glass-hero.md`)
+| Date | Topic | Decision | Why | Review |
+|---|---|---|---|---|
+| 2026-11-25 | Direction | Option D of three "more liquid" options (D Glass hero, E Frosted everywhere, F Liquid shapes) for the public site; admin unchanged | Owner's pick; strongest liquid look where people land, while cards, prices and text stay on solid surfaces | — |
+| 2026-11-25 | Hero glass density | Text over the hero blobs or over a photo sits on `--c-glass-plate` (78 %), not `--c-glass-dark` (55 %); the quick donate panel is `--c-glass-panel` (97 % white / 92 % dark) | The gold kicker on 55 % glass over the brand blob is 3.96:1 and the form's error red on 90 % white over the hero 4.11:1; contrast-check now measures both over the `hero` backdrop set | — |
+| 2026-11-25 | Header stays | The sticky header stays outside the hero (the options canvas drew it inside) | The header is shared by every route and its e2e/keyboard behaviour is settled; the hero starts right under it | — |
+

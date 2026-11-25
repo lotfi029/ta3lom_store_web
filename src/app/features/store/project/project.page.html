@@ -7,7 +7,11 @@
     </p>
   </section>
 } @else if (p(); as p) {
-  <div class="crumbs-row">
+  <!-- Option D "Glass hero": the cover on the dark hero, the title on a glass plate over it, then a solid sheet. -->
+  <div class="lhero phero">
+    <span class="lblob b1" aria-hidden="true"></span>
+    <span class="lblob b2" aria-hidden="true"></span>
+    <span class="lblob b3" aria-hidden="true"></span>
     <div class="wrap">
       <nav class="crumbs" aria-label="مسار التنقل" i18n-aria-label="@@store.ui.breadcrumb">
         <ol>
@@ -23,18 +27,13 @@
           </li>
         </ol>
       </nav>
-    </div>
-  </div>
-
-  <section class="pp">
-    <div class="wrap">
-      <div class="pgrid">
-        <div class="main">
+      <div class="stage" [class.has-media]="!!p.coverUrl">
+        @if (p.coverUrl; as src) {
           <div class="hero-media">
-            @if (p.coverUrl; as src) {
-              <ta-image [src]="src" [alt]="alt()" [width]="1200" [height]="750" [priority]="true" />
-            }
+            <ta-image [src]="src" [alt]="alt()" [width]="1200" [height]="750" [priority]="true" />
           </div>
+        }
+        <div class="plate glass-plate">
           <div class="tagrow">
             @if (p.badge === 'urgent') {
               <span class="tag gold" i18n="@@store.card.badge-urgent">عاجل</span>
@@ -49,6 +48,15 @@
           @if (summary()) {
             <p class="lede">{{ summary() }}</p>
           }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="pp">
+    <div class="wrap">
+      <div class="pgrid">
+        <div class="main">
           @if (body()) {
             <div class="prose">
               <ta-markdown [source]="body()" />
