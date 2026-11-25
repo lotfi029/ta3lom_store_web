@@ -76,15 +76,35 @@ export const OPEN_AMOUNT = 'open';
       color: var(--c-text);
       font-size: 0.86rem;
       cursor: pointer;
+      transition:
+        border-color var(--dur-1) var(--ease),
+        background-color var(--dur-1) var(--ease),
+        box-shadow var(--dur-1) var(--ease),
+        transform var(--dur-2) var(--ease-liquid);
     }
     .chip:hover {
       border-color: var(--c-text);
     }
+    .chip:active {
+      transform: scale(0.95);
+    }
+    /* Liquid touch: the chosen chip is a tinted drop with a light top edge (the highlight only lightens the tint, so
+       the text contrast goes up, never down). */
     .chip.on {
       border-color: var(--c-accent-strong);
-      background: var(--c-tint);
+      background: linear-gradient(180deg, var(--c-liquid-hi), transparent 60%), var(--c-tint);
       color: var(--c-accent-strong);
       font-weight: 600;
+      box-shadow:
+        inset 0 1px 0 var(--c-glass-highlight),
+        0 6px 16px var(--c-glass-shadow);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .chip,
+      .chip:active {
+        transition: none;
+        transform: none;
+      }
     }
     .chip:focus-within {
       outline: 2px solid var(--c-focus);

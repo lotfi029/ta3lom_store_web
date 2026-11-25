@@ -73,7 +73,8 @@ import { I18nService } from '../../../core/i18n/i18n';
       white-space: nowrap;
       transition:
         color var(--dur-1),
-        background-color var(--dur-1);
+        background-color var(--dur-1),
+        transform var(--dur-2) var(--ease-liquid);
     }
     .tab:hover {
       color: var(--c-text);
@@ -85,12 +86,17 @@ import { I18nService } from '../../../core/i18n/i18n';
       background: var(--c-brand-strong);
       box-shadow: inset 0 1px 0 var(--c-liquid-hi);
     }
+    .tab:active {
+      transform: scale(0.95);
+    }
     .tab:focus-visible {
       outline-offset: -2px;
     }
     @media (prefers-reduced-motion: reduce) {
-      .tab {
+      .tab,
+      .tab:active {
         transition: none;
+        transform: none;
       }
     }
   `,

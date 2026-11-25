@@ -28,7 +28,7 @@
     color var(--dur-1) var(--ease),
     border-color var(--dur-1) var(--ease),
     box-shadow var(--dur-1) var(--ease),
-    transform var(--dur-1) var(--ease);
+    transform var(--dur-2) var(--ease-liquid); /* liquid touch: the lift and the press settle like a drop */
 
   /* No 300ms double-tap-zoom wait on a phone, so the press state shows immediately. */
   touch-action: manipulation;

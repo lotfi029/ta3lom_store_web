@@ -81,11 +81,33 @@ import { ShareSheet } from '../share/share-sheet';
         box-shadow: var(--shadow-md);
       }
     }
+    /* Liquid touch: on a pointer device a band of light runs across the photo, in the reading direction, when the
+       card is hovered (under the plate and the chips, which come later in the card). */
+    @media (hover: hover) {
+      .media ta-image {
+        overflow: hidden;
+      }
+      .media ta-image::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: linear-gradient(100deg, transparent 25%, var(--c-shine) 50%, transparent 75%);
+        transform: translateX(calc(-120% * var(--dir, 1)));
+        transition: transform var(--dur-3) var(--ease);
+      }
+      .pcard:hover .media ta-image::after {
+        transform: translateX(calc(120% * var(--dir, 1)));
+      }
+    }
     @media (prefers-reduced-motion: reduce) {
       .pcard,
       .pcard:hover {
         transition: none;
         transform: none;
+      }
+      .media ta-image::after {
+        display: none;
       }
     }
     .media {
@@ -158,8 +180,13 @@ import { ShareSheet } from '../share/share-sheet';
         backdrop-filter: blur(var(--glass-blur)) saturate(170%);
       }
     }
+    /* Mockup: the category is a small glass chip on the plate. */
     .cat {
-      font-size: 0.78rem;
+      align-self: flex-start;
+      padding-inline: var(--space-2);
+      border: 1px solid var(--c-glass-plate-edge);
+      border-radius: var(--rp);
+      font-size: 0.75rem;
       font-weight: 600;
       color: var(--c-on-dark-78);
     }

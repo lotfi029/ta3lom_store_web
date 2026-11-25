@@ -98,12 +98,12 @@ import type { CheckoutNavState } from '../donate/donate-box';
     select {
       inline-size: 100%;
       min-block-size: 44px;
-      border-radius: var(--r);
+      border-radius: var(--rp);
       border: 1px solid var(--c-border-2);
       background: var(--c-surface);
       color: var(--c-text);
       font: inherit;
-      padding-inline: var(--space-3);
+      padding-inline: var(--space-4);
     }
     .err {
       margin-block: var(--space-1) 0;
@@ -132,6 +132,15 @@ import type { CheckoutNavState } from '../donate/donate-box';
     }
     .go:hover {
       background: var(--c-brand-deep);
+    }
+    /* The home hero's panel (mockup): the gold call to action, as on the campaign. */
+    .inline .go {
+      background: var(--c-gold);
+      color: var(--c-on-gold);
+    }
+    .inline .go:hover {
+      background: var(--c-gold);
+      box-shadow: var(--shadow-gold);
     }
     .go:disabled {
       opacity: 0.6;

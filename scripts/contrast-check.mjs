@@ -123,6 +123,13 @@ const PAIRS = [
   ['--c-text', '--c-glass-dark', TEXT, 'hero header: search text (.dark-scope)', { over: 'hero', only: 'dark' }],
   ['--c-text-2', '--c-glass-dark', TEXT, 'hero header: search placeholder (.dark-scope)', { over: 'hero', only: 'dark' }],
   ['--c-focus-on-glass', '--c-hero-bg', LARGE, 'hero header: focus ring (.dark-scope)', { only: 'dark' }],
+  ['--c-text', '--c-glass-dark', TEXT, 'hero header pill: name and links (.dark-scope)', { over: 'hero', only: 'dark' }],
+  ['--c-link-on-glass', '--c-glass-dark', TEXT, 'hero header pill: tagline (.dark-scope)', { over: 'hero', only: 'dark' }],
+  ['--c-text', '--c-on-dark-hover', TEXT, 'hero header pill: sign-in ghost button (.dark-scope)', { over: 'pill', only: 'dark' }],
+  ['--c-on-gold', '--c-gold', TEXT, 'hero header pill: gold cart button', {}],
+  ['--c-on-brand', '--c-hero-scrim', TEXT, 'home hero: campaign title and button text on the scrim', { over: 'herotext' }],
+  ['--c-on-dark-78', '--c-hero-scrim', TEXT, 'home hero: campaign summary on the scrim', { over: 'herotext' }],
+  ['--c-gold-on-dark', '--c-glass-plate', TEXT, 'home hero: campaign category chip', { over: 'herotext' }],
   ['--c-text', '--c-glass-panel', TEXT, 'hero: dark quick donate panel text (.dark-scope)', { over: 'hero', only: 'dark' }],
   ['--c-muted', '--c-glass-panel', TEXT, 'hero: dark quick donate panel hints (.dark-scope)', { over: 'hero', only: 'dark' }],
   ['--c-danger', '--c-glass-panel', TEXT, 'hero: dark quick donate panel error (.dark-scope)', { over: 'hero', only: 'dark' }],
@@ -135,6 +142,18 @@ const PAIRS = [
   ['--c-on-dark', '--c-admin-glow', TEXT, 'admin band: top bar text over the glow', { over: 'admintop' }],
   ['--c-on-dark', '--c-glass-dark', TEXT, 'admin band: KPI labels on their tiles', { over: 'adminbar' }],
   ['--c-on-dark-78', '--c-admin-topbar-2', TEXT, 'admin band: search placeholder', {}],
+  // Liquid touch: the water wash behind the listing and the project sheet, and the glow in the footer.
+  ['--c-text', '--c-wash-brand', TEXT, 'wash: text on the listing / project sheet', { over: 'wash' }],
+  ['--c-text-2', '--c-wash-brand', TEXT, 'wash: secondary text (sort label)', { over: 'wash' }],
+  ['--c-muted-2', '--c-wash-brand', TEXT, 'wash: muted text', { over: 'wash' }],
+  ['--c-link', '--c-wash-brand', TEXT, 'wash: links in the project sheet prose (the listing has none on the wash)', { over: 'washsheet' }],
+  ['--c-text', '--c-wash-gold', TEXT, 'wash: text on the gold patch', { over: 'wash' }],
+  ['--c-text-2', '--c-wash-gold', TEXT, 'wash: secondary text on the gold patch', { over: 'wash' }],
+  ['--c-muted-2', '--c-wash-gold', TEXT, 'wash: muted text on the gold patch', { over: 'wash' }],
+  ['--c-link', '--c-wash-gold', TEXT, 'wash: links in the project sheet prose, gold patch', { over: 'washsheet' }],
+  ['--c-on-dark', '--c-foot-glow', TEXT, 'footer: links over the glow', { over: 'foot' }],
+  ['--c-on-brand', '--c-foot-glow', TEXT, 'footer: headings over the glow', { over: 'foot' }],
+  ['--c-on-dark-muted', '--c-foot-glow', TEXT, 'footer: copyright over the glow', { over: 'foot' }],
 ];
 
 /** Backdrops a translucent background is composited over before measuring (see the glass pairs). */
@@ -145,6 +164,11 @@ const BACKDROPS = {
   hero: ['--c-hero-bg', '--c-hero-blob-brand@--c-hero-bg', '--c-hero-blob-deep@--c-hero-bg', '--c-hero-blob-gold@--c-hero-bg'],
   admintop: ['--c-admin-topbar'],
   adminbar: ['--c-admin-topbar', '--c-admin-glow@--c-admin-topbar'],
+  wash: ['--c-surface-2', '--c-bg', '--c-surface'],
+  washsheet: ['--c-bg'],
+  foot: ['--c-surface-dark'],
+  pill: ['--c-glass-dark@--c-hero-bg'],
+  herotext: ['--c-hero-bg', '--c-hero-blob-brand@--c-hero-bg', '--c-hero-blob-deep@--c-hero-bg', '--c-hero-blob-gold@--c-hero-bg', '--c-hero-photo-hi@--c-hero-bg'],
 };
 
 const css = readFileSync(new URL('../src/styles/tokens.css', import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');

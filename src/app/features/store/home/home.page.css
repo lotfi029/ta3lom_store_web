@@ -4,6 +4,21 @@
   background: var(--c-surface-2);
 }
 
+/* Liquid touch (600 px and wider): a faint, static water wash under the listing. Each patch is its own small
+   background image (sized and not repeated): a gradient sized to the whole page was a very tall image to paint and
+   cost phones their CPU budget (CI TBT), so phones keep the plain page. Contrast-check "wash". */
+@media (width >= 600px) {
+  :host {
+    background:
+      radial-gradient(closest-side, var(--c-wash-brand), transparent) 100% 18rem / 56rem 34rem
+        no-repeat,
+      radial-gradient(closest-side, var(--c-wash-gold), transparent) 0 55% / 44rem 30rem no-repeat,
+      radial-gradient(closest-side, var(--c-wash-brand), transparent) 100% 95% / 52rem 34rem
+        no-repeat,
+      var(--c-surface-2);
+  }
+}
+
 .wrap {
   max-width: 1200px;
   margin-inline: auto;
@@ -15,6 +30,32 @@
   .wrap {
     padding-inline: var(--space-4);
     padding-block-start: var(--space-4);
+  }
+}
+
+/* Option D mockup: the campaign text sits straight on the hero. A scrim darkens the text side (the top on phones,
+   the inline-start side from 900 px, where the quick donate panel takes the other side) above the blobs and the
+   campaign photo (contrast-check "herotext"); the blobs glow on the open side. */
+.hhero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(var(--c-hero-scrim) 0 45%, transparent 80%);
+}
+
+.hhero .lblob {
+  z-index: -2;
+}
+
+@media (width >= 900px) {
+  .hhero::before {
+    background: linear-gradient(
+      calc(90deg * var(--dir, 1)),
+      var(--c-hero-scrim) 0 60%,
+      transparent 88%
+    );
   }
 }
 
@@ -72,7 +113,8 @@
 
 @media (width >= 900px) {
   .top {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    align-items: end;
   }
 
   .top.solo {
@@ -116,12 +158,10 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
-  padding-block: var(--space-3);
-  padding-inline: var(--space-4);
-  margin-block-end: var(--space-5);
-  border-radius: var(--rc);
-  background: var(--c-surface);
-  border: 1px solid var(--c-border);
+
+  /* Mockup: the count and the sort sit straight on the page, no box. */
+  padding-block: var(--space-1);
+  margin-block-end: var(--space-4);
   scroll-margin-block-start: 96px;
 }
 
@@ -186,6 +226,7 @@
   border: 1px solid var(--c-border);
   background: var(--c-surface);
   color: var(--c-text);
+  box-shadow: inset 0 1px 0 var(--c-glass-highlight);
 }
 
 /* Row 6 — the grid: 4 columns on desktop, 2 on tablet, 1 on phone. */
@@ -250,16 +291,43 @@
   color: var(--c-text);
   text-decoration: none;
   font-weight: 600;
+  box-shadow: inset 0 1px 0 var(--c-glass-highlight);
+  transition:
+    border-color var(--dur-1) var(--ease),
+    box-shadow var(--dur-1) var(--ease),
+    transform var(--dur-2) var(--ease-liquid);
 }
 
 .pg:hover {
   border-color: var(--c-text);
 }
 
+@media (hover: hover) {
+  .pg:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.pg:active {
+  transform: scale(0.94);
+}
+
 .pg[aria-current='page'] {
-  background: var(--c-inverse);
-  border-color: var(--c-inverse);
-  color: var(--c-on-inverse);
+  background: var(--c-brand-strong);
+  border-color: var(--c-brand-strong);
+  color: var(--c-on-brand);
+  box-shadow:
+    inset 0 1px 0 var(--c-liquid-hi),
+    0 8px 20px var(--c-glass-shadow);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pg,
+  .pg:hover,
+  .pg:active {
+    transition: none;
+    transform: none;
+  }
 }
 
 .pg.step {
