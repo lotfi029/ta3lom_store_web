@@ -35,7 +35,7 @@ import { ShareSheet } from '../share/share-sheet';
           }
         </div>
         <div class="share"><ta-share-sheet [url]="url()" [title]="title()" [compact]="true" /></div>
-        <div class="plate glass-plate">
+        <div class="plate">
           @if (categoryName()) {
             <span class="cat">{{ categoryName() }}</span>
           }
@@ -136,7 +136,13 @@ import { ShareSheet } from '../share/share-sheet';
       padding: var(--space-4);
     }
     /* The plate grows upward from the bottom of the photo, so a long title never leaves the image. */
+    /* The dense dark plate without backdrop-filter: one blur per card was the costliest paint on the page (CI TBT);
+       at 78 % the photo barely shows through anyway. Contrast: contrast-check "plate … over a photo". */
     .plate {
+      background: var(--c-glass-plate);
+      border: 1px solid var(--c-glass-plate-edge);
+      box-shadow: inset 0 1px 0 var(--c-glass-dark-highlight);
+      color: var(--c-on-brand);
       position: absolute;
       inset-inline: var(--space-2);
       inset-block-end: var(--space-2);
