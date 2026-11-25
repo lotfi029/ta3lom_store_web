@@ -25,7 +25,7 @@ export function bannerSlides(featured: readonly ProjectCard[]): ProjectCard[] {
 }
 
 /**
- * Campaign banner (Option C §3 row 4, `--c-surface-indigo` with the brand glow): category label, the title — the
+ * Campaign banner (Option C §3 row 4; Option D: floats on the page's glass hero): category label, the title — the
  * page's single `<h1>` —, summary and the "تبرع الآن" CTA → `/p/{slug}`. Several urgent cards: labelled previous/next
  * buttons and dots, NO auto-rotate; the change is announced in a polite live region. The cover is the LCP candidate
  * on wide screens (`priority` → eager, `fetchpriority=high`).
@@ -37,7 +37,7 @@ export function bannerSlides(featured: readonly ProjectCard[]): ProjectCard[] {
   template: `
     @if (slide(); as s) {
       <section class="banner" [attr.aria-label]="regionLabel">
-        <div class="txt glass-dark">
+        <div class="txt glass-plate">
           @if (categoryName(s); as cat) {
             <span class="kicker">{{ cat }}</span>
           }
@@ -105,53 +105,37 @@ export function bannerSlides(featured: readonly ProjectCard[]): ProjectCard[] {
       display: block;
       min-inline-size: 0;
     }
+    /* Option D: the banner floats straight on the page's glass hero (no box of its own): a glass plate with the
+       text and, on wide screens, the cover beside it. */
     .banner {
       position: relative;
-      overflow: hidden;
       display: grid;
       grid-template-columns: minmax(0, 1fr);
       gap: var(--space-5);
       align-items: center;
       block-size: 100%;
       min-block-size: 260px;
-      padding: var(--space-5);
-      border-radius: var(--r-xl);
-      background: var(--c-surface-indigo);
       color: var(--c-on-brand);
-    }
-    /* The brand glow sits on the media (end) side, never under the text (contrast in both directions). */
-    .banner::before {
-      content: '';
-      position: absolute;
-      inset-block-start: -40%;
-      inset-inline-end: -15%;
-      inline-size: 65%;
-      block-size: 130%;
-      background: radial-gradient(closest-side, var(--c-hero-glow-brand), transparent);
-      pointer-events: none;
     }
     @media (width >= 900px) {
       .banner {
-        grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+        grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
       }
     }
     @media (width < 600px) {
-      .banner {
-        padding: var(--space-3);
-      }
       .txt {
         padding: var(--space-5);
       }
     }
-    /* Option C: the text sits on a dark glass plate over the indigo and its glow (contrast-check "dark glass"). */
+    /* The text sits on the dense glass plate over the hero blobs (contrast-check "hero"). */
     .txt {
       position: relative;
       display: flex;
       flex-direction: column;
       gap: var(--space-3);
       min-inline-size: 0;
-      padding: var(--space-6);
-      border-radius: var(--r-lg);
+      padding: var(--space-7);
+      border-radius: var(--r-xl);
     }
     .kicker {
       font-size: 0.9rem;
@@ -248,10 +232,11 @@ export function bannerSlides(featured: readonly ProjectCard[]): ProjectCard[] {
       display: none;
       position: relative;
       z-index: 1;
-      aspect-ratio: 3 / 2;
-      border-radius: var(--rc);
+      aspect-ratio: 4 / 3;
+      border-radius: calc(var(--r-xl) + 4px);
       overflow: hidden;
       background: var(--c-dark-surface-edge);
+      box-shadow: 0 24px 60px var(--c-media-shade-35);
     }
     @media (width >= 900px) {
       .media {

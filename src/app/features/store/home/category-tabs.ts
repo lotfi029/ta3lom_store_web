@@ -6,7 +6,7 @@ import { I18nService } from '../../../core/i18n/i18n';
 /**
  * Category tab bar (Option C §3 row 3): "كل المشاريع" + every active category from `GET /v1/catalog/categories`
  * (non-negotiable #12). Tabs are LINKS, not `role=tab` — they navigate: each sets `?category=` (none for "all"),
- * resets `page` and keeps `q` and `sort`. The active one carries `aria-current="page"` and the 3 px accent underline.
+ * resets `page` and keeps `q` and `sort`. The active one carries `aria-current="page"` and is a filled brand pill.
  * Only the bar scrolls sideways on narrow screens, never the page.
  */
 @Component({
@@ -14,7 +14,11 @@ import { I18nService } from '../../../core/i18n/i18n';
   imports: [RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <nav class="tabs" aria-label="التصنيفات" i18n-aria-label="@@store.listing.categories-label">
+    <nav
+      class="tabs glass-strong"
+      aria-label="التصنيفات"
+      i18n-aria-label="@@store.listing.categories-label"
+    >
       <div class="track">
         <a
           class="tab"
@@ -39,15 +43,13 @@ import { I18nService } from '../../../core/i18n/i18n';
     </nav>
   `,
   styles: `
+    /* Option D: a floating glass pill bar that overlaps the bottom of the hero (the page places it). */
     :host {
       display: block;
-      background: var(--c-surface);
-      border-block-end: 1px solid var(--c-border);
     }
     .tabs {
-      max-width: 1200px;
-      margin-inline: auto;
-      padding-inline: var(--space-6);
+      border-radius: var(--rp);
+      padding-inline: var(--space-2);
     }
     .track {
       display: flex;
@@ -78,17 +80,13 @@ import { I18nService } from '../../../core/i18n/i18n';
       background: var(--c-surface-2);
     }
     .tab[aria-current='page'] {
-      color: var(--c-accent-strong);
+      color: var(--c-on-brand);
       font-weight: 600;
-      background: var(--c-tint);
+      background: var(--c-brand-strong);
+      box-shadow: inset 0 1px 0 var(--c-liquid-hi);
     }
     .tab:focus-visible {
       outline-offset: -2px;
-    }
-    @media (width < 600px) {
-      .tabs {
-        padding-inline: var(--space-2);
-      }
     }
     @media (prefers-reduced-motion: reduce) {
       .tab {
