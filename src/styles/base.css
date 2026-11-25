@@ -1325,8 +1325,8 @@ html[dir='rtl'] .marquee .track {
 
 /**
  * Option D "Glass hero" (docs/redesign/option-d-glass-hero.md): the permanently dark, full-bleed band at the top
- * of the home and project pages. Three blurred blobs drift behind it (transform only — no layout or paint per
- * frame beyond the composited layer); they stop under prefers-reduced-motion. Content on it sits on
+ * of the home and project pages. Three soft gradient blobs drift behind it (transform only, starting after the
+ * page has settled); they stop under prefers-reduced-motion. Content on it sits on
  * .glass-plate (white text) or on the light .glass-panel.
  */
 .lhero {
@@ -1342,37 +1342,39 @@ html[dir='rtl'] .marquee .track {
 .lblob {
   position: absolute;
   z-index: -1;
-  border-radius: 42% 58% 63% 37% / 41% 44% 56% 59%;
-  filter: blur(40px);
+  border-radius: 50%;
   pointer-events: none;
   will-change: transform;
-  animation: lblob-drift 20s var(--ease) infinite alternate;
+
+  /* Soft edges come from the gradient itself, not filter: blur() — a blurred layer is costly to paint on phones
+     without a GPU (CI Lighthouse TBT). The drift starts once the page has settled. */
+  animation: lblob-drift 20s var(--ease) 3s infinite alternate both;
 }
 
 .lblob.b1 {
-  inline-size: min(620px, 90vw);
-  block-size: 520px;
-  inset-block-start: -160px;
-  inset-inline-start: -120px;
-  background: var(--c-hero-blob-brand);
+  inline-size: min(760px, 120vw);
+  block-size: 640px;
+  inset-block-start: -240px;
+  inset-inline-start: -200px;
+  background: radial-gradient(closest-side, var(--c-hero-blob-brand), transparent);
 }
 
 .lblob.b2 {
-  inline-size: min(460px, 70vw);
-  block-size: 420px;
-  inset-block-end: -160px;
-  inset-inline-end: 8%;
-  background: var(--c-hero-blob-gold);
-  animation-delay: -7s;
+  inline-size: min(600px, 100vw);
+  block-size: 540px;
+  inset-block-end: -240px;
+  inset-inline-end: 4%;
+  background: radial-gradient(closest-side, var(--c-hero-blob-gold), transparent);
+  animation-delay: 4s;
 }
 
 .lblob.b3 {
-  inline-size: 380px;
-  block-size: 340px;
-  inset-block-start: 25%;
-  inset-inline-end: -80px;
-  background: var(--c-hero-blob-deep);
-  animation-delay: -13s;
+  inline-size: 520px;
+  block-size: 460px;
+  inset-block-start: 15%;
+  inset-inline-end: -160px;
+  background: radial-gradient(closest-side, var(--c-hero-blob-deep), transparent);
+  animation-delay: 5s;
 }
 
 @keyframes lblob-drift {
