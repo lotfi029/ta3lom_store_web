@@ -83,6 +83,24 @@ import { SkipLink } from '../skip-link/skip-link';
     @media (width >= 1320px) {
       .side-quick {
         display: grid;
+        border-radius: 46% 54% 58% 42% / 52% 44% 56% 48%;
+        box-shadow:
+          inset 0 2px 0 var(--c-liquid-hi),
+          0 10px 30px var(--c-header-shadow);
+        animation: drop-morph 9s ease-in-out infinite alternate;
+      }
+    }
+    @keyframes drop-morph {
+      50% {
+        border-radius: 58% 42% 44% 56% / 46% 58% 42% 54%;
+      }
+      100% {
+        border-radius: 42% 58% 52% 48% / 56% 46% 54% 44%;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .side-quick {
+        animation: none;
       }
     }
     .to-top {

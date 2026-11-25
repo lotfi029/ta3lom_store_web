@@ -79,13 +79,13 @@ export function trustItems(flags: TrustFlags, showcase = false): TrustItem[] {
     </section>
   `,
   styles: `
+    /* Mockup: the promises are two soft tiles on the page (no band of their own). */
     :host {
       display: block;
-      background: var(--c-surface);
-      border-block-start: 1px solid var(--c-border);
     }
+    /* The footer's wave (40 px, 24 px on phones) rises into the bottom of this band. */
     .trust {
-      padding-block: var(--space-7);
+      padding-block: var(--space-2) calc(var(--space-8) + 40px);
     }
     .row {
       list-style: none;
@@ -100,6 +100,11 @@ export function trustItems(flags: TrustFlags, showcase = false): TrustItem[] {
       display: flex;
       align-items: center;
       gap: var(--space-3);
+      padding: var(--space-4);
+      border-radius: var(--r-xl);
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      box-shadow: inset 0 1px 0 var(--c-glass-highlight);
     }
     .ic {
       flex: none;
@@ -107,8 +112,10 @@ export function trustItems(flags: TrustFlags, showcase = false): TrustItem[] {
       place-items: center;
       inline-size: 44px;
       block-size: 44px;
-      border-radius: var(--r);
-      background: var(--c-tint);
+      /* Liquid touch: a drop rather than a square tile, with a light top edge. */
+      border-radius: 46% 54% 58% 42% / 52% 44% 56% 48%;
+      background: linear-gradient(180deg, var(--c-liquid-hi), transparent 60%), var(--c-tint);
+      box-shadow: inset 0 1px 0 var(--c-glass-highlight);
       color: var(--c-link);
     }
     .tx {
@@ -122,6 +129,9 @@ export function trustItems(flags: TrustFlags, showcase = false): TrustItem[] {
       color: var(--c-muted);
     }
     @media (width < 600px) {
+      .trust {
+        padding-block-end: calc(var(--space-6) + 24px);
+      }
       .row {
         padding-inline: var(--space-4);
       }

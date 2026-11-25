@@ -141,7 +141,9 @@ h1 {
   border: 1px solid var(--c-border);
   border-radius: var(--r-xl);
   padding: 24px;
-  box-shadow: 0 30px 70px var(--c-header-shadow);
+  box-shadow:
+    inset 0 1px 0 var(--c-glass-highlight),
+    0 30px 70px var(--c-header-shadow);
   align-self: start;
 }
 
@@ -293,4 +295,16 @@ h1 {
 .dbar-go:focus-visible {
   outline: 3px solid var(--c-on-brand);
   outline-offset: 2px;
+}
+
+/* Liquid touch (600 px and wider): the listing's faint water wash, as small sized patches (contrast-check "wash",
+   links over --c-bg). */
+@media (width >= 600px) {
+  .pp {
+    background:
+      radial-gradient(closest-side, var(--c-wash-brand), transparent) 0 0 / 48rem 30rem no-repeat,
+      radial-gradient(closest-side, var(--c-wash-gold), transparent) 100% 55% / 40rem 26rem
+        no-repeat,
+      var(--c-bg);
+  }
 }

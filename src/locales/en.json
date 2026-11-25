@@ -571,6 +571,7 @@
   "store.layout.cart-label-empty": "Donations cart is empty",
   "store.layout.cart-label-c": "Donations cart, {$COUNT} donations, total {$TOTAL}",
   "store.home.banner-cta": "Donate now",
+  "store.home.banner-details": "Project details",
   "store.home.banner-prev": "Previous campaign",
   "store.home.banner-next": "Next campaign",
   "store.home.banner-label": "Donation campaigns",

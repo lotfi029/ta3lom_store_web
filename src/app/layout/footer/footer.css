@@ -1,9 +1,10 @@
 .foot {
-  background: var(--c-surface-dark);
+  position: relative;
 
-  /* Dark mode only (the token is transparent in light): the footer's top edge against a dark page.
-     An inset shadow, not a border, so it takes no layout. */
-  box-shadow: inset 0 1px 0 var(--c-dark-surface-edge);
+  /* Liquid touch: a soft glow under the wave (contrast-check "foot"). */
+  background:
+    radial-gradient(60rem 16rem at 85% 55%, var(--c-foot-glow), transparent 70%),
+    var(--c-surface-dark);
   color: var(--c-on-dark);
   padding-block: 64px 28px;
 }
@@ -112,5 +113,35 @@
 @media (width < 800px) {
   .foot-bottom {
     margin-block-start: 32px;
+  }
+}
+
+/* The wave sits on top of the footer, outside its box (absolute: no layout shift when the footer hydrates). It is
+   mirrored in RTL so the swell follows the reading direction. It overlaps the page's bottom padding. Dark mode only
+   (the token is transparent in light): a hairline along the crest separates the footer from a dark page. */
+.wave {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: calc(100% - 1px);
+  inline-size: 100%;
+  block-size: 40px;
+  display: block;
+  fill: var(--c-surface-dark);
+}
+
+.wave .crest {
+  fill: none;
+  stroke: var(--c-dark-surface-edge);
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+
+:host-context([dir='rtl']) .wave {
+  transform: scaleX(-1);
+}
+
+@media (width < 600px) {
+  .wave {
+    block-size: 24px;
   }
 }

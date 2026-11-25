@@ -217,6 +217,13 @@
      both themes. --c-glass-plate is the denser dark glass laid over a PHOTO (card titles, the project
      title plate, the phone donate bar): white on it ≥ 4.5:1 even over a white photo. */
   --c-hero-bg: var(--indigo);
+
+  /* Home hero: the campaign photo lies under the blobs (wide screens, at --hero-photo-opacity, luminosity blend); the
+     text side is darkened by a scrim so the campaign text sits straight on the hero (contrast-check "herotext":
+     every hero backdrop, a white photo patch included, under the scrim). */
+  --c-hero-scrim: rgb(14 61 76 / 88%);
+  --c-hero-photo-hi: rgb(255 255 255 / 30%);
+  --hero-photo-opacity: 0.3;
   --c-hero-blob-brand: rgb(26 150 193 / 85%);
   --c-hero-blob-deep: rgb(19 122 160 / 70%);
   --c-hero-blob-gold: rgb(165 142 54 / 55%);
@@ -230,6 +237,13 @@
   --c-focus-on-glass: var(--brand-900);
   --c-link-on-glass: var(--brand-900);
   --c-liquid-hi: rgb(255 255 255 / 30%);
+
+  /* "Liquid touch" below the hero: a faint water wash behind the listing and the project sheet (text on it is
+     checked over --c-surface-2 / --c-bg / --c-surface: contrast-check "wash"; links only in the project sheet, over --c-bg), and the soft glow at the top of the
+     dark footer under its wave (checked over --c-surface-dark: "foot"). */
+  --c-wash-brand: rgb(26 150 193 / 7%);
+  --c-wash-gold: rgb(165 142 54 / 7%);
+  --c-foot-glow: rgb(26 150 193 / 10%);
   --glass-blur: 20px;
 
   /* The admin's dark band (top bar, dashboard KPIs): a soft brand glow over --c-admin-topbar.
@@ -261,6 +275,9 @@
 
   /* Motion */
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* A small overshoot: presses and chips settle like a drop. */
+  --ease-liquid: cubic-bezier(0.34, 1.56, 0.64, 1);
   --dur-1: 0.2s;
   --dur-2: 0.35s;
   --dur-3: 0.55s;
@@ -378,6 +395,8 @@
   --c-glass-highlight: rgb(255 255 255 / 10%);
   --c-glass-shadow: rgb(0 0 0 / 45%);
   --c-liquid-hi: rgb(255 255 255 / 18%);
+  --c-wash-brand: rgb(26 150 193 / 12%);
+  --c-wash-gold: rgb(165 142 54 / 9%);
   --c-focus-on-glass: #6fcbeb;
   --c-link-on-glass: #6fcbeb;
   --c-header-shadow: rgb(0 0 0 / 35%);

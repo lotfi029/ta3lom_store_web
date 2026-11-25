@@ -104,14 +104,8 @@
     transform var(--dur-2) var(--ease);
 }
 
-.hdr.on-hero .hsearch {
-  border-color: var(--c-glass-plate-edge);
-  background: var(--c-glass-dark);
-}
-
-.hdr.on-hero .hsearch input::placeholder {
-  color: var(--c-text-2);
-}
+/* The rest of the header on the hero (the floating dark-glass pill) is in src/styles/base.css: this file is at its
+   8 kB component style budget. */
 
 /* Narrow screens: away while scrolling down (header.ts nextAway), back on scroll up. */
 @media (width < 900px) {

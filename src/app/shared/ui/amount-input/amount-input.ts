@@ -94,11 +94,26 @@ export function amountMessage(check: AmountCheck, locale: 'ar' | 'en'): string |
       font-weight: 600;
       font-variant-numeric: tabular-nums;
       cursor: pointer;
+      transition:
+        border-color var(--dur-1) var(--ease),
+        transform var(--dur-2) var(--ease-liquid);
     }
+    .preset:active {
+      transform: scale(0.95);
+    }
+    /* Liquid touch: the chosen amount is a tinted drop with a light top edge (only lightens the tint). */
     .preset[aria-pressed='true'] {
       border-color: var(--c-accent-strong);
-      background: var(--c-tint);
+      background: linear-gradient(180deg, var(--c-liquid-hi), transparent 60%), var(--c-tint);
       color: var(--c-accent-strong);
+      box-shadow: inset 0 1px 0 var(--c-glass-highlight);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .preset,
+      .preset:active {
+        transition: none;
+        transform: none;
+      }
     }
     .lbl {
       display: block;
@@ -110,9 +125,9 @@ export function amountMessage(check: AmountCheck, locale: 'ar' | 'en'): string |
       display: flex;
       align-items: center;
       border: 1px solid var(--c-border-2);
-      border-radius: 12px;
+      border-radius: var(--rp);
       background: var(--c-surface);
-      padding-inline: 12px;
+      padding-inline: 16px;
     }
     .field:focus-within {
       border-color: var(--c-brand);
@@ -170,8 +185,7 @@ export class AmountInput {
   protected readonly shownPresets = computed(() =>
     this.presets().filter(
       (p) =>
-        compare(p, this.floor()) >= 0 &&
-        (!this.max() || compare(p, this.max() as string) <= 0),
+        compare(p, this.floor()) >= 0 && (!this.max() || compare(p, this.max() as string) <= 0),
     ),
   );
 

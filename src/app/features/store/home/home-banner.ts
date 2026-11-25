@@ -37,9 +37,9 @@ export function bannerSlides(featured: readonly ProjectCard[]): ProjectCard[] {
   template: `
     @if (slide(); as s) {
       <section class="banner" [attr.aria-label]="regionLabel">
-        <div class="txt glass-plate">
+        <div class="txt">
           @if (categoryName(s); as cat) {
-            <span class="kicker">{{ cat }}</span>
+            <span class="kicker glass-plate">{{ cat }}</span>
           }
           <h1 class="t">{{ title(s) }}</h1>
           @if (summary(s); as sum) {
@@ -54,6 +54,12 @@ export function bannerSlides(featured: readonly ProjectCard[]): ProjectCard[] {
               }
               <span class="visually-hidden">: {{ title(s) }}</span></a
             >
+            @if (!showcase) {
+              <a class="more" [routerLink]="['/p', s.slug]"
+                ><span i18n="@@store.home.banner-details">تفاصيل المشروع</span
+                ><span class="visually-hidden">: {{ title(s) }}</span></a
+              >
+            }
             @if (slides().length > 1) {
               <div class="ctrl">
                 <button
@@ -94,7 +100,7 @@ export function bannerSlides(featured: readonly ProjectCard[]): ProjectCard[] {
         </div>
         @if (s.coverUrl; as src) {
           <div class="media">
-            <ta-image [src]="src" [alt]="alt(s)" [width]="600" [height]="400" [priority]="true" />
+            <ta-image [src]="src" [alt]="alt(s)" [width]="1200" [height]="800" [priority]="true" />
           </div>
         }
       </section>
@@ -105,46 +111,36 @@ export function bannerSlides(featured: readonly ProjectCard[]): ProjectCard[] {
       display: block;
       min-inline-size: 0;
     }
-    /* Option D: the banner floats straight on the page's glass hero (no box of its own): a glass plate with the
-       text and, on wide screens, the cover beside it. */
+    /* Option D mockup: the campaign sits straight on the hero (no box), on the hero's scrim (home.page.css,
+       contrast-check "herotext"); on wide screens its cover is the hero's background, under the blobs. Not
+       positioned, so the cover's absolute box is the whole hero. */
     .banner {
-      position: relative;
-      display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      gap: var(--space-5);
-      align-items: center;
+      display: flex;
+      align-items: flex-end;
       block-size: 100%;
       min-block-size: 260px;
       color: var(--c-on-brand);
     }
-    @media (width >= 900px) {
-      .banner {
-        grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
-      }
-    }
-    @media (width < 600px) {
-      .txt {
-        padding: var(--space-5);
-      }
-    }
-    /* The text sits on the dense glass plate over the hero blobs (contrast-check "hero"). */
     .txt {
-      position: relative;
       display: flex;
       flex-direction: column;
       gap: var(--space-3);
       min-inline-size: 0;
-      padding: var(--space-7);
-      border-radius: var(--r-xl);
+      padding-block: var(--space-6) var(--space-2);
     }
+    /* The category: a dark glass chip (contrast-check "plate"). */
     .kicker {
-      font-size: 0.9rem;
+      align-self: flex-start;
+      padding-block: 2px;
+      padding-inline: var(--space-4);
+      border-radius: var(--rp);
+      font-size: 0.85rem;
       font-weight: 600;
       color: var(--c-gold-on-dark);
     }
     .t {
       margin: 0;
-      font-size: clamp(1.6rem, 3.6vw, 2.4rem);
+      font-size: clamp(1.75rem, 4vw, 2.9rem);
       line-height: 1.3;
       font-weight: 700;
       color: var(--c-on-brand);
@@ -176,7 +172,24 @@ export function bannerSlides(featured: readonly ProjectCard[]): ProjectCard[] {
     .cta:hover {
       box-shadow: var(--shadow-gold);
     }
+    /* Mockup: a ghost pill beside the gold CTA. */
+    .more {
+      display: inline-flex;
+      align-items: center;
+      min-block-size: 50px;
+      padding-inline: var(--space-6);
+      border-radius: var(--rp);
+      border: 1px solid var(--c-border-on-dark-strong);
+      background: var(--c-on-dark-hover);
+      color: var(--c-on-brand);
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .more:hover {
+      background: var(--c-glass-plate);
+    }
     .cta:focus-visible,
+    .more:focus-visible,
     .nav:focus-visible,
     .dot:focus-visible {
       outline: 2px solid var(--c-on-brand);
@@ -228,15 +241,16 @@ export function bannerSlides(featured: readonly ProjectCard[]): ProjectCard[] {
       inline-size: 22px;
       background: var(--c-on-brand);
     }
+    /* Wide screens: the cover fills the whole hero, faint and toned to the hero's colour (luminosity blend), under
+       the blobs and the scrim. Phones keep the plain hero (no extra image on the mobile LCP path). */
     .media {
       display: none;
-      position: relative;
-      z-index: 1;
-      aspect-ratio: 4 / 3;
-      border-radius: calc(var(--r-xl) + 4px);
-      overflow: hidden;
-      background: var(--c-dark-surface-edge);
-      box-shadow: 0 24px 60px var(--c-media-shade-35);
+      position: absolute;
+      inset: 0;
+      z-index: -3;
+      opacity: var(--hero-photo-opacity);
+      mix-blend-mode: luminosity;
+      pointer-events: none;
     }
     @media (width >= 900px) {
       .media {
