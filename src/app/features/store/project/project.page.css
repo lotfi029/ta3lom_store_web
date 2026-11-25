@@ -60,17 +60,36 @@
   }
 }
 
+/* Phones (the mockup): the cover runs edge to edge, tall, with the title plate over its bottom. */
 @media (width < 600px) {
+  .phero {
+    padding-block-start: var(--space-3);
+  }
+
+  .phero > .wrap {
+    padding-inline: 0;
+  }
+
+  .phero .crumbs {
+    padding-inline: var(--space-4);
+  }
+
   .hero-media {
-    aspect-ratio: 1;
+    aspect-ratio: 6 / 7;
+    border-radius: 0;
+    box-shadow: none;
   }
 
   .stage.has-media .plate {
-    margin: var(--space-2);
+    margin: var(--space-3);
   }
 
   .plate {
     padding: var(--space-4);
+  }
+
+  .stage:not(.has-media) .plate {
+    margin-inline: var(--space-4);
   }
 }
 

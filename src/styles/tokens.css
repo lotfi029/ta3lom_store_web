@@ -301,8 +301,11 @@
  * semantic layer is re-pointed; the palette, the brand fills and the permanently-dark surfaces
  * keep their values. Every text/background pair listed in scripts/contrast-check.mjs must reach
  * 4.5:1 (3:1 for large text and UI) — the measured ratios are written next to each pair below.
+ * `.dark-scope` re-points the same tokens for one subtree in the light theme (Option D: the header while it sits
+ * on the dark hero, the quick-donate panel on the hero), so those parts reuse the checked dark pairs.
  */
-:root[data-theme='dark'] {
+:root[data-theme='dark'],
+.dark-scope {
   /* Surfaces */
   --c-bg: #0b1a20;
   --c-surface: #10242c;

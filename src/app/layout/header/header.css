@@ -90,6 +90,29 @@
   box-shadow: 0 8px 30px var(--c-header-shadow);
 }
 
+/* Option D "Glass hero": at the top of the home and project pages the header takes the hero's colour (its tokens are
+   the dark theme's through .dark-scope) and the hero fades up into it, so the hero starts under the logo as in the
+   mockup; it turns back into the light glass header once the page scrolls. */
+.hdr.on-hero {
+  background: var(--c-hero-bg);
+  backdrop-filter: none;
+  border-block-end-color: transparent;
+  color: var(--c-text);
+  transition:
+    background-color var(--dur-2) var(--ease),
+    box-shadow var(--dur-1),
+    transform var(--dur-2) var(--ease);
+}
+
+.hdr.on-hero .hsearch {
+  border-color: var(--c-glass-plate-edge);
+  background: var(--c-glass-dark);
+}
+
+.hdr.on-hero .hsearch input::placeholder {
+  color: var(--c-text-2);
+}
+
 /* Narrow screens: away while scrolling down (header.ts nextAway), back on scroll up. */
 @media (width < 900px) {
   .hdr {

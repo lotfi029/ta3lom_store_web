@@ -1339,42 +1339,98 @@ html[dir='rtl'] .marquee .track {
   border-end-end-radius: calc(var(--r-xl) + 12px);
 }
 
+/* The top of the hero fades from the plain hero colour, so it joins the header above it (header.css .on-hero). */
+.lhero::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset-inline: 0;
+  inset-block-start: 0;
+  block-size: 120px;
+  background: linear-gradient(var(--c-hero-bg), transparent);
+  pointer-events: none;
+}
+
 .lblob {
   position: absolute;
   z-index: -1;
-  border-radius: 50%;
+  border-radius: 42% 58% 63% 37% / 41% 44% 56% 59%;
   pointer-events: none;
   will-change: transform;
 
-  /* Soft edges come from the gradient itself, not filter: blur() — a blurred layer is costly to paint on phones
-     without a GPU (CI Lighthouse TBT). The drift starts once the page has settled. */
-  animation: lblob-drift 20s var(--ease) 3s infinite alternate both;
+  /* Phones: a dense core with a soft gradient edge (no filter — a blurred layer is costly to paint without a GPU,
+     CI Lighthouse TBT). The drift starts once the page has settled. */
+  animation: lblob-drift 18s var(--ease) 3s infinite alternate both;
 }
 
 .lblob.b1 {
-  inline-size: min(760px, 120vw);
-  block-size: 640px;
-  inset-block-start: -240px;
-  inset-inline-start: -200px;
-  background: radial-gradient(closest-side, var(--c-hero-blob-brand), transparent);
+  inline-size: min(720px, 120vw);
+  block-size: 600px;
+  inset-block-start: -220px;
+  inset-inline-start: -180px;
+  background: radial-gradient(closest-side, var(--c-hero-blob-brand) 55%, transparent);
 }
 
 .lblob.b2 {
-  inline-size: min(600px, 100vw);
-  block-size: 540px;
-  inset-block-end: -240px;
-  inset-inline-end: 4%;
-  background: radial-gradient(closest-side, var(--c-hero-blob-gold), transparent);
+  inline-size: min(560px, 100vw);
+  block-size: 500px;
+  inset-block-end: -220px;
+  inset-inline-end: 6%;
+  background: radial-gradient(closest-side, var(--c-hero-blob-gold) 50%, transparent);
   animation-delay: 4s;
 }
 
 .lblob.b3 {
-  inline-size: 520px;
-  block-size: 460px;
-  inset-block-start: 15%;
-  inset-inline-end: -160px;
-  background: radial-gradient(closest-side, var(--c-hero-blob-deep), transparent);
+  inline-size: 480px;
+  block-size: 420px;
+  inset-block-start: 20%;
+  inset-inline-end: -140px;
+  background: radial-gradient(closest-side, var(--c-hero-blob-deep) 50%, transparent);
   animation-delay: 5s;
+}
+
+/* Desktops with a pointer (a GPU, in practice): the mockup's full effect — solid blobs, blurred and morphing. */
+@media (width >= 1000px) and (hover: hover) {
+  .lblob {
+    filter: blur(40px);
+    animation:
+      lblob-drift 18s var(--ease) 1s infinite alternate both,
+      lblob-morph 14s ease-in-out 1s infinite alternate both;
+  }
+
+  .lblob.b1 {
+    inline-size: 620px;
+    block-size: 520px;
+    inset-block-start: -160px;
+    inset-inline-start: -120px;
+    background: var(--c-hero-blob-brand);
+  }
+
+  .lblob.b2 {
+    inline-size: 460px;
+    block-size: 420px;
+    inset-block-end: -140px;
+    inset-inline-end: 8%;
+    background: var(--c-hero-blob-gold);
+  }
+
+  .lblob.b3 {
+    inline-size: 380px;
+    block-size: 340px;
+    inset-block-start: 30%;
+    inset-inline-end: -80px;
+    background: var(--c-hero-blob-deep);
+  }
+}
+
+@keyframes lblob-morph {
+  50% {
+    border-radius: 63% 37% 35% 65% / 55% 62% 38% 45%;
+  }
+
+  100% {
+    border-radius: 38% 62% 52% 48% / 62% 35% 65% 38%;
+  }
 }
 
 @keyframes lblob-drift {
@@ -1402,6 +1458,11 @@ html[dir='rtl'] .marquee .track {
   .lblob {
     animation: none;
   }
+}
+
+/* A subtree on the dark theme's tokens (tokens.css): its own text colour, not the body's. */
+.dark-scope {
+  color: var(--c-text);
 }
 
 /* Dense dark glass over a photo or the hero: white text, the gold kicker, the 78 % summary. */
