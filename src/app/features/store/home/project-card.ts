@@ -63,9 +63,13 @@ import { ShareSheet } from '../share/share-sheet';
       display: block;
       block-size: 100%;
     }
+    /* More glass: the card is glass over the storefront's aurora (frosted on wide screens with a pointer). */
     .pcard {
-      background: var(--c-surface);
-      border: 1px solid var(--c-border);
+      background: var(--c-glass-card);
+      border: 1px solid var(--c-glass-edge);
+      box-shadow:
+        inset 0 1px 0 var(--c-glass-highlight),
+        0 12px 32px var(--c-glass-shadow);
       border-radius: var(--rc);
       overflow: hidden;
       display: flex;
@@ -98,6 +102,11 @@ import { ShareSheet } from '../share/share-sheet';
       }
       .pcard:hover .media ta-image::after {
         transform: translateX(calc(120% * var(--dir, 1)));
+      }
+    }
+    @media (prefers-reduced-transparency: reduce) {
+      .pcard {
+        background: var(--c-surface);
       }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -176,6 +185,9 @@ import { ShareSheet } from '../share/share-sheet';
       border-radius: var(--r-lg);
     }
     @media (width >= 1000px) and (hover: hover) {
+      .pcard {
+        backdrop-filter: blur(var(--glass-blur)) saturate(170%);
+      }
       .plate {
         backdrop-filter: blur(var(--glass-blur)) saturate(170%);
       }
@@ -210,7 +222,7 @@ import { ShareSheet } from '../share/share-sheet';
     .sum {
       margin: 0;
       font-size: 0.875rem;
-      color: var(--c-muted);
+      color: var(--c-muted-2);
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;

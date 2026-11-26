@@ -102,9 +102,11 @@ export function trustItems(flags: TrustFlags, showcase = false): TrustItem[] {
       gap: var(--space-3);
       padding: var(--space-4);
       border-radius: var(--r-xl);
-      background: var(--c-surface);
-      border: 1px solid var(--c-border);
-      box-shadow: inset 0 1px 0 var(--c-glass-highlight);
+      background: var(--c-glass-card);
+      border: 1px solid var(--c-glass-edge);
+      box-shadow:
+        inset 0 1px 0 var(--c-glass-highlight),
+        0 12px 32px var(--c-glass-shadow);
     }
     .ic {
       flex: none;
@@ -126,7 +128,7 @@ export function trustItems(flags: TrustFlags, showcase = false): TrustItem[] {
     }
     .sub {
       font-size: 0.85rem;
-      color: var(--c-muted);
+      color: var(--c-muted-2);
     }
     @media (width < 600px) {
       .trust {

@@ -1290,6 +1290,29 @@ html[dir='rtl'] .marquee .track {
   line-height: 1.6;
 }
 
+/* More glass: content cards and bars below the hero, over the storefront's aurora (layout/public-layout). Denser than
+   the chrome's glass because they carry body text (contrast-check "aurora"). The frost (backdrop-filter) is only for
+   wide screens with a pointer: one blur per card is the costliest paint on a GPU-less phone (CI Lighthouse). */
+.glass-card {
+  background: var(--c-glass-card);
+  border: 1px solid var(--c-glass-edge);
+  box-shadow:
+    inset 0 1px 0 var(--c-glass-highlight),
+    0 12px 32px var(--c-glass-shadow);
+}
+
+@media (width >= 1000px) and (hover: hover) {
+  .glass-card {
+    backdrop-filter: blur(var(--glass-blur)) saturate(170%);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass-card {
+    background: var(--c-surface);
+  }
+}
+
 @supports not (backdrop-filter: blur(1px)) {
   .glass,
   .glass-strong {
