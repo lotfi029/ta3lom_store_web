@@ -9,8 +9,8 @@ by the VPS from GHCR. Go-live checklist: [docs/production-checklist.md](../docs/
 | Site | `https://store-staging.ta3lom.sa` | `https://store.ta3lom.sa` |
 | API (runtime, compiled in) | `https://store-api-staging.ta3lom.sa/v1` | `https://store-api.ta3lom.sa/v1` |
 | Image | `ghcr.io/lotfi029/ta3lom-store-web:staging-<sha>` (+ `:staging`) | `ghcr.io/lotfi029/ta3lom-store-web:<version>` (+ `:latest`) |
-| Built on | push to `main`, nightly 01:23 UTC, `repository_dispatch: catalog-changed` | tag `vX.Y.Z` |
-| Deployed | automatically (`staging` environment) | after the `production` environment's required reviewer approves |
+| Built on | push to `main`, nightly 01:23 UTC, `repository_dispatch: catalog-changed` | push to `main` once its staging deploy passed (auto `vX.Y.Z`), or a tag `vX.Y.Z` |
+| Deployed | automatically (`staging` environment) | automatically after staging (the `production` environment's rules apply) |
 | Robots | `noindex, nofollow` everywhere (meta, `X-Robots-Tag`, `robots.txt Disallow: /`, no sitemap), "نسخة تجريبية" ribbon | indexable, sitemap |
 | Payments | **off — showcase mode** (`showcase: true`) until Moyasar | **off — showcase mode** until Moyasar |
 | Apple Pay file | placeholder allowed (warning) | placeholder allowed in showcase (warning); **Moyasar's real file required** once `showcase: false` — the build fails on the placeholder |
@@ -142,7 +142,8 @@ X-Robots-Tag on staging, client-route fallbacks, real 404s, cache headers, compr
 
 ## 4. GitHub settings
 
-- Environments **`staging`** and **`production`**; `production` with a **required reviewer** and limited to tags `v*`.
+- Environments **`staging`** and **`production`**; `production` allows the branch **`main`** and tags `v*` (no
+  required reviewer since 2026-11-27: every merge to `main` goes live after staging, owner's choice).
 - Secrets per environment: `STAGING_SSH_HOST`, `STAGING_SSH_USER`, `STAGING_SSH_KEY` (a dedicated ed25519 private key),
   `STAGING_SSH_KNOWN_HOSTS` (`ssh-keyscan -t ed25519 <host>`, checked, then pasted); the same four with `PRODUCTION_`.
   Optional variables `STAGING_DEPLOY_DIR` / `PRODUCTION_DEPLOY_DIR` (defaults `/srv/store-web-staging`, `/srv/store-web`).
@@ -170,9 +171,14 @@ its environment, and only then pushed. A failed CI run deploys nothing.
   STORE_WEB_IMAGE=ghcr.io/lotfi029/ta3lom-store-web:staging-<sha> docker compose -f docker-compose.store-web.yml -p store-web-staging up -d --wait
   ```
 
-- **Production:** push a tag `vX.Y.Z` (strict semver — a pre-release such as `v1.2.3-rc.1` is
+- **Production (default):** merge to `main`. When staging is deployed and smoke-checked, the same run promotes the
+  commit: the gate numbered it with the next patch of the latest `vX.Y.Z` tag and created that tag (made by
+  `GITHUB_TOKEN`, so it starts no second run), then `production-image` and `production` run as below. A failed CI,
+  staging build or staging smoke check deploys nothing to production (the tag stays, and the next merge takes the next
+  number).
+- **Production (manual release):** push a tag `vX.Y.Z` (strict semver — a pre-release such as `v1.2.3-rc.1` is
   never deployed and never moves `:latest`, L-5) on `main`. CI runs on the tag; once it succeeded `production-image`
-  builds, checks and pushes `:X.Y.Z` and `:latest` (one build at a time); `production` waits for the reviewer, then runs
+  builds, checks and pushes `:X.Y.Z` and `:latest` (one build at a time); `production` waits for the environment's rules, then runs
   the same two commands in `/srv/store-web` with `-p store-web`.
 
 **First deploy of an environment (empty catalogue).** Every build refuses to publish a store with no published project

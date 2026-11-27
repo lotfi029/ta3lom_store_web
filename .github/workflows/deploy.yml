@@ -4,7 +4,13 @@ name: Deploy
 # read:packages token — this workflow never sends a registry token to the VPS, owner H-4).
 # Deploys run ONLY after CI succeeded on the same commit (review 06 D-1):
 #   CI succeeded on a push to main                                  → build the STAGING image, check-container on it,
-#                                                                     push (:staging-<sha>, :staging), deploy to `staging`
+#                                                                     push (:staging-<sha>, :staging), deploy to `staging`;
+#                                                                     once staging is deployed and smoke-checked, PROMOTE:
+#                                                                     the gate numbered the next vX.Y.Z (latest tag, patch
+#                                                                     + 1) and created that tag on the commit (a tag made
+#                                                                     by GITHUB_TOKEN starts no workflow), then the
+#                                                                     production image + deploy below run without a
+#                                                                     release (owner, 2026-11-27: "deploy direct")
 #   push of a tag vX.Y.Z (strict semver, no pre-release)            → review 04 H-3: the run's ref IS the tag, so the
 #                                                                     `production` environment's "v* tags only" rule
 #                                                                     applies (a workflow_run always ran on main). The
@@ -62,13 +68,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:
-      contents: read
+      contents: write # creates the vX.Y.Z tag of a promoted main commit
       actions: read
       checks: read
     outputs:
       target: ${{ steps.decide.outputs.target }}
       sha: ${{ steps.decide.outputs.sha }}
       version: ${{ steps.decide.outputs.version }}
+      promote: ${{ steps.decide.outputs.promote }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         if: github.event_name == 'push'
@@ -85,12 +92,32 @@ jobs:
           RUN_BRANCH: ${{ github.event.workflow_run.head_branch }}
           RUN_SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
-          target=none sha= version=
+          target=none sha= version= promote=
           if [ "$EVENT" = workflow_run ]; then
             if [ "$RUN_CONCLUSION" != success ] || [ "$RUN_EVENT" != push ]; then
               echo "CI concluded '$RUN_CONCLUSION' on a '$RUN_EVENT' event — nothing to deploy."
             elif [ "$RUN_BRANCH" = main ]; then
               target=staging sha="$RUN_SHA"
+              case "$sha" in ''|*[!0-9a-f]*) echo "::error::invalid sha"; exit 1 ;; esac
+              # Promote to production after staging: next patch of the latest strict vX.Y.Z tag; the tag is created
+              # here so two quick merges can never take the same number (the API refuses an existing ref).
+              existing="$(gh api "repos/$GITHUB_REPOSITORY/git/matching-refs/tags/v" --paginate --jq '.[] | select(.object.sha == "'"$sha"'") | .ref' \
+                | sed 's#^refs/tags/v##' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1 || true)"
+              if [ -n "$existing" ]; then
+                version="$existing"
+              else
+                latest="$(gh api "repos/$GITHUB_REPOSITORY/git/matching-refs/tags/v" --paginate --jq '.[].ref' \
+                  | sed 's#^refs/tags/v##' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1 || true)"
+                IFS=. read -r major minor patch <<<"${latest:-0.0.0}"
+                for i in 1 2 3 4 5; do
+                  patch=$((patch + 1)) version="$major.$minor.$patch"
+                  gh api -X POST "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/tags/v$version" -f sha="$sha" > /dev/null && break
+                  echo "v$version is taken — trying the next patch"; version=
+                done
+                [ -n "$version" ] || { echo "::error::could not create a vX.Y.Z tag for $sha"; exit 1; }
+              fi
+              promote=true
+              echo "::notice::main@$sha → staging, then production as v$version"
             else
               # H-3: tags deploy from their own push event (below), never from a workflow_run.
               echo "::notice::$RUN_BRANCH is not main — not deployed from here."
@@ -122,7 +149,7 @@ jobs:
             else echo "::warning::CI has not succeeded on main@$sha — nightly/catalog rebuild SKIPPED (D-1)."; sha=; fi
           fi
           case "$sha" in ''|*[!0-9a-f]*) [ "$target" = none ] || { echo "::error::invalid sha"; exit 1; } ;; esac
-          { echo "target=$target"; echo "sha=$sha"; echo "version=$version"; } >> "$GITHUB_OUTPUT"
+          { echo "target=$target"; echo "sha=$sha"; echo "version=$version"; echo "promote=$promote"; } >> "$GITHUB_OUTPUT"
           echo "Deploy target: $target ${sha:+@ $sha} ${version:+(version $version)}"
 
   # Pull requests touching the deploy path: probe the staging API and print exactly what a main-branch run would do.
@@ -160,6 +187,8 @@ jobs:
     concurrency:
       group: deploy-staging
       cancel-in-progress: false
+    outputs:
+      deployed: ${{ steps.smoke.outcome == 'success' && 'true' || 'false' }}
     env:
       PRERENDER_API_URL: https://store-api-staging.ta3lom.sa/v1
       SITE: https://store-staging.ta3lom.sa
@@ -242,15 +271,19 @@ jobs:
           ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes "$SSH_USER@$SSH_HOST" "$REMOTE"
           echo "deployed=true" >> "$GITHUB_OUTPUT"
       - name: Smoke-check https://store-staging.ta3lom.sa
+        id: smoke
         if: steps.deploy.outputs.deployed == 'true'
         run: node scripts/smoke-deploy.mjs "$SITE" "$SHA" --env staging
       - name: Remove the SSH key
         if: always()
         run: rm -f ~/.ssh/deploy_key
 
+  # A release tag (target production), or a main commit promoted after its staging deploy passed the smoke check.
   production-image:
-    needs: gate
-    if: needs.gate.outputs.target == 'production'
+    needs: [gate, staging]
+    if: >-
+      !cancelled() && (needs.gate.outputs.target == 'production'
+      || (needs.gate.outputs.promote == 'true' && needs.staging.outputs.deployed == 'true'))
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -311,9 +344,11 @@ jobs:
 
   production:
     needs: [gate, production-image]
+    if: ${{ !cancelled() && needs.production-image.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    # The `production` environment has a required reviewer (repository settings): this job waits for that approval.
+    # Waits for the `production` environment's protection rules, if any (repository settings). For a promoted main
+    # commit the environment must allow the `main` branch.
     environment:
       name: production
       url: https://store.ta3lom.sa
