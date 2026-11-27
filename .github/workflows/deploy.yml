@@ -19,8 +19,10 @@ name: Deploy
 #                                                                     succeeded → build the PRODUCTION image,
 #                                                                     check-container on it, push (:X.Y.Z, :latest), then
 #                                                                     deploy after the `production` reviewer approves
-#   nightly, repository_dispatch "catalog-changed"                  → staging rebuild of main HEAD, only when CI on that
-#                                                                     commit succeeded (fresh prerender + sitemap)
+#   nightly, repository_dispatch "store-catalog-changed" (the API,  → rebuild of main HEAD, only when CI on that commit
+#   after staff catalogue saves) or "catalog-changed"                 succeeded (fresh prerender + sitemap): staging,
+#                                                                     then production under that commit's vX.Y.Z (the
+#                                                                     image tag is rebuilt with the same code; LIVE-2)
 #   workflow_dispatch (environment, tag)                            → rollback: redeploy an earlier image tag, checked
 #                                                                     against the environment and the image label (D-2)
 # First deploy of an environment (empty catalogue, the admin is in this image): repository variable
@@ -39,7 +41,9 @@ on:
   schedule:
     - cron: '23 1 * * *' # nightly 04:23 Asia/Riyadh: fresh prerender + sitemap (C-N2)
   repository_dispatch:
-    types: [catalog-changed]
+    # The API sends `store-catalog-changed` after every debounced burst of staff catalogue saves (its outbox,
+    # Store:SiteRebuild); `catalog-changed` is kept for a manual dispatch.
+    types: [store-catalog-changed, catalog-changed]
   workflow_dispatch:
     inputs:
       environment:
@@ -54,6 +58,13 @@ on:
 
 permissions:
   contents: read
+
+# Catalogue rebuilds (dispatch and nightly) share one queue: one runs, and only the NEWEST waiting run is kept (GitHub
+# cancels an older pending run in the group), so a burst of saves becomes at most one more rebuild. Every other event
+# gets its own group (never cancelled).
+concurrency:
+  group: ${{ (github.event_name == 'repository_dispatch' || github.event_name == 'schedule') && 'catalog-rebuild' || format('deploy-{0}', github.run_id) }}
+  cancel-in-progress: false
 
 env:
   IMAGE: ghcr.io/lotfi029/ta3lom-store-web
@@ -93,29 +104,32 @@ jobs:
           RUN_SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
           target=none sha= version= promote=
+          # Production version of main@$sha: its existing strict vX.Y.Z tag, else the next patch of the latest one. The
+          # tag is created here so two quick runs can never take the same number (the API refuses an existing ref).
+          promote_tag() {
+            existing="$(gh api "repos/$GITHUB_REPOSITORY/git/matching-refs/tags/v" --paginate --jq '.[] | select(.object.sha == "'"$sha"'") | .ref' \
+              | sed 's#^refs/tags/v##' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1 || true)"
+            if [ -n "$existing" ]; then
+              version="$existing"
+              return
+            fi
+            latest="$(gh api "repos/$GITHUB_REPOSITORY/git/matching-refs/tags/v" --paginate --jq '.[].ref' \
+              | sed 's#^refs/tags/v##' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1 || true)"
+            IFS=. read -r major minor patch <<<"${latest:-0.0.0}"
+            for i in 1 2 3 4 5; do
+              patch=$((patch + 1)) version="$major.$minor.$patch"
+              gh api -X POST "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/tags/v$version" -f sha="$sha" > /dev/null && return
+              echo "v$version is taken — trying the next patch"; version=
+            done
+            echo "::error::could not create a vX.Y.Z tag for $sha"; exit 1
+          }
           if [ "$EVENT" = workflow_run ]; then
             if [ "$RUN_CONCLUSION" != success ] || [ "$RUN_EVENT" != push ]; then
               echo "CI concluded '$RUN_CONCLUSION' on a '$RUN_EVENT' event — nothing to deploy."
             elif [ "$RUN_BRANCH" = main ]; then
               target=staging sha="$RUN_SHA"
               case "$sha" in ''|*[!0-9a-f]*) echo "::error::invalid sha"; exit 1 ;; esac
-              # Promote to production after staging: next patch of the latest strict vX.Y.Z tag; the tag is created
-              # here so two quick merges can never take the same number (the API refuses an existing ref).
-              existing="$(gh api "repos/$GITHUB_REPOSITORY/git/matching-refs/tags/v" --paginate --jq '.[] | select(.object.sha == "'"$sha"'") | .ref' \
-                | sed 's#^refs/tags/v##' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1 || true)"
-              if [ -n "$existing" ]; then
-                version="$existing"
-              else
-                latest="$(gh api "repos/$GITHUB_REPOSITORY/git/matching-refs/tags/v" --paginate --jq '.[].ref' \
-                  | sed 's#^refs/tags/v##' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1 || true)"
-                IFS=. read -r major minor patch <<<"${latest:-0.0.0}"
-                for i in 1 2 3 4 5; do
-                  patch=$((patch + 1)) version="$major.$minor.$patch"
-                  gh api -X POST "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/tags/v$version" -f sha="$sha" > /dev/null && break
-                  echo "v$version is taken — trying the next patch"; version=
-                done
-                [ -n "$version" ] || { echo "::error::could not create a vX.Y.Z tag for $sha"; exit 1; }
-              fi
+              promote_tag
               promote=true
               echo "::notice::main@$sha → staging, then production as v$version"
             else
@@ -142,10 +156,16 @@ jobs:
             [ -n "$ok" ] || { echo "::error::CI on $sha did not finish within 45 minutes"; exit 1; }
             target=production version="${GITHUB_REF_NAME#v}"
           else
-            # schedule / repository_dispatch: main HEAD, only if CI succeeded on it
+            # schedule / repository_dispatch: main HEAD, only if CI succeeded on it. Same code as the deployed vX.Y.Z,
+            # fresh prerender + sitemap: staging, then production under that commit's version (LIVE-2).
             sha="$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)"
             ok="$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs?head_sha=$sha&status=success&per_page=1" --jq '.total_count')"
-            if [ "${ok:-0}" -gt 0 ]; then target=staging
+            if [ "${ok:-0}" -gt 0 ]; then
+              target=staging
+              case "$sha" in ''|*[!0-9a-f]*) echo "::error::invalid sha"; exit 1 ;; esac
+              promote_tag
+              promote=true
+              echo "::notice::catalogue rebuild of main@$sha → staging, then production as v$version"
             else echo "::warning::CI has not succeeded on main@$sha — nightly/catalog rebuild SKIPPED (D-1)."; sha=; fi
           fi
           case "$sha" in ''|*[!0-9a-f]*) [ "$target" = none ] || { echo "::error::invalid sha"; exit 1; } ;; esac

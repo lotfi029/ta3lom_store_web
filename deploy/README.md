@@ -9,7 +9,7 @@ by the VPS from GHCR. Go-live checklist: [docs/production-checklist.md](../docs/
 | Site | `https://store-staging.ta3lom.sa` | `https://store.ta3lom.sa` |
 | API (runtime, compiled in) | `https://store-api-staging.ta3lom.sa/v1` | `https://store-api.ta3lom.sa/v1` |
 | Image | `ghcr.io/lotfi029/ta3lom-store-web:staging-<sha>` (+ `:staging`) | `ghcr.io/lotfi029/ta3lom-store-web:<version>` (+ `:latest`) |
-| Built on | push to `main`, nightly 01:23 UTC, `repository_dispatch: catalog-changed` | push to `main` once its staging deploy passed (auto `vX.Y.Z`), or a tag `vX.Y.Z` |
+| Built on | push to `main`, nightly 01:23 UTC, `repository_dispatch: store-catalog-changed` (the API, after staff catalogue saves) | after its staging deploy passed: a push to `main` (auto `vX.Y.Z`), the nightly or a catalogue rebuild (same `vX.Y.Z`, fresh prerender); or a tag `vX.Y.Z` |
 | Deployed | automatically (`staging` environment) | automatically after staging (the `production` environment's rules apply) |
 | Robots | `noindex, nofollow` everywhere (meta, `X-Robots-Tag`, `robots.txt Disallow: /`, no sitemap), "نسخة تجريبية" ribbon | indexable, sitemap |
 | Payments | **off — showcase mode** (`showcase: true`) until Moyasar | **off — showcase mode** until Moyasar |
@@ -162,8 +162,8 @@ ref is the tag and the `production` environment's "`v*` tags only" rule applies;
 succeeded. The image is built, **checked with `check-container.mjs`** for
 its environment, and only then pushed. A failed CI run deploys nothing.
 
-- **Staging:** merge to `main` (or wait for the nightly, or send `repository_dispatch` `catalog-changed` from the API
-  after a catalogue change). The job builds `:staging-<sha>`, then on the VPS:
+- **Staging:** merge to `main` (or wait for the nightly, or a `repository_dispatch` `store-catalog-changed` from the API
+  after a catalogue change; both of those continue to production too, §9). The job builds `:staging-<sha>`, then on the VPS:
 
   ```bash
   cd /srv/store-web-staging
@@ -191,7 +191,7 @@ first deploy only:
    only (with the «قريبًا» banner in showcase), `check-container` accepts a home page without project links, and the
    run shows a warning.
 3. Create the staff account (API runbook `create-admin`), sign in at `/admin`, add and publish the categories and
-   projects. Publishing triggers a staging rebuild (`catalog-changed`); for production push a new tag.
+   projects. Publishing triggers a rebuild of staging and then production (`store-catalog-changed`, §9).
 4. **Delete the variable** as soon as each environment has a published project — every later build has the guard back.
 
 **Edge aliases (review 04 H-1).** The compose service is called `web`, never `store-web`: Compose gives every service
@@ -243,5 +243,13 @@ By hand on the VPS: the same two commands with the older tag (check the label fi
 ## 9. After a catalogue change
 
 Options, amounts and availability refresh in the browser after every page load. Titles, descriptions, SEO text and the
-sitemap of prerendered pages change with the next build: the nightly staging build picks them up; for production, tag a
-release (or let the API send `catalog-changed` once that hook exists).
+sitemap of prerendered pages (what search engines and link previews read) change with the next build. Open pages also
+update live (API LIVE-1).
+
+**Catalogue rebuild (LIVE-2).** After staff save a catalogue change, the API's outbox (`CatalogChanged` → debounce →
+`Store:SiteRebuild`) sends one `repository_dispatch` `store-catalog-changed` to this repository. The Deploy run rebuilds
+`main` HEAD (only if CI succeeded on it) for staging, then for production under that commit's existing `vX.Y.Z` (same
+code, fresh prerender; the `:X.Y.Z` and `:latest` images are rebuilt). About 3 to 4 minutes end to end. Dispatch and
+nightly runs share the `catalog-rebuild` concurrency group: one runs, only the newest waiting run is kept, so a burst
+of saves costs at most one extra rebuild. Needs the API's `Store__SiteRebuild__Token` (fine-grained, Contents
+read/write on this repository; API `deploy/secrets.md`). A manual `repository_dispatch` `catalog-changed` does the same.
