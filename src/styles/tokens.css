@@ -238,11 +238,14 @@
   --c-link-on-glass: var(--brand-900);
   --c-liquid-hi: rgb(255 255 255 / 30%);
 
-  /* "Liquid touch" below the hero: a faint water wash behind the listing and the project sheet (text on it is
-     checked over --c-surface-2 / --c-bg / --c-surface: contrast-check "wash"; links only in the project sheet, over --c-bg), and the soft glow at the top of the
-     dark footer under its wave (checked over --c-surface-dark: "foot"). */
-  --c-wash-brand: rgb(26 150 193 / 7%);
-  --c-wash-gold: rgb(165 142 54 / 7%);
+  /* "More glass" below the hero: a soft colour aurora fixed behind the storefront (layout/public-layout) that the
+     glass cards, bars and sheets let through; --c-glass-card is the card glass, denser than the chrome's --c-glass
+     because cards carry body text (contrast-check "aurora": every pair over the page and over each aurora colour).
+     The soft glow at the top of the dark footer under its wave is checked over --c-surface-dark ("foot"). */
+  --c-aurora-brand: rgb(26 150 193 / 38%);
+  --c-aurora-gold: rgb(165 142 54 / 30%);
+  --c-aurora-deep: rgb(19 122 160 / 32%);
+  --c-glass-card: rgb(255 255 255 / 82%);
   --c-foot-glow: rgb(26 150 193 / 10%);
   --glass-blur: 20px;
 
@@ -395,8 +398,10 @@
   --c-glass-highlight: rgb(255 255 255 / 10%);
   --c-glass-shadow: rgb(0 0 0 / 45%);
   --c-liquid-hi: rgb(255 255 255 / 18%);
-  --c-wash-brand: rgb(26 150 193 / 12%);
-  --c-wash-gold: rgb(165 142 54 / 9%);
+  --c-aurora-brand: rgb(26 150 193 / 34%);
+  --c-aurora-gold: rgb(165 142 54 / 24%);
+  --c-aurora-deep: rgb(19 122 160 / 32%);
+  --c-glass-card: rgb(16 36 44 / 72%);
   --c-focus-on-glass: #6fcbeb;
   --c-link-on-glass: #6fcbeb;
   --c-header-shadow: rgb(0 0 0 / 35%);

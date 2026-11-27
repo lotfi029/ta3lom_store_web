@@ -17,6 +17,8 @@ import { SkipLink } from '../skip-link/skip-link';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <ta-skip-link />
+    <!-- More glass: the soft colour aurora behind the storefront, fixed while the page scrolls. -->
+    <div class="aurora" aria-hidden="true"></div>
     <ta-header />
     <main id="main" tabindex="-1">
       <router-outlet />
@@ -50,6 +52,18 @@ import { SkipLink } from '../skip-link/skip-link';
     </button>
   `,
   styles: `
+    /* One viewport-sized fixed layer (painted once, composited while scrolling: a gradient sized to the whole page
+       was a very tall image to paint, CI TBT). It sits under the page's content and shows through the glass. */
+    .aurora {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        radial-gradient(70vmax 50vmax at 100% 0%, var(--c-aurora-brand), transparent 70%),
+        radial-gradient(60vmax 45vmax at 0% 55%, var(--c-aurora-gold), transparent 70%),
+        radial-gradient(65vmax 45vmax at 85% 100%, var(--c-aurora-deep), transparent 70%);
+    }
     main {
       display: block;
       min-block-size: 60vh;

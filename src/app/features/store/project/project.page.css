@@ -127,9 +127,24 @@ h1 {
   position: relative;
   margin-block-start: -32px;
   padding-block: var(--space-7) 56px;
-  background: var(--c-bg);
+
+  /* More glass: the sheet is dense glass over the storefront's aurora (contrast-check "glass sheet"). */
+  background: var(--c-glass-strong);
+  box-shadow: inset 0 1px 0 var(--c-glass-highlight);
   border-start-start-radius: calc(var(--r-xl) + 4px);
   border-start-end-radius: calc(var(--r-xl) + 4px);
+}
+
+@media (width >= 1000px) and (hover: hover) {
+  .pp {
+    backdrop-filter: blur(var(--glass-blur)) saturate(170%);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .pp {
+    background: var(--c-bg);
+  }
 }
 
 .prose {
@@ -137,8 +152,8 @@ h1 {
 }
 
 .buybox {
-  background: var(--c-surface);
-  border: 1px solid var(--c-border);
+  background: var(--c-glass-card);
+  border: 1px solid var(--c-glass-edge);
   border-radius: var(--r-xl);
   padding: 24px;
   box-shadow:
@@ -295,16 +310,4 @@ h1 {
 .dbar-go:focus-visible {
   outline: 3px solid var(--c-on-brand);
   outline-offset: 2px;
-}
-
-/* Liquid touch (600 px and wider): the listing's faint water wash, as small sized patches (contrast-check "wash",
-   links over --c-bg). */
-@media (width >= 600px) {
-  .pp {
-    background:
-      radial-gradient(closest-side, var(--c-wash-brand), transparent) 0 0 / 48rem 30rem no-repeat,
-      radial-gradient(closest-side, var(--c-wash-gold), transparent) 100% 55% / 40rem 26rem
-        no-repeat,
-      var(--c-bg);
-  }
 }

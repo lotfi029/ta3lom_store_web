@@ -1,24 +1,9 @@
 /* Option C home (docs/r5/home-option-c-spec.md §3 rows 4–7), semantic tokens only. */
 :host {
   display: block;
-  background: var(--c-surface-2);
 }
 
-/* Liquid touch (600 px and wider): a faint, static water wash under the listing. Each patch is its own small
-   background image (sized and not repeated): a gradient sized to the whole page was a very tall image to paint and
-   cost phones their CPU budget (CI TBT), so phones keep the plain page. Contrast-check "wash". */
-@media (width >= 600px) {
-  :host {
-    background:
-      radial-gradient(closest-side, var(--c-wash-brand), transparent) 100% 18rem / 56rem 34rem
-        no-repeat,
-      radial-gradient(closest-side, var(--c-wash-gold), transparent) 0 55% / 44rem 30rem no-repeat,
-      radial-gradient(closest-side, var(--c-wash-brand), transparent) 100% 95% / 52rem 34rem
-        no-repeat,
-      var(--c-surface-2);
-  }
-}
-
+/* The page shows the storefront's aurora (layout/public-layout); the listing's bars and cards are glass on it. */
 .wrap {
   max-width: 1200px;
   margin-inline: auto;
@@ -159,10 +144,18 @@
   justify-content: space-between;
   gap: var(--space-3);
 
-  /* Mockup: the count and the sort sit straight on the page, no box. */
-  padding-block: var(--space-1);
-  margin-block-end: var(--space-4);
+  /* More glass: the count and the sort on a glass pill. */
+  padding-block: var(--space-2);
+  padding-inline: var(--space-5) var(--space-3);
+  margin-block-end: var(--space-5);
+  border-radius: var(--rp);
   scroll-margin-block-start: 96px;
+}
+
+@media (width < 600px) {
+  .fbar {
+    border-radius: var(--r-xl);
+  }
 }
 
 .fhead {
@@ -286,12 +279,14 @@
   min-block-size: 46px;
   padding-inline: var(--space-3);
   border-radius: var(--rp);
-  border: 1px solid var(--c-border);
-  background: var(--c-surface);
+  border: 1px solid var(--c-glass-edge);
+  background: var(--c-glass-card);
   color: var(--c-text);
   text-decoration: none;
   font-weight: 600;
-  box-shadow: inset 0 1px 0 var(--c-glass-highlight);
+  box-shadow:
+    inset 0 1px 0 var(--c-glass-highlight),
+    0 6px 16px var(--c-glass-shadow);
   transition:
     border-color var(--dur-1) var(--ease),
     box-shadow var(--dur-1) var(--ease),
@@ -335,7 +330,7 @@
 }
 
 .gap {
-  color: var(--c-muted);
+  color: var(--c-text-2);
   padding-inline: var(--space-1);
 }
 
