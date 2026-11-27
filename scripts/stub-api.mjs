@@ -392,6 +392,13 @@ createServer((req, res) => {
     res.writeHead(200, headers);
     return res.end('{"status":"Healthy"}');
   }
+  // Live catalogue updates (API LIVE-1): `ready`, then the connection stays open (the stub never changes its catalogue).
+  if (req.method === 'GET' && url.pathname === '/v1/catalog/events') {
+    res.writeHead(200, { ...headers, 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache' });
+    res.write('event: ready\ndata: 0\n\n');
+    const ping = setInterval(() => res.write('event: ping\ndata: \n\n'), 25000);
+    return req.on('close', () => clearInterval(ping));
+  }
   if (url.pathname in files) {
     res.writeHead(200, { 'Content-Type': 'image/webp', 'Cache-Control': 'public, max-age=86400' });
     return res.end(Buffer.from(files[url.pathname], 'base64'));

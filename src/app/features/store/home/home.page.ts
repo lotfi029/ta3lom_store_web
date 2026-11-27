@@ -17,6 +17,7 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import type { Category, CatalogSort } from '../../../core/api/api.types';
 import { CATALOG_SORTS } from '../../../core/api/api.types';
+import { reloadOnCatalogChange } from '../../../core/http/catalog-live';
 import { refreshAfterHydration } from '../../../core/http/refresh-after-hydration';
 import { NavigationScroll } from '../../../core/routing/navigation-scroll';
 import { environment } from '../../../../environments/environment';
@@ -166,6 +167,7 @@ export class HomePage {
   constructor() {
     inject(DestroyRef).onDestroy(() => clearTimeout(this.announceTimer)); // L-13
     refreshAfterHydration(this.data.home, this.data.listing, this.data.categories);
+    reloadOnCatalogChange(this.data.home, this.data.listing, this.data.categories);
     effect(() => {
       const key = this.gridKey();
       if (this.data.items().length > 0 && untracked(this.firstGridKey) === null)
