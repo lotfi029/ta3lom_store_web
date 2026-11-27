@@ -131,7 +131,7 @@
   </ul>
 </section>
 
-<ta-dialog [(open)]="editOpen" labelledBy="st-dlg-h" [lightDismiss]="false">
+<ta-dialog admin [(open)]="editOpen" labelledBy="st-dlg-h" [lightDismiss]="false">
   <form class="dlg" (submit)="save($event)" novalidate>
     <h2 id="st-dlg-h">
       @if (editing() === 'new') {
@@ -207,7 +207,12 @@
     </fieldset>
     @if (editing() !== 'new') {
       <label class="chk"
-        ><input type="checkbox" [checked]="model().isActive" (change)="setActive($event)" />
+        ><input
+          type="checkbox"
+          role="switch"
+          [checked]="model().isActive"
+          (change)="setActive($event)"
+        />
         <span i18n="@@store.admin.active">نشط</span></label
       >
     }
@@ -228,7 +233,7 @@
   </form>
 </ta-dialog>
 
-<ta-dialog [(open)]="confirmOpen" labelledBy="st-cf-h">
+<ta-dialog admin [(open)]="confirmOpen" labelledBy="st-cf-h">
   <div class="dlg">
     <h2 id="st-cf-h" i18n="@@store.admin.confirm-title">تأكيد الإجراء</h2>
     <p>{{ confirmText() }}</p>
@@ -256,6 +261,7 @@
 </ta-dialog>
 
 <ta-dialog
+  admin
   [(open)]="secretOpen"
   labelledBy="st-otp-h"
   [lightDismiss]="false"

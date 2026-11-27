@@ -1,6 +1,7 @@
 <dialog
   #dialogEl
   class="ta-dialog"
+  [class.admin]="admin()"
   [attr.aria-labelledby]="labelledBy()"
   (pointerdown)="onPointerDown($event)"
   (pointerup)="onPointerUp($event)"

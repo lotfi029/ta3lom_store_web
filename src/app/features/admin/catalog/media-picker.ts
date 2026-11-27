@@ -20,7 +20,7 @@ import { MediaUpload } from './media-upload';
   imports: [Dialog, MediaUpload],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <ta-dialog [(open)]="open" [labelledBy]="idPrefix() + '-h'" [lightDismiss]="false">
+    <ta-dialog admin [(open)]="open" [labelledBy]="idPrefix() + '-h'" [lightDismiss]="false">
       <div class="dlg wide">
         <h2 [id]="idPrefix() + '-h'">{{ heading() }}</h2>
         <ul class="grid">

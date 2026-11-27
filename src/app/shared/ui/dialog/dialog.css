@@ -34,3 +34,33 @@
     transition: none;
   }
 }
+
+/* Staff admin, "Calm cards" (DECISIONS 2026-11-27): a bordered card; the header band and the action bar belong to
+   the projected `.dlg` (features/admin/admin-common.css). */
+.ta-dialog.admin {
+  width: fit-content;
+  max-inline-size: calc(100vw - 40px);
+  border: 1px solid var(--c-border);
+  border-radius: 20px;
+  background: var(--c-surface);
+  color: var(--c-text);
+}
+
+/* Phones: a sheet that slides up from the bottom edge, full width, its own safe-area padding below the actions. */
+@media (width < 600px) {
+  .ta-dialog.admin {
+    width: 100%;
+    max-inline-size: 100%;
+    margin-block: auto 0;
+    margin-inline: 0;
+    max-block-size: calc(100dvh - 24px);
+    border-block-end: none;
+    border-end-start-radius: 0;
+    border-end-end-radius: 0;
+    transform: translateY(24px);
+  }
+
+  .ta-dialog.admin[open] {
+    transform: none;
+  }
+}

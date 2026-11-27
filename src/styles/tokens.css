@@ -108,6 +108,7 @@
   --c-gold: var(--gold);
   --c-success-fill: var(--green);
   --c-danger-fill: var(--danger);
+  --c-danger-ring: rgb(200 65 59 / 18%); /* admin field error ring (decorative, beside the danger border) */
   --c-on-brand: #fff;
   --c-on-gold: var(--ink);
 
@@ -355,6 +356,7 @@
   --c-accent-strong: #8ad7f0;
   --c-focus: #6fcbeb;
   --c-danger: #ff8f86;
+  --c-danger-ring: rgb(255 143 134 / 22%);
   --c-success: #5fd39b;
   --c-success-text: #5fd39b;
   --c-success-tint: #173327;

@@ -10,7 +10,7 @@ import { Dialog } from '../../../shared/ui/dialog/dialog';
   imports: [Dialog],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <ta-dialog [(open)]="open" [labelledBy]="idPrefix() + '-h'" [lightDismiss]="false">
+    <ta-dialog admin [(open)]="open" [labelledBy]="idPrefix() + '-h'" [lightDismiss]="false">
       <div class="dlg" role="alertdialog" [attr.aria-describedby]="idPrefix() + '-d'">
         <h2 [id]="idPrefix() + '-h'" i18n="@@store.admin.conflict-title">تغيّرت البيانات</h2>
         <p [id]="idPrefix() + '-d'" i18n="@@store.admin.conflict-lede">

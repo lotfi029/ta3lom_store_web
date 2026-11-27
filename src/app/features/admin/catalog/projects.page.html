@@ -234,7 +234,7 @@
   </ta-resource-state>
 </section>
 
-<ta-dialog [(open)]="resultOpen" labelledBy="pr-res-h">
+<ta-dialog admin [(open)]="resultOpen" labelledBy="pr-res-h">
   @if (result(); as r) {
     <div class="dlg">
       <h2 id="pr-res-h">{{ resultTitle(r, r.ok + r.failures.length) }}</h2>

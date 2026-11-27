@@ -67,6 +67,7 @@
         <label class="chk"
           ><input
             type="checkbox"
+            role="switch"
             [checked]="r.isActive"
             [disabled]="!canEdit()"
             (change)="setActive(r.key, $event)"
