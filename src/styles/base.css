@@ -1557,9 +1557,26 @@ html[dir='rtl'] .marquee .track {
 /* The mockup's floating header: on the hero the logo, search and actions sit in one dark-glass pill (contrast-check
    "hero header"); it becomes the full-width light glass header once the page scrolls. */
 
-/* Padding, not a margin on the pill: a margin would collapse through the header and show the page above it. */
+/* Padding, not a margin on the pill: a margin would collapse through the header and show the page above it.
+   The negative end margin gives back what the pill adds (this padding and the pill's 2 px border, less the 2 × 4 px
+   its padding is thinner than the light header's), so the header takes the SAME room in the page in both looks:
+   a height change at the switch let scroll anchoring move the page back across the threshold, and the header
+   flickered between the two looks. The hero under it starts that much higher, behind the opaque header. */
 header.hdr.on-hero {
   padding-block: var(--space-3) var(--space-1);
+  margin-block-end: calc(
+    -1 * (var(--space-3) + var(--space-1) + 2px - 2 * (var(--space-3) - var(--space-2)))
+  );
+}
+
+/* The switch between the two looks fades instead of snapping (prefers-reduced-motion stops it, top of this file). */
+
+/* The header's own background fades in header.css. */
+.hdr .wrap {
+  transition:
+    background-color var(--dur-2) var(--ease),
+    border-color var(--dur-2) var(--ease),
+    box-shadow var(--dur-2) var(--ease);
 }
 
 .hdr.on-hero .wrap {
