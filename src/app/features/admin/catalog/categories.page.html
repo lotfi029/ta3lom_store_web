@@ -72,7 +72,7 @@
   </div>
 </ta-resource-state>
 
-<ta-dialog [(open)]="open" labelledBy="ct-dlg-h" [lightDismiss]="false">
+<ta-dialog admin [(open)]="open" labelledBy="ct-dlg-h" [lightDismiss]="false">
   <form class="dlg wide" (submit)="save($event)" novalidate>
     <h2 id="ct-dlg-h">
       @if (editing() === 'new') {
@@ -222,6 +222,7 @@
     <label class="chk"
       ><input
         type="checkbox"
+        role="switch"
         [checked]="model().acceptsGeneralGifts"
         (change)="setFlag('acceptsGeneralGifts', $event)"
       />
@@ -230,7 +231,12 @@
       ></label
     >
     <label class="chk"
-      ><input type="checkbox" [checked]="model().isActive" (change)="setFlag('isActive', $event)" />
+      ><input
+        type="checkbox"
+        role="switch"
+        [checked]="model().isActive"
+        (change)="setFlag('isActive', $event)"
+      />
       <span i18n="@@store.admin.active">نشط</span></label
     >
     <div class="acts">

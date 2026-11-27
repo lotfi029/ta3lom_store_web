@@ -112,7 +112,10 @@ section:not(.panel) {
   color: var(--c-muted-2);
 }
 
+/* position: the visually hidden <caption> is absolutely placed; without a positioned scroller it escaped the scroll
+   box and widened phone pages (staff ran to 487 px on a 390 px screen). */
 .tbl-wrap {
+  position: relative;
   overflow-x: auto;
 }
 
@@ -159,9 +162,27 @@ section:not(.panel) {
 
 .dlg {
   display: grid;
-  gap: 14px;
-  padding: 22px;
+  gap: 16px;
+  padding-inline: 22px;
   inline-size: min(520px, 90vw);
+}
+
+/* "Calm cards": the title is a tinted header band and the last row of buttons a grey action bar, both kept in view
+   while a long form scrolls inside the dialog (shared/ui/dialog, `admin`). */
+.dlg > h2:first-child {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 1;
+  margin: 0 -22px;
+  padding: 18px 22px 14px;
+  background: linear-gradient(var(--c-tint), var(--c-surface));
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+/* The dialog's own gap spaces the fields; the page-level bottom margin of .field would double it. */
+.dlg .field {
+  margin-block-end: 0;
 }
 
 .dlg h2 {
@@ -173,6 +194,39 @@ section:not(.panel) {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+}
+
+.dlg > .acts:last-child {
+  position: sticky;
+  inset-block-end: 0;
+  z-index: 1;
+  margin: 0 -22px;
+  padding: 14px 22px calc(14px + env(safe-area-inset-bottom, 0px));
+  border-block-start: 1px solid var(--c-border);
+  background: var(--c-surface-2);
+}
+
+.dlg > :last-child:not(.acts) {
+  margin-block-end: 22px;
+}
+
+/* Phones: the dialog is a bottom sheet; the content fills it and the action bar's buttons share the row. */
+@media (width < 600px) {
+  .dlg,
+  .dlg.wide {
+    inline-size: 100%;
+    padding-inline: 16px;
+  }
+
+  .dlg > h2:first-child,
+  .dlg > .acts:last-child {
+    margin-inline: -16px;
+    padding-inline: 16px;
+  }
+
+  .dlg > .acts:last-child > * {
+    flex: 1 1 140px;
+  }
 }
 
 .chk {
@@ -188,6 +242,45 @@ section:not(.panel) {
   block-size: 18px;
   margin: 0;
   accent-color: var(--c-brand);
+}
+
+/* On/off settings are switches (role="switch"); lists of choices, such as staff roles, stay checkboxes. */
+.chk input[role='switch'] {
+  appearance: none;
+  flex: none;
+  position: relative;
+  inline-size: 44px;
+  block-size: 26px;
+  border-radius: 999px;
+  background: var(--c-muted);
+  cursor: pointer;
+  transition: background-color var(--dur-1) var(--ease);
+}
+
+.chk input[role='switch']::after {
+  content: '';
+  position: absolute;
+  inset-block-start: 3px;
+  inset-inline-start: 3px;
+  inline-size: 20px;
+  block-size: 20px;
+  border-radius: 50%;
+  background: var(--c-surface);
+  box-shadow: 0 1px 3px var(--c-header-shadow);
+  transition: transform var(--dur-1) var(--ease);
+}
+
+.chk input[role='switch']:checked {
+  background: var(--c-brand-strong);
+}
+
+.chk input[role='switch']:checked::after {
+  transform: translateX(calc(18px * var(--dir, 1)));
+}
+
+.chk input[role='switch']:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .secret {

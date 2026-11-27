@@ -338,6 +338,7 @@
             <label class="chk"
               ><input
                 type="checkbox"
+                role="switch"
                 [checked]="model().allowOpenAmount"
                 (change)="setFlag('allowOpenAmount', $event)"
               />
@@ -633,8 +634,7 @@
               <p class="muted small">
                 <span i18n="@@store.admin.old-slugs">روابط سابقة تُحوَّل إلى الرابط الحالي:</span>
                 @for (s of p.oldSlugs; track s) {
-                  <bdi dir="ltr" class="mono">{{ s }}</bdi
-                  >{{ $last ? '' : '، ' }}
+                  <bdi dir="ltr" class="mono">{{ s }}</bdi>{{ $last ? '' : '، ' }}
                 }
               </p>
             }
@@ -670,7 +670,7 @@
 />
 <ta-conflict-dialog idPrefix="pe-cf" [(open)]="conflictOpen" (reload)="reloadLatest()" />
 
-<ta-dialog [(open)]="previewOpen" labelledBy="pe-pv-h">
+<ta-dialog admin [(open)]="previewOpen" labelledBy="pe-pv-h">
   <div class="dlg wide">
     <p class="muted" id="pe-pv-h" i18n="@@store.admin.preview-title">معاينة كما يراها المتبرع</p>
     @if (preview(); as d) {
