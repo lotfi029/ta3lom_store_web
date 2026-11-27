@@ -115,8 +115,11 @@
         [error]="!!data.listing.error() && !data.hasListing()"
         (retry)="data.listing.reload()"
       >
-        @if (data.items().length > 0) {
-          @defer (on immediate; hydrate on interaction; hydrate when hydrateGrid()) {
+        <!-- The deferred grid is never inside an @if: a dehydrated block whose parent branch is removed leaves its
+             server-rendered cards on screen (an archived project stayed visible next to the empty state). The block
+             hydrates when the listing changes (hydrateGrid) and then follows the data, an empty list included. -->
+        @defer (on immediate; hydrate on interaction; hydrate when hydrateGrid()) {
+          @if (data.items().length > 0) {
             <ul class="grid">
               @for (p of data.items(); track p.id) {
                 <li>
@@ -125,6 +128,8 @@
               }
             </ul>
           }
+        }
+        @if (data.items().length > 0) {
           <!-- The pager hydrates with the page: keyboard activation of a not-yet-hydrated link could be lost. -->
           @if (data.pages() > 1) {
             <nav
