@@ -119,7 +119,10 @@ export class Header {
   protected onScroll(): void {
     const y = window.scrollY;
     this.scrolled.set(y > 8);
-    this.nearTop.set(y < 160);
+    // A dead zone between 120 and 160 px keeps the look until the page clearly leaves or reaches the top, so small
+    // scroll movements around one line cannot flip it back and forth.
+    if (y < 120) this.nearTop.set(true);
+    else if (y >= 160) this.nearTop.set(false);
     this.away.set(
       nextAway(this.away(), this.lastY, y, {
         narrow: window.matchMedia('(width < 900px)').matches,
