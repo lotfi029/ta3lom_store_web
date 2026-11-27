@@ -14,6 +14,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { reloadOnCatalogChange } from '../../../core/http/catalog-live';
 import { refreshAfterHydration } from '../../../core/http/refresh-after-hydration';
 import { I18nService } from '../../../core/i18n/i18n';
 import { fromHalalas, toHalalas } from '../../../core/money/money';
@@ -113,6 +114,7 @@ export class ProjectPage {
 
   constructor() {
     refreshAfterHydration(this.data.resource);
+    reloadOnCatalogChange(this.data.resource);
     // Watch whichever donate box is rendered (it appears once the project has loaded). Browser only: the prerender has
     // no IntersectionObserver.
     const w = this.doc.defaultView;
