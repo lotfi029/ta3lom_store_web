@@ -318,5 +318,27 @@ for (const locale of ['ar', 'en'] as const) {
       await page.locator('p.stale button.retry').click();
       await expect(page.locator('p.stale')).toHaveCount(0);
     });
+
+    test('every project archived after the build → the prerendered cards go, the empty state shows', async ({
+      page,
+    }) => {
+      // The refresh after hydration answers an empty catalogue: the dehydrated grid must not stay next to the empty state.
+      await page.route(
+        (u) => u.pathname.endsWith('/v1/catalog/projects'),
+        (r) =>
+          r.fulfill({
+            json: { items: [], total: 0, page: 1, pageSize: 20 },
+            headers: r.request().headers().origin
+              ? {
+                  'access-control-allow-origin': r.request().headers().origin,
+                  'access-control-allow-credentials': 'true',
+                }
+              : {},
+          }),
+      );
+      await page.goto(`/${locale}/`);
+      await expect(page.locator('.empty')).toBeVisible({ timeout: 15_000 });
+      await expect(titles(page)).toHaveCount(0);
+    });
   });
 }
