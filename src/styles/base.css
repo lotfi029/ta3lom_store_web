@@ -1634,3 +1634,43 @@ header.hdr.on-hero {
 .hdr.on-hero .hsearch input::placeholder {
   color: var(--c-text-2);
 }
+
+/* Staff admin forms, "Calm cards" (DECISIONS 2026-11-27): firmer borders, a brand ring while typing, a tinted error
+   state with a warning mark, and 16 px text on phones so iOS does not zoom into a field. Only inside the admin. */
+:is(ta-admin-shell, ta-admin-login, ta-admin-password) .field label {
+  font-weight: 600;
+}
+
+:is(ta-admin-shell, ta-admin-login, ta-admin-password) :is(.field input, .field select, .field textarea) {
+  min-block-size: 46px;
+  border-width: 1.5px;
+  border-radius: 10px;
+  transition:
+    border-color var(--dur-1) var(--ease),
+    box-shadow var(--dur-1) var(--ease);
+}
+
+:is(ta-admin-shell, ta-admin-login, ta-admin-password) :is(.field input, .field select, .field textarea):hover {
+  border-color: var(--c-border-2);
+}
+
+:is(ta-admin-shell, ta-admin-login, ta-admin-password) :is(.field input, .field select, .field textarea):focus-visible {
+  border-color: var(--c-brand);
+  box-shadow: 0 0 0 3px var(--c-tint-2);
+  outline-offset: 0;
+}
+
+:is(ta-admin-shell, ta-admin-login, ta-admin-password) .field [aria-invalid='true'] {
+  border-color: var(--c-danger);
+  box-shadow: 0 0 0 3px var(--c-danger-ring);
+}
+
+:is(ta-admin-shell, ta-admin-login, ta-admin-password) .field-errors li::before {
+  content: '⚠ ';
+}
+
+@media (width < 600px) {
+  :is(ta-admin-shell, ta-admin-login, ta-admin-password) :is(.field input, .field select, .field textarea) {
+    font-size: 1rem;
+  }
+}

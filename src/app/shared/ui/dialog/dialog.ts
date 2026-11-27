@@ -1,4 +1,13 @@
-import { Component, ElementRef, effect, input, model, output, viewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  booleanAttribute,
+  effect,
+  input,
+  model,
+  output,
+  viewChild,
+} from '@angular/core';
 
 /**
  * Built on the native <dialog> element rather than a custom overlay: showModal() already
@@ -43,6 +52,12 @@ export class Dialog {
    * mis-click would discard typed work — the alt-text editor is the one such case in this app.
    */
   readonly lightDismiss = input(true);
+
+  /**
+   * The staff admin's "Calm cards" look (DECISIONS 2026-11-27): a bordered card with a tinted header and a grey action
+   * bar (the content's own `.dlg` in admin-common.css), and on phones a sheet that slides up from the bottom edge.
+   */
+  readonly admin = input(false, { transform: booleanAttribute });
 
   readonly closed = output<void>();
 

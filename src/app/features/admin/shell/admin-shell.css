@@ -196,13 +196,13 @@ kbd {
   inset-block-start: calc(100% + 8px);
   inset-inline-end: 0;
   z-index: 40;
-  min-inline-size: 260px;
+  min-inline-size: min(280px, calc(100vw - 24px));
   padding: 8px;
   border: 1px solid var(--c-border);
-  border-radius: 12px;
+  border-radius: 16px;
   background: var(--c-surface);
   color: var(--c-text);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
 }
 
 .pop-h {
@@ -226,7 +226,7 @@ kbd {
   min-block-size: 44px;
   padding-inline: 10px;
   border: 0;
-  border-radius: 8px;
+  border-radius: 10px;
   background: none;
   color: var(--c-text);
   font: inherit;
@@ -237,7 +237,7 @@ kbd {
 
 .panel-pop a:hover,
 .panel-pop button:hover {
-  background: var(--c-surface-2);
+  background: var(--c-tint);
 }
 
 /* ── Body: side nav + main ──────────────────────────────────────────────── */
@@ -418,9 +418,17 @@ main:focus {
 
   .search {
     flex-basis: 360px;
+    min-inline-size: 0;
   }
 
   .search kbd {
+    display: none;
+  }
+}
+
+/* Tablets: the account chip keeps its avatar only, so the top bar fits (it ran 63 px wider than an 820 px screen). */
+@media (width <= 900px) {
+  .who {
     display: none;
   }
 }

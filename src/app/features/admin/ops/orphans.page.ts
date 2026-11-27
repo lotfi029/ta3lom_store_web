@@ -141,7 +141,7 @@ export const validNote = (note: string): boolean =>
       </ta-resource-state>
     </div>
 
-    <ta-dialog
+    <ta-dialog admin
       [open]="!!selected()"
       (openChange)="$event || close()"
       labelledBy="orph-h"

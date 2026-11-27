@@ -304,7 +304,7 @@
   </ta-resource-state>
 }
 
-<ta-dialog
+<ta-dialog admin
   [open]="dialogOpen()"
   (openChange)="setDialogOpen($event)"
   labelledBy="ao-f-h"
@@ -407,7 +407,7 @@
   </form>
 </ta-dialog>
 
-<ta-dialog [(open)]="confirmOpen" labelledBy="ao-c-h" [lightDismiss]="false">
+<ta-dialog admin [(open)]="confirmOpen" labelledBy="ao-c-h" [lightDismiss]="false">
   <div class="dlg">
     <h2 id="ao-c-h" i18n="@@store.admin.cancel-order-q">إلغاء هذا الطلب؟</h2>
     <p i18n="@@store.admin.cancel-order-lede">
