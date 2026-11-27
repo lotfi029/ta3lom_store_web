@@ -19,10 +19,10 @@ name: Deploy
 #                                                                     succeeded → build the PRODUCTION image,
 #                                                                     check-container on it, push (:X.Y.Z, :latest), then
 #                                                                     deploy after the `production` reviewer approves
-#   nightly, repository_dispatch "store-catalog-changed" (the API,  → rebuild of main HEAD, only when CI on that commit
-#   after staff catalogue saves) or "catalog-changed"                 succeeded (fresh prerender + sitemap): staging,
-#                                                                     then production under that commit's vX.Y.Z (the
-#                                                                     image tag is rebuilt with the same code; LIVE-2)
+#   nightly, repository_dispatch "store-catalog-changed" (the API,  → fresh prerender + sitemap of the latest vX.Y.Z
+#   after staff catalogue saves) or "catalog-changed"                 (the code production runs; the image tag is
+#                                                                     rebuilt): production, plus staging when main HEAD
+#                                                                     is that commit (LIVE-2). Never waits on CI.
 #   workflow_dispatch (environment, tag)                            → rollback: redeploy an earlier image tag, checked
 #                                                                     against the environment and the image label (D-2)
 # First deploy of an environment (empty catalogue, the admin is in this image): repository variable
@@ -156,17 +156,21 @@ jobs:
             [ -n "$ok" ] || { echo "::error::CI on $sha did not finish within 45 minutes"; exit 1; }
             target=production version="${GITHUB_REF_NAME#v}"
           else
-            # schedule / repository_dispatch: main HEAD, only if CI succeeded on it. Same code as the deployed vX.Y.Z,
-            # fresh prerender + sitemap: staging, then production under that commit's version (LIVE-2).
-            sha="$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)"
-            ok="$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs?head_sha=$sha&status=success&per_page=1" --jq '.total_count')"
-            if [ "${ok:-0}" -gt 0 ]; then
-              target=staging
-              case "$sha" in ''|*[!0-9a-f]*) echo "::error::invalid sha"; exit 1 ;; esac
-              promote_tag
+            # schedule / repository_dispatch (LIVE-2): fresh prerender + sitemap of the code production runs = the
+            # latest strict vX.Y.Z tag (made only after CI and staging passed on main). Never waits for, or ships, a
+            # newer main commit still in CI: that merge's own deploy will prerender the current catalogue too.
+            version="$(gh api "repos/$GITHUB_REPOSITORY/git/matching-refs/tags/v" --paginate --jq '.[].ref' \
+              | sed 's#^refs/tags/v##' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1 || true)"
+            if [ -z "$version" ]; then
+              echo "::warning::no vX.Y.Z tag yet — catalogue rebuild SKIPPED."
+            else
+              sha="$(gh api "repos/$GITHUB_REPOSITORY/commits/v$version" --jq .sha)"
+              head="$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)"
+              # Staging too when it runs the same commit; otherwise staging gets its data with its own next deploy.
+              if [ "$sha" = "$head" ]; then target=staging; else target=rebuild; fi
               promote=true
-              echo "::notice::catalogue rebuild of main@$sha → staging, then production as v$version"
-            else echo "::warning::CI has not succeeded on main@$sha — nightly/catalog rebuild SKIPPED (D-1)."; sha=; fi
+              echo "::notice::catalogue rebuild of v$version ($sha) → ${target/rebuild/production only}"
+            fi
           fi
           case "$sha" in ''|*[!0-9a-f]*) [ "$target" = none ] || { echo "::error::invalid sha"; exit 1; } ;; esac
           { echo "target=$target"; echo "sha=$sha"; echo "version=$version"; echo "promote=$promote"; } >> "$GITHUB_OUTPUT"
@@ -302,7 +306,7 @@ jobs:
   production-image:
     needs: [gate, staging]
     if: >-
-      !cancelled() && (needs.gate.outputs.target == 'production'
+      !cancelled() && (needs.gate.outputs.target == 'production' || needs.gate.outputs.target == 'rebuild'
       || (needs.gate.outputs.promote == 'true' && needs.staging.outputs.deployed == 'true'))
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -389,7 +393,21 @@ jobs:
         with:
           ref: ${{ needs.gate.outputs.sha }}
           persist-credentials: false
+      - name: Still the newest version? (a catalogue rebuild never replaces a newer deploy)
+        id: newest
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          latest="$(gh api "repos/$GITHUB_REPOSITORY/git/matching-refs/tags/v" --paginate --jq '.[].ref' \
+            | sed 's#^refs/tags/v##' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1 || true)"
+          if [ -n "$latest" ] && [ "$latest" != "$TAG" ] && [ "$(printf '%s\n%s\n' "$TAG" "$latest" | sort -V | tail -1)" = "$latest" ]; then
+            echo "::notice::v$latest exists — its own deploy carries a fresh catalogue; v$TAG is not deployed."
+            echo "go=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "go=true" >> "$GITHUB_OUTPUT"
+          fi
       - name: Deploy to the production VPS
+        if: steps.newest.outputs.go == 'true'
         run: |
           test -n "$SSH_HOST" && test -n "$SSH_USER" && test -n "$SSH_KEY" && test -n "$SSH_KNOWN_HOSTS" \
             || { echo "::error::PRODUCTION_SSH_* secrets are missing"; exit 1; }
@@ -400,6 +418,7 @@ jobs:
           ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes "$SSH_USER@$SSH_HOST" \
             "cd '$DEPLOY_DIR' && EDGE_ALIAS=store-web STORE_WEB_IMAGE='$IMAGE:$TAG' docker compose -f docker-compose.store-web.yml -p store-web pull && EDGE_ALIAS=store-web STORE_WEB_IMAGE='$IMAGE:$TAG' docker compose -f docker-compose.store-web.yml -p store-web up -d --wait"
       - name: Smoke-check https://store.ta3lom.sa
+        if: steps.newest.outputs.go == 'true'
         run: node scripts/smoke-deploy.mjs "$SITE" "$SHA" --env production
       - name: Remove the SSH key
         if: always()

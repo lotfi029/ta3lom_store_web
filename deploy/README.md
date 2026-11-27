@@ -9,7 +9,7 @@ by the VPS from GHCR. Go-live checklist: [docs/production-checklist.md](../docs/
 | Site | `https://store-staging.ta3lom.sa` | `https://store.ta3lom.sa` |
 | API (runtime, compiled in) | `https://store-api-staging.ta3lom.sa/v1` | `https://store-api.ta3lom.sa/v1` |
 | Image | `ghcr.io/lotfi029/ta3lom-store-web:staging-<sha>` (+ `:staging`) | `ghcr.io/lotfi029/ta3lom-store-web:<version>` (+ `:latest`) |
-| Built on | push to `main`, nightly 01:23 UTC, `repository_dispatch: store-catalog-changed` (the API, after staff catalogue saves) | after its staging deploy passed: a push to `main` (auto `vX.Y.Z`), the nightly or a catalogue rebuild (same `vX.Y.Z`, fresh prerender); or a tag `vX.Y.Z` |
+| Built on | push to `main`, nightly 01:23 UTC, `repository_dispatch: store-catalog-changed` (the API, after staff catalogue saves) | a push to `main` once its staging deploy passed (auto `vX.Y.Z`); the nightly or a catalogue rebuild (latest `vX.Y.Z`, fresh prerender); or a tag `vX.Y.Z` |
 | Deployed | automatically (`staging` environment) | automatically after staging (the `production` environment's rules apply) |
 | Robots | `noindex, nofollow` everywhere (meta, `X-Robots-Tag`, `robots.txt Disallow: /`, no sitemap), "نسخة تجريبية" ribbon | indexable, sitemap |
 | Payments | **off — showcase mode** (`showcase: true`) until Moyasar | **off — showcase mode** until Moyasar |
@@ -163,7 +163,7 @@ succeeded. The image is built, **checked with `check-container.mjs`** for
 its environment, and only then pushed. A failed CI run deploys nothing.
 
 - **Staging:** merge to `main` (or wait for the nightly, or a `repository_dispatch` `store-catalog-changed` from the API
-  after a catalogue change; both of those continue to production too, §9). The job builds `:staging-<sha>`, then on the VPS:
+  after a catalogue change, when `main` HEAD is the released commit; §9). The job builds `:staging-<sha>`, then on the VPS:
 
   ```bash
   cd /srv/store-web-staging
@@ -248,8 +248,9 @@ update live (API LIVE-1).
 
 **Catalogue rebuild (LIVE-2).** After staff save a catalogue change, the API's outbox (`CatalogChanged` → debounce →
 `Store:SiteRebuild`) sends one `repository_dispatch` `store-catalog-changed` to this repository. The Deploy run rebuilds
-`main` HEAD (only if CI succeeded on it) for staging, then for production under that commit's existing `vX.Y.Z` (same
-code, fresh prerender; the `:X.Y.Z` and `:latest` images are rebuilt). About 3 to 4 minutes end to end. Dispatch and
-nightly runs share the `catalog-rebuild` concurrency group: one runs, only the newest waiting run is kept, so a burst
-of saves costs at most one extra rebuild. Needs the API's `Store__SiteRebuild__Token` (fine-grained, Contents
-read/write on this repository; API `deploy/secrets.md`). A manual `repository_dispatch` `catalog-changed` does the same.
+the code production runs (the latest `vX.Y.Z` tag) with a fresh prerender and sitemap, rebuilds the `:X.Y.Z` and
+`:latest` images, and deploys production (staging too when `main` HEAD is that commit). It never waits on CI: a newer
+merge still in CI deploys its own fresh catalogue, and a rebuild never replaces a newer version already deployed. About
+3 to 4 minutes end to end. Dispatch and nightly runs share the `catalog-rebuild` concurrency group: one runs, only the
+newest waiting run is kept. Needs the API's `Store__SiteRebuild__Token` (fine-grained, Contents read/write on this
+repository; API `deploy/secrets.md`). A manual `repository_dispatch` `catalog-changed` does the same.

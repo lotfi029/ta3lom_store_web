@@ -136,7 +136,7 @@ export class HomePage {
   private readonly gridKey = computed(() =>
     JSON.stringify([this.query(), this.data.pages(), this.data.items().map((p) => p.id)]),
   );
-  /** The listing first shown (set once by an effect, after inputs and data have settled). */
+  /** The listing first shown, empty or not (set once by an effect, after inputs and data have settled). */
   private readonly firstGridKey = signal<string | null>(null);
   private readonly gridChanged = computed(() => {
     const first = this.firstGridKey();
@@ -170,7 +170,7 @@ export class HomePage {
     reloadOnCatalogChange(this.data.home, this.data.listing, this.data.categories);
     effect(() => {
       const key = this.gridKey();
-      if (this.data.items().length > 0 && untracked(this.firstGridKey) === null)
+      if (this.data.hasListing() && untracked(this.firstGridKey) === null)
         untracked(() => this.firstGridKey.set(key));
     });
     effect(() => {
